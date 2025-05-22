@@ -3,14 +3,16 @@ export interface BlueprintResource {
   name: string
 }
 
+export interface BlueprintFunctionResourceEvent {
+  on: string[]
+  filter?: string
+  projection?: string
+}
+
 export interface BlueprintFunctionResource extends BlueprintResource {
   type: 'sanity.function.document'
   src: string
-  event: {
-    on: string[]
-    filter?: string
-    projection?: string
-  }
+  event: BlueprintFunctionResourceEvent
   timeout?: number
   memory?: number
   env?: Record<string, string>
@@ -25,6 +27,6 @@ export interface Blueprint {
   $schema: string
   blueprintVersion: string
   resources: BlueprintResource[]
-  values?: Record<string, any>
+  values?: Record<string, unknown>
   outputs?: BlueprintOutput[]
 }
