@@ -1,21 +1,32 @@
-import type {Blueprint, BlueprintFunctionResource, BlueprintFunctionResourceEvent, BlueprintResource} from './types.js'
+import type {
+  Blueprint,
+  BlueprintFunctionResource,
+  BlueprintFunctionResourceEvent,
+  BlueprintModule,
+  BlueprintResource,
+  BlueprintsApiConfig,
+} from './types.js'
 
-export function defineBlueprint(blueprintConfig: Partial<Blueprint>): (args: unknown) => Blueprint {
-  let {blueprintVersion, resources, values, outputs} = blueprintConfig
-  if (!resources) throw new Error('`resources` is required')
-  if (!Array.isArray(resources)) throw new Error('`resources` must be an array')
+export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintModule {
+  const {organizationId, projectId, stackId, blueprintVersion, resources, values, outputs} = blueprintConfig
 
-  if (!blueprintVersion) blueprintVersion = '2024-10-01'
+  if (resources && !Array.isArray(resources)) throw new Error('`resources` must be an array')
 
-  return () => {
+  function blueprint(): Blueprint {
     return {
       $schema: 'https://schemas.sanity.io/blueprints/v2024-10-01/blueprint.schema.json',
-      blueprintVersion,
+      blueprintVersion: blueprintVersion ?? '2024-10-01',
       resources,
       values,
       outputs,
     }
   }
+
+  blueprint.organizationId = organizationId
+  blueprint.projectId = projectId
+  blueprint.stackId = stackId
+
+  return blueprint
 }
 
 type EventKey = keyof BlueprintFunctionResourceEvent

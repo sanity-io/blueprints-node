@@ -26,7 +26,19 @@ export interface BlueprintOutput {
 export interface Blueprint {
   $schema: string
   blueprintVersion: string
-  resources: BlueprintResource[]
+  resources?: BlueprintResource[]
   values?: Record<string, unknown>
   outputs?: BlueprintOutput[]
+}
+
+export interface BlueprintsApiConfig {
+  organizationId: string
+  projectId: string
+  stackId: string
+}
+
+export type BlueprintModule = ((args?: unknown) => Blueprint) & {
+  organizationId?: string
+  projectId?: string
+  stackId?: string
 }

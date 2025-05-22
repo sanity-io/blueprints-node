@@ -2,13 +2,15 @@ import {describe, expect, test} from 'vitest'
 import {defineBlueprint, defineDocumentFunction, defineResource} from '../src/index.js'
 
 describe('defineBlueprint', () => {
-  test('should throw an error if resources is not provided', () => {
-    expect(() => defineBlueprint({})).toThrow('`resources` is required')
-  })
-
   test('should throw an error if resources is not an array', () => {
     // @ts-expect-error Intentionally wrong type
     expect(() => defineBlueprint({resources: 'test'})).toThrow('`resources` must be an array')
+  })
+
+  test('should attach projectId and stackId to returned function', () => {
+    const blueprint = defineBlueprint({resources: [], projectId: 'test', stackId: 'test'})
+    expect(blueprint.projectId).toEqual('test')
+    expect(blueprint.stackId).toEqual('test')
   })
 })
 
@@ -89,7 +91,7 @@ describe('defineResource', () => {
 
 describe('README example', () => {
   test('should be valid', () => {
-    const validBlueprint = defineBlueprint({
+    const readmeExample = defineBlueprint({
       resources: [
         defineDocumentFunction({name: 'invalidate-cache', projection: '_id'}),
         defineDocumentFunction({
@@ -114,10 +116,10 @@ describe('README example', () => {
       ],
     })
 
-    expect(validBlueprint).toBeDefined()
-    expect(validBlueprint).toBeInstanceOf(Function)
+    expect(readmeExample).toBeDefined()
+    expect(readmeExample).toBeInstanceOf(Function)
 
-    const blueprint = validBlueprint({})
+    const blueprint = readmeExample({})
     expect(blueprint).toBeDefined()
     expect(blueprint.$schema).toBeDefined()
     expect(blueprint.blueprintVersion).toBeDefined()
