@@ -4,10 +4,12 @@ export interface BlueprintResource {
 }
 
 export interface BlueprintFunctionResourceEvent {
-  on: string[]
+  on: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
   projection?: string
 }
+
+type BlueprintFunctionResourceEventName = 'publish'
 
 export interface BlueprintFunctionResource extends BlueprintResource {
   type: 'sanity.function.document'
