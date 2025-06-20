@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/sanity-io/blueprints-node/compare/v0.0.1...v0.1.0) (2025-06-20)
+
+
+### Features
+
+* constrain event names to a type composed of specific string literals ([#5](https://github.com/sanity-io/blueprints-node/issues/5)) ([a522820](https://github.com/sanity-io/blueprints-node/commit/a522820b41c1d85d3a3738e2fc7c654b5ad9de95))
+
 ## 0.0.1 (2025-06-04)
 
 
