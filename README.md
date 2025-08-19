@@ -12,8 +12,6 @@ import {defineBlueprint, defineDocumentFunction, defineResource} from '@sanity/b
 
 export default defineBlueprint({
   resources: [
-    defineDocumentFunction({name: 'invalidate-cache', timeout: 60, projection: '_id'}),
-    defineDocumentFunction({name: 'send-email', filter: "_type == 'press-release'"}),
     defineDocumentFunction({
       name: 'Create Fancy Report',
       src: 'functions/create-fancy-report',
