@@ -79,9 +79,13 @@ describe('defineFunction', () => {
   })
 
   test('should allow for creating events with explicit include* toggles', () => {
-    const fn = defineDocumentFunction({name: 'test', src: 'test.js', event: {on: ['update'], includeVersions: true, includeDrafts: true}})
+    const fn = defineDocumentFunction({
+      name: 'test',
+      src: 'test.js',
+      event: {on: ['update'], includeAllVersions: true, includeDrafts: true},
+    })
     expect(fn.event.includeDrafts).toEqual(true)
-    expect(fn.event.includeVersions).toEqual(true)
+    expect(fn.event.includeAllVersions).toEqual(true)
   })
 })
 

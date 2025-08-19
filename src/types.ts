@@ -7,7 +7,7 @@ export interface BlueprintFunctionResourceEvent {
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
   includeDrafts?: boolean
-  includeVersions?: boolean
+  includeAllVersions?: boolean
   projection?: string
 }
 
