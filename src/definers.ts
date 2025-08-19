@@ -96,9 +96,13 @@ export function defineResource(resourceConfig: Partial<BlueprintResource>): Blue
 }
 
 function validateDocumentFunctionEvent(event: Partial<BlueprintFunctionResourceEvent>): BlueprintFunctionResourceEvent {
+  const cleanEvent = Object.fromEntries(
+    Object.entries(event).filter(([key]) => EVENT_KEYS.has(key as EventKey)),
+  ) as Partial<BlueprintFunctionResourceEvent>
+
   const fullEvent = {
-    on: event.on || ['publish'],
-    ...event,
+    on: cleanEvent.on || ['publish'],
+    ...cleanEvent,
   }
   if (!Array.isArray(fullEvent.on)) throw new Error('`event.on` must be an array')
   return fullEvent
