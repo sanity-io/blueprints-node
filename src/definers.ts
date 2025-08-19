@@ -32,6 +32,13 @@ export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<Bl
 type EventKey = keyof BlueprintFunctionResourceEvent
 const EVENT_KEYS = new Set<EventKey>(['on', 'filter', 'projection'])
 
+export function defineDocumentFunction(functionConfig: Partial<BlueprintFunctionResource>): BlueprintFunctionResource
+
+/** @deprecated Use nested event properties under the 'event' key instead of specifying them at the top level */
+export function defineDocumentFunction(
+  functionConfig: Partial<BlueprintFunctionResource> & Partial<BlueprintFunctionResourceEvent>,
+): BlueprintFunctionResource
+
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintFunctionResource> & Partial<BlueprintFunctionResourceEvent>,
 ): BlueprintFunctionResource {
