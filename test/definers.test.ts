@@ -34,11 +34,6 @@ describe('defineFunction', () => {
     expect(() => defineDocumentFunction({name: 'test', timeout: '1'})).toThrow('`timeout` must be a number')
   })
 
-  test('should throw an error if event.on is not provided', () => {
-    // @ts-expect-error Intentionally wrong type
-    expect(() => defineDocumentFunction({name: 'test', event: {}})).toThrow('`event.on` is required')
-  })
-
   test('should throw an error if event.on is not an array', () => {
     expect(() =>
       // @ts-expect-error Intentionally wrong type
@@ -48,22 +43,22 @@ describe('defineFunction', () => {
 
   test('should throw an error if on is incorrect', () => {
     // @ts-expect-error Intentionally wrong type
-    expect(() => defineDocumentFunction({name: 'test', on: 'publish'})).toThrow('`on` must be an array')
+    expect(() => defineDocumentFunction({name: 'test', on: 'publish'})).toThrow('`event.on` must be an array')
   })
 
   test('should create the event with provided filter', () => {
-    const fn = defineDocumentFunction({name: 'test', filter: '_type == "post"'})
+    const fn = defineDocumentFunction({name: 'test', event: {filter: '_type == "post"'}})
     expect(fn.event).toEqual({on: ['publish'], filter: '_type == "post"'})
   })
 
-  test('should throw an error if event and filter are provided', () => {
+  test('should throw an error if event keys are defined using a mix of under the event object as well as at the top level', () => {
     expect(() =>
       defineDocumentFunction({
         name: 'test',
         event: {on: ['publish']},
         filter: '_type == "post"',
       }),
-    ).toThrow('`event` cannot be specified with `filter`')
+    ).toThrowError(/`event` properties should be specified under the `event` key/i)
   })
 
   test('should ignore invalid properties', () => {

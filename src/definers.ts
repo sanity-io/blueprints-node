@@ -32,6 +32,13 @@ export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<Bl
 type EventKey = keyof BlueprintFunctionResourceEvent
 const EVENT_KEYS = new Set<EventKey>(['on', 'filter', 'projection'])
 
+export function defineDocumentFunction(functionConfig: Partial<BlueprintFunctionResource>): BlueprintFunctionResource
+
+/** @deprecated Define event properties under the 'event' key instead of specifying them at the top level */
+export function defineDocumentFunction(
+  functionConfig: Partial<BlueprintFunctionResource> & Partial<BlueprintFunctionResourceEvent>,
+): BlueprintFunctionResource
+
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintFunctionResource> & Partial<BlueprintFunctionResourceEvent>,
 ): BlueprintFunctionResource {
@@ -49,18 +56,20 @@ export function defineDocumentFunction(
 
   // event validation
   if (event) {
-    // check for `event` and `maybeEvent` collision
-    const invalidKeys = Object.keys(maybeEvent).filter((k) => EVENT_KEYS.has(k as EventKey))
-    if (invalidKeys.length > 0) {
-      throw new Error(`\`event\` cannot be specified with ${invalidKeys.map((k) => `\`${k}\``).join(', ')}`)
+    // `event` was specified, but event keys (aggregated in `maybeEvent`) were also specified at the top level. ambiguous and deprecated usage.
+    const duplicateKeys = Object.keys(maybeEvent).filter((k) => EVENT_KEYS.has(k as EventKey))
+    if (duplicateKeys.length > 0) {
+      throw new Error(
+        `\`event\` properties should be specified under the \`event\` key - specifying them at the top level is deprecated. The following keys were specified at the top level: ${duplicateKeys.map((k) => `\`${k}\``).join(', ')}`,
+      )
     }
-
-    if (!event.on) throw new Error('`event.on` is required')
-    if (!Array.isArray(event.on)) throw new Error('`event.on` must be an array')
+    event = validateDocumentFunctionEvent(event)
   } else {
-    const {on, filter, projection} = maybeEvent
-    if (on && !Array.isArray(on)) throw new Error('`on` must be an array')
-    event = {on: on ?? ['publish'], filter, projection}
+    event = validateDocumentFunctionEvent(maybeEvent)
+    // deprecated usage of putting event properties at the top level, warn about this.
+    console.warn(
+      '⚠️ Deprecated usage of `defineDocumentFunction`: prefer to put `event` properties under the `event` key rather than at the top level.',
+    )
   }
 
   return {
@@ -84,4 +93,17 @@ export function defineResource(resourceConfig: Partial<BlueprintResource>): Blue
     type,
     name,
   }
+}
+
+function validateDocumentFunctionEvent(event: Partial<BlueprintFunctionResourceEvent>): BlueprintFunctionResourceEvent {
+  const cleanEvent = Object.fromEntries(
+    Object.entries(event).filter(([key]) => EVENT_KEYS.has(key as EventKey)),
+  ) as Partial<BlueprintFunctionResourceEvent>
+
+  const fullEvent = {
+    on: cleanEvent.on || ['publish'],
+    ...cleanEvent,
+  }
+  if (!Array.isArray(fullEvent.on)) throw new Error('`event.on` must be an array')
+  return fullEvent
 }

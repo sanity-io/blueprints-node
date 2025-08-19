@@ -4,7 +4,7 @@ export interface BlueprintResource {
 }
 
 export interface BlueprintFunctionResourceEvent {
-  on: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
+  on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
   projection?: string
 }
