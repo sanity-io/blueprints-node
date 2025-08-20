@@ -46,7 +46,7 @@ describe('defineFunction', () => {
     expect(() => defineDocumentFunction({name: 'test', on: 'publish'})).toThrow('`event.on` must be an array')
   })
 
-  test('should create the event with provided filter', () => {
+  test('should create a default publish event with provided filter', () => {
     const fn = defineDocumentFunction({name: 'test', event: {filter: '_type == "post"'}})
     expect(fn.event).toEqual({on: ['publish'], filter: '_type == "post"'})
   })
@@ -71,6 +71,21 @@ describe('defineFunction', () => {
   test('should create the event with publish if not provided', () => {
     const fn = defineDocumentFunction({name: 'test', src: 'test.js'})
     expect(fn.event).toEqual({on: ['publish']})
+  })
+
+  test('should allow for creating events triggered on create, update and delete', () => {
+    const fn = defineDocumentFunction({name: 'test', src: 'test.js', event: {on: ['create', 'update', 'delete']}})
+    expect(fn.event.on).toEqual(['create', 'update', 'delete'])
+  })
+
+  test('should allow for creating events with explicit include* toggles', () => {
+    const fn = defineDocumentFunction({
+      name: 'test',
+      src: 'test.js',
+      event: {on: ['update'], includeAllVersions: true, includeDrafts: true},
+    })
+    expect(fn.event.includeDrafts).toEqual(true)
+    expect(fn.event.includeAllVersions).toEqual(true)
   })
 })
 
