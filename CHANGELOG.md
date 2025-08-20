@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/sanity-io/blueprints-node/compare/v0.1.0...v0.2.0) (2025-08-20)
+
+
+### Features
+
+* Support new document change events (`create`, `delete`, `update`), plus `includeDrafts` and `includeAllVersions` filters ([#8](https://github.com/sanity-io/blueprints-node/issues/8)) ([f447d07](https://github.com/sanity-io/blueprints-node/commit/f447d07e75cbfa9ebb687f6d066adc81d658d538))
+
 ## [0.1.0](https://github.com/sanity-io/blueprints-node/compare/v0.0.1...v0.1.0) (2025-06-20)
 
 
