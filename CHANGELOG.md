@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/sanity-io/blueprints-node/compare/v0.2.0...v0.3.0) (2025-09-22)
+
+
+### Features
+
+* Support dataset scoping of function event sources ([#10](https://github.com/sanity-io/blueprints-node/issues/10)) ([51766ed](https://github.com/sanity-io/blueprints-node/commit/51766ed288ce93e9a820e67c85bd749bfc85999f))
+
 ## [0.2.0](https://github.com/sanity-io/blueprints-node/compare/v0.1.0...v0.2.0) (2025-08-20)
 
 
