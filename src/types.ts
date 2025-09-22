@@ -9,6 +9,15 @@ export interface BlueprintFunctionResourceEvent {
   includeDrafts?: boolean
   includeAllVersions?: boolean
   projection?: string
+  /** @description The resource event source for function triggers. Only datasets are supported... for now. */
+  resource?: BlueprintFunctionResourceEventResource
+}
+
+export type BlueprintFunctionResourceEventResource = BlueprintFunctionResourceEventResourceDataset
+export interface BlueprintFunctionResourceEventResourceDataset {
+  type: 'dataset'
+  /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
+  id: string
 }
 
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'

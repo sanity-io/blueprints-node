@@ -30,7 +30,7 @@ export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<Bl
 }
 
 type EventKey = keyof BlueprintFunctionResourceEvent
-const EVENT_KEYS = new Set<EventKey>(['on', 'filter', 'includeDrafts', 'includeAllVersions', 'projection'])
+const EVENT_KEYS = new Set<EventKey>(['on', 'filter', 'includeDrafts', 'includeAllVersions', 'projection', 'resource'])
 
 export function defineDocumentFunction(functionConfig: Partial<BlueprintFunctionResource>): BlueprintFunctionResource
 
@@ -105,5 +105,10 @@ function validateDocumentFunctionEvent(event: Partial<BlueprintFunctionResourceE
     ...cleanEvent,
   }
   if (!Array.isArray(fullEvent.on)) throw new Error('`event.on` must be an array')
+  if (fullEvent.resource) {
+    if (!fullEvent.resource.type || fullEvent.resource.type !== 'dataset') throw new Error('`event.resource.type` must be "dataset"')
+    if (!fullEvent.resource.id || fullEvent.resource.id.split('.').length !== 2)
+      throw new Error('`event.resource.id` must be in the format <projectId>.<datasetName>')
+  }
   return fullEvent
 }

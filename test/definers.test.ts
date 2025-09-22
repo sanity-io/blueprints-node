@@ -87,6 +87,50 @@ describe('defineFunction', () => {
     expect(fn.event.includeDrafts).toEqual(true)
     expect(fn.event.includeAllVersions).toEqual(true)
   })
+
+  test('should allow for creating events scoped to a specific dataset', () => {
+    const fn = defineDocumentFunction({
+      name: 'test',
+      src: 'test.js',
+      event: {on: ['update'], resource: {type: 'dataset', id: 'myProject.myDataset'}},
+    })
+    expect(fn.event.resource?.type).toEqual('dataset')
+    expect(fn.event.resource?.id).toEqual('myProject.myDataset')
+  })
+
+  test('should allow for creating events explicitly scoped to all datasets', () => {
+    const fn = defineDocumentFunction({
+      name: 'test',
+      src: 'test.js',
+      event: {on: ['update'], resource: {type: 'dataset', id: 'myProject.*'}},
+    })
+    expect(fn.event.resource?.type).toEqual('dataset')
+    expect(fn.event.resource?.id).toEqual('myProject.*')
+  })
+
+  test('should throw an error if event.resource.type is empty or not dataset', () => {
+    // @ts-expect-error Intentionally wrong type
+    expect(() => defineDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'a', id: 'myProject.*'}}})).toThrow(
+      '`event.resource.type` must be "dataset"',
+    )
+    // @ts-expect-error Intentionally wrong type
+    expect(() => defineDocumentFunction({name: 'test', event: {on: ['update'], resource: {id: 'myProject.*'}}})).toThrow(
+      '`event.resource.type` must be "dataset"',
+    )
+  })
+
+  test('should throw an error if event.resource.id is invalid', () => {
+    expect(() =>
+      defineDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'dataset', id: 'notEnoughPeriods'}}}),
+    ).toThrow('`event.resource.id` must be in the format <projectId>.<datasetName>')
+    expect(() =>
+      defineDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'dataset', id: 'too.many.periods'}}}),
+    ).toThrow('`event.resource.id` must be in the format <projectId>.<datasetName>')
+    // @ts-expect-error Intentionally wrong type
+    expect(() => defineDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'dataset'}}})).toThrow(
+      '`event.resource.id` must be in the format <projectId>.<datasetName>',
+    )
+  })
 })
 
 describe('defineResource', () => {
