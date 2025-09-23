@@ -20,7 +20,7 @@ export default defineBlueprint({
       event: {
         on: ['publish'],
         filter: "_type == 'customer'",
-        projection: "totalSpend, lastOrderDate",
+        projection: "{totalSpend, lastOrderDate}",
       },
       env: {
         currency: 'USD',
