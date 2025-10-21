@@ -1,18 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {defineBlueprint, defineDocumentFunction, defineResource} from '../src/index.js'
-
-describe('defineBlueprint', () => {
-  test('should throw an error if resources is not an array', () => {
-    // @ts-expect-error Intentionally wrong type
-    expect(() => defineBlueprint({resources: 'test'})).toThrow('`resources` must be an array')
-  })
-
-  test('should attach projectId and stackId to returned function', () => {
-    const blueprint = defineBlueprint({resources: [], projectId: 'test', stackId: 'test'})
-    expect(blueprint.projectId).toEqual('test')
-    expect(blueprint.stackId).toEqual('test')
-  })
-})
+import {defineDocumentFunction} from '../../src/index.js'
 
 describe('defineFunction', () => {
   test('should throw an error if name is not provided', () => {
@@ -130,91 +117,5 @@ describe('defineFunction', () => {
     expect(() => defineDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'dataset'}}})).toThrow(
       '`event.resource.id` must be in the format <projectId>.<datasetName>',
     )
-  })
-})
-
-describe('defineResource', () => {
-  test('should throw an error if name is not provided', () => {
-    expect(() => defineResource({})).toThrow('`name` is required')
-  })
-
-  test('should throw an error if type is not provided', () => {
-    expect(() => defineResource({name: 'test'})).toThrow('`type` is required')
-  })
-})
-
-describe('README example', () => {
-  test('should be valid', () => {
-    const readmeExample = defineBlueprint({
-      resources: [
-        defineDocumentFunction({name: 'invalidate-cache', projection: '_id'}),
-        defineDocumentFunction({
-          name: 'send-email',
-          filter: "_type == 'press-release'",
-        }),
-        defineDocumentFunction({
-          name: 'Create Fancy Report',
-          src: 'functions/create-fancy-report',
-          memory: 2,
-          timeout: 360,
-          event: {
-            on: ['publish'],
-            filter: "_type == 'customer'",
-            projection: 'totalSpend, lastOrderDate',
-          },
-          env: {
-            currency: 'USD',
-          },
-        }),
-        defineResource({name: 'test-resource', type: 'test'}),
-      ],
-    })
-
-    expect(readmeExample).toBeDefined()
-    expect(readmeExample).toBeInstanceOf(Function)
-
-    const blueprint = readmeExample({})
-    expect(blueprint).toBeDefined()
-    expect(blueprint.$schema).toBeDefined()
-    expect(blueprint.blueprintVersion).toBeDefined()
-    expect(blueprint.resources).toEqual([
-      {
-        type: 'sanity.function.document',
-        name: 'invalidate-cache',
-        src: 'functions/invalidate-cache',
-        event: {on: ['publish'], projection: '_id'},
-        memory: undefined,
-        timeout: undefined,
-        env: undefined,
-      },
-      {
-        type: 'sanity.function.document',
-        name: 'send-email',
-        src: 'functions/send-email',
-        event: {on: ['publish'], filter: "_type == 'press-release'"},
-        memory: undefined,
-        timeout: undefined,
-        env: undefined,
-      },
-      {
-        type: 'sanity.function.document',
-        name: 'Create Fancy Report',
-        src: 'functions/create-fancy-report',
-        memory: 2,
-        timeout: 360,
-        event: {
-          on: ['publish'],
-          filter: "_type == 'customer'",
-          projection: 'totalSpend, lastOrderDate',
-        },
-        env: {
-          currency: 'USD',
-        },
-      },
-      {
-        type: 'test',
-        name: 'test-resource',
-      },
-    ])
   })
 })
