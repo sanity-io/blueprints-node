@@ -1,7 +1,7 @@
 import {describe, expect, test} from 'vitest'
 import {defineDocumentFunction} from '../../src/index.js'
 
-describe('defineFunction', () => {
+describe('defineDocumentFunction', () => {
   test('should throw an error if name is not provided', () => {
     expect(() => defineDocumentFunction({})).toThrow('`name` is required')
   })
