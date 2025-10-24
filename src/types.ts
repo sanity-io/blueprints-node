@@ -31,11 +31,6 @@ export interface BlueprintFunctionResource extends BlueprintResource {
   env?: Record<string, string>
 }
 
-export interface BlueprintProjectResource extends BlueprintResource {
-  type: 'sanity.project'
-  displayName: string
-}
-
 export interface BlueprintOutput {
   name: string
   value: string
