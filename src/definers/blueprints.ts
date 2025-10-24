@@ -1,8 +1,4 @@
-import type {
-  Blueprint,
-  BlueprintModule,
-  BlueprintsApiConfig,
-} from '../types.js'
+import type {Blueprint, BlueprintModule, BlueprintsApiConfig} from '../types.js'
 
 export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintModule {
   const {organizationId, projectId, stackId, blueprintVersion, resources, values, outputs} = blueprintConfig
