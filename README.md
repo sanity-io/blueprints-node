@@ -22,7 +22,7 @@ export default defineBlueprint({
       memory: 2,
       timeout: 360,
       event: {
-        on: ['publish'],
+        on: ['create', 'update'],
         filter: "_type == 'customer'",
         projection: "{totalSpend, lastOrderDate}",
       },
