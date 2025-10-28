@@ -1,5 +1,5 @@
 import {describe, expectTypeOf, test} from 'vitest'
-import {defineDocumentFunction, defineMediaLibraryAssetFunction} from '../src'
+import {defineDocumentFunction} from '../src'
 
 describe('defineDocumentFunction', () => {
   test('argument types', () => {
@@ -7,5 +7,3 @@ describe('defineDocumentFunction', () => {
     expectTypeOf(defineDocumentFunction).parameter(0).toEqualTypeOf({})
   })
 })
-
-// TODO: implement type tests for backwards compatibility enforcement, but need more opinions / input from team
