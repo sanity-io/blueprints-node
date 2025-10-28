@@ -1,8 +1,8 @@
 import type {
   BlueprintBaseFunctionResource,
-  BlueprintFunctionBaseResourceEvent,
   BlueprintDocumentFunctionResource,
   BlueprintDocumentFunctionResourceEvent,
+  BlueprintFunctionBaseResourceEvent,
   BlueprintMediaLibraryAssetFunctionResource,
   BlueprintMediaLibraryFunctionResourceEvent,
 } from '../types.js'
