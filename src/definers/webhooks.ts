@@ -1,22 +1,4 @@
-import type {BlueprintResource} from '../types'
-
-export interface BlueprintDocumentWebhookResource extends BlueprintResource {
-  type: 'sanity.project.webhook'
-  project?: string
-  displayName?: string
-  description?: string | null
-  url: string
-  on: string[]
-  filter?: string | null
-  projection?: string | null
-  status?: 'enabled' | 'disabled'
-  httpMethod?: 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'GET'
-  headers?: Record<string, string>
-  includeDrafts?: boolean
-  secret?: string | null
-  dataset?: string
-}
-export type BlueprintDocumentWebhookConfig = Omit<BlueprintDocumentWebhookResource, 'type'>
+import type {BlueprintDocumentWebhookConfig, BlueprintDocumentWebhookResource} from '../types'
 
 export function defineDocumentWebhook(parameters: BlueprintDocumentWebhookConfig): BlueprintDocumentWebhookResource {
   const errors: string[] = []
