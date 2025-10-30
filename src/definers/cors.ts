@@ -11,13 +11,6 @@ export function defineCorsOrigin(parameters: BlueprintCorsOriginConfig): Bluepri
     errors.push('CORS Origin URL is required')
   }
 
-  // Validate URL format
-  try {
-    new URL(parameters.origin)
-  } catch {
-    errors.push('CORS Origin URL must be a valid URL')
-  }
-
   if (errors.length > 0) {
     const message = errors.join('\n')
     throw new Error(message)

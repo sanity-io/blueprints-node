@@ -16,15 +16,6 @@ describe('defineCorsOrigin', () => {
     ).toThrow(/URL is required/)
   })
 
-  test('should throw an error if URL is not valid', () => {
-    expect(() =>
-      defineCorsOrigin({
-        name: 'webhook-name',
-        origin: 'not-valid-url',
-      }),
-    ).toThrow(/must be a valid URL/)
-  })
-
   test('should accept a valid configuration and set the type', () => {
     const corsResource = defineCorsOrigin({
       name: 'webhook-name',
