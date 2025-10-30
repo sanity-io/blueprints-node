@@ -8,12 +8,16 @@ Helper methods for building valid Sanity Blueprints.
 ## Usage
 
 ```ts
-import {defineBlueprint, defineDocumentFunction, defineResource} from '@sanity/blueprints'
+import {
+  defineBlueprint, 
+  defineDocumentFunction, 
+  defineDocumentWebhook
+} from '@sanity/blueprints'
 
 export default defineBlueprint({
   resources: [
     defineDocumentFunction({
-      name: 'Create Fancy Report',
+      name: 'fancy-report-function',
       src: 'functions/create-fancy-report',
       memory: 2,
       timeout: 360,
@@ -27,7 +31,12 @@ export default defineBlueprint({
       },
     }),
 
-    defineResource({name: 'test-resource', type: 'test'}),
+    const webhookResource = defineDocumentWebhook({
+      name: 'notification-webhook',
+      url: 'http://api.yourdomain.com/notifications/sanity',
+      on: ['create'],
+      dataset: 'production',
+    })
   ],
 })
 ```
