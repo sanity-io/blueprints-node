@@ -1,16 +1,16 @@
 import {describe, expect, test} from 'vitest'
-import {defineCORSOrigin} from '../../src/index.js'
+import {defineCorsOrigin} from '../../src/index.js'
 
-describe('defineCORSOrigin', () => {
+describe('defineCorsOrigin', () => {
   test('should throw an error if name is not provided', () => {
     // @ts-expect-error Missing required attributes
-    expect(() => defineCORSOrigin({})).toThrow(/name is required/)
+    expect(() => defineCorsOrigin({})).toThrow(/name is required/)
   })
 
   test('should throw an error if URL is not provided', () => {
     expect(() =>
       // @ts-expect-error Missing required attributes
-      defineCORSOrigin({
+      defineCorsOrigin({
         name: 'origin-name',
       }),
     ).toThrow(/URL is required/)
@@ -18,7 +18,7 @@ describe('defineCORSOrigin', () => {
 
   test('should throw an error if URL is not valid', () => {
     expect(() =>
-      defineCORSOrigin({
+      defineCorsOrigin({
         name: 'webhook-name',
         origin: 'not-valid-url',
       }),
@@ -26,7 +26,7 @@ describe('defineCORSOrigin', () => {
   })
 
   test('should accept a valid configuration and set the type', () => {
-    const corsResource = defineCORSOrigin({
+    const corsResource = defineCorsOrigin({
       name: 'webhook-name',
       origin: 'http://localhost/',
       allowCredentials: true,
@@ -36,7 +36,7 @@ describe('defineCORSOrigin', () => {
   })
 
   test('allowCredentials should default to false if not provided', () => {
-    const webhookResource = defineCORSOrigin({
+    const webhookResource = defineCorsOrigin({
       name: 'webhook-name',
       origin: 'http://localhost/',
     })

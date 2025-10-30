@@ -1,6 +1,6 @@
-import type {BlueprintCORSOriginConfig, BlueprintCORSOriginResource} from '../types'
+import type {BlueprintCorsOriginConfig, BlueprintCorsOriginResource} from '../types'
 
-export function defineCORSOrigin(parameters: BlueprintCORSOriginConfig): BlueprintCORSOriginResource {
+export function defineCorsOrigin(parameters: BlueprintCorsOriginConfig): BlueprintCorsOriginResource {
   const errors: string[] = []
 
   if (!parameters.name || parameters.name.trim() === '') {
