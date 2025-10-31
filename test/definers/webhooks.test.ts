@@ -100,6 +100,19 @@ describe('defineDocumentWebhook', () => {
     ).toThrow(/Invalid HTTP method/)
   })
 
+  test('should throw an error if status is invalid', () => {
+    expect(() =>
+      defineDocumentWebhook({
+        name: 'webhook-name',
+        url: 'http://localhost/',
+        on: ['create'],
+        dataset: 'abcdefg',
+        // @ts-expect-error invalid value
+        status: 'invalid',
+      }),
+    ).toThrow(/Status must be either/)
+  })
+
   test('should throw an error if a header key is invalid', () => {
     expect(() =>
       defineDocumentWebhook({
