@@ -1,8 +1,9 @@
-// import { assertType, describe, expect, expectTypeOf, test } from 'vitest'
-// import {
-//   defineBlueprint,
-//   defineFunction,
-//   defineResource,
-// } from '../src'
-// import type { Blueprint, BlueprintFunctionResource, BlueprintResource } from '../src'
+import {describe, expectTypeOf, test} from 'vitest'
+import {defineDocumentFunction} from '../src'
 
+describe('defineDocumentFunction', () => {
+  test('argument types', () => {
+    // can provide no arguments (not entirely true: at runtime this will throw since no name provided; we can fix this by tweaking function type signature, tho.
+    expectTypeOf(defineDocumentFunction).parameter(0).toEqualTypeOf({})
+  })
+})

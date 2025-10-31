@@ -13,32 +13,46 @@ export type BlueprintCorsOriginConfig = Omit<BlueprintCorsOriginResource, 'type'
   allowCredentials?: boolean
 }
 
-export interface BlueprintFunctionResourceEvent {
+export interface BlueprintFunctionBaseResourceEvent {
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
+  projection?: string
+}
+export interface BlueprintDocumentFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
   includeDrafts?: boolean
   includeAllVersions?: boolean
-  projection?: string
-  /** @description The resource event source for function triggers. Only datasets are supported... for now. */
-  resource?: BlueprintFunctionResourceEventResource
+  resource?: BlueprintFunctionResourceEventResourceDataset
 }
+export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
+  resource: BlueprintFunctionResourceEventResourceMediaLibrary
+}
+export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEvent | BlueprintMediaLibraryFunctionResourceEvent
 
-export type BlueprintFunctionResourceEventResource = BlueprintFunctionResourceEventResourceDataset
-export interface BlueprintFunctionResourceEventResourceDataset {
+interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
   /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
+  id: string
+}
+interface BlueprintFunctionResourceEventResourceMediaLibrary {
+  type: 'media-library'
   id: string
 }
 
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
-export interface BlueprintFunctionResource extends BlueprintResource {
-  type: 'sanity.function.document'
+export interface BlueprintBaseFunctionResource extends BlueprintResource {
   src: string
-  event: BlueprintFunctionResourceEvent
   timeout?: number
   memory?: number
   env?: Record<string, string>
+}
+export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.document'
+  event: BlueprintDocumentFunctionResourceEvent
+}
+export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.media-library.asset'
+  event: BlueprintMediaLibraryFunctionResourceEvent
 }
 
 export interface BlueprintDocumentWebhookResource extends BlueprintResource {
