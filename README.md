@@ -30,8 +30,7 @@ export default defineBlueprint({
         currency: 'USD',
       },
     }),
-
-    const webhookResource = defineDocumentWebhook({
+    defineDocumentWebhook({
       name: 'notification-webhook',
       url: 'http://api.yourdomain.com/notifications/sanity',
       on: ['create'],

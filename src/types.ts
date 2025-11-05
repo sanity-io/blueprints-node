@@ -16,7 +16,7 @@ export type BlueprintCorsOriginConfig = Omit<BlueprintCorsOriginResource, 'type'
 export interface BlueprintFunctionBaseResourceEvent {
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
-  projection?: string
+  projection?: `{${string}}`
 }
 export interface BlueprintDocumentFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
   includeDrafts?: boolean
