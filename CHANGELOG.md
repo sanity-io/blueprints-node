@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/sanity-io/blueprints-node/compare/v0.4.0...v0.4.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* update function event.projection type to include wrapped curlies ([#22](https://github.com/sanity-io/blueprints-node/issues/22)) ([11516e2](https://github.com/sanity-io/blueprints-node/commit/11516e2e811b762fb66d00a04813a05646a31795))
+
 ## [0.4.0](https://github.com/sanity-io/blueprints-node/compare/v0.3.0...v0.4.0) (2025-10-31)
 
 
