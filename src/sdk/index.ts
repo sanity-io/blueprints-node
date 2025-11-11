@@ -1,6 +1,6 @@
-import {reference as docFuncRef, DocumentFunctionResource} from './sanity/function/document'
-import {reference as projectRef, ProjectResource} from './sanity/project'
-import {reference as corsRef, CorsResource} from './sanity/project/cors'
+import {DocumentFunctionResource, reference as docFuncRef} from './sanity/function/document'
+import {ProjectResource, reference as projectRef} from './sanity/project'
+import {CorsResource, reference as corsRef} from './sanity/project/cors'
 
 export const sdk = {
   sanity: {
