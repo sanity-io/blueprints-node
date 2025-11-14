@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/sanity-io/blueprints-node/compare/v0.4.1...v0.4.2) (2025-11-14)
+
+
+### Bug Fixes
+
+* Ensure webhooks types match expectations in provider ([#25](https://github.com/sanity-io/blueprints-node/issues/25)) ([13d083f](https://github.com/sanity-io/blueprints-node/commit/13d083f6706996178e06fa3ffb576b22598faf13))
+
 ## [0.4.1](https://github.com/sanity-io/blueprints-node/compare/v0.4.0...v0.4.1) (2025-11-05)
 
 
