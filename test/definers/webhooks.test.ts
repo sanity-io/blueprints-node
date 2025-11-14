@@ -61,6 +61,7 @@ describe('defineDocumentWebhook', () => {
       defineDocumentWebhook({
         name: 'webhook-name',
         url: 'http://localhost/',
+        // @ts-expect-error invalid value for testing
         on: ['invalid'],
       }),
     ).toThrow(/Invalid event types: invalid/)
