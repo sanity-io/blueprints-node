@@ -3,11 +3,15 @@ export interface BlueprintResource {
   name: string
 }
 
+export interface BlueprintProjectResource extends BlueprintResource {
+  displayName?: string
+}
+
 export interface BlueprintCorsOriginResource extends BlueprintResource {
   type: 'sanity.project.cors'
   project?: string
   origin: string
-  allowCredentials: boolean
+  allowCredentials?: boolean
 }
 export type BlueprintCorsOriginConfig = Omit<BlueprintCorsOriginResource, 'type' | 'allowCredentials'> & {
   allowCredentials?: boolean
