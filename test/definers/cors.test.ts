@@ -18,7 +18,7 @@ describe('defineCorsOrigin', () => {
 
   test('should accept a valid configuration and set the type', () => {
     const corsResource = defineCorsOrigin({
-      name: 'webhook-name',
+      name: 'origin-name',
       origin: 'http://localhost/',
       allowCredentials: true,
     })
@@ -28,7 +28,7 @@ describe('defineCorsOrigin', () => {
 
   test('allowCredentials should default to false if not provided', () => {
     const webhookResource = defineCorsOrigin({
-      name: 'webhook-name',
+      name: 'origin-name',
       origin: 'http://localhost/',
     })
 
