@@ -1,6 +1,7 @@
 export * from './types.js'
 export * from './definers/blueprints.js'
 export * from './definers/cors.js'
+export * from './definers/datasets.js'
 export * from './definers/functions.js'
 export * from './definers/resources.js'
 export * from './definers/webhooks.js'
