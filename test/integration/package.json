@@ -1,0 +1,12 @@
+{
+  "name": "blueprints-node-integration-tests",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@sanity/blueprints": "file:../.."
+  },
+  "scripts": {
+    "test": "vitest run --reporter=verbose",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  }
+}
