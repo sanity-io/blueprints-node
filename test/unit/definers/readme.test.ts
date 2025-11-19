@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {defineBlueprint, defineDocumentFunction, defineDocumentWebhook} from '../../src/index.js'
+import {defineBlueprint, defineDocumentFunction, defineDocumentWebhook} from '../../../src/index.js'
 
 describe('README example', () => {
   test('should be valid', () => {
