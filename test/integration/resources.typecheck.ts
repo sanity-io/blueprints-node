@@ -1,9 +1,4 @@
 import {
-  defineCorsOrigin,
-  defineDataset,
-  defineDocumentFunction,
-  defineDocumentWebhook,
-  defineMediaLibraryAssetFunction,
   type AclMode,
   type Blueprint,
   // type BlueprintBaseFunctionResource,
@@ -24,6 +19,11 @@ import {
   type BlueprintResource,
   type BlueprintsApiConfig,
   type WebhookTrigger,
+  defineCorsOrigin,
+  defineDataset,
+  defineDocumentFunction,
+  defineDocumentWebhook,
+  defineMediaLibraryAssetFunction,
 } from '@sanity/blueprints'
 
 /**
