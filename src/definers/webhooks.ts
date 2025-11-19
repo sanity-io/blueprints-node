@@ -1,4 +1,25 @@
-import type {BlueprintDocumentWebhookConfig, BlueprintDocumentWebhookResource} from '../types'
+import type {BlueprintResource} from '../types'
+
+export type WebhookTrigger = 'create' | 'update' | 'delete'
+export interface BlueprintDocumentWebhookResource extends BlueprintResource {
+  type: 'sanity.project.webhook'
+  project?: string
+  displayName?: string
+  description?: string | null
+  url: string
+  on: WebhookTrigger[]
+  filter?: string
+  projection?: string
+  status?: 'enabled' | 'disabled'
+  httpMethod?: 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'GET'
+  headers?: Record<string, string>
+  includeDrafts?: boolean
+  includeAllVersions?: boolean
+  secret?: string
+  dataset?: string
+  apiVersion?: string
+}
+export type BlueprintDocumentWebhookConfig = Omit<BlueprintDocumentWebhookResource, 'type'>
 
 export function defineDocumentWebhook(parameters: BlueprintDocumentWebhookConfig): BlueprintDocumentWebhookResource {
   const errors: string[] = []

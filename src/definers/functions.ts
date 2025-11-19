@@ -1,11 +1,46 @@
-import type {
-  BlueprintBaseFunctionResource,
-  BlueprintDocumentFunctionResource,
-  BlueprintDocumentFunctionResourceEvent,
-  BlueprintFunctionBaseResourceEvent,
-  BlueprintMediaLibraryAssetFunctionResource,
-  BlueprintMediaLibraryFunctionResourceEvent,
-} from '../types.js'
+import type {BlueprintResource} from '../types'
+
+export interface BlueprintFunctionBaseResourceEvent {
+  on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
+  filter?: string
+  projection?: `{${string}}`
+}
+export interface BlueprintDocumentFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
+  includeDrafts?: boolean
+  includeAllVersions?: boolean
+  resource?: BlueprintFunctionResourceEventResourceDataset
+}
+export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
+  resource: BlueprintFunctionResourceEventResourceMediaLibrary
+}
+export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEvent | BlueprintMediaLibraryFunctionResourceEvent
+
+interface BlueprintFunctionResourceEventResourceDataset {
+  type: 'dataset'
+  /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
+  id: string
+}
+interface BlueprintFunctionResourceEventResourceMediaLibrary {
+  type: 'media-library'
+  id: string
+}
+
+type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
+
+export interface BlueprintBaseFunctionResource extends BlueprintResource {
+  src: string
+  timeout?: number
+  memory?: number
+  env?: Record<string, string>
+}
+export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.document'
+  event: BlueprintDocumentFunctionResourceEvent
+}
+export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.media-library.asset'
+  event: BlueprintMediaLibraryFunctionResourceEvent
+}
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection'])

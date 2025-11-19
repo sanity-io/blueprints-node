@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {defineBlueprint} from '../../src/index.js'
+import {defineBlueprint} from '../../../src/index.js'
 
 describe('defineBlueprint', () => {
   test('should throw an error if resources is not an array', () => {

@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {defineDataset} from '../../src/index.js'
+import {defineDataset} from '../../../src/index.js'
 
 describe('defineDataset', () => {
   test('should accept a valid configuration and set the type', () => {

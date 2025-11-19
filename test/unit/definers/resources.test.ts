@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {defineResource} from '../../src/index.js'
+import {defineResource} from '../../../src/index.js'
 
 describe('defineResource', () => {
   test('should throw an error if name is not provided', () => {
