@@ -3,7 +3,6 @@ import type {BlueprintResource} from '../types'
 export interface RolePermission {
   name: string // Required: predefined permission name (e.g., 'sanity-all-documents')
   action: string // Required: permission action (e.g., 'read', 'mode')
-  type?: string // Optional: internal use only, not sent to API
   params?: Record<string, unknown> // Optional: additional parameters for the permission
 }
 
