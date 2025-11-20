@@ -6,9 +6,9 @@ export interface BlueprintFunctionBaseResourceEvent {
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
   projection?: `{${string}}`
+  includeDrafts?: boolean
 }
 export interface BlueprintDocumentFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
-  includeDrafts?: boolean
   includeAllVersions?: boolean
   resource?: BlueprintFunctionResourceEventResourceDataset
 }
@@ -30,14 +30,9 @@ interface BlueprintFunctionResourceEventResourceMediaLibrary {
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
-const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection'])
+const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
 type DocumentFunctionEventKey = keyof BlueprintDocumentFunctionResourceEvent
-const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>([
-  'includeDrafts',
-  'includeAllVersions',
-  'resource',
-  ...BASE_EVENT_KEYS.values(),
-])
+const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersions', 'resource', ...BASE_EVENT_KEYS.values()])
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
 
