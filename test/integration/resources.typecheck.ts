@@ -58,7 +58,7 @@ const documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
   projection: '{id}',
   resource: {type: 'dataset', id: 'production'},
 }
-const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({})
+const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({name: 'sup'})
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
   name: 'webhook-name',
@@ -89,6 +89,7 @@ const mediaLibraryAssetFunctionEvent: BlueprintMediaLibraryFunctionResourceEvent
   projection: '{id}',
 }
 const mediaLibraryAssetFunctionResource: BlueprintMediaLibraryAssetFunctionResource = defineMediaLibraryAssetFunction({
+  name: 'required',
   event: mediaLibraryAssetFunctionEvent,
 })
 
