@@ -1,5 +1,7 @@
 import type {BlueprintResource} from '../types'
 
+// --- Function Event Types ---
+
 export interface BlueprintFunctionBaseResourceEvent {
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   filter?: string
@@ -27,7 +29,25 @@ interface BlueprintFunctionResourceEventResourceMediaLibrary {
 
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
+type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
+const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection'])
+type DocumentFunctionEventKey = keyof BlueprintDocumentFunctionResourceEvent
+const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>([
+  'includeDrafts',
+  'includeAllVersions',
+  'resource',
+  ...BASE_EVENT_KEYS.values(),
+])
+type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
+const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
+
+// --- Main Function Types ---
+
+interface RequiredFunctionProperties {
+  name: string
+}
 export interface BlueprintBaseFunctionResource extends BlueprintResource {
+  displayName?: string
   src: string
   timeout?: number
   memory?: number
@@ -42,27 +62,17 @@ export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBas
   event: BlueprintMediaLibraryFunctionResourceEvent
 }
 
-type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
-const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection'])
-type DocumentFunctionEventKey = keyof BlueprintDocumentFunctionResourceEvent
-const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>([
-  'includeDrafts',
-  'includeAllVersions',
-  'resource',
-  ...BASE_EVENT_KEYS.values(),
-])
-type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
-const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
-
-export function defineDocumentFunction(functionConfig: Partial<BlueprintDocumentFunctionResource>): BlueprintDocumentFunctionResource
+export function defineDocumentFunction(
+  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties,
+): BlueprintDocumentFunctionResource
 
 /** @deprecated Define event properties under the 'event' key instead of specifying them at the top level */
 export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & Partial<BlueprintDocumentFunctionResourceEvent>,
+  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource
 
 export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & Partial<BlueprintDocumentFunctionResourceEvent>,
+  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
   let {name, src, event, timeout, memory, env, type, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
@@ -100,6 +110,7 @@ export function defineDocumentFunction(
 
 export function defineMediaLibraryAssetFunction(
   functionConfig: Partial<BlueprintMediaLibraryAssetFunctionResource> &
+    RequiredFunctionProperties &
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
@@ -118,7 +129,9 @@ export function defineMediaLibraryAssetFunction(
     event: validateMediaLibraryFunctionEvent(event),
   }
 }
-export function defineFunction(functionConfig: Partial<BlueprintBaseFunctionResource>): BlueprintBaseFunctionResource {
+export function defineFunction(
+  functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
+): BlueprintBaseFunctionResource {
   let {name, src, timeout, memory, env, type} = functionConfig
 
   if (!name) throw new Error('`name` is required')
