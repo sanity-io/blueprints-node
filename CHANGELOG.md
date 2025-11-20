@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/sanity-io/blueprints-node/compare/v0.5.0...v0.6.0) (2025-11-20)
+
+
+### Features
+
+* add support for `includeDrafts` to media library asset functions ([#34](https://github.com/sanity-io/blueprints-node/issues/34)) ([92ab40a](https://github.com/sanity-io/blueprints-node/commit/92ab40ae9cf0bb08e350049a7f92b781fe0303f6))
+
 ## [0.5.0](https://github.com/sanity-io/blueprints-node/compare/v0.4.2...v0.5.0) (2025-11-20)
 
 
