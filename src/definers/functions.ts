@@ -182,5 +182,7 @@ function validateMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionR
     ...cleanEvent,
   }
   if (!Array.isArray(fullEvent.on)) throw new Error('`event.on` must be an array')
+  if (!fullEvent.resource.type || fullEvent.resource.type !== 'media-library')
+    throw new Error('`event.resource.type` must be "media-library"')
   return fullEvent
 }
