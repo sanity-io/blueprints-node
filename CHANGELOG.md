@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/sanity-io/blueprints-node/compare/v0.4.2...v0.5.0) (2025-11-20)
+
+
+### Features
+
+* Add dataset definer function ([#27](https://github.com/sanity-io/blueprints-node/issues/27)) ([eb69a81](https://github.com/sanity-io/blueprints-node/commit/eb69a812575b1c4ee6eab0b6c00e0f8d3764aa84))
+* Add role definers ([#31](https://github.com/sanity-io/blueprints-node/issues/31)) ([d9cb336](https://github.com/sanity-io/blueprints-node/commit/d9cb33636374c285d2e10e90ea076b0b243556a9))
+
+
+### Bug Fixes
+
+* function `name` is now a required part of the function resource types ([#30](https://github.com/sanity-io/blueprints-node/issues/30)) ([c86f0b5](https://github.com/sanity-io/blueprints-node/commit/c86f0b508e2e259dec3582c2909d2bc0304b4d26))
+* Remove unused permission type ([#32](https://github.com/sanity-io/blueprints-node/issues/32)) ([d95732e](https://github.com/sanity-io/blueprints-node/commit/d95732e6f7affcfebd7b1c72e2461358e97e4b1e))
+
 ## [0.4.2](https://github.com/sanity-io/blueprints-node/compare/v0.4.1...v0.4.2) (2025-11-14)
 
 
