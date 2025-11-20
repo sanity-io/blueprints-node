@@ -56,7 +56,7 @@ describe('defineRole', () => {
   })
 })
 
-describe('defineRole', () => {
+describe('defineProjectRole', () => {
   test('should accept a valid configuration and set the type', () => {
     const roleResource = defineProjectRole('projectId', {
       name: 'role-name',
