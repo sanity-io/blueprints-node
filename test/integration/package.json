@@ -6,7 +6,8 @@
     "@sanity/blueprints": "file:../.."
   },
   "scripts": {
-    "test": "vitest run --reporter=verbose",
+    "build": "tsc --project tsconfig.json",
+    "test": "vitest run --reporter=verbose && npm run build && node dist/resources.typecheck.js",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   }
 }

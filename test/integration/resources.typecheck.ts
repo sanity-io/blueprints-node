@@ -63,7 +63,7 @@ const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocume
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
   name: 'webhook-name',
   on: ['create'],
-  url: 'url',
+  url: 'https://example.com',
   apiVersion: '2025-01-01',
   dataset: 'production',
   description: 'Test Webhook',
