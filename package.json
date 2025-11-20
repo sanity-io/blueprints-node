@@ -41,9 +41,9 @@
     "posttest": "npm run lint",
     "prepare": "npm run build",
     "pretest": "npm run typecheck",
-    "test": "vitest run --typecheck --reporter=verbose && npm run test:integration",
+    "test": "npm run test:unit && npm run test:integration",
     "test:integration": "cd test/integration && npm install && npm run typecheck && npm run test",
-    "test:watch": "vitest --typecheck --reporter=verbose",
+    "test:unit": "vitest --typecheck --reporter=verbose",
     "typecheck": "tsc --noEmit --project tsconfig.test.json"
   },
   "devDependencies": {
