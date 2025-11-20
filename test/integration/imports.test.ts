@@ -6,7 +6,9 @@ import {
   defineDocumentWebhook,
   defineFunction,
   defineMediaLibraryAssetFunction,
+  defineProjectRole,
   defineResource,
+  defineRole,
 } from '@sanity/blueprints'
 import {describe, expect, it} from 'vitest'
 
@@ -39,7 +41,15 @@ describe('package imports', () => {
     expect(defineMediaLibraryAssetFunction).toBeInstanceOf(Function)
   })
 
+  it('should import defineProjectRole', () => {
+    expect(defineProjectRole).toBeInstanceOf(Function)
+  })
+
   it('should import defineResource', () => {
     expect(defineResource).toBeInstanceOf(Function)
+  })
+
+  it('should import defineRole', () => {
+    expect(defineRole).toBeInstanceOf(Function)
   })
 })

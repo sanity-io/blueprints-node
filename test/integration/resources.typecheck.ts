@@ -16,14 +16,20 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
+  type BlueprintProjectRoleResource,
   type BlueprintResource,
-  type BlueprintsApiConfig,
+  type BlueprintRoleConfig,
+  type BlueprintRoleResource,
+  type RolePermission,
+  // type BlueprintsApiConfig,
   type WebhookTrigger,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
   defineDocumentWebhook,
   defineMediaLibraryAssetFunction,
+  defineProjectRole,
+  defineRole,
 } from '@sanity/blueprints'
 
 /**
@@ -60,6 +66,10 @@ const documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
 }
 const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({name: 'sup'})
 
+const webhookTriggerCreate: WebhookTrigger = 'create'
+const webhookTriggerUpdate: WebhookTrigger = 'update'
+const webhookTriggerDelete: WebhookTrigger = 'delete'
+
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
   name: 'webhook-name',
   on: ['create'],
@@ -93,12 +103,34 @@ const mediaLibraryAssetFunctionResource: BlueprintMediaLibraryAssetFunctionResou
   event: mediaLibraryAssetFunctionEvent,
 })
 
+const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
+const roleConfig: BlueprintRoleConfig = {
+  name: 'test-role',
+  title: 'Test Role',
+  description: 'Test Role Description',
+  appliesToRobots: true,
+  appliesToUsers: true,
+  permissions: [rolePermission],
+}
+const roleResource: BlueprintRoleResource = defineRole(roleConfig)
+const projectRoleResource: BlueprintProjectRoleResource = defineProjectRole('projectId', roleConfig)
+
+const blueprintResource: BlueprintResource = {name: 'test-resource', type: 'test'}
+
 const blueprintOutput: BlueprintOutput = {name: 'output', value: 'value'}
 const blueprint: Blueprint = {
   $schema: 'schema',
   blueprintVersion: '2025-01-01',
-  outputs: [],
-  resources: [corsOriginResource, datasetResource, documentFunctionResource, documentWebhookResource, mediaLibraryAssetFunctionResource],
+  outputs: [blueprintOutput],
+  resources: [
+    corsOriginResource,
+    datasetResource,
+    documentFunctionResource,
+    documentWebhookResource,
+    mediaLibraryAssetFunctionResource,
+    projectRoleResource,
+    blueprintResource,
+  ],
   values: {
     key: 'value',
   },
