@@ -3,6 +3,7 @@ import {defineDocumentFunction} from '../../../src/index.js'
 
 describe('defineDocumentFunction', () => {
   test('should throw an error if name is not provided', () => {
+    // @ts-expect-error name is required
     expect(() => defineDocumentFunction({})).toThrow('`name` is required')
   })
 
