@@ -132,6 +132,7 @@ describe('defineMediaLibraryAssetFunction', () => {
         event,
       })
       expect(fn.event.on).toEqual(['publish'])
+      expect(fn.event.includeDrafts).toBeFalsy()
     })
 
     test('should create the event with publish if not provided', () => {
@@ -144,15 +145,20 @@ describe('defineMediaLibraryAssetFunction', () => {
       expect(fn.event.on).toEqual(['create', 'update', 'delete'])
     })
 
-    // coming soon!
-    // test('should allow for creating events with explicit include* toggles', () => {
-    //   const fn = defineMediaLibraryAssetFunction({
-    //     name: 'test',
-    //     src: 'test.js',
-    //     event: {on: ['update'], includeDrafts: true},
-    //   })
-    //   expect(fn.event.includeDrafts).toEqual(true)
-    // })
+    test('should allow for creating events with explicit include* toggles', () => {
+      let fn = defineMediaLibraryAssetFunction({
+        name: 'test',
+        src: 'test.js',
+        event: {on: ['update'], includeDrafts: true, resource},
+      })
+      expect(fn.event.includeDrafts).toEqual(true)
+      fn = defineMediaLibraryAssetFunction({
+        name: 'test',
+        src: 'test.js',
+        event: {on: ['update'], includeDrafts: false, resource},
+      })
+      expect(fn.event.includeDrafts).toEqual(false)
+    })
   })
   describe('sad paths', () => {
     test('should throw an error if event.on is not an array', () => {
