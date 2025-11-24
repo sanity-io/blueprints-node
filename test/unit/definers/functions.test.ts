@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {defineDocumentFunction, defineFunction, defineMediaLibraryAssetFunction} from '../../../src/definers/functions.js'
+import {defineDocumentFunction, defineFunction, defineMediaLibraryAssetFunction} from '../../../src/index.js'
 
 describe('defineFunction', () => {
   describe('happy paths', () => {
@@ -18,6 +18,12 @@ describe('defineFunction', () => {
     test('should throw an error if name is not provided', () => {
       // @ts-expect-error name is required
       expect(() => defineFunction({})).toThrow('`name` is required')
+    })
+    test('should validate the name when higher-level functions are called', () => {
+      // @ts-expect-error name is required
+      expect(() => defineDocumentFunction({})).toThrow('`name` is required')
+      // @ts-expect-error name is required
+      expect(() => defineMediaLibraryAssetFunction({})).toThrow('`name` is required')
     })
 
     test('should throw an error if memory is not a number', () => {

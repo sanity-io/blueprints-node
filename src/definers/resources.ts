@@ -1,9 +1,13 @@
-import type {BlueprintResource} from '../index.js'
+import {validateResource, type BlueprintResource} from '../index.js'
+import {runValidation} from '../utils/validation.js'
 
 export function defineResource(resourceConfig: Partial<BlueprintResource>): BlueprintResource {
+  runValidation(() => validateResource(resourceConfig))
+
   const {name, type} = resourceConfig
-  if (!name) throw new Error('`name` is required')
-  if (!type) throw new Error('`type` is required')
+
+  // validate again to satisfy type checks
+  if (!name || !type) throw new Error('name and type are required')
 
   return {
     ...resourceConfig,
