@@ -1,4 +1,4 @@
-import type {BlueprintResource} from '../types.js'
+import type {BlueprintResource} from '../index.js'
 
 export function defineResource(resourceConfig: Partial<BlueprintResource>): BlueprintResource {
   const {name, type} = resourceConfig
