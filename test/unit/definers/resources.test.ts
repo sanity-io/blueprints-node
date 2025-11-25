@@ -13,4 +13,11 @@ describe('defineResource', () => {
 
     expect(spy).toHaveBeenCalledOnce()
   })
+
+  test('should accept a valid resource', () => {
+    const r = resources.defineResource({name: 'test-resource', type: 'test'})
+
+    expect(r.name).toEqual('test-resource')
+    expect(r.type).toEqual('test')
+  })
 })

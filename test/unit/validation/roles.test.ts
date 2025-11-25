@@ -2,22 +2,45 @@ import {describe, expect, test} from 'vitest'
 import {validateRole} from '../../../src/index.js'
 
 describe('validateRole', () => {
+  test('should return an error if config is falsey', () => {
+    const errors = validateRole(undefined)
+    expect(errors).toContainEqual({
+      type: 'invalid_value',
+      message: 'Role config must be provided',
+    })
+  })
+
+  test('should return an error if config is not an object', () => {
+    const errors = validateRole(1)
+    expect(errors).toContainEqual({
+      type: 'invalid_type',
+      message: 'Role config must be an object',
+    })
+  })
+
   test('should return an error if name is not provided', () => {
-    // @ts-expect-error Missing required attributes
     const errors = validateRole({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role name is required'})
   })
 
+  test('should return an error if name is not a string', () => {
+    const errors = validateRole({name: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Role name must be a string'})
+  })
+
   test('should return an error if title is not provided', () => {
-    // @ts-expect-error Missing required attributes
     const errors = validateRole({
       name: 'role-name',
     })
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role title is required'})
   })
 
+  test('should return an error if title is not a string', () => {
+    const errors = validateRole({title: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Role title must be a string'})
+  })
+
   test('should return an error if title is too long', () => {
-    // @ts-expect-error Missing required attributes
     const errors = validateRole({
       name: 'role-name',
       title: 'a'.repeat(101),
