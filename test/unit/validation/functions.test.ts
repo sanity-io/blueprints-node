@@ -39,7 +39,7 @@ describe('validateFunction', () => {
       expect(docFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
 
       const mlFnErrors = validateMediaLibraryAssetFunction({})
-      expect(docFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(mlFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
     })
 
     test('should return an error if memory is not a number', () => {
