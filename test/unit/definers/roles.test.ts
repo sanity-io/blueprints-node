@@ -1,45 +1,23 @@
-import {describe, expect, test} from 'vitest'
-import {defineProjectRole, defineRole} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as roles from '../../../src/definers/roles.js'
+import * as index from '../../../src/index.js'
 
 describe('defineRole', () => {
-  test('should throw an error if name is not provided', () => {
-    // @ts-expect-error Missing required attributes
-    expect(() => defineRole({})).toThrow(/name is required/)
+  afterEach(() => {
+    vi.resetAllMocks()
   })
 
-  test('should throw an error if title is not provided', () => {
+  test('should throw an error validateRole returns an error', () => {
+    const spy = vi.spyOn(index, 'validateRole').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      // @ts-expect-error Missing required attributes
-      defineRole({
-        name: 'role-name',
-      }),
-    ).toThrow(/Role title is required/)
-  })
+      roles.defineRole({name: 'role-name', title: 'Role Name', appliesToRobots: true, appliesToUsers: true, permissions: []}),
+    ).toThrow(/this is a test/)
 
-  test('should throw an error if title is too long', () => {
-    expect(() =>
-      // @ts-expect-error Missing required attributes
-      defineRole({
-        name: 'role-name',
-        title: 'a'.repeat(101),
-      }),
-    ).toThrow(/Role title must be 100 characters or less/)
-  })
-
-  test('should throw an error if no permissions are provided', () => {
-    expect(() =>
-      defineRole({
-        name: 'role-name',
-        title: 'Role Name',
-        appliesToRobots: true,
-        appliesToUsers: true,
-        permissions: [],
-      }),
-    ).toThrow(/Role must have at least one permission/)
+    expect(spy).toHaveBeenCalledOnce()
   })
 
   test('should accept a valid configuration and set the type', () => {
-    const roleResource = defineRole({
+    const roleResource = roles.defineRole({
       name: 'role-name',
       title: 'Role Name',
       appliesToRobots: true,
@@ -58,7 +36,7 @@ describe('defineRole', () => {
 
 describe('defineProjectRole', () => {
   test('should accept a valid configuration and set the type', () => {
-    const roleResource = defineProjectRole('projectId', {
+    const roleResource = roles.defineProjectRole('projectId', {
       name: 'role-name',
       title: 'Role Name',
       appliesToRobots: true,

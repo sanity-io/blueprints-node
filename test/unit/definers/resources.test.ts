@@ -1,12 +1,16 @@
-import {describe, expect, test} from 'vitest'
-import {defineResource} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as resources from '../../../src/definers/resources.js'
+import * as index from '../../../src/index.js'
 
 describe('defineResource', () => {
-  test('should throw an error if name is not provided', () => {
-    expect(() => defineResource({})).toThrow('`name` is required')
+  afterEach(() => {
+    vi.resetAllMocks()
   })
 
-  test('should throw an error if type is not provided', () => {
-    expect(() => defineResource({name: 'test'})).toThrow('`type` is required')
+  test('should throw an error if validateResource returns an error', () => {
+    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    expect(() => resources.defineResource({})).toThrow('this is a test')
+
+    expect(spy).toHaveBeenCalledOnce()
   })
 })

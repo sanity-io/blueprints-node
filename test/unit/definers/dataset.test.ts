@@ -1,9 +1,22 @@
-import {describe, expect, test} from 'vitest'
-import {defineDataset} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as datasets from '../../../src/definers/datasets.js'
+import * as index from '../../../src/index.js'
+
+vi.mock(import('../../../src/index.js'), async (importOriginal) => {
+  const originalModule = await importOriginal()
+  return {
+    ...originalModule,
+    validateBlueprint: vi.fn(() => []),
+  }
+})
 
 describe('defineDataset', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('should accept a valid configuration and set the type', () => {
-    const datasetResource = defineDataset({
+    const datasetResource = datasets.defineDataset({
       name: 'dataset-name',
       aclMode: 'public',
     })
@@ -12,23 +25,15 @@ describe('defineDataset', () => {
     expect(datasetResource.datasetName).toStrictEqual('dataset-name')
   })
 
-  test('should throw if invalid aclMode is provided', () => {
+  test('should throw if validateDataset returns an error', () => {
+    const spy = vi.spyOn(index, 'validateDataset').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      defineDataset({
+      datasets.defineDataset({
         name: 'dataset-name',
-        // @ts-expect-error Invalid value for testing
-        aclMode: 'invalid',
+        aclMode: 'public',
       }),
-    ).toThrow(/aclMode must be one of/)
-  })
+    ).toThrow(/this is a test/)
 
-  test('should throw if invalid project data type is provided', () => {
-    expect(() =>
-      defineDataset({
-        name: 'dataset-name',
-        // @ts-expect-error Invalid value for testing
-        project: 1,
-      }),
-    ).toThrow(/project must be a string/)
+    expect(spy).toHaveBeenCalledOnce()
   })
 })

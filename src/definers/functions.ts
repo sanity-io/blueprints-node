@@ -1,11 +1,15 @@
-import type {
-  BlueprintBaseFunctionResource,
-  BlueprintDocumentFunctionResource,
-  BlueprintDocumentFunctionResourceEvent,
-  BlueprintFunctionBaseResourceEvent,
-  BlueprintMediaLibraryAssetFunctionResource,
-  BlueprintMediaLibraryFunctionResourceEvent,
+import {
+  type BlueprintBaseFunctionResource,
+  type BlueprintDocumentFunctionResource,
+  type BlueprintDocumentFunctionResourceEvent,
+  type BlueprintFunctionBaseResourceEvent,
+  type BlueprintMediaLibraryAssetFunctionResource,
+  type BlueprintMediaLibraryFunctionResourceEvent,
+  validateDocumentFunction,
+  validateFunction,
+  validateMediaLibraryAssetFunction,
 } from '../index.js'
+import {runValidation} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -30,21 +34,16 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
+  runValidation(() => validateDocumentFunction(functionConfig))
+
   let {name, src, event, timeout, memory, env, type, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
   // event validation
   if (event) {
-    // `event` was specified, but event keys (aggregated in `maybeEvent`) were also specified at the top level. ambiguous and deprecated usage.
-    const duplicateKeys = Object.keys(maybeEvent).filter((k) => DOCUMENT_EVENT_KEYS.has(k as DocumentFunctionEventKey))
-    if (duplicateKeys.length > 0) {
-      throw new Error(
-        `\`event\` properties should be specified under the \`event\` key - specifying them at the top level is deprecated. The following keys were specified at the top level: ${duplicateKeys.map((k) => `\`${k}\``).join(', ')}`,
-      )
-    }
-    event = validateDocumentFunctionEvent(event)
+    event = buildDocumentFunctionEvent(event)
   } else {
-    event = validateDocumentFunctionEvent(maybeEvent)
+    event = buildDocumentFunctionEvent(maybeEvent)
     // deprecated usage of putting event properties at the top level, warn about this.
     console.warn(
       '⚠️ Deprecated usage of `defineDocumentFunction`: prefer to put `event` properties under the `event` key rather than at the top level.',
@@ -52,13 +51,18 @@ export function defineDocumentFunction(
   }
 
   return {
-    ...defineFunction({
-      name,
-      src,
-      timeout,
-      memory,
-      env,
-    }),
+    ...defineFunction(
+      {
+        name,
+        src,
+        timeout,
+        memory,
+        env,
+      },
+      {
+        skipValidation: true, // already done above
+      },
+    ),
     type,
     event,
   }
@@ -70,35 +74,39 @@ export function defineMediaLibraryAssetFunction(
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
+  runValidation(() => validateMediaLibraryAssetFunction(functionConfig))
+
   let {name, src, event, timeout, memory, env, type} = functionConfig
   if (!type) type = 'sanity.function.media-library.asset'
 
   return {
-    ...defineFunction({
-      name,
-      src,
-      timeout,
-      memory,
-      env,
-    }),
+    ...defineFunction(
+      {
+        name,
+        src,
+        timeout,
+        memory,
+        env,
+      },
+      {
+        skipValidation: true, // already done above
+      },
+    ),
     type,
-    event: validateMediaLibraryFunctionEvent(event),
+    event: buildMediaLibraryFunctionEvent(event),
   }
 }
 export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
+  options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
   let {name, src, timeout, memory, env, type} = functionConfig
 
-  if (!name) throw new Error('`name` is required')
+  if (options?.skipValidation !== true) runValidation(() => validateFunction(functionConfig))
 
   // defaults
   if (!src) src = `functions/${name}`
   if (!type) type = 'sanity.function.document'
-
-  // type validation
-  if (memory && typeof memory !== 'number') throw new Error('`memory` must be a number')
-  if (timeout && typeof timeout !== 'number') throw new Error('`timeout` must be a number')
 
   return {
     type,
@@ -110,25 +118,18 @@ export function defineFunction(
   }
 }
 
-function validateDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionResourceEvent>): BlueprintDocumentFunctionResourceEvent {
+function buildDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionResourceEvent>): BlueprintDocumentFunctionResourceEvent {
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => DOCUMENT_EVENT_KEYS.has(key as DocumentFunctionEventKey)),
   ) as Partial<BlueprintDocumentFunctionResourceEvent>
 
-  const fullEvent = {
+  return {
     on: cleanEvent.on || ['publish'],
     ...cleanEvent,
   }
-  if (!Array.isArray(fullEvent.on)) throw new Error('`event.on` must be an array')
-  if (fullEvent.resource) {
-    if (!fullEvent.resource.type || fullEvent.resource.type !== 'dataset') throw new Error('`event.resource.type` must be "dataset"')
-    if (!fullEvent.resource.id || fullEvent.resource.id.split('.').length !== 2)
-      throw new Error('`event.resource.id` must be in the format <projectId>.<datasetName>')
-  }
-  return fullEvent
 }
 
-function validateMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionResourceEvent): BlueprintMediaLibraryFunctionResourceEvent {
+function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionResourceEvent): BlueprintMediaLibraryFunctionResourceEvent {
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => MEDIA_LIBRARY_EVENT_KEYS.has(key as MediaLibraryFunctionEventKey)),
   ) as BlueprintMediaLibraryFunctionResourceEvent
@@ -137,8 +138,5 @@ function validateMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionR
     on: cleanEvent.on || ['publish'],
     ...cleanEvent,
   }
-  if (!Array.isArray(fullEvent.on)) throw new Error('`event.on` must be an array')
-  if (!fullEvent.resource.type || fullEvent.resource.type !== 'media-library')
-    throw new Error('`event.resource.type` must be "media-library"')
   return fullEvent
 }

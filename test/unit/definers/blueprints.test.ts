@@ -1,14 +1,29 @@
-import {describe, expect, test} from 'vitest'
-import {defineBlueprint} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as blueprints from '../../../src/definers/blueprints.js'
+import * as index from '../../../src/index.js'
+
+vi.mock(import('../../../src/index.js'), async (importOriginal) => {
+  const originalModule = await importOriginal()
+  return {
+    ...originalModule,
+    validateBlueprint: vi.fn(() => []),
+  }
+})
 
 describe('defineBlueprint', () => {
-  test('should throw an error if resources is not an array', () => {
-    // @ts-expect-error Intentionally wrong type
-    expect(() => defineBlueprint({resources: 'test'})).toThrow('`resources` must be an array')
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
+  test('should throw an error if validateBlueprint returns an error', () => {
+    const spy = vi.spyOn(index, 'validateBlueprint').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    expect(() => blueprints.defineBlueprint({resources: []})).toThrow('this is a test')
+
+    expect(spy).toHaveBeenCalledOnce()
   })
 
   test('should attach projectId and stackId to returned function', () => {
-    const blueprint = defineBlueprint({resources: [], projectId: 'test', stackId: 'test'})
+    const blueprint = blueprints.defineBlueprint({resources: [], projectId: 'test', stackId: 'test'})
     expect(blueprint.projectId).toEqual('test')
     expect(blueprint.stackId).toEqual('test')
   })

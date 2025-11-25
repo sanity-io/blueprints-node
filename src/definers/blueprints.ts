@@ -1,9 +1,10 @@
-import type {Blueprint, BlueprintModule, BlueprintsApiConfig} from '../index.js'
+import {type Blueprint, type BlueprintModule, type BlueprintsApiConfig, validateBlueprint} from '../index.js'
+import {runValidation} from '../utils/validation.js'
 
 export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintModule {
   const {organizationId, projectId, stackId, blueprintVersion, resources, values, outputs} = blueprintConfig
 
-  if (resources && !Array.isArray(resources)) throw new Error('`resources` must be an array')
+  runValidation(() => validateBlueprint(blueprintConfig))
 
   function blueprint(): Blueprint {
     return {
