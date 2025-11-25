@@ -148,6 +148,10 @@ describe('defineMediaLibraryAssetFunction', () => {
   })
 
   describe('sad paths', () => {
+    afterEach(() => {
+      vi.resetAllMocks()
+    })
+
     test('should throw an error if validateMediaLibraryAssetFunction returns an error', () => {
       const spy = vi.spyOn(index, 'validateMediaLibraryAssetFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
       expect(() =>
