@@ -2,10 +2,10 @@ import type {
   BlueprintBaseFunctionResource,
   BlueprintDocumentFunctionResource,
   BlueprintDocumentFunctionResourceEvent,
+  BlueprintError,
   BlueprintFunctionBaseResourceEvent,
   BlueprintMediaLibraryAssetFunctionResource,
   BlueprintMediaLibraryFunctionResourceEvent,
-  BlueprintError,
 } from '../index.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent

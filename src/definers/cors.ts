@@ -1,4 +1,4 @@
-import {validateCorsOrigin, type BlueprintCorsOriginConfig, type BlueprintCorsOriginResource} from '../index.js'
+import {type BlueprintCorsOriginConfig, type BlueprintCorsOriginResource, validateCorsOrigin} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 export function defineCorsOrigin(parameters: BlueprintCorsOriginConfig): BlueprintCorsOriginResource {

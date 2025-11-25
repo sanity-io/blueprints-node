@@ -1,4 +1,4 @@
-import {validateResource, type BlueprintResource} from '../index.js'
+import {type BlueprintResource, validateResource} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 export function defineResource(resourceConfig: Partial<BlueprintResource>): BlueprintResource {

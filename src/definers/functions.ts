@@ -1,13 +1,13 @@
 import {
-  validateDocumentFunction,
-  validateFunction,
-  validateMediaLibraryAssetFunction,
   type BlueprintBaseFunctionResource,
   type BlueprintDocumentFunctionResource,
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintFunctionBaseResourceEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  validateDocumentFunction,
+  validateFunction,
+  validateMediaLibraryAssetFunction,
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
 

@@ -1,4 +1,4 @@
-import {validateDocumentWebhook, type BlueprintDocumentWebhookConfig, type BlueprintDocumentWebhookResource} from '../index.js'
+import {type BlueprintDocumentWebhookConfig, type BlueprintDocumentWebhookResource, validateDocumentWebhook} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 export function defineDocumentWebhook(parameters: BlueprintDocumentWebhookConfig): BlueprintDocumentWebhookResource {

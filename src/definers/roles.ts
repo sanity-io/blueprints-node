@@ -1,4 +1,4 @@
-import {validateRole, type BlueprintProjectRoleResource, type BlueprintRoleConfig, type BlueprintRoleResource} from '../index.js'
+import {type BlueprintProjectRoleResource, type BlueprintRoleConfig, type BlueprintRoleResource, validateRole} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 /**
