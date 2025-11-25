@@ -1,11 +1,10 @@
-import type {Blueprint, BlueprintModule, BlueprintsApiConfig} from '../index.js'
-import * as bp from '../index.js'
+import {validateBlueprint, type Blueprint, type BlueprintModule, type BlueprintsApiConfig} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintModule {
   const {organizationId, projectId, stackId, blueprintVersion, resources, values, outputs} = blueprintConfig
 
-  runValidation(() => bp.validateBlueprint(blueprintConfig))
+  runValidation(() => validateBlueprint(blueprintConfig))
 
   function blueprint(): Blueprint {
     return {

@@ -1,23 +1,34 @@
-import {describe, expect, test} from 'vitest'
-import {defineCorsOrigin} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as cors from '../../../src/definers/cors.js'
+import * as index from '../../../src/index.js'
+
+vi.mock(import('../../../src/index.js'), async (importOriginal) => {
+  const originalModule = await importOriginal()
+  return {
+    ...originalModule,
+    validateBlueprint: vi.fn(() => []),
+  }
+})
 
 describe('defineCorsOrigin', () => {
-  test('should throw an error if name is not provided', () => {
-    // @ts-expect-error Missing required attributes
-    expect(() => defineCorsOrigin({})).toThrow(/name is required/)
+  afterEach(() => {
+    vi.resetAllMocks()
   })
 
-  test('should throw an error if URL is not provided', () => {
+  test('should throw an error if validateCorsOrigin returns an error', () => {
+    const spy = vi.spyOn(index, 'validateCorsOrigin').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      // @ts-expect-error Missing required attributes
-      defineCorsOrigin({
+      cors.defineCorsOrigin({
         name: 'origin-name',
+        origin: 'http://localhost/',
       }),
-    ).toThrow(/URL is required/)
+    ).toThrow(/this is a test/)
+
+    expect(spy).toHaveBeenCalledOnce()
   })
 
   test('should accept a valid configuration and set the type', () => {
-    const corsResource = defineCorsOrigin({
+    const corsResource = cors.defineCorsOrigin({
       name: 'origin-name',
       origin: 'http://localhost/',
       allowCredentials: true,
@@ -27,7 +38,7 @@ describe('defineCorsOrigin', () => {
   })
 
   test('allowCredentials should default to false if not provided', () => {
-    const webhookResource = defineCorsOrigin({
+    const webhookResource = cors.defineCorsOrigin({
       name: 'origin-name',
       origin: 'http://localhost/',
     })
