@@ -1,11 +1,16 @@
-import type {Blueprint, BlueprintsApiConfig} from '../index.js'
-import type {BlueprintError} from '../types/errors.js'
+import type {BlueprintError} from '../index.js'
 
-export function validateBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintError[] {
-  const {resources} = blueprintConfig
+export function validateBlueprint(blueprintConfig: unknown): BlueprintError[] {
+  if (!blueprintConfig) return [{type: 'invalid_value', message: 'blueprint config must be provided'}]
+  if (typeof blueprintConfig !== 'object') return [{type: 'invalid_type', message: 'blueprint config must be an object'}]
+
   const errors: BlueprintError[] = []
 
-  if (resources && !Array.isArray(resources)) errors.push({type: 'invalid_format', message: '`resources` must be an array'})
+  if ('resources' in blueprintConfig) {
+    const {resources} = blueprintConfig
+
+    if (resources && !Array.isArray(resources)) errors.push({type: 'invalid_format', message: '`resources` must be an array'})
+  }
 
   return errors
 }

@@ -1,10 +1,7 @@
 import type {
-  BlueprintBaseFunctionResource,
-  BlueprintDocumentFunctionResource,
   BlueprintDocumentFunctionResourceEvent,
   BlueprintError,
   BlueprintFunctionBaseResourceEvent,
-  BlueprintMediaLibraryAssetFunctionResource,
   BlueprintMediaLibraryFunctionResourceEvent,
 } from '../index.js'
 
@@ -15,39 +12,26 @@ const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersio
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
 
-interface RequiredFunctionProperties {
-  name: string
-}
+export function validateDocumentFunction(functionConfig: unknown): BlueprintError[] {
+  if (!functionConfig) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionConfig !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
-export function validateDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties,
-): BlueprintError[]
-
-/** @deprecated Define event properties under the 'event' key instead of specifying them at the top level */
-export function validateDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
-): BlueprintError[]
-
-export function validateDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
-): BlueprintError[] {
-  const {name, src, event, timeout, memory, env, type, ...maybeEvent} = functionConfig
   const errors: BlueprintError[] = []
 
   // event validation
-  if (event) {
+  if ('event' in functionConfig) {
     // `event` was specified, but event keys (aggregated in `maybeEvent`) were also specified at the top level. ambiguous and deprecated usage.
-    const duplicateKeys = Object.keys(maybeEvent).filter((k) => DOCUMENT_EVENT_KEYS.has(k as DocumentFunctionEventKey))
+    const duplicateKeys = Array.from(DOCUMENT_EVENT_KEYS).filter((key) => key in functionConfig)
     if (duplicateKeys.length > 0) {
       errors.push({
         type: 'invalid_property',
         message: `\`event\` properties should be specified under the \`event\` key - specifying them at the top level is deprecated. The following keys were specified at the top level: ${duplicateKeys.map((k) => `\`${k}\``).join(', ')}`,
       })
     } else {
-      errors.push(...validateDocumentFunctionEvent(event))
+      errors.push(...validateDocumentFunctionEvent(functionConfig.event))
     }
   } else {
-    errors.push(...validateDocumentFunctionEvent(maybeEvent))
+    errors.push(...validateDocumentFunctionEvent(functionConfig))
   }
 
   errors.push(...validateFunction(functionConfig))
@@ -55,17 +39,14 @@ export function validateDocumentFunction(
   return errors
 }
 
-export function validateMediaLibraryAssetFunction(
-  functionConfig: Partial<BlueprintMediaLibraryAssetFunctionResource> &
-    RequiredFunctionProperties &
-    Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
-    Partial<BlueprintMediaLibraryFunctionResourceEvent>,
-): BlueprintError[] {
-  const {event} = functionConfig
+export function validateMediaLibraryAssetFunction(functionConfig: unknown): BlueprintError[] {
+  if (!functionConfig) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionConfig !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
   const errors: BlueprintError[] = []
 
-  if (event) {
-    errors.push(...validateMediaLibraryFunctionEvent(event))
+  if ('event' in functionConfig) {
+    errors.push(...validateMediaLibraryFunctionEvent(functionConfig.event))
   } else {
     errors.push({type: 'missing_parameter', message: '`event` is required for a media library function'})
   }
@@ -75,20 +56,31 @@ export function validateMediaLibraryAssetFunction(
   return errors
 }
 
-export function validateFunction(functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties): BlueprintError[] {
-  const {name, timeout, memory} = functionConfig
+export function validateFunction(functionConfig: unknown): BlueprintError[] {
+  if (!functionConfig) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionConfig !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
   const errors: BlueprintError[] = []
 
-  if (!name) errors.push({type: 'missing_parameter', message: '`name` is required'})
+  if (!('name' in functionConfig)) {
+    errors.push({type: 'missing_parameter', message: '`name` is required'})
+  } else if (typeof functionConfig.name !== 'string') {
+    errors.push({type: 'invalid_type', message: '`name` must be a string'})
+  }
 
   // type validation
-  if (memory && typeof memory !== 'number') errors.push({type: 'invalid_type', message: '`memory` must be a number'})
-  if (timeout && typeof timeout !== 'number') errors.push({type: 'invalid_type', message: '`timeout` must be a number'})
+  if ('memory' in functionConfig && typeof functionConfig.memory !== 'number')
+    errors.push({type: 'invalid_type', message: '`memory` must be a number'})
+  if ('timeout' in functionConfig && typeof functionConfig.timeout !== 'number')
+    errors.push({type: 'invalid_type', message: '`timeout` must be a number'})
 
   return errors
 }
 
-function validateDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionResourceEvent>): BlueprintError[] {
+function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
+  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
+
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => DOCUMENT_EVENT_KEYS.has(key as DocumentFunctionEventKey)),
   ) as Partial<BlueprintDocumentFunctionResourceEvent>
@@ -108,7 +100,10 @@ function validateDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionR
   return errors
 }
 
-function validateMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionResourceEvent): BlueprintError[] {
+function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
+  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
+
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => MEDIA_LIBRARY_EVENT_KEYS.has(key as MediaLibraryFunctionEventKey)),
   ) as BlueprintMediaLibraryFunctionResourceEvent

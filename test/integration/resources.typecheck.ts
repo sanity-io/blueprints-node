@@ -30,6 +30,15 @@ import {
   defineMediaLibraryAssetFunction,
   defineProjectRole,
   defineRole,
+  validateBlueprint,
+  validateCorsOrigin,
+  validateDataset,
+  validateDocumentFunction,
+  validateDocumentWebhook,
+  validateFunction,
+  validateMediaLibraryAssetFunction,
+  validateResource,
+  validateRole,
 } from '@sanity/blueprints'
 
 /**
@@ -139,3 +148,13 @@ const blueprintModule: BlueprintModule = () => blueprint
 blueprintModule.organizationId = 'orgId'
 blueprintModule.projectId = 'projectId'
 blueprintModule.stackId = 'stackId'
+
+validateBlueprint(blueprintModule)
+validateCorsOrigin(corsOriginResource)
+validateDataset(datasetResource)
+validateDocumentFunction(documentFunctionResource)
+validateDocumentWebhook(documentWebhookResource)
+validateFunction({name: 'test-function'})
+validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
+validateResource(blueprintResource)
+validateRole(roleResource)
