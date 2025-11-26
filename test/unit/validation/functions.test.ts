@@ -4,7 +4,7 @@ import {validateDocumentFunction, validateFunction, validateMediaLibraryAssetFun
 describe('validateFunction', () => {
   describe('happy paths', () => {
     test('should accept a valid function', () => {
-      const errors = validateFunction({name: 'test'})
+      const errors = validateFunction({name: 'test-function', type: 'test'})
       expect(errors).toHaveLength(0)
     })
   })
@@ -56,7 +56,7 @@ describe('validateFunction', () => {
 describe('validateDocumentFunction', () => {
   describe('happy paths', () => {
     test('should accept a valid document function', () => {
-      const errors = validateDocumentFunction({name: 'test', event: {filter: '_type == "post"'}})
+      const errors = validateDocumentFunction({name: 'test', type: 'sanity.function.document', event: {filter: '_type == "post"'}})
       expect(errors).toHaveLength(0)
     })
   })
@@ -115,6 +115,7 @@ describe('validateMediaLibraryAssetFunction', () => {
     test('should accept a valid media library function', () => {
       const errors = validateMediaLibraryAssetFunction({
         name: 'test',
+        type: 'sanity.function.media-library.asset',
         event: {filter: '_type == "post"', resource},
       })
       expect(errors).toHaveLength(0)

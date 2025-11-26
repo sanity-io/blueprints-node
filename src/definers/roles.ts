@@ -1,4 +1,10 @@
-import {type BlueprintProjectRoleResource, type BlueprintRoleConfig, type BlueprintRoleResource, validateRole} from '../index.js'
+import {
+  type BlueprintProjectRoleResource,
+  type BlueprintRoleConfig,
+  type BlueprintRoleResource,
+  validateProjectRole,
+  validateRole,
+} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 /**
@@ -6,10 +12,8 @@ import {runValidation} from '../utils/validation.js'
  * @param parameters The configuration of the role
  * @returns The role resource
  */
-export function defineRole(parameters: BlueprintRoleConfig): BlueprintRoleResource {
-  runValidation(() => validateRole(parameters))
-
-  return {
+export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValidation?: boolean}): BlueprintRoleResource {
+  const roleResource: BlueprintRoleResource = {
     name: parameters.name,
     type: 'sanity.access.role',
     title: parameters.title,
@@ -18,6 +22,10 @@ export function defineRole(parameters: BlueprintRoleConfig): BlueprintRoleResour
     appliesToRobots: parameters.appliesToRobots,
     permissions: parameters.permissions,
   }
+
+  if (options?.skipValidation !== true) runValidation(() => validateRole(roleResource))
+
+  return roleResource
 }
 
 /**
@@ -27,11 +35,15 @@ export function defineRole(parameters: BlueprintRoleConfig): BlueprintRoleResour
  * @returns The role resource
  */
 export function defineProjectRole(projectId: string, parameters: BlueprintRoleConfig): BlueprintProjectRoleResource {
-  const roleResource = defineRole(parameters)
+  const roleResource = defineRole(parameters, {skipValidation: true})
 
-  return {
+  const projectRoleResource: BlueprintProjectRoleResource = {
     ...roleResource,
     resourceType: 'project',
     resourceId: projectId,
   }
+
+  runValidation(() => validateProjectRole(projectRoleResource))
+
+  return projectRoleResource
 }

@@ -12,6 +12,16 @@ describe('validateDocumentWebhook', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Webhook name must be a string'})
   })
 
+  test('should return an error if type is not provided', () => {
+    const errors = validateDocumentWebhook({name: 'webhook-name'})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Webhook type is required'})
+  })
+
+  test('should return an error if type is not `sanity.project.webhook`', () => {
+    const errors = validateDocumentWebhook({name: 'webhook-name', type: 'invalid'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'Webhook type must be `sanity.project.webhook`'})
+  })
+
   test('should return an error if displayName is not a string', () => {
     const errors = validateDocumentWebhook({
       name: 'webhook-name',
@@ -190,6 +200,7 @@ describe('validateDocumentWebhook', () => {
   test('should accept a valid configuration', () => {
     const errors = validateDocumentWebhook({
       name: 'webhook-name',
+      type: 'sanity.project.webhook',
       url: 'http://localhost/',
       on: ['create'],
       dataset: 'abcdefg',

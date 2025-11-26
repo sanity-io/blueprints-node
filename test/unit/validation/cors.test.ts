@@ -28,6 +28,11 @@ describe('validateCorsOrigin', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin name must be a string'})
   })
 
+  test('should return an error if type is not sanity.project.cors', () => {
+    const errors = validateCorsOrigin({type: 'invalid'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'CORS Origin type must be `sanity.project.cors`'})
+  })
+
   test('should return an error if URL is not provided', () => {
     const errors = validateCorsOrigin({
       name: 'origin-name',
@@ -43,11 +48,24 @@ describe('validateCorsOrigin', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin URL must be a string'})
   })
 
+  test('should return an error if project is not a string', () => {
+    const errors = validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost/',
+      allowCredentials: true,
+      project: 1,
+    })
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin project must be a string'})
+  })
+
   test('should accept a valid configuration', () => {
     const errors = validateCorsOrigin({
       name: 'origin-name',
+      type: 'sanity.project.cors',
       origin: 'http://localhost/',
       allowCredentials: true,
+      project: 'abcdefg',
     })
 
     expect(errors).toHaveLength(0)

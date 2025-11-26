@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {validateRole} from '../../../src/index.js'
+import {validateProjectRole, validateRole} from '../../../src/index.js'
 
 describe('validateRole', () => {
   test('should return an error if config is falsey', () => {
@@ -26,6 +26,16 @@ describe('validateRole', () => {
   test('should return an error if name is not a string', () => {
     const errors = validateRole({name: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Role name must be a string'})
+  })
+
+  test('should return an error if type is not provided', () => {
+    const errors = validateRole({name: 'role-name'})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role type is required'})
+  })
+
+  test('should return an error if type is not `sanity.access.role`', () => {
+    const errors = validateRole({name: 'role-name', type: 'invalid'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'Role type must be `sanity.access.role`'})
   })
 
   test('should return an error if title is not provided', () => {
@@ -62,6 +72,7 @@ describe('validateRole', () => {
   test('should accept a valid configuration', () => {
     const errors = validateRole({
       name: 'role-name',
+      type: 'sanity.access.role',
       title: 'Role Name',
       appliesToRobots: true,
       appliesToUsers: true,
@@ -74,5 +85,27 @@ describe('validateRole', () => {
     })
 
     expect(errors).toHaveLength(0)
+  })
+})
+
+describe('validateProjectRole', () => {
+  test('should require a resource type of `project`', () => {
+    const errors = validateProjectRole({})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role resource type must be `project`'})
+  })
+
+  test('should require resource type to be `project`', () => {
+    const errors = validateProjectRole({resourceType: 'invalid'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'Role resource type must be `project`'})
+  })
+
+  test('should require a resourceId', () => {
+    const errors = validateProjectRole({})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role resource ID is required'})
+  })
+
+  test('should require resourceId to be a string', () => {
+    const errors = validateProjectRole({resourceId: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Role resource ID must be a string'})
   })
 })

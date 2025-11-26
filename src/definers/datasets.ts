@@ -5,11 +5,13 @@ export function defineDataset(parameters: BlueprintDatasetConfig): BlueprintData
   // default dataset name
   const datasetName = parameters.datasetName || parameters.name
 
-  runValidation(() => validateDataset(parameters))
-
-  return {
+  const datasetResource: BlueprintDatasetResource = {
     ...parameters,
     datasetName,
     type: 'sanity.project.dataset',
   }
+
+  runValidation(() => validateDataset(datasetResource))
+
+  return datasetResource
 }
