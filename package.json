@@ -1,6 +1,6 @@
 {
   "name": "@sanity/blueprints",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Helper methods and type definitions for Sanity Blueprints",
   "keywords": [
     "sanity",
