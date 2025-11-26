@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/sanity-io/blueprints-node/compare/v0.6.0...v0.7.0) (2025-11-26)
+
+
+### Features
+
+* Improve validation when type is not known ([#39](https://github.com/sanity-io/blueprints-node/issues/39)) ([55cfe1c](https://github.com/sanity-io/blueprints-node/commit/55cfe1ce2ad31c9a29884897bfc08bb2860dd6a3))
+* Split out validation logic to be used by other modules ([#37](https://github.com/sanity-io/blueprints-node/issues/37)) ([4fde938](https://github.com/sanity-io/blueprints-node/commit/4fde93864438fb784ef38d6c4ff8a8a9c81f524b))
+
+
+### Bug Fixes
+
+* Validate resource end result instead of input config ([#40](https://github.com/sanity-io/blueprints-node/issues/40)) ([c8ef821](https://github.com/sanity-io/blueprints-node/commit/c8ef821104e50b6e55e0b5c9c5aca315b2d300c5))
+
 ## [0.6.0](https://github.com/sanity-io/blueprints-node/compare/v0.5.0...v0.6.0) (2025-11-20)
 
 
