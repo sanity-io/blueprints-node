@@ -2,11 +2,13 @@ import {type BlueprintCorsOriginConfig, type BlueprintCorsOriginResource, valida
 import {runValidation} from '../utils/validation.js'
 
 export function defineCorsOrigin(parameters: BlueprintCorsOriginConfig): BlueprintCorsOriginResource {
-  runValidation(() => validateCorsOrigin(parameters))
-
-  return {
+  const corsResource: BlueprintCorsOriginResource = {
     ...parameters,
     allowCredentials: parameters.allowCredentials || false,
     type: 'sanity.project.cors',
   }
+
+  runValidation(() => validateCorsOrigin(corsResource))
+
+  return corsResource
 }

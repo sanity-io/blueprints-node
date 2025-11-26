@@ -1,4 +1,5 @@
-import type {BlueprintError} from '../index.js'
+import type {BlueprintError, BlueprintResource} from '../index.js'
+import {runValidation} from '../utils/validation.js'
 
 export function validateResource(resourceConfig: unknown): BlueprintError[] {
   if (!resourceConfig) return [{type: 'invalid_value', message: 'Resource config must be provided'}]
@@ -19,4 +20,8 @@ export function validateResource(resourceConfig: unknown): BlueprintError[] {
   }
 
   return errors
+}
+
+export function assertResource(resource: unknown): asserts resource is BlueprintResource {
+  runValidation(() => validateResource(resource))
 }

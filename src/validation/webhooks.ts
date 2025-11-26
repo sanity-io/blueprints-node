@@ -12,6 +12,12 @@ export function validateDocumentWebhook(parameters: unknown): BlueprintError[] {
     errors.push({type: 'invalid_type', message: 'Webhook name must be a string'})
   }
 
+  if (!('type' in parameters)) {
+    errors.push({type: 'missing_parameter', message: 'Webhook type is required'})
+  } else if (parameters.type !== 'sanity.project.webhook') {
+    errors.push({type: 'invalid_value', message: 'Webhook type must be `sanity.project.webhook`'})
+  }
+
   if ('displayName' in parameters) {
     if (typeof parameters.displayName !== 'string') {
       errors.push({type: 'invalid_type', message: 'Display name must be a string'})

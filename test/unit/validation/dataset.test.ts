@@ -5,6 +5,7 @@ describe('defineDataset', () => {
   test('should accept a valid configuration', () => {
     const errors = validateDataset({
       name: 'dataset-name',
+      type: 'sanity.project.dataset',
       aclMode: 'public',
     })
 
@@ -25,6 +26,21 @@ describe('defineDataset', () => {
       type: 'invalid_type',
       message: 'Dataset config must be an object',
     })
+  })
+
+  test('should return an error if name is not provided', () => {
+    const errors = validateDataset({})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Dataset name is required'})
+  })
+
+  test('should return an error if name is not a string', () => {
+    const errors = validateDataset({name: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Dataset name must be a string'})
+  })
+
+  test('should return an error if type is not sanity.project.cors', () => {
+    const errors = validateDataset({type: 'invalid'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'Dataset type must be `sanity.project.dataset`'})
   })
 
   test('should return an error if non-string aclMode is provided', () => {

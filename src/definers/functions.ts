@@ -34,13 +34,19 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  runValidation(() => validateDocumentFunction(functionConfig))
-
   let {name, src, event, timeout, memory, env, type, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
-  // event validation
+  // event validation and normalization
   if (event) {
+    // `event` was specified, but event keys (aggregated in `maybeEvent`) were also specified at the top level. ambiguous and deprecated usage.
+    const duplicateKeys = Array.from(DOCUMENT_EVENT_KEYS).filter((key) => key in maybeEvent)
+    if (duplicateKeys.length > 0) {
+      throw new Error(
+        `\`event\` properties should be specified under the \`event\` key - specifying them at the top level is deprecated. The following keys were specified at the top level: ${duplicateKeys.map((k) => `\`${k}\``).join(', ')}`,
+      )
+    }
+
     event = buildDocumentFunctionEvent(event)
   } else {
     event = buildDocumentFunctionEvent(maybeEvent)
@@ -50,7 +56,7 @@ export function defineDocumentFunction(
     )
   }
 
-  return {
+  const functionResource: BlueprintDocumentFunctionResource = {
     ...defineFunction(
       {
         name,
@@ -60,12 +66,16 @@ export function defineDocumentFunction(
         env,
       },
       {
-        skipValidation: true, // already done above
+        skipValidation: true, // already done below
       },
     ),
     type,
     event,
   }
+
+  runValidation(() => validateDocumentFunction(functionResource))
+
+  return functionResource
 }
 
 export function defineMediaLibraryAssetFunction(
@@ -74,12 +84,10 @@ export function defineMediaLibraryAssetFunction(
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  runValidation(() => validateMediaLibraryAssetFunction(functionConfig))
-
   let {name, src, event, timeout, memory, env, type} = functionConfig
   if (!type) type = 'sanity.function.media-library.asset'
 
-  return {
+  const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
     ...defineFunction(
       {
         name,
@@ -89,26 +97,29 @@ export function defineMediaLibraryAssetFunction(
         env,
       },
       {
-        skipValidation: true, // already done above
+        skipValidation: true, // already done below
       },
     ),
     type,
     event: buildMediaLibraryFunctionEvent(event),
   }
+
+  runValidation(() => validateMediaLibraryAssetFunction(functionResource))
+
+  return functionResource
 }
+
 export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
   let {name, src, timeout, memory, env, type} = functionConfig
 
-  if (options?.skipValidation !== true) runValidation(() => validateFunction(functionConfig))
-
   // defaults
   if (!src) src = `functions/${name}`
   if (!type) type = 'sanity.function.document'
 
-  return {
+  const functionResource: BlueprintBaseFunctionResource = {
     type,
     name,
     src,
@@ -116,6 +127,10 @@ export function defineFunction(
     memory,
     env,
   }
+
+  if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))
+
+  return functionResource
 }
 
 function buildDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionResourceEvent>): BlueprintDocumentFunctionResourceEvent {

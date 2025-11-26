@@ -7,8 +7,10 @@ describe('defineResource', () => {
     vi.resetAllMocks()
   })
 
-  test('should throw an error if validateResource returns an error', () => {
-    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+  test('should throw an error if assertResource throws an error', () => {
+    const spy = vi.spyOn(index, 'assertResource').mockImplementation(() => {
+      throw new Error('this is a test')
+    })
     expect(() => resources.defineResource({})).toThrow('this is a test')
 
     expect(spy).toHaveBeenCalledOnce()

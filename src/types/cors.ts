@@ -6,7 +6,7 @@ import type {BlueprintResource} from '../index.js'
 export interface BlueprintCorsOriginResource extends BlueprintResource {
   type: 'sanity.project.cors'
   origin: string
-  allowCredentials: boolean
+  allowCredentials?: boolean
 
   /** The `project` attribute must be defined if your blueprint is scoped to an organization. */
   project?: string

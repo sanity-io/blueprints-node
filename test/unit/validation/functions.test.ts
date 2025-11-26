@@ -4,7 +4,7 @@ import {validateDocumentFunction, validateFunction, validateMediaLibraryAssetFun
 describe('validateFunction', () => {
   describe('happy paths', () => {
     test('should accept a valid function', () => {
-      const errors = validateFunction({name: 'test'})
+      const errors = validateFunction({name: 'test-function', type: 'test'})
       expect(errors).toHaveLength(0)
     })
   })
@@ -42,6 +42,22 @@ describe('validateFunction', () => {
       expect(mlFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
     })
 
+    test('should return an error if the type is not provided', () => {
+      const errors = validateFunction({})
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: '`type` is required',
+      })
+    })
+
+    test('should return an error if the type is not a string', () => {
+      const errors = validateFunction({type: 1})
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`type` must be a string',
+      })
+    })
+
     test('should return an error if memory is not a number', () => {
       const errors = validateFunction({name: 'test', memory: '1'})
       expect(errors).toContainEqual({type: 'invalid_type', message: '`memory` must be a number'})
@@ -56,7 +72,7 @@ describe('validateFunction', () => {
 describe('validateDocumentFunction', () => {
   describe('happy paths', () => {
     test('should accept a valid document function', () => {
-      const errors = validateDocumentFunction({name: 'test', event: {filter: '_type == "post"'}})
+      const errors = validateDocumentFunction({name: 'test', type: 'sanity.function.document', event: {filter: '_type == "post"'}})
       expect(errors).toHaveLength(0)
     })
   })
@@ -71,6 +87,14 @@ describe('validateDocumentFunction', () => {
         type: 'invalid_property',
         message:
           '`event` properties should be specified under the `event` key - specifying them at the top level is deprecated. The following keys were specified at the top level: `filter`',
+      })
+    })
+
+    test('should return an error if the type is not `sanity.function.document`', () => {
+      const errors = validateDocumentFunction({type: 'invalid'})
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.document`',
       })
     })
 
@@ -115,12 +139,21 @@ describe('validateMediaLibraryAssetFunction', () => {
     test('should accept a valid media library function', () => {
       const errors = validateMediaLibraryAssetFunction({
         name: 'test',
+        type: 'sanity.function.media-library.asset',
         event: {filter: '_type == "post"', resource},
       })
       expect(errors).toHaveLength(0)
     })
   })
   describe('sad paths', () => {
+    test('should return an error if the type is not `sanity.function.document`', () => {
+      const errors = validateMediaLibraryAssetFunction({type: 'invalid'})
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.media-library.asset`',
+      })
+    })
+
     test('should return an error if event.on is not an array', () => {
       const errors = validateMediaLibraryAssetFunction({name: 'test', event: {on: 'publish'}})
       expect(errors).toContainEqual({type: 'invalid_type', message: '`event.on` must be an array'})

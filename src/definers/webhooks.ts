@@ -7,10 +7,12 @@ export function defineDocumentWebhook(parameters: BlueprintDocumentWebhookConfig
     parameters.displayName = parameters.name.substring(0, 100)
   }
 
-  runValidation(() => validateDocumentWebhook(parameters))
-
-  return {
+  const webhookResource: BlueprintDocumentWebhookResource = {
     ...parameters,
     type: 'sanity.project.webhook',
   }
+
+  runValidation(() => validateDocumentWebhook(webhookResource))
+
+  return webhookResource
 }
