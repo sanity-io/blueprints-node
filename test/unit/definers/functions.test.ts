@@ -191,9 +191,9 @@ describe('defineScheduleFunction', () => {
 
     test('should throw an error if validateScheduleFunction returns an error', () => {
       const spy = vi.spyOn(index, 'validateScheduleFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      expect(() => fns.defineScheduleFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}})).toThrow(
-        'this is a test',
-      )
+      expect(() =>
+        fns.defineScheduleFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
+      ).toThrow('this is a test')
 
       expect(spy).toHaveBeenCalledOnce()
     })
