@@ -17,6 +17,20 @@ export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFun
 }
 export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEvent | BlueprintMediaLibraryFunctionResourceEvent
 
+export interface BlueprintScheduleFunctionExplicitResourceEvent {
+  minute: string
+  hour: string
+  dayOfMonth: string
+  month: string
+  dayOfWeek: string
+}
+export interface BlueprintScheduleFunctionExpressionResourceEvent {
+  expression: string
+}
+export type BlueprintScheduleFunctionResourceEvent =
+  | BlueprintScheduleFunctionExplicitResourceEvent
+  | BlueprintScheduleFunctionExpressionResourceEvent
+
 interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
   /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
@@ -45,4 +59,8 @@ export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunction
 export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.media-library.asset'
   event: BlueprintMediaLibraryFunctionResourceEvent
+}
+export interface BlueprintScheduleFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.cron'
+  event: BlueprintScheduleFunctionResourceEvent
 }

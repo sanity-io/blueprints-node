@@ -3,6 +3,7 @@ import {
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
+  defineScheduleFunction,
   defineDocumentWebhook,
   defineFunction,
   defineMediaLibraryAssetFunction,
@@ -36,6 +37,10 @@ describe('package imports', () => {
 
   it('should import defineDocumentFunction', () => {
     expect(defineDocumentFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import defineScheduleFunction', () => {
+    expect(defineScheduleFunction).toBeInstanceOf(Function)
   })
 
   it('should import defineDocumentWebhook', () => {
