@@ -1,4 +1,4 @@
-import type {BlueprintResource} from '../index.js'
+import type { BlueprintResource } from '../index.js'
 
 // --- Function Event Types ---
 
@@ -32,6 +32,20 @@ export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEv
  * Dataset resource for scoping document functions to specific datasets
  * @example { type: 'dataset', id: 'my-project.production' }
  */
+export interface BlueprintScheduleFunctionExplicitResourceEvent {
+  minute: string
+  hour: string
+  dayOfMonth: string
+  month: string
+  dayOfWeek: string
+}
+export interface BlueprintScheduleFunctionExpressionResourceEvent {
+  expression: string
+}
+export type BlueprintScheduleFunctionResourceEvent =
+  | BlueprintScheduleFunctionExplicitResourceEvent
+  | BlueprintScheduleFunctionExpressionResourceEvent
+
 interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
   /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
@@ -74,4 +88,8 @@ export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBas
   type: 'sanity.function.media-library.asset'
   /** Event configuration specifying when and how the function is triggered */
   event: BlueprintMediaLibraryFunctionResourceEvent
+}
+export interface BlueprintScheduleFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.cron'
+  event: BlueprintScheduleFunctionResourceEvent
 }

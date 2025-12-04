@@ -175,3 +175,89 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
   }
   return errors
 }
+
+export function validateScheduleFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if ('event' in functionResource) {
+    errors.push(...validateScheduleFunctionEvent(functionResource.event))
+  } else {
+    errors.push({type: 'missing_parameter', message: '`event` is required for a schedule function'})
+  }
+
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.cron') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.cron`'})
+  }
+
+  errors.push(...validateFunction(functionResource))
+
+  return errors
+}
+
+function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
+  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  const hasExpression = 'expression' in event
+  const hasExplicitFields = 'minute' in event || 'hour' in event || 'dayOfMonth' in event || 'month' in event || 'dayOfWeek' in event
+
+  if (hasExpression && hasExplicitFields) {
+    errors.push({
+      type: 'invalid_property',
+      message: 'Cannot specify both `expression` and explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`)',
+    })
+  } else if (!hasExpression && !hasExplicitFields) {
+    errors.push({
+      type: 'missing_parameter',
+      message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
+    })
+  } else if (hasExplicitFields) {
+    if (!('minute' in event)) {
+      errors.push({
+        type: 'missing_parameter',
+        message: '`minute` must be provided',
+      })
+    } else if (typeof event.minute !== 'string') {
+      errors.push({type: 'invalid_type', message: '`minute` must be a string'})
+    }
+    if (!('hour' in event)) {
+      errors.push({
+        type: 'missing_parameter',
+        message: '`hour` must be provided',
+      })
+    } else if (typeof event.hour !== 'string') {
+      errors.push({type: 'invalid_type', message: '`hour` must be a string'})
+    }
+    if (!('dayOfWeek' in event)) {
+      errors.push({
+        type: 'missing_parameter',
+        message: '`dayOfWeek` must be provided',
+      })
+    } else if (typeof event.dayOfWeek !== 'string') {
+      errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+    }
+    if (!('month' in event)) {
+      errors.push({
+        type: 'missing_parameter',
+        message: '`month` must be provided',
+      })
+    } else if (typeof event.month !== 'string') {
+      errors.push({type: 'invalid_type', message: '`month` must be a string'})
+    }
+    if (!('dayOfMonth' in event)) {
+      errors.push({
+        type: 'missing_parameter',
+        message: '`dayOfMonth` must be provided',
+      })
+    } else if (typeof event.dayOfMonth !== 'string') {
+      errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
+    }
+  }
+
+  return errors
+}

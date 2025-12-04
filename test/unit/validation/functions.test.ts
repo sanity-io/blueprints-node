@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, test, vi} from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import * as index from '../../../src/index.js'
 import * as functions from '../../../src/validation/functions.js'
 
@@ -9,16 +9,16 @@ describe('validateFunction', () => {
 
   describe('happy paths', () => {
     test('should accept a valid function', () => {
-      const errors = functions.validateFunction({name: 'test-function', type: 'test'})
+      const errors = functions.validateFunction({ name: 'test-function', type: 'test' })
       expect(errors).toHaveLength(0)
     })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
-      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      const errors = functions.validateFunction({name: 'test-function', type: 'test'})
+      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+      const errors = functions.validateFunction({ name: 'test-function', type: 'test' })
 
-      expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+      expect(errors).toContainEqual({ type: 'test', message: 'this is a test' })
       expect(spy).toHaveBeenCalledOnce()
     })
 
@@ -40,19 +40,19 @@ describe('validateFunction', () => {
 
     test('should return an error if name is not provided', () => {
       const errors = functions.validateFunction({})
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`name` is required' })
     })
 
     test('should return an error if name is not a string', () => {
-      const errors = functions.validateFunction({name: 1})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`name` must be a string'})
+      const errors = functions.validateFunction({ name: 1 })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`name` must be a string' })
     })
     test('should validate the name when higher-level functions are called', () => {
       const docFnErrors = functions.validateDocumentFunction({})
-      expect(docFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(docFnErrors).toContainEqual({ type: 'missing_parameter', message: '`name` is required' })
 
       const mlFnErrors = functions.validateMediaLibraryAssetFunction({})
-      expect(mlFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(mlFnErrors).toContainEqual({ type: 'missing_parameter', message: '`name` is required' })
     })
 
     test('should return an error if the type is not provided', () => {
@@ -64,7 +64,7 @@ describe('validateFunction', () => {
     })
 
     test('should return an error if the type is not a string', () => {
-      const errors = functions.validateFunction({type: 1})
+      const errors = functions.validateFunction({ type: 1 })
       expect(errors).toContainEqual({
         type: 'invalid_type',
         message: '`type` must be a string',
@@ -72,18 +72,18 @@ describe('validateFunction', () => {
     })
 
     test('should return an error if memory is not a number', () => {
-      const errors = functions.validateFunction({name: 'test', memory: '1'})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`memory` must be a number'})
+      const errors = functions.validateFunction({ name: 'test', memory: '1' })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`memory` must be a number' })
     })
 
     test('should return an error if timeout is not a number', () => {
-      const errors = functions.validateFunction({name: 'test', timeout: '1'})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`timeout` must be a number'})
+      const errors = functions.validateFunction({ name: 'test', timeout: '1' })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`timeout` must be a number' })
     })
 
     test('should return an error if robotToken is not a string', () => {
-      const errors = functions.validateFunction({name: 'test', robotToken: 123})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`robotToken` must be a string'})
+      const errors = functions.validateFunction({ name: 'test', robotToken: 123 })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`robotToken` must be a string' })
     })
   })
 })
@@ -98,28 +98,28 @@ describe('validateDocumentFunction', () => {
       const errors = functions.validateDocumentFunction({
         name: 'test',
         type: 'sanity.function.document',
-        event: {filter: '_type == "post"'},
+        event: { filter: '_type == "post"' },
       })
       expect(errors).toHaveLength(0)
     })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
-      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
       const errors = functions.validateDocumentFunction({
         name: 'test',
         type: 'sanity.function.document',
-        event: {filter: '_type == "post"'},
+        event: { filter: '_type == "post"' },
       })
 
-      expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+      expect(errors).toContainEqual({ type: 'test', message: 'this is a test' })
       expect(spy).toHaveBeenCalledOnce()
     })
 
     test('should return an error if event keys are defined using a mix of under the event object as well as at the top level', () => {
       const errors = functions.validateDocumentFunction({
         name: 'test',
-        event: {on: ['publish']},
+        event: { on: ['publish'] },
         filter: '_type == "post"',
       })
       expect(errors).toContainEqual({
@@ -130,7 +130,7 @@ describe('validateDocumentFunction', () => {
     })
 
     test('should return an error if the type is not `sanity.function.document`', () => {
-      const errors = functions.validateDocumentFunction({type: 'invalid'})
+      const errors = functions.validateDocumentFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.document`',
@@ -138,22 +138,22 @@ describe('validateDocumentFunction', () => {
     })
 
     test('should return an error if event.on is not an array', () => {
-      const errors = functions.validateDocumentFunction({name: 'test', event: {on: 'publish'}})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`event.on` must be an array'})
+      const errors = functions.validateDocumentFunction({ name: 'test', event: { on: 'publish' } })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`event.on` must be an array' })
     })
 
     test('should return an error if event.resource.type is empty or not dataset', () => {
-      let errors = functions.validateDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'a', id: 'myProject.*'}}})
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
+      let errors = functions.validateDocumentFunction({ name: 'test', event: { on: ['update'], resource: { type: 'a', id: 'myProject.*' } } })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "dataset"' })
 
-      errors = functions.validateDocumentFunction({name: 'test', event: {on: ['update'], resource: {id: 'myProject.*'}}})
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
+      errors = functions.validateDocumentFunction({ name: 'test', event: { on: ['update'], resource: { id: 'myProject.*' } } })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "dataset"' })
     })
 
     test('should return an error if event.resource.id is invalid', () => {
       let errors = functions.validateDocumentFunction({
         name: 'test',
-        event: {on: ['update'], resource: {type: 'dataset', id: 'notEnoughPeriods'}},
+        event: { on: ['update'], resource: { type: 'dataset', id: 'notEnoughPeriods' } },
       })
       expect(errors).toContainEqual({
         type: 'invalid_format',
@@ -162,14 +162,14 @@ describe('validateDocumentFunction', () => {
 
       errors = functions.validateDocumentFunction({
         name: 'test',
-        event: {on: ['update'], resource: {type: 'dataset', id: 'too.many.periods'}},
+        event: { on: ['update'], resource: { type: 'dataset', id: 'too.many.periods' } },
       })
       expect(errors).toContainEqual({
         type: 'invalid_format',
         message: '`event.resource.id` must be in the format <projectId>.<datasetName>',
       })
 
-      errors = functions.validateDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'dataset'}}})
+      errors = functions.validateDocumentFunction({ name: 'test', event: { on: ['update'], resource: { type: 'dataset' } } })
       expect(errors).toContainEqual({
         type: 'invalid_format',
         message: '`event.resource.id` must be in the format <projectId>.<datasetName>',
@@ -179,7 +179,7 @@ describe('validateDocumentFunction', () => {
 })
 
 describe('validateMediaLibraryAssetFunction', () => {
-  const resource = {type: 'media-library' as const, id: 'ml12345'}
+  const resource = { type: 'media-library' as const, id: 'ml12345' }
 
   afterEach(() => {
     vi.resetAllMocks()
@@ -190,26 +190,26 @@ describe('validateMediaLibraryAssetFunction', () => {
       const errors = functions.validateMediaLibraryAssetFunction({
         name: 'test',
         type: 'sanity.function.media-library.asset',
-        event: {filter: '_type == "post"', resource},
+        event: { filter: '_type == "post"', resource },
       })
       expect(errors).toHaveLength(0)
     })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
-      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
       const errors = functions.validateMediaLibraryAssetFunction({
         name: 'test',
         type: 'sanity.function.media-library.asset',
-        event: {filter: '_type == "post"', resource},
+        event: { filter: '_type == "post"', resource },
       })
 
-      expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+      expect(errors).toContainEqual({ type: 'test', message: 'this is a test' })
       expect(spy).toHaveBeenCalledOnce()
     })
 
     test('should return an error if the type is not `sanity.function.document`', () => {
-      const errors = functions.validateMediaLibraryAssetFunction({type: 'invalid'})
+      const errors = functions.validateMediaLibraryAssetFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.media-library.asset`',
@@ -217,19 +217,131 @@ describe('validateMediaLibraryAssetFunction', () => {
     })
 
     test('should return an error if event.on is not an array', () => {
-      const errors = functions.validateMediaLibraryAssetFunction({name: 'test', event: {on: 'publish'}})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`event.on` must be an array'})
+      const errors = functions.validateMediaLibraryAssetFunction({ name: 'test', event: { on: 'publish' } })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`event.on` must be an array' })
     })
 
     test('should return an error if event.resource.type is empty or not media-library', () => {
       let errors = functions.validateMediaLibraryAssetFunction({
         name: 'test',
-        event: {on: ['update'], resource: {type: 'a', id: 'ml12345'}},
+        event: { on: ['update'], resource: { type: 'a', id: 'ml12345' } },
       })
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "media-library"'})
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "media-library"' })
 
-      errors = functions.validateMediaLibraryAssetFunction({name: 'test', event: {on: ['update'], resource: {id: 'ml12345'}}})
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "media-library"'})
+      errors = functions.validateMediaLibraryAssetFunction({ name: 'test', event: { on: ['update'], resource: { id: 'ml12345' } } })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "media-library"' })
+    })
+  })
+})
+
+describe('validateScheduleFunction', () => {
+  describe('happy paths', () => {
+    test('should accept a valid media library function', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toHaveLength(0)
+    })
+  })
+  describe('sad paths', () => {
+    test('should return an error if the type is not `sanity.function.cron`', () => {
+      const errors = functions.validateScheduleFunction({ type: 'invalid' })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.cron`',
+      })
+    })
+
+    test('should return an error if event specifies expression and explicit properties', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: { expression: '* * * * *', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_property',
+        message: 'Cannot specify both `expression` and explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`)',
+      })
+    })
+
+    test('should return an error if event does not specify expression or explicit properties', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {},
+      })
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
+      })
+    })
+
+    test('should return an error if event is missing properties', () => {
+      const func = { name: 'test', type: 'sanity.function.cron' }
+      let errors = functions.validateScheduleFunction({
+        ...func,
+        event: { hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`minute` must be provided' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { minute: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`hour` must be provided' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { hour: '*', minute: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`dayOfMonth` must be provided' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { hour: '*', minute: '*', dayOfMonth: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`month` must be provided' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { hour: '*', minute: '*', dayOfMonth: '*', month: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`dayOfWeek` must be provided' })
+    })
+
+    test('should return an error if event are not string properties', () => {
+      const func = { name: 'test', type: 'sanity.function.cron' }
+      let errors = functions.validateScheduleFunction({
+        ...func,
+        event: { minute: 1, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`minute` must be a string' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { minute: '*', hour: 1, dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`hour` must be a string' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { minute: '*', hour: '*', dayOfMonth: 1, month: '*', dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`dayOfMonth` must be a string' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { minute: '*', hour: '*', dayOfMonth: '*', month: 1, dayOfWeek: '*' },
+      })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`month` must be a string' })
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: 1 },
+      })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`dayOfWeek` must be a string' })
     })
   })
 })
