@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/sanity-io/blueprints-node/compare/v0.7.0...v0.7.1) (2025-12-17)
+
+
+### Bug Fixes
+
+* Mark apiVersion is required to match API ([#42](https://github.com/sanity-io/blueprints-node/issues/42)) ([4d8b796](https://github.com/sanity-io/blueprints-node/commit/4d8b79615930af3da76fd6d85338ce9a4504ad9e))
+
 ## [0.7.0](https://github.com/sanity-io/blueprints-node/compare/v0.6.0...v0.7.0) (2025-11-26)
 
 
