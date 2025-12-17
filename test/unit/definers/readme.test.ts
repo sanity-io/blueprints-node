@@ -24,6 +24,7 @@ describe('README example', () => {
           url: 'http://api.yourdomain.com/notifications/sanity',
           on: ['create'],
           dataset: 'production',
+          apiVersion: 'v2025-12-17',
         }),
       ],
     })
@@ -58,6 +59,7 @@ describe('README example', () => {
         on: ['create'],
         type: 'sanity.project.webhook',
         url: 'http://api.yourdomain.com/notifications/sanity',
+        apiVersion: 'v2025-12-17',
       },
     ])
   })

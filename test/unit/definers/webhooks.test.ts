@@ -15,6 +15,7 @@ describe('defineDocumentWebhook', () => {
         url: 'http://localhost/',
         on: ['create'],
         dataset: 'abcdefg',
+        apiVersion: 'vX',
       }),
     ).toThrow(/this is a test/)
 
@@ -27,6 +28,7 @@ describe('defineDocumentWebhook', () => {
       url: 'http://localhost/',
       on: ['create'],
       dataset: 'abcdefg',
+      apiVersion: 'vX',
     })
 
     expect(webhookResource.type).toStrictEqual('sanity.project.webhook')
@@ -38,6 +40,7 @@ describe('defineDocumentWebhook', () => {
       url: 'http://localhost/',
       on: ['create'],
       dataset: 'abcdefg',
+      apiVersion: 'vX',
     })
 
     expect(webhookResource.displayName).toStrictEqual('webhook-name')

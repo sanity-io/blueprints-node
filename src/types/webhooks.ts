@@ -17,6 +17,6 @@ export interface BlueprintDocumentWebhookResource extends BlueprintResource {
   includeAllVersions?: boolean
   secret?: string
   dataset?: string
-  apiVersion?: string
+  apiVersion: string
 }
 export type BlueprintDocumentWebhookConfig = Omit<BlueprintDocumentWebhookResource, 'type'>
