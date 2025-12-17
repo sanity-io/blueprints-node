@@ -35,6 +35,7 @@ export default defineBlueprint({
       url: 'http://api.yourdomain.com/notifications/sanity',
       on: ['create'],
       dataset: 'production',
+      apiVersion: 'v2025-12-17',
     })
   ],
 })
