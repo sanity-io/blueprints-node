@@ -37,6 +37,7 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
   timeout?: number
   memory?: number
   env?: Record<string, string>
+  robotToken?: string
 }
 export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.document'
