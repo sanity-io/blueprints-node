@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/sanity-io/blueprints-node/compare/v0.7.1...v0.8.0) (2025-12-23)
+
+
+### Features
+
+* add robot token to defineFunction ([#44](https://github.com/sanity-io/blueprints-node/issues/44)) ([e937d31](https://github.com/sanity-io/blueprints-node/commit/e937d31eed3f0c344efcec04099c1507e8476137))
+
 ## [0.7.1](https://github.com/sanity-io/blueprints-node/compare/v0.7.0...v0.7.1) (2025-12-17)
 
 
