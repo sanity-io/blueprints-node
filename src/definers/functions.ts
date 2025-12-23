@@ -34,7 +34,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, type, ...maybeEvent} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
   // event validation and normalization
@@ -64,6 +64,7 @@ export function defineDocumentFunction(
         timeout,
         memory,
         env,
+        robotToken,
       },
       {
         skipValidation: true, // already done below
@@ -84,7 +85,7 @@ export function defineMediaLibraryAssetFunction(
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  let {name, src, event, timeout, memory, env, type} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken} = functionConfig
   if (!type) type = 'sanity.function.media-library.asset'
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
@@ -95,6 +96,7 @@ export function defineMediaLibraryAssetFunction(
         timeout,
         memory,
         env,
+        robotToken,
       },
       {
         skipValidation: true, // already done below
@@ -113,7 +115,7 @@ export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let {name, src, timeout, memory, env, type} = functionConfig
+  let {name, src, timeout, memory, env, type, robotToken} = functionConfig
 
   // defaults
   if (!src) src = `functions/${name}`
@@ -126,6 +128,7 @@ export function defineFunction(
     timeout,
     memory,
     env,
+    robotToken,
   }
 
   if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))

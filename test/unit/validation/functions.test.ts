@@ -67,6 +67,11 @@ describe('validateFunction', () => {
       const errors = validateFunction({name: 'test', timeout: '1'})
       expect(errors).toContainEqual({type: 'invalid_type', message: '`timeout` must be a number'})
     })
+
+    test('should return an error if robotToken is not a string', () => {
+      const errors = validateFunction({name: 'test', robotToken: 123})
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`robotToken` must be a string'})
+    })
   })
 })
 describe('validateDocumentFunction', () => {

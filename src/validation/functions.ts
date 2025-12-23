@@ -94,6 +94,12 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
     }
   }
 
+  if ('robotToken' in functionResource) {
+    if (typeof functionResource.robotToken !== 'string' && typeof functionResource.robotToken !== 'undefined') {
+      errors.push({type: 'invalid_type', message: '`robotToken` must be a string'})
+    }
+  }
+
   return errors
 }
 
