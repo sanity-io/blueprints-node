@@ -20,6 +20,8 @@ import {
   type BlueprintResource,
   type BlueprintRoleConfig,
   type BlueprintRoleResource,
+  type BlueprintScheduleFunctionResource,
+  type BlueprintScheduleFunctionResourceEvent,
   type RolePermission,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
@@ -30,6 +32,7 @@ import {
   defineMediaLibraryAssetFunction,
   defineProjectRole,
   defineRole,
+  defineScheduleFunction,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -39,6 +42,7 @@ import {
   validateMediaLibraryAssetFunction,
   validateResource,
   validateRole,
+  validateScheduleFunction,
 } from '@sanity/blueprints'
 
 /**
@@ -74,6 +78,18 @@ const documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
   resource: {type: 'dataset', id: 'production'},
 }
 const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({name: 'sup'})
+
+const scheduleFunctionResourceEvent: BlueprintScheduleFunctionResourceEvent = {
+  minute: '*',
+  hour: '*',
+  dayOfMonth: '*',
+  month: '*',
+  dayOfWeek: '*',
+}
+const scheduleFunctionResource: BlueprintScheduleFunctionResource = defineScheduleFunction({
+  name: 'sup',
+  event: scheduleFunctionResourceEvent,
+})
 
 const webhookTriggerCreate: WebhookTrigger = 'create'
 const webhookTriggerUpdate: WebhookTrigger = 'update'
@@ -158,3 +174,4 @@ validateFunction({name: 'test-function'})
 validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
 validateResource(blueprintResource)
 validateRole(roleResource)
+validateScheduleFunction(scheduleFunctionResource)
