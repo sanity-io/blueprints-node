@@ -19,6 +19,20 @@ export function validateResource(resourceConfig: unknown): BlueprintError[] {
     errors.push({type: 'invalid_type', message: '`type` must be a string'})
   }
 
+  if ('lifecycle' in resourceConfig) {
+    if (typeof resourceConfig.lifecycle !== 'object' || resourceConfig.lifecycle === null) {
+      errors.push({type: 'invalid_type', message: '`lifecycle` must be an object'})
+    } else {
+      if ('deletionPolicy' in resourceConfig.lifecycle) {
+        if (typeof resourceConfig.lifecycle.deletionPolicy !== 'string') {
+          errors.push({type: 'invalid_type', message: '`deletionPolicy` must be a string'})
+        } else if (!['allow', 'retain', 'replace', 'protect'].includes(resourceConfig.lifecycle.deletionPolicy)) {
+          errors.push({type: 'invalid_value', message: '`deletionPolicy` must be one of allow, retain, replace, protect'})
+        }
+      }
+    }
+  }
+
   return errors
 }
 
