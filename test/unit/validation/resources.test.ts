@@ -52,4 +52,49 @@ describe('validateResource', () => {
     const errors = validateResource({name: 'test', type: 'test', lifecycle: {deletionPolicy: 'invalid'}})
     expect(errors).toContainEqual({type: 'invalid_value', message: '`deletionPolicy` must be one of allow, retain, replace, protect'})
   })
+
+  test('should return an error if lifecycle.ownershipAction is not an object', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: 1}})
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction` must be an object'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction has no type', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {}}})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: '`ownershipAction.type` is required'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction.type is not a string', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 1}}})
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.type` must be a string'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction.type is not valid', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'invalid'}}})
+    expect(errors).toContainEqual({type: 'invalid_value', message: '`ownershipAction.type` must be attach'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction has no id', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'attach'}}})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: '`ownershipAction.id` is required for attach'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction.id is not a string', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'attach', id: 1}}})
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.id` must be a string'})
+  })
+
+  test('should return no errors for a valid resource', () => {
+    const errors = validateResource({
+      name: 'test',
+      type: 'test',
+      lifecycle: {
+        deletionPolicy: 'allow',
+        ownershipAction: {
+          type: 'attach',
+          id: 'test-id',
+        },
+      },
+    })
+    expect(errors).toHaveLength(0)
+  })
 })

@@ -1,7 +1,15 @@
 export type BlueprintResourceDeletionPolicy = 'allow' | 'retain' | 'replace' | 'protect'
 
+export type BlueprintOwnershipAttachAction = {
+  type: 'attach'
+  id: string
+}
+export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction
+
 export interface BlueprintResourceLifecycle {
   deletionPolicy?: BlueprintResourceDeletionPolicy
+
+  ownershipAction?: BlueprintOwnershipAction
 }
 
 /**
