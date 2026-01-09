@@ -92,4 +92,5 @@ export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBas
 export interface BlueprintScheduleFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.cron'
   event: BlueprintScheduleFunctionResourceEvent
+  timezone?: string
 }

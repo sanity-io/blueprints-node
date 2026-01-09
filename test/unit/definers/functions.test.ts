@@ -182,6 +182,16 @@ describe('defineScheduleFunction', () => {
       })
       expect(fn.event).toEqual({expression: '* * * * *'})
     })
+
+    test('should create a scheduled function with optional timezone', () => {
+      const event = {expression: '* * * * *'}
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event,
+        timezone: 'America/New_York',
+      })
+      expect(fn.timezone).toEqual('America/New_York')
+    })
   })
 
   describe('sad paths', () => {

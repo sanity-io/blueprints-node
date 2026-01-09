@@ -92,6 +92,7 @@ const scheduleFunctionResourceEvent: BlueprintScheduleFunctionResourceEvent = {
 const scheduleFunctionResource: BlueprintScheduleFunctionResource = defineScheduleFunction({
   name: 'sup',
   event: scheduleFunctionResourceEvent,
+  timezone: 'America/New_York',
 })
 
 const webhookTriggerCreate: WebhookTrigger = 'create'

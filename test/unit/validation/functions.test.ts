@@ -244,6 +244,15 @@ describe('validateScheduleFunction', () => {
       })
       expect(errors).toHaveLength(0)
     })
+    test('should accept a valid media library function with optional timezone', () => {
+      const errors = validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        timezone: 'America/New_York',
+      })
+      expect(errors).toHaveLength(0)
+    })
   })
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.cron`', () => {
@@ -263,6 +272,19 @@ describe('validateScheduleFunction', () => {
       expect(errors).toContainEqual({
         type: 'invalid_property',
         message: 'Cannot specify both `expression` and explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`)',
+      })
+    })
+
+    test('should return an error if timezone is invalid', () => {
+      const errors = validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {expression: '* * * * *'},
+        timezone: 'America/Duckberg',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`timezone` must be a valid IANA timezone',
       })
     })
 

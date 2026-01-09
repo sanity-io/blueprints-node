@@ -192,6 +192,10 @@ export function validateScheduleFunction(functionResource: unknown): BlueprintEr
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.cron`'})
   }
 
+  if ('timezone' in functionResource) {
+    errors.push(...validateScheduleFunctionTimezone(functionResource.timezone))
+  }
+
   errors.push(...validateFunction(functionResource))
 
   return errors
@@ -257,6 +261,23 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
     } else if (typeof event.dayOfMonth !== 'string') {
       errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
     }
+  }
+
+  return errors
+}
+
+function validateScheduleFunctionTimezone(timezone: unknown): BlueprintError[] {
+  if (typeof timezone !== 'string') return [{type: 'invalid_type', message: 'Function timezone must be a string'}]
+
+  const errors: BlueprintError[] = []
+
+  try {
+    Intl.DateTimeFormat(undefined, {timeZone: timezone})
+  } catch {
+    errors.push({
+      type: 'invalid_value',
+      message: '`timezone` must be a valid IANA timezone',
+    })
   }
 
   return errors
