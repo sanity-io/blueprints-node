@@ -1,6 +1,11 @@
 import type {BlueprintError, BlueprintResource} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
+/**
+ * Validates that the given resource is a valid resource.
+ * @param resource The resource
+ * @returns A list of validation errors
+ */
 export function validateResource(resourceConfig: unknown): BlueprintError[] {
   if (!resourceConfig) return [{type: 'invalid_value', message: 'Resource config must be provided'}]
   if (typeof resourceConfig !== 'object') return [{type: 'invalid_type', message: 'Resource config must be an object'}]

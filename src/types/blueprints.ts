@@ -1,16 +1,19 @@
 import type {BlueprintResource} from '../index.js'
 
+/** Additional configuration on a Blueprint that overrides the normal configuration */
 export interface BlueprintsApiConfig {
   organizationId: string
   projectId: string
   stackId: string
 }
 
+/** A key-value pair that will be output from a Blueprint */
 export interface BlueprintOutput {
   name: string
   value: string
 }
 
+/** A representation of a Blueprint document */
 export interface Blueprint {
   $schema: string
   blueprintVersion: string
@@ -19,8 +22,5 @@ export interface Blueprint {
   outputs?: BlueprintOutput[]
 }
 
-export type BlueprintModule = ((args?: unknown) => Blueprint) & {
-  organizationId?: string
-  projectId?: string
-  stackId?: string
-}
+/** The result of defining a blueprint with `defineBlueprint` */
+export type BlueprintModule = ((args?: unknown) => Blueprint) & Partial<BlueprintsApiConfig>
