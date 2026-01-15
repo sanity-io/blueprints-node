@@ -9,6 +9,24 @@ import {runValidation} from '../utils/validation.js'
 
 /**
  * Defines a role that is scoped to the same resource as the blueprint.
+ * ```
+ * defineRole({
+ *   name: 'custom-robot-role',
+ *   title: 'Custom Robot Role',
+ *   appliesToRobots: true,
+ *   appliesToUsers: false,
+ *   permissions: [{
+ *     name: 'sanity-project-cors',
+ *     action: 'create'
+ *   }, {
+ *     name: 'sanity-project-cors',
+ *     action: 'read'
+ *   }, {
+ *     name: 'sanity-project-cors',
+ *     action: 'delete'
+ *   }]
+ * }),
+ * ```
  * @param parameters The configuration of the role
  * @returns The role resource
  */
@@ -30,6 +48,24 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
 
 /**
  * Defines a role that is scoped to the specified project.
+ * ```
+ * defineProjectRole(projectId, {
+ *   name: 'custom-robot-role',
+ *   title: 'Custom Robot Role',
+ *   appliesToRobots: true,
+ *   appliesToUsers: false,
+ *   permissions: [{
+ *     name: 'sanity-project-cors',
+ *     action: 'create'
+ *   }, {
+ *     name: 'sanity-project-cors',
+ *     action: 'read'
+ *   }, {
+ *     name: 'sanity-project-cors',
+ *     action: 'delete'
+ *   }]
+ * }),
+ * ```
  * @param projectId The ID of the project to which the role will be scoped
  * @param parameters The configuration of the role
  * @returns The role resource

@@ -1,5 +1,10 @@
 import type {BlueprintError} from '../index.js'
 
+/**
+ * Validates that the given resource is a valid Robot.
+ * @param resource The Robot resource
+ * @returns A list of validation errors
+ */
 export function validateRobot(resource: unknown): BlueprintError[] {
   if (!resource) return [{type: 'invalid_value', message: 'Robot config must be provided'}]
   if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Robot config must be an object'}]

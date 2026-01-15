@@ -1,11 +1,20 @@
 import type {BlueprintResource} from '../index.js'
 
+/**
+ * A permission definition for a role.
+ */
 export interface RolePermission {
-  name: string // Required: predefined permission name (e.g., 'sanity-all-documents')
-  action: string // Required: permission action (e.g., 'read', 'mode')
-  params?: Record<string, unknown> // Optional: additional parameters for the permission
+  /** Predefined permission name (e.g., 'sanity-all-documents') */
+  name: string
+  /** Permission action (e.g., 'read', 'mode') */
+  action: string
+  /** Additional parameters for the permission */
+  params?: Record<string, unknown>
 }
 
+/**
+ * Configuration for a custom role.
+ */
 export interface BlueprintRoleConfig {
   name: string
   title: string
@@ -15,10 +24,16 @@ export interface BlueprintRoleConfig {
   permissions: RolePermission[]
 }
 
+/**
+ * A custom role resource
+ */
 export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintResource {
   type: 'sanity.access.role'
 }
 
+/**
+ * A custom role resource that is tied to a specific project
+ */
 export interface BlueprintProjectRoleResource extends BlueprintRoleResource {
   resourceType: 'project'
   resourceId: string

@@ -1,51 +1,56 @@
 import type {BlueprintError} from '../index.js'
 
-export function validateDocumentWebhook(parameters: unknown): BlueprintError[] {
-  if (!parameters) return [{type: 'invalid_value', message: 'Webhook config must be provided'}]
-  if (typeof parameters !== 'object') return [{type: 'invalid_type', message: 'Webhook config must be an object'}]
+/**
+ * Validates that the given resource is a valid Document Webhook.
+ * @param resource The Document Webhook resource
+ * @returns A list of validation errors
+ */
+export function validateDocumentWebhook(resource: unknown): BlueprintError[] {
+  if (!resource) return [{type: 'invalid_value', message: 'Webhook config must be provided'}]
+  if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Webhook config must be an object'}]
 
   const errors: BlueprintError[] = []
 
-  if (!('name' in parameters)) {
+  if (!('name' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Webhook name is required'})
-  } else if (typeof parameters.name !== 'string') {
+  } else if (typeof resource.name !== 'string') {
     errors.push({type: 'invalid_type', message: 'Webhook name must be a string'})
   }
 
-  if (!('type' in parameters)) {
+  if (!('type' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Webhook type is required'})
-  } else if (parameters.type !== 'sanity.project.webhook') {
+  } else if (resource.type !== 'sanity.project.webhook') {
     errors.push({type: 'invalid_value', message: 'Webhook type must be `sanity.project.webhook`'})
   }
 
-  if ('displayName' in parameters) {
-    if (typeof parameters.displayName !== 'string') {
+  if ('displayName' in resource) {
+    if (typeof resource.displayName !== 'string') {
       errors.push({type: 'invalid_type', message: 'Display name must be a string'})
-    } else if (parameters.displayName.length > 100) {
+    } else if (resource.displayName.length > 100) {
       errors.push({type: 'invalid_value', message: 'Display name must be 100 characters or less'})
     }
   }
 
-  if (!('url' in parameters)) {
+  if (!('url' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Webhook URL is required'})
-  } else if (typeof parameters.url !== 'string') {
+  } else if (typeof resource.url !== 'string') {
     errors.push({type: 'invalid_type', message: 'Webhook URL must be a string'})
   } else {
     // Validate URL format
     try {
-      new URL(parameters.url)
+      new URL(resource.url)
     } catch {
       errors.push({type: 'invalid_value', message: 'Webhook URL must be a valid URL'})
     }
   }
 
-  if (!('on' in parameters) || !Array.isArray(parameters.on) || parameters.on.length === 0) {
+  if (!('on' in resource) || !Array.isArray(resource.on) || resource.on.length === 0) {
     errors.push({type: 'invalid_value', message: 'At least one event type must be specified in the "on" field'})
   } else {
     // Validate event types
     const validEvents = ['create', 'update', 'delete']
-    if (parameters.on) {
-      const invalidEvents = parameters.on.filter((event: string) => !validEvents.includes(event))
+    if (resource.on) {
+      const invalidEvents = resource.on.filter((event: string) => !validEvents.includes(event))
       if (invalidEvents.length > 0) {
         errors.push({
           type: 'invalid_value',
@@ -56,20 +61,20 @@ export function validateDocumentWebhook(parameters: unknown): BlueprintError[] {
   }
 
   // Validate dataset pattern
-  if (!('dataset' in parameters)) {
+  if (!('dataset' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Webhook dataset is required'})
-  } else if (typeof parameters.dataset !== 'string' || !/^[a-z0-9-_]+$/.test(parameters.dataset)) {
+  } else if (typeof resource.dataset !== 'string' || !/^[a-z0-9-_]+$/.test(resource.dataset)) {
     errors.push({type: 'invalid_format', message: 'Dataset must match pattern: ^[a-z0-9-_]+$'})
   }
 
   // Validate HTTP method
-  if ('httpMethod' in parameters) {
+  if ('httpMethod' in resource) {
     const validMethods = ['POST', 'PUT', 'PATCH', 'DELETE', 'GET']
-    const message = `Invalid HTTP method: ${parameters.httpMethod}. Valid methods are: ${validMethods.join(', ')}`
-    if (typeof parameters.httpMethod !== 'string') {
+    const message = `Invalid HTTP method: ${resource.httpMethod}. Valid methods are: ${validMethods.join(', ')}`
+    if (typeof resource.httpMethod !== 'string') {
       errors.push({type: 'invalid_type', message})
     } else {
-      if (!validMethods.includes(parameters.httpMethod)) {
+      if (!validMethods.includes(resource.httpMethod)) {
         errors.push({
           type: 'invalid_value',
           message,
@@ -79,22 +84,22 @@ export function validateDocumentWebhook(parameters: unknown): BlueprintError[] {
   }
 
   // Validate status
-  if ('status' in parameters) {
+  if ('status' in resource) {
     const message = 'Status must be either "enabled" or "disabled"'
-    if (typeof parameters.status !== 'string') {
+    if (typeof resource.status !== 'string') {
       errors.push({type: 'invalid_type', message})
-    } else if (!['enabled', 'disabled'].includes(parameters.status)) {
+    } else if (!['enabled', 'disabled'].includes(resource.status)) {
       errors.push({type: 'invalid_value', message})
     }
   }
 
   // Validate headers pattern
-  if ('headers' in parameters) {
-    if (typeof parameters.headers !== 'object' || !parameters.headers || Array.isArray(parameters.headers)) {
+  if ('headers' in resource) {
+    if (typeof resource.headers !== 'object' || !resource.headers || Array.isArray(resource.headers)) {
       errors.push({type: 'invalid_type', message: 'Webhook headers must be an object'})
     } else {
       const headerNamePattern = /^[a-zA-Z][a-zA-Z0-9-_]*$/
-      for (const [key, value] of Object.entries(parameters.headers)) {
+      for (const [key, value] of Object.entries(resource.headers)) {
         if (!headerNamePattern.test(key)) {
           errors.push({type: 'invalid_format', message: `Header key "${key}" must match pattern: ${headerNamePattern.source}`})
         }

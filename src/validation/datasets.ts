@@ -1,5 +1,10 @@
 import type {BlueprintError} from '../index.js'
 
+/**
+ * Validates that the given resource is a valid Dataset.
+ * @param resource The Dataset resource
+ * @returns A list of validation errors
+ */
 export function validateDataset(resource: unknown): BlueprintError[] {
   if (!resource) return [{type: 'invalid_value', message: 'Dataset config must be provided'}]
   if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Dataset config must be an object'}]
