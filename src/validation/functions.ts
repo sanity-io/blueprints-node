@@ -12,6 +12,12 @@ const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersio
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
 
+/**
+ * Validates a document function resource configuration.
+ * Checks that the function has valid event configuration, correct type, and all required base properties.
+ * @param functionResource The function resource to validate
+ * @returns Array of validation errors, empty if valid
+ */
 export function validateDocumentFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
@@ -43,6 +49,12 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
   return errors
 }
 
+/**
+ * Validates a media library asset function resource configuration.
+ * Checks that the function has valid event configuration with required resource, correct type, and all required base properties.
+ * @param functionResource The function resource to validate
+ * @returns Array of validation errors, empty if valid
+ */
 export function validateMediaLibraryAssetFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
@@ -64,6 +76,12 @@ export function validateMediaLibraryAssetFunction(functionResource: unknown): Bl
   return errors
 }
 
+/**
+ * Validates base function resource properties.
+ * Checks that required fields (name, type) are present and that optional fields have correct types.
+ * @param functionResource The function resource to validate
+ * @returns Array of validation errors, empty if valid
+ */
 export function validateFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
@@ -103,6 +121,12 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
   return errors
 }
 
+/**
+ * Validates a document function event configuration.
+ * Checks event trigger types, optional filter/projection, and optional dataset resource scoping.
+ * @param event The event configuration to validate
+ * @returns Array of validation errors, empty if valid
+ */
 function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
   if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
   if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
@@ -126,6 +150,12 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
   return errors
 }
 
+/**
+ * Validates a media library function event configuration.
+ * Checks event trigger types and ensures required media library resource is present.
+ * @param event The event configuration to validate
+ * @returns Array of validation errors, empty if valid
+ */
 function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
   if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
   if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]

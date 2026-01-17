@@ -22,6 +22,28 @@ interface RequiredFunctionProperties {
   name: string
 }
 
+/**
+ * Defines a document function that is triggered by document events in Sanity datasets.
+ * ```
+ * defineDocumentFunction({
+ *   name: 'generate-report',
+ *   src: 'functions/generate-report',
+ *   memory: 2,
+ *   timeout: 360,
+ *   event: {
+ *     on: ['create', 'update'],
+ *     filter: "_type == 'customer'",
+ *     projection: "{totalSpend, lastOrderDate}",
+ *     includeDrafts: false,
+ *   },
+ *   env: {
+ *     CURRENCY: 'USD',
+ *   },
+ * })
+ * ```
+ * @param functionConfig The configuration for the document function
+ * @returns The validated document function resource
+ */
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties,
 ): BlueprintDocumentFunctionResource
@@ -79,6 +101,25 @@ export function defineDocumentFunction(
   return functionResource
 }
 
+/**
+ * Defines a media library asset function that is triggered by media library events.
+ * ```
+ * defineMediaLibraryAssetFunction({
+ *   name: 'process-asset',
+ *   src: 'functions/process-asset',
+ *   event: {
+ *     on: ['create', 'update'],
+ *     resource: {
+ *       type: 'media-library',
+ *       id: 'ml12345',
+ *     },
+ *     filter: "mimeType match 'image/*'",
+ *   },
+ * })
+ * ```
+ * @param functionConfig The configuration for the media library asset function
+ * @returns The validated media library asset function resource
+ */
 export function defineMediaLibraryAssetFunction(
   functionConfig: Partial<BlueprintMediaLibraryAssetFunctionResource> &
     RequiredFunctionProperties &
@@ -111,6 +152,23 @@ export function defineMediaLibraryAssetFunction(
   return functionResource
 }
 
+/**
+ * Defines a base function resource with common properties.
+ * ```
+ * defineFunction({
+ *   name: 'my-function',
+ *   src: 'functions/my-function',
+ *   timeout: 300,
+ *   memory: 1,
+ *   env: {
+ *     API_KEY: 'your-api-key',
+ *   },
+ * })
+ * ```
+ * @param functionConfig The configuration for the function
+ * @param options Optional configuration including validation options
+ * @returns The validated function resource
+ */
 export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
   options?: {skipValidation?: boolean},
@@ -136,6 +194,12 @@ export function defineFunction(
   return functionResource
 }
 
+/**
+ * Builds a document function event configuration from partial event properties.
+ * Filters out non-event properties and applies defaults.
+ * @param event Partial document function event configuration
+ * @returns Complete document function event configuration
+ */
 function buildDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionResourceEvent>): BlueprintDocumentFunctionResourceEvent {
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => DOCUMENT_EVENT_KEYS.has(key as DocumentFunctionEventKey)),
@@ -147,6 +211,12 @@ function buildDocumentFunctionEvent(event: Partial<BlueprintDocumentFunctionReso
   }
 }
 
+/**
+ * Builds a media library function event configuration.
+ * Filters out non-event properties and applies defaults.
+ * @param event Media library function event configuration
+ * @returns Complete media library function event configuration
+ */
 function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionResourceEvent): BlueprintMediaLibraryFunctionResourceEvent {
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => MEDIA_LIBRARY_EVENT_KEYS.has(key as MediaLibraryFunctionEventKey)),
