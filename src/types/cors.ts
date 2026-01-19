@@ -1,10 +1,10 @@
-import type {BlueprintResource} from '../index.js'
+import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../index.js'
 
 /**
  * Represents a CORS Origin resource.
  * @see https://www.sanity.io/docs/content-lake/cors
  */
-export interface BlueprintCorsOriginResource extends BlueprintResource {
+export interface BlueprintCorsOriginResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.cors'
   /**
    * A CORS origin will be defined using the following format: `protocol://hostname[:port]`
