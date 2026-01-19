@@ -1,9 +1,9 @@
 import {
-  validateResource,
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintError,
   type BlueprintFunctionBaseResourceEvent,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  validateResource,
 } from '../index.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent

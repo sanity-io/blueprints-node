@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as webhooks from '../../../src/validation/webhooks.js'
 import * as index from '../../../src/index.js'
+import * as webhooks from '../../../src/validation/webhooks.js'
 
 describe('validateDocumentWebhook', () => {
   afterEach(() => {

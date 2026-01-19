@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as robots from '../../../src/validation/robots.js'
 import * as index from '../../../src/index.js'
+import * as robots from '../../../src/validation/robots.js'
 
 describe('validateRobot', () => {
   afterEach(() => {

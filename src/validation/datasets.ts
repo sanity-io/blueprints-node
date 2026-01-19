@@ -1,4 +1,4 @@
-import {validateResource, type BlueprintError} from '../index.js'
+import {type BlueprintError, validateResource} from '../index.js'
 
 /**
  * Validates that the given resource is a valid Dataset.

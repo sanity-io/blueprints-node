@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as cors from '../../../src/validation/cors.js'
 import * as index from '../../../src/index.js'
+import * as cors from '../../../src/validation/cors.js'
 
 describe('validateCorsOrigin', () => {
   afterEach(() => {

@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as roles from '../../../src/validation/roles.js'
 import * as index from '../../../src/index.js'
+import * as roles from '../../../src/validation/roles.js'
 
 describe('validateRole', () => {
   afterEach(() => {

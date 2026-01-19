@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as functions from '../../../src/validation/functions.js'
 import * as index from '../../../src/index.js'
+import * as functions from '../../../src/validation/functions.js'
 
 describe('validateFunction', () => {
   afterEach(() => {

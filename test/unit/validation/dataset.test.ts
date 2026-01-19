@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as datasets from '../../../src/validation/datasets.js'
 import * as index from '../../../src/index.js'
+import * as datasets from '../../../src/validation/datasets.js'
 
 describe('defineDataset', () => {
   afterEach(() => {
