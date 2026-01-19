@@ -9,9 +9,9 @@
 export type BlueprintResourceDeletionPolicy = 'allow' | 'retain' | 'replace' | 'protect'
 
 /**
- * An ownership action that will cause the references resource to be attached to the current stack.
+ * An ownership action that will cause the referenced resource to be attached to the current stack.
  */
-export type BlueprintOwnershipAttachAction = {
+export interface BlueprintOwnershipAttachAction {
   type: 'attach'
   /** The identifier of the resource to be attached to the current stack */
   id: string
@@ -20,6 +20,18 @@ export type BlueprintOwnershipAttachAction = {
  * A union of all possible ownership actions.
  */
 export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction
+
+/**
+ * An ownership action that will cause the referenced project-contained resource to be attached to the current stack.
+ */
+export interface BlueprintProjectOwnershipAttachAction extends BlueprintOwnershipAttachAction {
+  /** The identifier of the project for resources contained in a project */
+  projectId: string
+}
+/**
+ * A union of all possible ownership actions for resources belonging to projects.
+ */
+export type BlueprintProjectOwnershipAction = BlueprintProjectOwnershipAttachAction
 
 /**
  * Defines the lifcycle policy for this resource.
@@ -31,11 +43,18 @@ export interface BlueprintResourceLifecycle {
 }
 
 /**
+ * Defines the lifcycle policy for this resource.
+ */
+export interface BlueprintProjectResourceLifecycle extends BlueprintResourceLifecycle {
+  ownershipAction?: BlueprintProjectOwnershipAction
+}
+
+/**
  * The base type for all resources.
  */
-export interface BlueprintResource {
+export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle = BlueprintResourceLifecycle> {
   type: string
   name: string
 
-  lifecycle?: BlueprintResourceLifecycle
+  lifecycle?: Lifecycle
 }

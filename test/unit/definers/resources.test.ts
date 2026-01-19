@@ -22,4 +22,10 @@ describe('defineResource', () => {
     expect(r.name).toEqual('test-resource')
     expect(r.type).toEqual('test')
   })
+
+  test('should accept a valid resource with a lifecycle', () => {
+    const r = resources.defineResource({name: 'test-resource', type: 'test', lifecycle: {deletionPolicy: 'allow'}})
+
+    expect(r.lifecycle?.deletionPolicy).toEqual('allow')
+  })
 })

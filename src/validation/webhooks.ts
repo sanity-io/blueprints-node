@@ -1,4 +1,4 @@
-import type {BlueprintError} from '../index.js'
+import {validateResource, type BlueprintError} from '../index.js'
 
 /**
  * Validates that the given resource is a valid Document Webhook.
@@ -9,7 +9,7 @@ export function validateDocumentWebhook(resource: unknown): BlueprintError[] {
   if (!resource) return [{type: 'invalid_value', message: 'Webhook config must be provided'}]
   if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Webhook config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateResource(resource, {projectContained: true})
 
   if (!('name' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Webhook name is required'})

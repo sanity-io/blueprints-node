@@ -37,6 +37,26 @@ describe('defineCorsOrigin', () => {
     expect(corsResource.type).toStrictEqual('sanity.project.cors')
   })
 
+  test('should accept a valid configuration with a lifecycle', () => {
+    const corsResource = cors.defineCorsOrigin({
+      name: 'origin-name',
+      origin: 'http://localhost/',
+      allowCredentials: true,
+
+      lifecycle: {
+        deletionPolicy: 'allow',
+
+        ownershipAction: {
+          type: 'attach',
+          projectId: 'a1b2c3',
+          id: 'abc123',
+        },
+      },
+    })
+
+    expect(corsResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
+  })
+
   test('allowCredentials should default to false if not provided', () => {
     const webhookResource = cors.defineCorsOrigin({
       name: 'origin-name',

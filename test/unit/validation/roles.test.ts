@@ -1,9 +1,14 @@
-import {describe, expect, test} from 'vitest'
-import {validateProjectRole, validateRole} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as roles from '../../../src/validation/roles.js'
+import * as index from '../../../src/index.js'
 
 describe('validateRole', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('should return an error if config is falsey', () => {
-    const errors = validateRole(undefined)
+    const errors = roles.validateRole(undefined)
     expect(errors).toContainEqual({
       type: 'invalid_value',
       message: 'Role config must be provided',
@@ -11,7 +16,7 @@ describe('validateRole', () => {
   })
 
   test('should return an error if config is not an object', () => {
-    const errors = validateRole(1)
+    const errors = roles.validateRole(1)
     expect(errors).toContainEqual({
       type: 'invalid_type',
       message: 'Role config must be an object',
@@ -19,39 +24,39 @@ describe('validateRole', () => {
   })
 
   test('should return an error if name is not provided', () => {
-    const errors = validateRole({})
+    const errors = roles.validateRole({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role name is required'})
   })
 
   test('should return an error if name is not a string', () => {
-    const errors = validateRole({name: 1})
+    const errors = roles.validateRole({name: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Role name must be a string'})
   })
 
   test('should return an error if type is not provided', () => {
-    const errors = validateRole({name: 'role-name'})
+    const errors = roles.validateRole({name: 'role-name'})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role type is required'})
   })
 
   test('should return an error if type is not `sanity.access.role`', () => {
-    const errors = validateRole({name: 'role-name', type: 'invalid'})
+    const errors = roles.validateRole({name: 'role-name', type: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Role type must be `sanity.access.role`'})
   })
 
   test('should return an error if title is not provided', () => {
-    const errors = validateRole({
+    const errors = roles.validateRole({
       name: 'role-name',
     })
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role title is required'})
   })
 
   test('should return an error if title is not a string', () => {
-    const errors = validateRole({title: 1})
+    const errors = roles.validateRole({title: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Role title must be a string'})
   })
 
   test('should return an error if title is too long', () => {
-    const errors = validateRole({
+    const errors = roles.validateRole({
       name: 'role-name',
       title: 'a'.repeat(101),
     })
@@ -59,7 +64,7 @@ describe('validateRole', () => {
   })
 
   test('should return an error if no permissions are provided', () => {
-    const errors = validateRole({
+    const errors = roles.validateRole({
       name: 'role-name',
       title: 'Role Name',
       appliesToRobots: true,
@@ -69,8 +74,28 @@ describe('validateRole', () => {
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Role must have at least one permission'})
   })
 
+  test('should return an error if validateResource returns an error', () => {
+    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    const errors = roles.validateRole({
+      name: 'role-name',
+      type: 'sanity.access.role',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+    })
+
+    expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+    expect(spy).toHaveBeenCalledOnce()
+  })
+
   test('should accept a valid configuration', () => {
-    const errors = validateRole({
+    const errors = roles.validateRole({
       name: 'role-name',
       type: 'sanity.access.role',
       title: 'Role Name',
@@ -89,23 +114,69 @@ describe('validateRole', () => {
 })
 
 describe('validateProjectRole', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('should require a resource type of `project`', () => {
-    const errors = validateProjectRole({})
+    const errors = roles.validateProjectRole({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role resource type must be `project`'})
   })
 
   test('should require resource type to be `project`', () => {
-    const errors = validateProjectRole({resourceType: 'invalid'})
+    const errors = roles.validateProjectRole({resourceType: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Role resource type must be `project`'})
   })
 
   test('should require a resourceId', () => {
-    const errors = validateProjectRole({})
+    const errors = roles.validateProjectRole({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Role resource ID is required'})
   })
 
   test('should require resourceId to be a string', () => {
-    const errors = validateProjectRole({resourceId: 1})
+    const errors = roles.validateProjectRole({resourceId: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Role resource ID must be a string'})
+  })
+
+  test('should return an error if validateResource returns an error', () => {
+    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    const errors = roles.validateProjectRole({
+      name: 'role-name',
+      type: 'sanity.access.role',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+      resourceType: 'project',
+      resourceId: 'test-project-id',
+    })
+
+    expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+    expect(spy).toHaveBeenCalledOnce()
+  })
+
+  test('should accept a valid configuration', () => {
+    const errors = roles.validateProjectRole({
+      name: 'role-name',
+      type: 'sanity.access.role',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+      resourceType: 'project',
+      resourceId: 'test-project-id',
+    })
+
+    expect(errors).toHaveLength(0)
   })
 })

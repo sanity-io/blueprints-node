@@ -7,7 +7,7 @@ describe('defineRole', () => {
     vi.resetAllMocks()
   })
 
-  test('should throw an error validateRole returns an error', () => {
+  test('should throw an error if validateRole returns an error', () => {
     const spy = vi.spyOn(index, 'validateRole').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
       roles.defineRole({name: 'role-name', title: 'Role Name', appliesToRobots: true, appliesToUsers: true, permissions: []}),
@@ -32,6 +32,27 @@ describe('defineRole', () => {
 
     expect(roleResource.type).toStrictEqual('sanity.access.role')
   })
+
+  test('should accept a valid configuration with a lifecycle', () => {
+    const roleResource = roles.defineRole({
+      name: 'role-name',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+
+      lifecycle: {
+        deletionPolicy: 'allow',
+      },
+    })
+
+    expect(roleResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
+  })
 })
 
 describe('defineProjectRole', () => {
@@ -52,5 +73,26 @@ describe('defineProjectRole', () => {
     expect(roleResource.type).toStrictEqual('sanity.access.role')
     expect(roleResource.resourceType).toStrictEqual('project')
     expect(roleResource.resourceId).toStrictEqual('projectId')
+  })
+
+  test('should accept a valid configuration with a lifecycle', () => {
+    const roleResource = roles.defineProjectRole('projectId', {
+      name: 'role-name',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+
+      lifecycle: {
+        deletionPolicy: 'allow',
+      },
+    })
+
+    expect(roleResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
   })
 })

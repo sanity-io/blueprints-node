@@ -1,9 +1,14 @@
-import {describe, expect, test} from 'vitest'
-import {validateCorsOrigin} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as cors from '../../../src/validation/cors.js'
+import * as index from '../../../src/index.js'
 
 describe('validateCorsOrigin', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('should return an error if config is falsey', () => {
-    const errors = validateCorsOrigin(undefined)
+    const errors = cors.validateCorsOrigin(undefined)
     expect(errors).toContainEqual({
       type: 'invalid_value',
       message: 'CORS Origin config must be provided',
@@ -11,7 +16,7 @@ describe('validateCorsOrigin', () => {
   })
 
   test('should return an error if config is not an object', () => {
-    const errors = validateCorsOrigin(1)
+    const errors = cors.validateCorsOrigin(1)
     expect(errors).toContainEqual({
       type: 'invalid_type',
       message: 'CORS Origin config must be an object',
@@ -19,29 +24,29 @@ describe('validateCorsOrigin', () => {
   })
 
   test('should return an error if name is not provided', () => {
-    const errors = validateCorsOrigin({})
+    const errors = cors.validateCorsOrigin({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'CORS Origin name is required'})
   })
 
   test('should return an error if name is not a string', () => {
-    const errors = validateCorsOrigin({name: 1})
+    const errors = cors.validateCorsOrigin({name: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin name must be a string'})
   })
 
   test('should return an error if type is not sanity.project.cors', () => {
-    const errors = validateCorsOrigin({type: 'invalid'})
+    const errors = cors.validateCorsOrigin({type: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'CORS Origin type must be `sanity.project.cors`'})
   })
 
   test('should return an error if URL is not provided', () => {
-    const errors = validateCorsOrigin({
+    const errors = cors.validateCorsOrigin({
       name: 'origin-name',
     })
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'CORS Origin URL is required'})
   })
 
   test('should return an error if URL is not a string', () => {
-    const errors = validateCorsOrigin({
+    const errors = cors.validateCorsOrigin({
       name: 'origin-name',
       origin: 1,
     })
@@ -49,7 +54,7 @@ describe('validateCorsOrigin', () => {
   })
 
   test('should return an error if project is not a string', () => {
-    const errors = validateCorsOrigin({
+    const errors = cors.validateCorsOrigin({
       name: 'origin-name',
       type: 'sanity.project.cors',
       origin: 'http://localhost/',
@@ -59,8 +64,21 @@ describe('validateCorsOrigin', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin project must be a string'})
   })
 
+  test('should return an error if validateResource returns an error', () => {
+    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost/',
+      allowCredentials: true,
+      project: 'abcdefg',
+    })
+    expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+    expect(spy).toHaveBeenCalledOnce()
+  })
+
   test('should accept a valid configuration', () => {
-    const errors = validateCorsOrigin({
+    const errors = cors.validateCorsOrigin({
       name: 'origin-name',
       type: 'sanity.project.cors',
       origin: 'http://localhost/',
@@ -68,6 +86,6 @@ describe('validateCorsOrigin', () => {
       project: 'abcdefg',
     })
 
-    expect(errors).toHaveLength(0)
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
   })
 })

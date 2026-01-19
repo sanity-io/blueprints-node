@@ -1,8 +1,9 @@
-import type {
-  BlueprintDocumentFunctionResourceEvent,
-  BlueprintError,
-  BlueprintFunctionBaseResourceEvent,
-  BlueprintMediaLibraryFunctionResourceEvent,
+import {
+  validateResource,
+  type BlueprintDocumentFunctionResourceEvent,
+  type BlueprintError,
+  type BlueprintFunctionBaseResourceEvent,
+  type BlueprintMediaLibraryFunctionResourceEvent,
 } from '../index.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
@@ -16,7 +17,7 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateFunction(functionResource)
 
   // event validation
   if ('event' in functionResource) {
@@ -38,8 +39,6 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.document`'})
   }
 
-  errors.push(...validateFunction(functionResource))
-
   return errors
 }
 
@@ -47,7 +46,7 @@ export function validateMediaLibraryAssetFunction(functionResource: unknown): Bl
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateFunction(functionResource)
 
   if ('event' in functionResource) {
     errors.push(...validateMediaLibraryFunctionEvent(functionResource.event))
@@ -59,8 +58,6 @@ export function validateMediaLibraryAssetFunction(functionResource: unknown): Bl
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.media-library.asset`'})
   }
 
-  errors.push(...validateFunction(functionResource))
-
   return errors
 }
 
@@ -68,7 +65,7 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateResource(functionResource)
 
   if (!('name' in functionResource)) {
     errors.push({type: 'missing_parameter', message: '`name` is required'})

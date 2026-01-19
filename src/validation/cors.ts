@@ -1,4 +1,4 @@
-import type {BlueprintError} from '../index.js'
+import {validateResource, type BlueprintError} from '../index.js'
 
 /**
  * Validates that the given resource is a valid CORS origin.
@@ -9,7 +9,7 @@ export function validateCorsOrigin(resource: unknown): BlueprintError[] {
   if (!resource) return [{type: 'invalid_value', message: 'CORS Origin config must be provided'}]
   if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'CORS Origin config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateResource(resource, {projectContained: true})
 
   if (!('name' in resource) || !resource.name) {
     errors.push({type: 'missing_parameter', message: 'CORS Origin name is required'})
