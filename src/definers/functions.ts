@@ -23,21 +23,21 @@ interface RequiredFunctionProperties {
 }
 
 /**
- * Defines a document function that is triggered by document events in Sanity datasets.
+ * Defines a function that is triggered by document events in Sanity datasets.
  * ```
  * defineDocumentFunction({
- *   name: 'generate-report',
- *   src: 'functions/generate-report',
- *   memory: 2,
- *   timeout: 360,
+ *   name: 'my-document-function',
+ *   src: 'functions/my-function',
+ *   memory: 3,
+ *   timeout: 300,
  *   event: {
  *     on: ['create', 'update'],
- *     filter: "_type == 'customer'",
- *     projection: "{totalSpend, lastOrderDate}",
+ *     filter: "_type == 'some-type'",
+ *     projection: "{title, _id, _type}",
  *     includeDrafts: false,
  *   },
  *   env: {
- *     CURRENCY: 'USD',
+ *     MY_ENV_VAR: 'custom-value',
  *   },
  * })
  * ```
@@ -102,18 +102,22 @@ export function defineDocumentFunction(
 }
 
 /**
- * Defines a media library asset function that is triggered by media library events.
+ * Defines a function that is triggered by media library events.
  * ```
  * defineMediaLibraryAssetFunction({
- *   name: 'process-asset',
- *   src: 'functions/process-asset',
+ *   name: 'my-media-library-function',
+ *   src: 'functions/media-library-function',
  *   event: {
  *     on: ['create', 'update'],
  *     resource: {
  *       type: 'media-library',
- *       id: 'ml12345',
+ *       id: 'my-media-library-id',
  *     },
- *     filter: "mimeType match 'image/*'",
+ *     filter: "type == 'my-type'",
+ *     projection: "{_id}",
+ *   },
+ *   env: {
+ *     MY_ENV_VAR: 'custom-value',
  *   },
  * })
  * ```
@@ -161,7 +165,7 @@ export function defineMediaLibraryAssetFunction(
  *   timeout: 300,
  *   memory: 1,
  *   env: {
- *     API_KEY: 'your-api-key',
+ *     MY_ENV_VAR: 'my-custom-value'
  *   },
  * })
  * ```

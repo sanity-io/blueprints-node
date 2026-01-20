@@ -8,7 +8,7 @@ export interface BlueprintFunctionBaseResourceEvent {
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   /** GROQ filter expression to match specific documents (e.g., "_type == 'post'") */
   filter?: string
-  /** GROQ projection to specify which fields to include (e.g., "{title, slug}") */
+  /** GROQ projection to specify which fields to include (e.g., "{_id, title, slug}") */
   projection?: `{${string}}`
   /** Include draft documents in addition to published documents */
   includeDrafts?: boolean
@@ -28,7 +28,10 @@ export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFun
 /** Union type of all function resource event configurations */
 export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEvent | BlueprintMediaLibraryFunctionResourceEvent
 
-/** Dataset resource for scoping document functions to specific datasets */
+/**
+ * Dataset resource for scoping document functions to specific datasets
+ * @examnple { type: 'dataset', id: 'my-project.production' }
+ */
 interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
   /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
@@ -40,7 +43,7 @@ interface BlueprintFunctionResourceEventResourceMediaLibrary {
   id: string
 }
 
-/** Types of events that can trigger a function */
+/** Events that can trigger a function */
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
 // --- Main Function Types ---
@@ -55,9 +58,9 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
   timeout?: number
   /** Memory allocation in gigabytes */
   memory?: number
-  /** Environment variables available to the function */
+  /** Environment variables provided to the function */
   env?: Record<string, string>
-  /** Robot token for authentication */
+  /** Token for provided during function invocation */
   robotToken?: string
 }
 /** A function resource triggered by document events in Sanity datasets */

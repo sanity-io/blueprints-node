@@ -14,7 +14,7 @@ const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resourc
 
 /**
  * Validates a document function resource configuration.
- * Checks that the function has valid event configuration, correct type, and all required base properties.
+ * Checks that the function has a valid event configuration, correct type, and all required base properties.
  * @param functionResource The function resource to validate
  * @returns Array of validation errors, empty if valid
  */
@@ -51,7 +51,7 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
 
 /**
  * Validates a media library asset function resource configuration.
- * Checks that the function has valid event configuration with required resource, correct type, and all required base properties.
+ * Checks that the function has a valid event configuration with required resource, correct type, and all required base properties.
  * @param functionResource The function resource to validate
  * @returns Array of validation errors, empty if valid
  */
