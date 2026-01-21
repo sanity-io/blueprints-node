@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.8.0](https://github.com/sanity-io/blueprints-node/compare/v0.7.1...v0.8.0) (2026-01-21)
+
+
+### Features
+
+* Add lifecycle to base resource type ([#48](https://github.com/sanity-io/blueprints-node/issues/48)) ([06e1381](https://github.com/sanity-io/blueprints-node/commit/06e13814ea70a2037a4c754ba61bb88eb949adbc))
+* Add ownershipAction lifecycle property ([#49](https://github.com/sanity-io/blueprints-node/issues/49)) ([8532218](https://github.com/sanity-io/blueprints-node/commit/853221883e159cd8a87c5b7ae1a0122948fce856))
+* add robot token to defineFunction ([#44](https://github.com/sanity-io/blueprints-node/issues/44)) ([e937d31](https://github.com/sanity-io/blueprints-node/commit/e937d31eed3f0c344efcec04099c1507e8476137))
+* Allow specifying a projectId for attachment and improve validation ([#51](https://github.com/sanity-io/blueprints-node/issues/51)) ([4c5e451](https://github.com/sanity-io/blueprints-node/commit/4c5e4511d364ac9f202d3e6aac3de806988e1c7a))
+* Robot definer and validation ([#47](https://github.com/sanity-io/blueprints-node/issues/47)) ([0e71fe2](https://github.com/sanity-io/blueprints-node/commit/0e71fe2c795340a15221c8e2fda550832df474c3))
+
+
+### Bug Fixes
+
+* Improve code documentation ([#50](https://github.com/sanity-io/blueprints-node/issues/50)) ([ca6802f](https://github.com/sanity-io/blueprints-node/commit/ca6802f69e9543837115531566e19b4468654cd0))
+
 ## [0.7.1](https://github.com/sanity-io/blueprints-node/compare/v0.7.0...v0.7.1) (2025-12-17)
 
 
