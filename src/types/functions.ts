@@ -2,7 +2,7 @@ import type {BlueprintResource} from '../index.js'
 
 // --- Function Event Types ---
 
-/** Base event configuration shared by all function types */
+/** Base event configuration shared by document and media library function types */
 export interface BlueprintFunctionBaseResourceEvent {
   /** Event types that trigger the function. Defaults to ['publish'] */
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
