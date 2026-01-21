@@ -83,6 +83,22 @@ describe('validateResource', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.id` must be a string'})
   })
 
+  test('should return an error if lifecycle.ownershipAction has no projectId', () => {
+    const errors = validateResource(
+      {name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'attach', id: 'test-id'}}},
+      {projectContained: true},
+    )
+    expect(errors).toContainEqual({type: 'missing_parameter', message: '`ownershipAction.projectId` is required for attach'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction.projectId is not a string', () => {
+    const errors = validateResource(
+      {name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'attach', projectId: 1, id: 'test-id'}}},
+      {projectContained: true},
+    )
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.projectId` must be a string'})
+  })
+
   test('should return no errors for a valid resource', () => {
     const errors = validateResource({
       name: 'test',

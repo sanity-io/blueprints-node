@@ -31,6 +31,25 @@ describe('defineRobot', () => {
     expect(datasetResource.label).toStrictEqual('robot-name')
   })
 
+  test('should accept a valid configuration with a lifecycle', () => {
+    const datasetResource = robots.defineRobot({
+      name: 'robot-name',
+      memberships: [
+        {
+          resourceType: 'project',
+          resourceId: 'test-project',
+          roleNames: ['test-role'],
+        },
+      ],
+
+      lifecycle: {
+        deletionPolicy: 'allow',
+      },
+    })
+
+    expect(datasetResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
+  })
+
   test('should throw if validateRobot returns an error', () => {
     const spy = vi.spyOn(index, 'validateRobot').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>

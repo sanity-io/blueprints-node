@@ -34,6 +34,22 @@ describe('defineDocumentWebhook', () => {
     expect(webhookResource.type).toStrictEqual('sanity.project.webhook')
   })
 
+  test('should accept a valid configuration with a lifecycle', () => {
+    const webhookResource = webhooks.defineDocumentWebhook({
+      name: 'webhook-name',
+      url: 'http://localhost/',
+      on: ['create'],
+      dataset: 'abcdefg',
+      apiVersion: 'vX',
+
+      lifecycle: {
+        deletionPolicy: 'allow',
+      },
+    })
+
+    expect(webhookResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
+  })
+
   test('displayName should default to name if not provided', () => {
     const webhookResource = webhooks.defineDocumentWebhook({
       name: 'webhook-name',

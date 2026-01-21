@@ -25,6 +25,19 @@ describe('defineDataset', () => {
     expect(datasetResource.datasetName).toStrictEqual('dataset-name')
   })
 
+  test('should accept a valid configuration with a lifecycle', () => {
+    const datasetResource = datasets.defineDataset({
+      name: 'dataset-name',
+      aclMode: 'public',
+
+      lifecycle: {
+        deletionPolicy: 'allow',
+      },
+    })
+
+    expect(datasetResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
+  })
+
   test('should throw if validateDataset returns an error', () => {
     const spy = vi.spyOn(index, 'validateDataset').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>

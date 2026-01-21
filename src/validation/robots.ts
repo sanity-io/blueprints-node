@@ -1,4 +1,4 @@
-import type {BlueprintError} from '../index.js'
+import {type BlueprintError, validateResource} from '../index.js'
 
 /**
  * Validates that the given resource is a valid Robot.
@@ -9,7 +9,7 @@ export function validateRobot(resource: unknown): BlueprintError[] {
   if (!resource) return [{type: 'invalid_value', message: 'Robot config must be provided'}]
   if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Robot config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateResource(resource, {projectContained: true})
 
   if (!('name' in resource) || !resource.name) {
     errors.push({type: 'missing_parameter', message: 'Robot name is required'})

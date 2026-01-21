@@ -1,29 +1,34 @@
-import {describe, expect, test} from 'vitest'
-import {validateDocumentWebhook} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as index from '../../../src/index.js'
+import * as webhooks from '../../../src/validation/webhooks.js'
 
 describe('validateDocumentWebhook', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('should return an error if name is not provided', () => {
-    const errors = validateDocumentWebhook({})
+    const errors = webhooks.validateDocumentWebhook({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Webhook name is required'})
   })
 
   test('should return an error if name is not a string', () => {
-    const errors = validateDocumentWebhook({name: 1})
+    const errors = webhooks.validateDocumentWebhook({name: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Webhook name must be a string'})
   })
 
   test('should return an error if type is not provided', () => {
-    const errors = validateDocumentWebhook({name: 'webhook-name'})
+    const errors = webhooks.validateDocumentWebhook({name: 'webhook-name'})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Webhook type is required'})
   })
 
   test('should return an error if type is not `sanity.project.webhook`', () => {
-    const errors = validateDocumentWebhook({name: 'webhook-name', type: 'invalid'})
+    const errors = webhooks.validateDocumentWebhook({name: 'webhook-name', type: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Webhook type must be `sanity.project.webhook`'})
   })
 
   test('should return an error if displayName is not a string', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       displayName: 1,
     })
@@ -31,7 +36,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if displayName is too long', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       displayName: 'a'.repeat(101),
     })
@@ -39,14 +44,14 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if URL is not provided', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
     })
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Webhook URL is required'})
   })
 
   test('should return an error if URL is not a string', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 1,
     })
@@ -54,7 +59,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if URL is not valid', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'not-valid-url',
     })
@@ -62,7 +67,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if on is not provided', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
     })
@@ -70,7 +75,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if on is empty', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: [],
@@ -79,7 +84,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if on contains an invalid value', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['invalid'],
@@ -91,7 +96,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if dataset is not provided', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -101,7 +106,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if dataset is invalid', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -111,7 +116,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if http method is invalid', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -125,7 +130,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if http method is not a string', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -139,7 +144,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if status is invalid', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -150,7 +155,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if status is not a string', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -161,7 +166,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if headers is not an object', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -172,7 +177,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if a header key is invalid', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -185,7 +190,7 @@ describe('validateDocumentWebhook', () => {
   })
 
   test('should return an error if a header value is invalid', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       url: 'http://localhost/',
       on: ['create'],
@@ -197,8 +202,22 @@ describe('validateDocumentWebhook', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Header value for "header" must be a string'})
   })
 
+  test('should return an error if validateResource returns an error', () => {
+    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    const errors = webhooks.validateDocumentWebhook({
+      name: 'webhook-name',
+      type: 'sanity.project.webhook',
+      url: 'http://localhost/',
+      on: ['create'],
+      dataset: 'abcdefg',
+    })
+
+    expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+    expect(spy).toHaveBeenCalledOnce()
+  })
+
   test('should accept a valid configuration', () => {
-    const errors = validateDocumentWebhook({
+    const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',
       type: 'sanity.project.webhook',
       url: 'http://localhost/',

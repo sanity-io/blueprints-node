@@ -1,4 +1,4 @@
-import type {BlueprintError} from '../index.js'
+import {type BlueprintError, validateResource} from '../index.js'
 
 /**
  * Validates that the given resource is a valid Role.
@@ -9,7 +9,7 @@ export function validateRole(resource: unknown): BlueprintError[] {
   if (!resource) return [{type: 'invalid_value', message: 'Role config must be provided'}]
   if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Role config must be an object'}]
 
-  const errors: BlueprintError[] = []
+  const errors: BlueprintError[] = validateResource(resource, {projectContained: true})
 
   if (!('name' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Role name is required'})

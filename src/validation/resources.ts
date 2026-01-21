@@ -4,9 +4,10 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Validates that the given resource is a valid resource.
  * @param resource The resource
+ * @param options Validation options
  * @returns A list of validation errors
  */
-export function validateResource(resourceConfig: unknown): BlueprintError[] {
+export function validateResource(resourceConfig: unknown, options?: {projectContained?: boolean}): BlueprintError[] {
   if (!resourceConfig) return [{type: 'invalid_value', message: 'Resource config must be provided'}]
   if (typeof resourceConfig !== 'object') return [{type: 'invalid_type', message: 'Resource config must be an object'}]
 
@@ -52,6 +53,14 @@ export function validateResource(resourceConfig: unknown): BlueprintError[] {
               errors.push({type: 'missing_parameter', message: '`ownershipAction.id` is required for attach'})
             } else if (typeof ownershipAction.id !== 'string') {
               errors.push({type: 'invalid_type', message: '`ownershipAction.id` must be a string'})
+            }
+
+            if (options?.projectContained) {
+              if (!('projectId' in ownershipAction)) {
+                errors.push({type: 'missing_parameter', message: '`ownershipAction.projectId` is required for attach'})
+              } else if (typeof ownershipAction.projectId !== 'string') {
+                errors.push({type: 'invalid_type', message: '`ownershipAction.projectId` must be a string'})
+              }
             }
           }
         }

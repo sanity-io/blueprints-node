@@ -41,6 +41,10 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
     permissions: parameters.permissions,
   }
 
+  if (parameters.lifecycle) {
+    roleResource.lifecycle = parameters.lifecycle
+  }
+
   if (options?.skipValidation !== true) runValidation(() => validateRole(roleResource))
 
   return roleResource

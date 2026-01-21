@@ -1,9 +1,14 @@
-import {describe, expect, test} from 'vitest'
-import {validateDataset} from '../../../src/index.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import * as index from '../../../src/index.js'
+import * as datasets from '../../../src/validation/datasets.js'
 
 describe('defineDataset', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   test('should accept a valid configuration', () => {
-    const errors = validateDataset({
+    const errors = datasets.validateDataset({
       name: 'dataset-name',
       type: 'sanity.project.dataset',
       aclMode: 'public',
@@ -12,8 +17,20 @@ describe('defineDataset', () => {
     expect(errors).toHaveLength(0)
   })
 
+  test('should return an error if validateResource returns an error', () => {
+    const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    const errors = datasets.validateDataset({
+      name: 'dataset-name',
+      type: 'sanity.project.dataset',
+      aclMode: 'public',
+    })
+
+    expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+    expect(spy).toHaveBeenCalledOnce()
+  })
+
   test('should return an error if config is falsey', () => {
-    const errors = validateDataset(undefined)
+    const errors = datasets.validateDataset(undefined)
     expect(errors).toContainEqual({
       type: 'invalid_value',
       message: 'Dataset config must be provided',
@@ -21,7 +38,7 @@ describe('defineDataset', () => {
   })
 
   test('should return an error if config is not an object', () => {
-    const errors = validateDataset(1)
+    const errors = datasets.validateDataset(1)
     expect(errors).toContainEqual({
       type: 'invalid_type',
       message: 'Dataset config must be an object',
@@ -29,22 +46,22 @@ describe('defineDataset', () => {
   })
 
   test('should return an error if name is not provided', () => {
-    const errors = validateDataset({})
+    const errors = datasets.validateDataset({})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Dataset name is required'})
   })
 
   test('should return an error if name is not a string', () => {
-    const errors = validateDataset({name: 1})
+    const errors = datasets.validateDataset({name: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Dataset name must be a string'})
   })
 
   test('should return an error if type is not sanity.project.cors', () => {
-    const errors = validateDataset({type: 'invalid'})
+    const errors = datasets.validateDataset({type: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Dataset type must be `sanity.project.dataset`'})
   })
 
   test('should return an error if non-string aclMode is provided', () => {
-    const errors = validateDataset({
+    const errors = datasets.validateDataset({
       name: 'dataset-name',
       aclMode: 1,
     })
@@ -52,7 +69,7 @@ describe('defineDataset', () => {
   })
 
   test('should return an error if invalid aclMode is provided', () => {
-    const errors = validateDataset({
+    const errors = datasets.validateDataset({
       name: 'dataset-name',
       aclMode: 'invalid',
     })
@@ -60,7 +77,7 @@ describe('defineDataset', () => {
   })
 
   test('should return an error if invalid project data type is provided', () => {
-    const errors = validateDataset({
+    const errors = datasets.validateDataset({
       name: 'dataset-name',
       project: 1,
     })

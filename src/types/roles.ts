@@ -15,8 +15,7 @@ export interface RolePermission {
 /**
  * Configuration for a custom role.
  */
-export interface BlueprintRoleConfig {
-  name: string
+export interface BlueprintRoleConfig extends Omit<BlueprintResource, 'type'> {
   title: string
   description?: string
   appliesToUsers: boolean
