@@ -1,4 +1,4 @@
-import {type BlueprintResource, assertResource} from '../index.js'
+import {assertResource, type BlueprintResource} from '../index.js'
 
 /**
  * Defines a generic resource to be managed in Blueprints.
