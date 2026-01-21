@@ -60,7 +60,7 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
   memory?: number
   /** Environment variables provided to the function */
   env?: Record<string, string>
-  /** Token for provided during function invocation */
+  /** Token provided during function invocation */
   robotToken?: string
 }
 /** A function resource triggered by document events in Sanity datasets */
