@@ -30,7 +30,7 @@ export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEv
 
 /**
  * Dataset resource for scoping document functions to specific datasets
- * @examnple { type: 'dataset', id: 'my-project.production' }
+ * @example { type: 'dataset', id: 'my-project.production' }
  */
 interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
