@@ -20,9 +20,6 @@ import {
   type BlueprintResource,
   type BlueprintRoleConfig,
   type BlueprintRoleResource,
-  type RolePermission,
-  // type BlueprintsApiConfig,
-  type WebhookTrigger,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -30,6 +27,7 @@ import {
   defineMediaLibraryAssetFunction,
   defineProjectRole,
   defineRole,
+  type RolePermission,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -39,15 +37,17 @@ import {
   validateMediaLibraryAssetFunction,
   validateResource,
   validateRole,
+  // type BlueprintsApiConfig,
+  type WebhookTrigger,
 } from '@sanity/blueprints'
 
 /**
  * These 'tests' create typed objects mimicking how users would import types from this package.
  */
 
-const aclModePublic: AclMode = 'public'
-const aclModePrivate: AclMode = 'private'
-const aclModeCustom: AclMode = 'custom'
+const _aclModePublic: AclMode = 'public'
+const _aclModePrivate: AclMode = 'private'
+const _aclModeCustom: AclMode = 'custom'
 
 const corsOriginConfig: BlueprintCorsOriginConfig = {
   name: 'cors-name',
@@ -65,7 +65,7 @@ const datasetConfig: BlueprintDatasetConfig = {
 }
 const datasetResource: BlueprintDatasetResource = defineDataset(datasetConfig)
 
-const documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
+const _documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
   filter: 'filter',
   includeAllVersions: false,
   includeDrafts: false,
@@ -75,9 +75,9 @@ const documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
 }
 const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({name: 'sup'})
 
-const webhookTriggerCreate: WebhookTrigger = 'create'
-const webhookTriggerUpdate: WebhookTrigger = 'update'
-const webhookTriggerDelete: WebhookTrigger = 'delete'
+const _webhookTriggerCreate: WebhookTrigger = 'create'
+const _webhookTriggerUpdate: WebhookTrigger = 'update'
+const _webhookTriggerDelete: WebhookTrigger = 'delete'
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
   name: 'webhook-name',
