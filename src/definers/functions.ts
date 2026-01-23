@@ -5,9 +5,14 @@ import {
   type BlueprintFunctionBaseResourceEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  type BlueprintScheduleFunctionExplicitResourceEvent,
+  type BlueprintScheduleFunctionExpressionResourceEvent,
+  type BlueprintScheduleFunctionResource,
+  type BlueprintScheduleFunctionResourceEvent,
   validateDocumentFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validateScheduleFunction,
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
@@ -17,6 +22,10 @@ type DocumentFunctionEventKey = keyof BlueprintDocumentFunctionResourceEvent
 const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersions', 'resource', ...BASE_EVENT_KEYS.values()])
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
+type ScheduleFunctionEventKey =
+  | keyof BlueprintScheduleFunctionExplicitResourceEvent
+  | keyof BlueprintScheduleFunctionExpressionResourceEvent
+const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
 
 interface RequiredFunctionProperties {
   name: string
@@ -157,6 +166,60 @@ export function defineMediaLibraryAssetFunction(
 }
 
 /**
+ * Defines a function that is triggered on a schedule.
+ * ```
+ * defineScheduleFunction({
+ *   name: 'my-schedule-function',
+ *   src: 'functions/schedule-function',
+ *   memory: 3,
+ *   timeout: 300,
+ *   event: {
+ *     minute: "0",
+ *     hour: "0",
+ *     dayOfMonth: "*",
+ *     month: "*",
+ *     dayOfWeek: "*",
+ *   },
+ * })
+ * ```
+ * @param functionConfig The configuration for the document function
+ * @returns The validated schedule function resource
+ */
+export function defineScheduleFunction(
+  functionConfig: Partial<BlueprintScheduleFunctionResource> &
+    RequiredFunctionProperties &
+    Pick<BlueprintScheduleFunctionResource, 'event'> &
+    Partial<BlueprintScheduleFunctionResourceEvent>,
+): BlueprintScheduleFunctionResource {
+  let {name, src, event, timeout, memory, env, type, timezone} = functionConfig
+  if (!type) type = 'sanity.function.cron'
+
+  const functionResource: BlueprintScheduleFunctionResource = {
+    ...defineFunction(
+      {
+        name,
+        src,
+        timeout,
+        memory,
+        env,
+      },
+      {
+        skipValidation: true, // already done below
+      },
+    ),
+    type,
+    event: buildScheduleFunctionEvent(event),
+  }
+  if (timezone) {
+    functionResource.timezone = timezone
+  }
+
+  runValidation(() => validateScheduleFunction(functionResource))
+
+  return functionResource
+}
+
+/**
  * Defines a base function resource with common properties.
  * ```
  * defineFunction({
@@ -231,4 +294,12 @@ function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionReso
     ...cleanEvent,
   }
   return fullEvent
+}
+
+function buildScheduleFunctionEvent(event: BlueprintScheduleFunctionResourceEvent): BlueprintScheduleFunctionResourceEvent {
+  const cleanEvent = Object.fromEntries(
+    Object.entries(event).filter(([key]) => SCHEDULE_EVENT_KEYS.has(key as ScheduleFunctionEventKey)),
+  ) as BlueprintScheduleFunctionResourceEvent
+
+  return cleanEvent
 }

@@ -162,3 +162,50 @@ describe('defineMediaLibraryAssetFunction', () => {
     })
   })
 })
+
+describe('defineScheduleFunction', () => {
+  describe('happy paths', () => {
+    test('should create a scheduled event with explicit cron fields', () => {
+      const event = {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event,
+      })
+      expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+    })
+
+    test('should create a scheduled event with expression', () => {
+      const event = {expression: '* * * * *'}
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event,
+      })
+      expect(fn.event).toEqual({expression: '* * * * *'})
+    })
+
+    test('should create a scheduled function with optional timezone', () => {
+      const event = {expression: '* * * * *'}
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event,
+        timezone: 'America/New_York',
+      })
+      expect(fn.timezone).toEqual('America/New_York')
+    })
+  })
+
+  describe('sad paths', () => {
+    afterEach(() => {
+      vi.resetAllMocks()
+    })
+
+    test('should throw an error if validateScheduleFunction returns an error', () => {
+      const spy = vi.spyOn(index, 'validateScheduleFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      expect(() =>
+        fns.defineScheduleFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
+      ).toThrow('this is a test')
+
+      expect(spy).toHaveBeenCalledOnce()
+    })
+  })
+})

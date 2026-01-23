@@ -233,3 +233,137 @@ describe('validateMediaLibraryAssetFunction', () => {
     })
   })
 })
+
+describe('validateScheduleFunction', () => {
+  describe('happy paths', () => {
+    test('should accept a valid media library function', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toHaveLength(0)
+    })
+    test('should accept a valid media library function with optional timezone', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        timezone: 'America/New_York',
+      })
+      expect(errors).toHaveLength(0)
+    })
+  })
+  describe('sad paths', () => {
+    test('should return an error if the type is not `sanity.function.cron`', () => {
+      const errors = functions.validateScheduleFunction({type: 'invalid'})
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.cron`',
+      })
+    })
+
+    test('should return an error if event specifies expression and explicit properties', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {expression: '* * * * *', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_property',
+        message: 'Cannot specify both `expression` and explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`)',
+      })
+    })
+
+    test('should return an error if timezone is invalid', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {expression: '* * * * *'},
+        timezone: 'America/Duckberg',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`timezone` must be a valid IANA timezone',
+      })
+    })
+
+    test('should return an error if event does not specify expression or explicit properties', () => {
+      const errors = functions.validateScheduleFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {},
+      })
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
+      })
+    })
+
+    test('should return an error if event is missing properties', () => {
+      const func = {name: 'test', type: 'sanity.function.cron'}
+      let errors = functions.validateScheduleFunction({
+        ...func,
+        event: {hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'missing_parameter', message: '`minute` must be provided'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {minute: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'missing_parameter', message: '`hour` must be provided'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {hour: '*', minute: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'missing_parameter', message: '`dayOfMonth` must be provided'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {hour: '*', minute: '*', dayOfMonth: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'missing_parameter', message: '`month` must be provided'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {hour: '*', minute: '*', dayOfMonth: '*', month: '*'},
+      })
+      expect(errors).toContainEqual({type: 'missing_parameter', message: '`dayOfWeek` must be provided'})
+    })
+
+    test('should return an error if event are not string properties', () => {
+      const func = {name: 'test', type: 'sanity.function.cron'}
+      let errors = functions.validateScheduleFunction({
+        ...func,
+        event: {minute: 1, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`minute` must be a string'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {minute: '*', hour: 1, dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`hour` must be a string'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {minute: '*', hour: '*', dayOfMonth: 1, month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {minute: '*', hour: '*', dayOfMonth: '*', month: 1, dayOfWeek: '*'},
+      })
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`month` must be a string'})
+
+      errors = functions.validateScheduleFunction({
+        ...func,
+        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: 1},
+      })
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+    })
+  })
+})
