@@ -14,7 +14,7 @@ import {
   validateMediaLibraryAssetFunction,
   validateScheduleFunction,
 } from '../index.js'
-import { runValidation } from '../utils/validation.js'
+import {runValidation} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -65,7 +65,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let { name, src, event, timeout, memory, env, type, robotToken, ...maybeEvent } = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
   // event validation and normalization
@@ -139,7 +139,7 @@ export function defineMediaLibraryAssetFunction(
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  let { name, src, event, timeout, memory, env, type, robotToken } = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken} = functionConfig
   if (!type) type = 'sanity.function.media-library.asset'
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
@@ -191,7 +191,7 @@ export function defineScheduleFunction(
     Pick<BlueprintScheduleFunctionResource, 'event'> &
     Partial<BlueprintScheduleFunctionResourceEvent>,
 ): BlueprintScheduleFunctionResource {
-  let { name, src, event, timeout, memory, env, type, timezone } = functionConfig
+  let {name, src, event, timeout, memory, env, type, timezone} = functionConfig
   if (!type) type = 'sanity.function.cron'
 
   const functionResource: BlueprintScheduleFunctionResource = {
@@ -238,9 +238,9 @@ export function defineScheduleFunction(
  */
 export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
-  options?: { skipValidation?: boolean },
+  options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let { name, src, timeout, memory, env, type, robotToken } = functionConfig
+  let {name, src, timeout, memory, env, type, robotToken} = functionConfig
 
   // defaults
   if (!src) src = `functions/${name}`

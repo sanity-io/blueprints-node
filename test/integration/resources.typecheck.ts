@@ -22,9 +22,6 @@ import {
   type BlueprintRoleResource,
   type BlueprintScheduleFunctionResource,
   type BlueprintScheduleFunctionResourceEvent,
-  type RolePermission,
-  // type BlueprintsApiConfig,
-  type WebhookTrigger,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -33,6 +30,7 @@ import {
   defineProjectRole,
   defineRole,
   defineScheduleFunction,
+  type RolePermission,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -43,6 +41,8 @@ import {
   validateResource,
   validateRole,
   validateScheduleFunction,
+  // type BlueprintsApiConfig,
+  type WebhookTrigger,
 } from '@sanity/blueprints'
 
 /**
@@ -94,10 +94,6 @@ const scheduleFunctionResource: BlueprintScheduleFunctionResource = defineSchedu
   event: scheduleFunctionResourceEvent,
   timezone: 'America/New_York',
 })
-
-const webhookTriggerCreate: WebhookTrigger = 'create'
-const webhookTriggerUpdate: WebhookTrigger = 'update'
-const webhookTriggerDelete: WebhookTrigger = 'delete'
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
   name: 'webhook-name',
