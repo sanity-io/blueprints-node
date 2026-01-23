@@ -165,6 +165,26 @@ export function defineMediaLibraryAssetFunction(
   return functionResource
 }
 
+/**
+ * Defines a function that is triggered on a schedule.
+ * ```
+ * defineScheduleFunction({
+ *   name: 'my-schedule-function',
+ *   src: 'functions/schedule-function',
+ *   memory: 3,
+ *   timeout: 300,
+ *   event: {
+ *     minute: "0",
+ *     hour: "0",
+ *     dayOfMonth: "*",
+ *     month: "*",
+ *     dayOfWeek: "*",
+ *   },
+ * })
+ * ```
+ * @param functionConfig The configuration for the document function
+ * @returns The validated schedule function resource
+ */
 export function defineScheduleFunction(
   functionConfig: Partial<BlueprintScheduleFunctionResource> &
     RequiredFunctionProperties &

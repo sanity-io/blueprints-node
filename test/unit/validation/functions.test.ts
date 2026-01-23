@@ -245,10 +245,10 @@ describe('validateScheduleFunction', () => {
       expect(errors).toHaveLength(0)
     })
     test('should accept a valid media library function with optional timezone', () => {
-      const errors = validateScheduleFunction({
+      const errors = functions.validateScheduleFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
         timezone: 'America/New_York',
       })
       expect(errors).toHaveLength(0)
@@ -276,10 +276,10 @@ describe('validateScheduleFunction', () => {
     })
 
     test('should return an error if timezone is invalid', () => {
-      const errors = validateScheduleFunction({
+      const errors = functions.validateScheduleFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {expression: '* * * * *'},
+        event: { expression: '* * * * *' },
         timezone: 'America/Duckberg',
       })
       expect(errors).toContainEqual({
