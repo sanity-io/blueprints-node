@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0](https://github.com/sanity-io/blueprints-node/compare/v0.8.0...v0.9.0) (2026-01-26)
+
+
+### Features
+
+* defineScheduleFunction ([#41](https://github.com/sanity-io/blueprints-node/issues/41)) ([e7b3ae5](https://github.com/sanity-io/blueprints-node/commit/e7b3ae5fdcea79cc4f4f9c8d00f10bea59a42499))
+
+
+### Bug Fixes
+
+* **deps:** npm vulnerability warnings ([#53](https://github.com/sanity-io/blueprints-node/issues/53)) ([e38c511](https://github.com/sanity-io/blueprints-node/commit/e38c5118ef900a7e9a733b0f1d7c7ef501b731d5))
+
 ## [0.8.0](https://github.com/sanity-io/blueprints-node/compare/v0.7.1...v0.8.0) (2026-01-21)
 
 
