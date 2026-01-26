@@ -14,6 +14,7 @@ import {
   validateMediaLibraryAssetFunction,
   validateScheduleFunction,
 } from '../index.js'
+import {parseScheduleExpression} from '../utils/schedule-parser.js'
 import {runValidation} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
@@ -167,23 +168,42 @@ export function defineMediaLibraryAssetFunction(
 
 /**
  * Defines a function that is triggered on a schedule.
+ * Supports cron expressions or natural language schedules.
+ *
  * ```
+ * // Using cron expression
+ * defineScheduleFunction({
+ *   name: 'daily-cleanup',
+ *   event: {expression: '0 9 * * *'},
+ * })
+ *
+ * // Using natural language
+ * defineScheduleFunction({
+ *   name: 'daily-report',
+ *   event: {expression: 'every day at 9am'},
+ * })
+ *
+ * // More natural language examples:
+ * // 'every 15 minutes'
+ * // 'weekdays at 8am'
+ * // 'fridays in the evening'
+ * // 'mon, wed, fri at 9am'
+ * // 'first of the month at noon'
+ *
+ * // Using explicit cron fields
  * defineScheduleFunction({
  *   name: 'my-schedule-function',
- *   src: 'functions/schedule-function',
- *   memory: 3,
- *   timeout: 300,
  *   event: {
- *     minute: "0",
- *     hour: "0",
- *     dayOfMonth: "*",
- *     month: "*",
- *     dayOfWeek: "*",
+ *     minute: '0',
+ *     hour: '9',
+ *     dayOfMonth: '*',
+ *     month: '*',
+ *     dayOfWeek: '*',
  *   },
  * })
  * ```
  * @beta
- * @param functionConfig The configuration for the document function
+ * @param functionConfig The configuration for the schedule function
  * @returns The validated schedule function resource
  */
 export function defineScheduleFunction(
@@ -297,10 +317,23 @@ function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionReso
   return fullEvent
 }
 
+/**
+ * Builds a schedule function event configuration.
+ * If the event has an expression field, it will be parsed to support natural language.
+ * @param event Schedule function event configuration
+ * @returns Complete schedule function event configuration with parsed expression
+ */
 function buildScheduleFunctionEvent(event: BlueprintScheduleFunctionResourceEvent): BlueprintScheduleFunctionResourceEvent {
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => SCHEDULE_EVENT_KEYS.has(key as ScheduleFunctionEventKey)),
   ) as BlueprintScheduleFunctionResourceEvent
+
+  // If expression is provided, parse it (supports both cron and natural language)
+  if ('expression' in cleanEvent && cleanEvent.expression) {
+    return {
+      expression: parseScheduleExpression(cleanEvent.expression),
+    }
+  }
 
   return cleanEvent
 }

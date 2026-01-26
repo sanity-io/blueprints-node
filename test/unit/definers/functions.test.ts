@@ -192,6 +192,62 @@ describe('defineScheduleFunction', () => {
       })
       expect(fn.timezone).toEqual('America/New_York')
     })
+
+    test('should parse natural language expression to cron', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: 'every day at 9am'},
+      })
+      expect(fn.event).toEqual({expression: '0 9 * * *'})
+    })
+
+    test('should pass through valid cron expressions unchanged', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: '0 9 * * 1-5'},
+      })
+      expect(fn.event).toEqual({expression: '0 9 * * 1-5'})
+    })
+
+    test('should parse weekday natural language', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: 'weekdays at 8am'},
+      })
+      expect(fn.event).toEqual({expression: '0 8 * * 1-5'})
+    })
+
+    test('should parse specific weekday with time', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: 'fridays at 9am'},
+      })
+      expect(fn.event).toEqual({expression: '0 9 * * 5'})
+    })
+
+    test('should parse time of day period', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: 'fridays in the evening'},
+      })
+      expect(fn.event).toEqual({expression: '0 18 * * 5'})
+    })
+
+    test('should parse multiple weekdays', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: 'mon, wed, fri at 9am'},
+      })
+      expect(fn.event).toEqual({expression: '0 9 * * 1,3,5'})
+    })
+
+    test('should parse interval schedules', () => {
+      const fn = fns.defineScheduleFunction({
+        name: 'test',
+        event: {expression: 'every 15 minutes'},
+      })
+      expect(fn.event).toEqual({expression: '*/15 * * * *'})
+    })
   })
 
   describe('sad paths', () => {
