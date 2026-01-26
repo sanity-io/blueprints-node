@@ -182,6 +182,7 @@ export function defineMediaLibraryAssetFunction(
  *   },
  * })
  * ```
+ * @beta
  * @param functionConfig The configuration for the document function
  * @returns The validated schedule function resource
  */
