@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0](https://github.com/sanity-io/blueprints-node/compare/v0.9.0...v0.10.0) (2026-01-27)
+
+
+### Features
+
+* Add detach resource lifecycle support ([#58](https://github.com/sanity-io/blueprints-node/issues/58)) ([4b3b262](https://github.com/sanity-io/blueprints-node/commit/4b3b262e5bd9a0e4f328110890838daef03cb1f2))
+
+
+### Bug Fixes
+
+* Allow project in function resource and make webhook dataset required ([#57](https://github.com/sanity-io/blueprints-node/issues/57)) ([8fb1aca](https://github.com/sanity-io/blueprints-node/commit/8fb1aca3055349d787f230e4e40fa7a45775754d))
+
 ## [0.9.0](https://github.com/sanity-io/blueprints-node/compare/v0.8.0...v0.9.0) (2026-01-26)
 
 
