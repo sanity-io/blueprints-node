@@ -76,6 +76,12 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
   env?: Record<string, string>
   /** Token provided during function invocation */
   robotToken?: string
+
+  /**
+   * The project ID of the project that contains your function.
+   *
+   * The `project` attribute must be defined if your blueprint is scoped to an organization. */
+  project?: string
 }
 /** A function resource triggered by document events in Sanity datasets */
 export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunctionResource {

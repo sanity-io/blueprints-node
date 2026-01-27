@@ -65,7 +65,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, ...maybeEvent} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, project, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
   // event validation and normalization
@@ -96,6 +96,7 @@ export function defineDocumentFunction(
         memory,
         env,
         robotToken,
+        project,
       },
       {
         skipValidation: true, // already done below
@@ -139,7 +140,7 @@ export function defineMediaLibraryAssetFunction(
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, project} = functionConfig
   if (!type) type = 'sanity.function.media-library.asset'
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
@@ -151,6 +152,7 @@ export function defineMediaLibraryAssetFunction(
         memory,
         env,
         robotToken,
+        project,
       },
       {
         skipValidation: true, // already done below
@@ -241,7 +243,7 @@ export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let {name, src, timeout, memory, env, type, robotToken} = functionConfig
+  let {name, src, timeout, memory, env, type, robotToken, project} = functionConfig
 
   // defaults
   if (!src) src = `functions/${name}`
@@ -255,6 +257,7 @@ export function defineFunction(
     memory,
     env,
     robotToken,
+    project,
   }
 
   if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))
