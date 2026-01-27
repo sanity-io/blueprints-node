@@ -234,6 +234,52 @@ describe('parseScheduleExpression', () => {
     })
   })
 
+  describe('freeform expressions', () => {
+    test('should parse space-separated weekdays with time', () => {
+      expect(parseScheduleExpression('mon wed fri 9:00')).toBe('0 9 * * 1,3,5')
+      expect(parseScheduleExpression('monday wednesday friday 9am')).toBe('0 9 * * 1,3,5')
+      expect(parseScheduleExpression('tue thu 8:30am')).toBe('30 8 * * 2,4')
+    })
+
+    test('should parse day ranges', () => {
+      expect(parseScheduleExpression('mon-fri 9am')).toBe('0 9 * * 1,2,3,4,5')
+      expect(parseScheduleExpression('monday-friday 8:00')).toBe('0 8 * * 1,2,3,4,5')
+      expect(parseScheduleExpression('mon-wed 10am')).toBe('0 10 * * 1,2,3')
+      expect(parseScheduleExpression('fri-sun noon')).toBe('0 12 * * 0,5,6')
+    })
+
+    test('should parse time before days', () => {
+      expect(parseScheduleExpression('9pm fridays')).toBe('0 21 * * 5')
+      expect(parseScheduleExpression('9:00 mon wed fri')).toBe('0 9 * * 1,3,5')
+      expect(parseScheduleExpression('noon weekdays')).toBe('0 12 * * 1-5')
+    })
+
+    test('should be forgiving with filler words', () => {
+      expect(parseScheduleExpression('every day 12pm')).toBe('0 12 * * *')
+      expect(parseScheduleExpression('daily 9am')).toBe('0 9 * * *')
+      expect(parseScheduleExpression('mondays 9am')).toBe('0 9 * * 1')
+      expect(parseScheduleExpression('weekdays 8am')).toBe('0 8 * * 1-5')
+    })
+
+    test('should handle mixed formats', () => {
+      expect(parseScheduleExpression('9pm fridays and wed')).toBe('0 21 * * 3,5')
+      expect(parseScheduleExpression('wednesday friday 9pm')).toBe('0 21 * * 3,5')
+      expect(parseScheduleExpression('fri sat sun morning')).toBe('0 9 * * 0,5,6')
+    })
+
+    test('should parse short day abbreviations', () => {
+      expect(parseScheduleExpression('mo we fr 9am')).toBe('0 9 * * 1,3,5')
+      expect(parseScheduleExpression('tu th 8am')).toBe('0 8 * * 2,4')
+      expect(parseScheduleExpression('sa su noon')).toBe('0 12 * * 0,6')
+    })
+
+    test('should handle ordinal without strict pattern', () => {
+      expect(parseScheduleExpression('1st 9am')).toBe('0 9 1 * *')
+      expect(parseScheduleExpression('15th noon')).toBe('0 12 15 * *')
+      expect(parseScheduleExpression('first month 9am')).toBe('0 9 1 * *')
+    })
+  })
+
   describe('error cases', () => {
     test('should throw error for empty string', () => {
       expect(() => parseScheduleExpression('')).toThrow(/schedule expression cannot be empty/i)
@@ -250,24 +296,24 @@ describe('parseScheduleExpression', () => {
     })
 
     test('should throw error for invalid time format', () => {
-      expect(() => parseScheduleExpression('every day at 25:00')).toThrow(/invalid time/i)
-      expect(() => parseScheduleExpression('every day at 13am')).toThrow(/invalid time/i)
-      expect(() => parseScheduleExpression('every day at 9:60am')).toThrow(/invalid time/i)
+      expect(() => parseScheduleExpression('every day at 25:00')).toThrow(/Invalid time.*hour.*0-23/i)
+      expect(() => parseScheduleExpression('every day at 13am')).toThrow(/Invalid time.*hour.*1-12/i)
+      expect(() => parseScheduleExpression('every day at 9:60am')).toThrow(/Invalid time.*minute.*0-59/i)
     })
 
     test('should throw error for invalid day of month', () => {
-      expect(() => parseScheduleExpression('on the 32nd')).toThrow(/invalid day of month/i)
-      expect(() => parseScheduleExpression('on the 0th')).toThrow(/invalid day of month/i)
+      expect(() => parseScheduleExpression('on the 32nd')).toThrow(/Invalid day of month.*1-31/i)
+      expect(() => parseScheduleExpression('on the 0th')).toThrow(/Invalid day of month.*1-31/i)
     })
 
     test('should throw error for invalid minute interval', () => {
-      expect(() => parseScheduleExpression('every 0 minutes')).toThrow(/invalid interval/i)
-      expect(() => parseScheduleExpression('every 61 minutes')).toThrow(/invalid interval/i)
+      expect(() => parseScheduleExpression('every 0 minutes')).toThrow(/Invalid interval.*minutes.*1-59/i)
+      expect(() => parseScheduleExpression('every 61 minutes')).toThrow(/Invalid interval.*minutes.*1-59/i)
     })
 
     test('should throw error for invalid hour interval', () => {
-      expect(() => parseScheduleExpression('every 0 hours')).toThrow(/invalid interval/i)
-      expect(() => parseScheduleExpression('every 25 hours')).toThrow(/invalid interval/i)
+      expect(() => parseScheduleExpression('every 0 hours')).toThrow(/Invalid interval.*hours.*1-23/i)
+      expect(() => parseScheduleExpression('every 25 hours')).toThrow(/Invalid interval.*hours.*1-23/i)
     })
   })
 })

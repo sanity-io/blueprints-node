@@ -4,18 +4,25 @@
 const DAYS_OF_WEEK: Record<string, number> = {
   sunday: 0,
   sun: 0,
+  su: 0,
   monday: 1,
   mon: 1,
+  mo: 1,
   tuesday: 2,
   tue: 2,
+  tu: 2,
   wednesday: 3,
   wed: 3,
+  we: 3,
   thursday: 4,
   thu: 4,
+  th: 4,
   friday: 5,
   fri: 5,
+  fr: 5,
   saturday: 6,
   sat: 6,
+  sa: 6,
 }
 
 /**
@@ -34,37 +41,46 @@ const NAMED_TIMES: Record<string, {hour: number; minute: number}> = {
  * Check if a string looks like a cron expression
  */
 function isCronExpression(expr: string): boolean {
-  // Cron: 5 space-separated fields with digits, *, /, -, ,
   return /^[\d*,/-]+(\s+[\d*,/-]+){4}$/.test(expr.trim())
 }
 
 /**
- * Parse time string to hour and minute
- * Supports: 9am, 9:30am, 9 am, 14:30, 09:00
+ * Try to parse a token as a time. Returns null if not a time pattern.
+ * Throws an error if the pattern is recognized but values are invalid.
  */
-function parseTime(timeStr: string): {hour: number; minute: number} {
-  const normalized = timeStr.toLowerCase().replace(/\s+/g, '')
+function tryParseTime(token: string): {hour: number; minute: number} | null {
+  const normalized = token.toLowerCase().replace(/\s+/g, '')
 
   // Check named times
   if (normalized in NAMED_TIMES) {
     return NAMED_TIMES[normalized]
   }
 
+  // Just :MM format (e.g., :30 for "at half past")
+  const minuteOnly = normalized.match(/^:(\d{1,2})$/)
+  if (minuteOnly) {
+    const minute = parseInt(minuteOnly[1], 10)
+    if (minute < 0 || minute > 59) {
+      throw new Error(`Invalid time: minute must be 0-59, got ${minute}`)
+    }
+    return {hour: -1, minute} // -1 signals "use current hour context"
+  }
+
   // 12-hour format: 9am, 9:30am, 9:30pm
-  const match12hr = normalized.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/)
+  const match12hr = normalized.match(/^(\d{1,2})(?::(\d{2}))?(am|pm)$/)
   if (match12hr) {
-    let hour = parseInt(match12hr[1], 10)
+    const hourRaw = parseInt(match12hr[1], 10)
     const minute = match12hr[2] ? parseInt(match12hr[2], 10) : 0
     const period = match12hr[3]
 
-    if (hour < 1 || hour > 12) {
-      throw new Error(`Invalid time: hour must be 1-12 for 12-hour format, got ${hour}`)
+    if (hourRaw < 1 || hourRaw > 12) {
+      throw new Error(`Invalid time: hour must be 1-12 for 12-hour format, got ${hourRaw}`)
     }
     if (minute < 0 || minute > 59) {
       throw new Error(`Invalid time: minute must be 0-59, got ${minute}`)
     }
 
-    // Convert to 24-hour
+    let hour = hourRaw
     if (period === 'am') {
       hour = hour === 12 ? 0 : hour
     } else {
@@ -90,38 +106,59 @@ function parseTime(timeStr: string): {hour: number; minute: number} {
     return {hour, minute}
   }
 
-  throw new Error(`Invalid time format: "${timeStr}"`)
+  return null
 }
 
 /**
- * Parse day of week from string
+ * Try to parse two tokens as a time (e.g., "9" + "am" or "9:30" + "am")
  */
-function parseDayOfWeek(dayStr: string): number {
-  const normalized = dayStr.toLowerCase().replace(/s$/, '') // Remove trailing 's' for plurals
+function tryParseTwoTokenTime(token1: string, token2: string): {hour: number; minute: number} | null {
+  const combined = token1 + token2
+  return tryParseTime(combined)
+}
+
+/**
+ * Try to parse a token as a day of week. Returns null if not a day.
+ */
+function tryParseDay(token: string): number | null {
+  const normalized = token.toLowerCase().replace(/s$/, '') // Remove trailing 's' for plurals
   if (normalized in DAYS_OF_WEEK) {
     return DAYS_OF_WEEK[normalized]
   }
-  throw new Error(`Unknown day of week: "${dayStr}"`)
+  return null
 }
 
 /**
- * Parse multiple days of week from string
- * Supports: "monday, wednesday, friday" or "mon and wed"
+ * Try to parse a day range like "mon-wed" or "monday-friday"
  */
-function parseDaysOfWeek(daysStr: string): number[] {
-  const normalized = daysStr.toLowerCase()
-  const parts = normalized.split(/(?:,|\s+and\s+)\s*/).filter(Boolean)
-  return parts.map((part) => parseDayOfWeek(part.trim()))
-}
+function tryParseDayRange(token: string): number[] | null {
+  const match = token.toLowerCase().match(/^(\w+)-(\w+)$/)
+  if (!match) return null
 
-/**
- * Parse ordinal number (1st, 2nd, 3rd, 15th) to number
- */
-function parseOrdinal(ordinalStr: string): number {
-  const match = ordinalStr.match(/^(\d+)(?:st|nd|rd|th)?$/)
-  if (!match) {
-    throw new Error(`Invalid ordinal: "${ordinalStr}"`)
+  const startDay = tryParseDay(match[1])
+  const endDay = tryParseDay(match[2])
+
+  if (startDay === null || endDay === null) return null
+
+  // Build range
+  const days: number[] = []
+  if (startDay <= endDay) {
+    for (let d = startDay; d <= endDay; d++) days.push(d)
+  } else {
+    // Wrap around (e.g., fri-mon = 5,6,0,1)
+    for (let d = startDay; d <= 6; d++) days.push(d)
+    for (let d = 0; d <= endDay; d++) days.push(d)
   }
+  return days
+}
+
+/**
+ * Try to parse an ordinal day of month (1st, 2nd, 15th, etc.)
+ * Throws an error if the pattern is recognized but the value is invalid.
+ */
+function tryParseOrdinal(token: string): number | null {
+  const match = token.match(/^(\d+)(?:st|nd|rd|th)$/)
+  if (!match) return null
   const num = parseInt(match[1], 10)
   if (num < 1 || num > 31) {
     throw new Error(`Invalid day of month: must be 1-31, got ${num}`)
@@ -130,45 +167,29 @@ function parseOrdinal(ordinalStr: string): number {
 }
 
 /**
- * Extract time from expression, returns time and remaining string
- * Throws if time format is recognized but invalid (e.g., "at 25:00")
+ * Try to parse interval like "5 minutes" or "2 hours" from consecutive tokens.
+ * Throws an error if the pattern is recognized but the value is invalid.
  */
-function extractTime(expr: string): {time: {hour: number; minute: number} | null; remaining: string} {
-  const normalized = expr.toLowerCase()
+function tryParseInterval(tokens: string[], index: number): {type: 'minute' | 'hour'; value: number; consumed: number} | null {
+  if (index >= tokens.length - 1) return null
 
-  // Check for "in the morning/afternoon/evening"
-  const periodMatch = normalized.match(/\s+in\s+the\s+(morning|afternoon|evening)\s*$/i)
-  if (periodMatch) {
-    return {
-      time: NAMED_TIMES[periodMatch[1]],
-      remaining: expr.slice(0, expr.length - periodMatch[0].length).trim(),
+  const num = parseInt(tokens[index], 10)
+  if (Number.isNaN(num)) return null
+
+  const unit = tokens[index + 1].toLowerCase()
+  if (unit === 'minute' || unit === 'minutes') {
+    if (num < 1 || num > 59) {
+      throw new Error(`Invalid interval: minutes must be 1-59, got ${num}`)
     }
+    return {type: 'minute', value: num, consumed: 2}
   }
-
-  // Check for "at <time>" at end
-  const atMatch = normalized.match(/\s+at\s+(.+?)\s*$/i)
-  if (atMatch) {
-    const timeStr = atMatch[1]
-    // Check if it's a named time
-    if (timeStr in NAMED_TIMES) {
-      return {
-        time: NAMED_TIMES[timeStr],
-        remaining: expr.slice(0, expr.length - atMatch[0].length).trim(),
-      }
+  if (unit === 'hour' || unit === 'hours') {
+    if (num < 1 || num > 23) {
+      throw new Error(`Invalid interval: hours must be 1-23, got ${num}`)
     }
-    // Check if it looks like a time format - if so, parse it and let errors propagate
-    const looksLikeTime = /^\d{1,2}(:\d{2})?\s*(am|pm)?$|^\d{1,2}:\d{2}$/.test(timeStr.toLowerCase().replace(/\s+/g, ''))
-    if (looksLikeTime) {
-      // This will throw if the time is invalid (e.g., 25:00, 13am)
-      const time = parseTime(timeStr)
-      return {
-        time,
-        remaining: expr.slice(0, expr.length - atMatch[0].length).trim(),
-      }
-    }
+    return {type: 'hour', value: num, consumed: 2}
   }
-
-  return {time: null, remaining: expr}
+  return null
 }
 
 /**
@@ -178,11 +199,9 @@ function suggestCorrection(expr: string): string | null {
   const normalized = expr.toLowerCase()
 
   const suggestions: Array<{pattern: RegExp; suggestion: string}> = [
-    // Missing letters in "every"
     {pattern: /\bevry\b/, suggestion: 'every'},
     {pattern: /\bevey\b/, suggestion: 'every'},
     {pattern: /\beery\b/, suggestion: 'every'},
-    // Double letters at end of weekdays (mondayss, fridayss, etc.)
     {pattern: /\bmondayss/, suggestion: 'mondays'},
     {pattern: /\btuesdayss/, suggestion: 'tuesdays'},
     {pattern: /\bwednesdayss/, suggestion: 'wednesdays'},
@@ -190,7 +209,6 @@ function suggestCorrection(expr: string): string | null {
     {pattern: /\bfridayss/, suggestion: 'fridays'},
     {pattern: /\bsaturdayss/, suggestion: 'saturdays'},
     {pattern: /\bsundayss/, suggestion: 'sundays'},
-    // Common misspellings
     {pattern: /\bweakdays\b/, suggestion: 'weekdays'},
     {pattern: /\bweakends?\b/, suggestion: 'weekends'},
     {pattern: /\bweekdyas\b/, suggestion: 'weekdays'},
@@ -206,18 +224,25 @@ function suggestCorrection(expr: string): string | null {
 }
 
 /**
+ * Noise words to ignore during parsing
+ */
+const NOISE_WORDS = new Set(['every', 'at', 'on', 'the', 'of', 'in', 'and', 'to'])
+
+/**
  * Parse a natural language schedule expression into a cron expression.
  *
- * Supports patterns like:
- * - "every minute", "every 5 minutes"
- * - "every hour", "every 2 hours"
- * - "every day at 9am", "daily at 14:30"
- * - "at midnight", "at noon"
- * - "every morning", "every evening"
- * - "mondays at 9am", "every friday"
- * - "mon, wed, fri at 8am"
- * - "weekdays at 9am", "weekends at 10am"
- * - "first of the month at 9am", "on the 15th at noon"
+ * The parser is **forgiving** and **freeform** - it extracts recognized parts
+ * (days, times, intervals) and ignores unrecognized tokens like "at", "on", "the".
+ *
+ * Supported patterns:
+ * - "every minute", "every 5 minutes", "every hour", "every 2 hours"
+ * - "every day at 9am", "daily 14:30", "9am daily"
+ * - "at midnight", "noon"
+ * - "morning", "evening"
+ * - "mondays 9am", "mon wed fri 9:00", "mon-fri 8am"
+ * - "9pm fridays and wed", "wednesday friday 9pm"
+ * - "weekdays 9am", "weekends 10am"
+ * - "first of the month 9am", "15th noon"
  *
  * If the input is already a valid cron expression, it is returned unchanged.
  *
@@ -237,133 +262,173 @@ export function parseScheduleExpression(expression: string): string {
     return trimmed
   }
 
-  // Check for typos early, before pattern matching
+  // Check for typos early
   const earlySuggestion = suggestCorrection(trimmed)
   if (earlySuggestion) {
     throw new Error(`Could not parse schedule expression: "${trimmed}". Did you mean "${earlySuggestion}"?`)
   }
 
-  // Normalize: lowercase, collapse whitespace
+  // Normalize and tokenize
   const normalized = trimmed.toLowerCase().replace(/\s+/g, ' ')
+  // Split on spaces and commas, keep hyphenated tokens together
+  const rawTokens = normalized.split(/[\s,]+/).filter(Boolean)
 
-  // Extract time if present
-  const {time, remaining} = extractTime(normalized)
-  const defaultTime = time || {hour: 0, minute: 0}
+  // Extract components
+  let time: {hour: number; minute: number} | null = null
+  const days: number[] = []
+  let dayOfMonth: number | null = null
+  let interval: {type: 'minute' | 'hour'; value: number} | null = null
+  let hasWeekdays = false
+  let hasWeekends = false
+  let hasDaily = false
+  let hasMinute = false
+  let hasHour = false
 
-  // --- Pattern matching ---
+  // Check for special keywords in original normalized string
+  if (/\bweekdays?\b/.test(normalized)) hasWeekdays = true
+  if (/\bweekends?\b/.test(normalized)) hasWeekends = true
+  if (/\bdaily\b/.test(normalized) || /\bevery\s+day\b/.test(normalized)) hasDaily = true
+  if (/\bevery\s+minute\b/.test(normalized) || /\bminutely\b/.test(normalized)) hasMinute = true
+  if (/\bevery\s+hour\b/.test(normalized) || /\bhourly\b/.test(normalized)) hasHour = true
+  if (/\bfirst\b/.test(normalized) && /\bmonth\b/.test(normalized)) dayOfMonth = 1
 
-  // "every minute"
-  if (/^every\s+minute$/.test(remaining)) {
+  // Process tokens
+  let i = 0
+  while (i < rawTokens.length) {
+    const token = rawTokens[i]
+
+    // Skip noise words
+    if (NOISE_WORDS.has(token) || token === 'day' || token === 'month') {
+      i++
+      continue
+    }
+
+    // Try interval (e.g., "5 minutes")
+    const parsedInterval = tryParseInterval(rawTokens, i)
+    if (parsedInterval) {
+      interval = {type: parsedInterval.type, value: parsedInterval.value}
+      i += parsedInterval.consumed
+      continue
+    }
+
+    // Try two-token time first (e.g., "9" + "am" or "9:30" + "pm")
+    if (i < rawTokens.length - 1) {
+      const twoTokenTime = tryParseTwoTokenTime(token, rawTokens[i + 1])
+      if (twoTokenTime) {
+        time = twoTokenTime
+        i += 2
+        continue
+      }
+    }
+
+    // Try single-token time
+    const parsedTime = tryParseTime(token)
+    if (parsedTime) {
+      // Handle :MM format (minute only)
+      if (parsedTime.hour === -1) {
+        time = {hour: time?.hour ?? 0, minute: parsedTime.minute}
+      } else {
+        time = parsedTime
+      }
+      i++
+      continue
+    }
+
+    // Try day range (mon-fri)
+    const dayRange = tryParseDayRange(token)
+    if (dayRange) {
+      for (const d of dayRange) {
+        if (!days.includes(d)) days.push(d)
+      }
+      i++
+      continue
+    }
+
+    // Try single day
+    const parsedDay = tryParseDay(token)
+    if (parsedDay !== null) {
+      if (!days.includes(parsedDay)) {
+        days.push(parsedDay)
+      }
+      i++
+      continue
+    }
+
+    // Try ordinal (1st, 15th)
+    const ordinal = tryParseOrdinal(token)
+    if (ordinal !== null) {
+      dayOfMonth = ordinal
+      i++
+      continue
+    }
+
+    // Try named time period (morning, evening, etc.)
+    if (token in NAMED_TIMES) {
+      time = NAMED_TIMES[token]
+      i++
+      continue
+    }
+
+    // Unrecognized token - skip (forgiving)
+    i++
+  }
+
+  // Build cron expression
+  // Format: minute hour dayOfMonth month dayOfWeek
+
+  // Handle interval patterns
+  if (interval) {
+    if (interval.type === 'minute') {
+      return `*/${interval.value} * * * *`
+    }
+    if (interval.type === 'hour') {
+      return `0 */${interval.value} * * *`
+    }
+  }
+
+  // Handle every minute
+  if (hasMinute) {
     return '* * * * *'
   }
 
-  // "every N minutes"
-  const everyNMinutes = remaining.match(/^every\s+(\d+)\s+minutes?$/)
-  if (everyNMinutes) {
-    const n = parseInt(everyNMinutes[1], 10)
-    if (n < 1 || n > 59) {
-      throw new Error(`Invalid interval: minutes must be 1-59, got ${n}`)
-    }
-    return `*/${n} * * * *`
-  }
-
-  // "every hour"
-  if (/^every\s+hour$/.test(remaining)) {
-    return `${defaultTime.minute} * * * *`
-  }
-
-  // "every N hours"
-  const everyNHours = remaining.match(/^every\s+(\d+)\s+hours?$/)
-  if (everyNHours) {
-    const n = parseInt(everyNHours[1], 10)
-    if (n < 1 || n > 23) {
-      throw new Error(`Invalid interval: hours must be 1-23, got ${n}`)
-    }
-    return `0 */${n} * * *`
-  }
-
-  // "every hour at :MM"
-  const everyHourAt = remaining.match(/^every\s+hour\s+at\s+:(\d{1,2})$/)
-  if (everyHourAt) {
-    const minute = parseInt(everyHourAt[1], 10)
-    if (minute < 0 || minute > 59) {
-      throw new Error(`Invalid time: minute must be 0-59, got ${minute}`)
-    }
+  // Handle every hour
+  if (hasHour) {
+    const minute = time?.minute ?? 0
+    // If we have a time with hour=-1 (just minute), use that minute for hourly
     return `${minute} * * * *`
   }
 
-  // "every day at ..." / "daily at ..." / "at midnight" / "at noon"
-  if (/^(every\s+day|daily)$/.test(remaining) || /^at\s+(midnight|noon|midday)$/.test(normalized)) {
-    // If we matched "at midnight/noon" directly, extract that time
-    const directTimeMatch = normalized.match(/^at\s+(midnight|noon|midday)$/)
-    if (directTimeMatch) {
-      const t = NAMED_TIMES[directTimeMatch[1]]
-      return `${t.minute} ${t.hour} * * *`
-    }
-    return `${defaultTime.minute} ${defaultTime.hour} * * *`
+  // Determine day of week field
+  let dayOfWeekField = '*'
+  if (hasWeekdays) {
+    dayOfWeekField = '1-5'
+  } else if (hasWeekends) {
+    dayOfWeekField = '0,6'
+  } else if (days.length > 0) {
+    const uniqueDays = [...new Set(days)].sort((a, b) => a - b)
+    dayOfWeekField = uniqueDays.join(',')
   }
 
-  // "every morning/afternoon/evening" / "daily in the morning/afternoon/evening"
-  const periodOnly = normalized.match(/^(every|daily\s+in\s+the)\s+(morning|afternoon|evening)$/)
-  if (periodOnly) {
-    const t = NAMED_TIMES[periodOnly[2]]
-    return `${t.minute} ${t.hour} * * *`
+  // Determine day of month field
+  const dayOfMonthField = dayOfMonth !== null ? String(dayOfMonth) : '*'
+
+  // If we have a day of month, reset day of week (unless explicitly set)
+  if (dayOfMonth !== null && days.length === 0 && !hasWeekdays && !hasWeekends) {
+    dayOfWeekField = '*'
   }
 
-  // "weekdays" / "every weekday" / "on weekdays"
-  if (/^(every\s+)?weekdays?$/.test(remaining) || /^on\s+weekdays$/.test(remaining)) {
-    return `${defaultTime.minute} ${defaultTime.hour} * * 1-5`
+  // Determine time
+  const minute = time?.minute ?? 0
+  const hour = time?.hour ?? 0
+
+  // Validate we have something meaningful
+  const hasAnySchedule = time || days.length > 0 || hasWeekdays || hasWeekends || hasDaily || dayOfMonth !== null
+  if (!hasAnySchedule) {
+    throw new Error(
+      `Could not parse schedule expression: "${trimmed}". ` +
+        'Supported patterns include: "every day 9am", "weekdays 8am", "mon wed fri 9:00", "every 15 minutes", etc.',
+    )
   }
 
-  // "weekends" / "every weekend" / "on weekends"
-  if (/^(every\s+)?weekends?$/.test(remaining) || /^on\s+weekends$/.test(remaining)) {
-    return `${defaultTime.minute} ${defaultTime.hour} * * 0,6`
-  }
-
-  // Specific weekday: "every monday", "mondays", "on fridays"
-  const singleDayMatch = remaining.match(/^(?:every\s+|on\s+)?(\w+?)(s)?$/)
-  if (singleDayMatch) {
-    const dayStr = singleDayMatch[1]
-    try {
-      const day = parseDayOfWeek(dayStr)
-      return `${defaultTime.minute} ${defaultTime.hour} * * ${day}`
-    } catch {
-      // Not a valid day, continue to other patterns
-    }
-  }
-
-  // Multiple weekdays: "monday, wednesday, friday" or "mon and wed"
-  const multiDayMatch = remaining.match(/^(?:every\s+)?(\w+(?:\s*,\s*\w+)+|\w+\s+and\s+\w+)$/)
-  if (multiDayMatch) {
-    try {
-      const days = parseDaysOfWeek(multiDayMatch[1])
-      const sortedDays = [...new Set(days)].sort((a, b) => a - b)
-      return `${defaultTime.minute} ${defaultTime.hour} * * ${sortedDays.join(',')}`
-    } catch {
-      // Not valid days, continue
-    }
-  }
-
-  // "first of the month" / "first of every month"
-  if (/^first\s+of\s+(the|every)\s+month$/.test(remaining)) {
-    return `${defaultTime.minute} ${defaultTime.hour} 1 * *`
-  }
-
-  // "on the Nth" / "every Nth"
-  const dayOfMonthMatch = remaining.match(/^(?:on\s+the|every)\s+(\d+(?:st|nd|rd|th))$/)
-  if (dayOfMonthMatch) {
-    const day = parseOrdinal(dayOfMonthMatch[1])
-    return `${defaultTime.minute} ${defaultTime.hour} ${day} * *`
-  }
-
-  // --- No pattern matched ---
-  const suggestion = suggestCorrection(trimmed)
-  if (suggestion) {
-    throw new Error(`Could not parse schedule expression: "${trimmed}". Did you mean "${suggestion}"?`)
-  }
-
-  throw new Error(
-    `Could not parse schedule expression: "${trimmed}". ` +
-      'Supported patterns include: "every day at 9am", "weekdays at 8am", "mondays at noon", "every 15 minutes", etc.',
-  )
+  return `${minute} ${hour} ${dayOfMonthField} * ${dayOfWeekField}`
 }
