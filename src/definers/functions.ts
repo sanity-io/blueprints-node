@@ -237,6 +237,11 @@ export function defineScheduleFunction(
 
   runValidation(() => validateScheduleFunction(functionResource))
 
+  // Parse expression after validation (validation ensures it's valid)
+  if ('expression' in functionResource.event && functionResource.event.expression) {
+    functionResource.event.expression = parseScheduleExpression(functionResource.event.expression)
+  }
+
   return functionResource
 }
 
@@ -319,21 +324,12 @@ function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionReso
 
 /**
  * Builds a schedule function event configuration.
- * If the event has an expression field, it will be parsed to support natural language.
+ * Filters out non-event properties. Does not parse expressions.
  * @param event Schedule function event configuration
- * @returns Complete schedule function event configuration with parsed expression
+ * @returns Cleaned schedule function event configuration
  */
 function buildScheduleFunctionEvent(event: BlueprintScheduleFunctionResourceEvent): BlueprintScheduleFunctionResourceEvent {
-  const cleanEvent = Object.fromEntries(
+  return Object.fromEntries(
     Object.entries(event).filter(([key]) => SCHEDULE_EVENT_KEYS.has(key as ScheduleFunctionEventKey)),
   ) as BlueprintScheduleFunctionResourceEvent
-
-  // If expression is provided, parse it (supports both cron and natural language)
-  if ('expression' in cleanEvent && cleanEvent.expression) {
-    return {
-      expression: parseScheduleExpression(cleanEvent.expression),
-    }
-  }
-
-  return cleanEvent
 }

@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {parseScheduleExpression} from '../../../src/utils/schedule-parser.js'
+import {parseScheduleExpression, validateScheduleExpression} from '../../../src/utils/schedule-parser.js'
 
 describe('parseScheduleExpression', () => {
   describe('cron passthrough', () => {
@@ -279,41 +279,170 @@ describe('parseScheduleExpression', () => {
       expect(parseScheduleExpression('first month 9am')).toBe('0 9 1 * *')
     })
   })
+})
 
-  describe('error cases', () => {
-    test('should throw error for empty string', () => {
-      expect(() => parseScheduleExpression('')).toThrow(/schedule expression cannot be empty/i)
+describe('validateScheduleExpression', () => {
+  describe('valid expressions', () => {
+    test('should return empty array for valid cron expression', () => {
+      expect(validateScheduleExpression('* * * * *')).toStrictEqual([])
+      expect(validateScheduleExpression('0 9 * * *')).toStrictEqual([])
     })
 
-    test('should throw error for unrecognized pattern', () => {
-      expect(() => parseScheduleExpression('sometime next week')).toThrow(/could not parse/i)
-      expect(() => parseScheduleExpression('whenever')).toThrow(/could not parse/i)
+    test('should return empty array for valid natural language', () => {
+      expect(validateScheduleExpression('every day at 9am')).toStrictEqual([])
+      expect(validateScheduleExpression('weekdays at 8am')).toStrictEqual([])
+      expect(validateScheduleExpression('mon wed fri 9:00')).toStrictEqual([])
+      expect(validateScheduleExpression('every 15 minutes')).toStrictEqual([])
+    })
+  })
+
+  describe('empty expression', () => {
+    test('should return error for empty string', () => {
+      const errors = validateScheduleExpression('')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`expression` cannot be empty',
+      })
     })
 
-    test('should throw error with helpful suggestion for close matches', () => {
-      expect(() => parseScheduleExpression('evry day at 9am')).toThrow(/did you mean.*every/i)
-      expect(() => parseScheduleExpression('mondayss at 9am')).toThrow(/did you mean.*mondays/i)
+    test('should return error for whitespace-only string', () => {
+      const errors = validateScheduleExpression('   ')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`expression` cannot be empty',
+      })
+    })
+  })
+
+  describe('unrecognized patterns', () => {
+    test('should return error for unrecognized pattern', () => {
+      const errors = validateScheduleExpression('sometime next week')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Could not parse schedule expression `sometime next week`',
+      })
     })
 
-    test('should throw error for invalid time format', () => {
-      expect(() => parseScheduleExpression('every day at 25:00')).toThrow(/Invalid time.*hour.*0-23/i)
-      expect(() => parseScheduleExpression('every day at 13am')).toThrow(/Invalid time.*hour.*1-12/i)
-      expect(() => parseScheduleExpression('every day at 9:60am')).toThrow(/Invalid time.*minute.*0-59/i)
+    test('should return error for gibberish', () => {
+      const errors = validateScheduleExpression('whenever')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Could not parse schedule expression `whenever`',
+      })
+    })
+  })
+
+  describe('invalid time format', () => {
+    test('should return error for hour out of range (24hr format)', () => {
+      const errors = validateScheduleExpression('every day at 25:00')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid time: hour must be 0-23 for 24-hour format, got `25`',
+      })
     })
 
-    test('should throw error for invalid day of month', () => {
-      expect(() => parseScheduleExpression('on the 32nd')).toThrow(/Invalid day of month.*1-31/i)
-      expect(() => parseScheduleExpression('on the 0th')).toThrow(/Invalid day of month.*1-31/i)
+    test('should return error for hour out of range (12hr format)', () => {
+      const errors = validateScheduleExpression('every day at 13am')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid time: hour must be 1-12 for 12-hour format, got `13`',
+      })
     })
 
-    test('should throw error for invalid minute interval', () => {
-      expect(() => parseScheduleExpression('every 0 minutes')).toThrow(/Invalid interval.*minutes.*1-59/i)
-      expect(() => parseScheduleExpression('every 61 minutes')).toThrow(/Invalid interval.*minutes.*1-59/i)
+    test('should return error for minute out of range', () => {
+      const errors = validateScheduleExpression('every day at 9:60am')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid time: minute must be 0-59, got `60`',
+      })
+    })
+  })
+
+  describe('invalid day of month', () => {
+    test('should return error for day > 31', () => {
+      const errors = validateScheduleExpression('on the 32nd')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid day of month: must be 1-31, got `32`',
+      })
     })
 
-    test('should throw error for invalid hour interval', () => {
-      expect(() => parseScheduleExpression('every 0 hours')).toThrow(/Invalid interval.*hours.*1-23/i)
-      expect(() => parseScheduleExpression('every 25 hours')).toThrow(/Invalid interval.*hours.*1-23/i)
+    test('should return error for day = 0', () => {
+      const errors = validateScheduleExpression('on the 0th')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid day of month: must be 1-31, got `0`',
+      })
+    })
+  })
+
+  describe('invalid intervals', () => {
+    test('should return error for minutes = 0', () => {
+      const errors = validateScheduleExpression('every 0 minutes')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid interval: minutes must be 1-59, got `0`',
+      })
+    })
+
+    test('should return error for minutes > 59', () => {
+      const errors = validateScheduleExpression('every 61 minutes')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid interval: minutes must be 1-59, got `61`',
+      })
+    })
+
+    test('should return error for hours = 0', () => {
+      const errors = validateScheduleExpression('every 0 hours')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid interval: hours must be 1-23, got `0`',
+      })
+    })
+
+    test('should return error for hours > 23', () => {
+      const errors = validateScheduleExpression('every 25 hours')
+      expect(errors).toHaveLength(1)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid interval: hours must be 1-23, got `25`',
+      })
+    })
+  })
+
+  describe('multiple errors', () => {
+    test('should collect multiple errors for invalid interval and time', () => {
+      // "every 0 minutes at 25:00" has invalid interval AND invalid time
+      const errors = validateScheduleExpression('every 0 minutes at 25:00')
+      expect(errors).toHaveLength(2)
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid interval: minutes must be 1-59, got `0`',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: 'Invalid time: hour must be 0-23 for 24-hour format, got `25`',
+      })
+    })
+
+    test('should collect multiple time errors', () => {
+      // "25:60" has both invalid hour and minute - though parsed as one token
+      const errors = validateScheduleExpression('every day at 25:60')
+      expect(errors).toHaveLength(1) // 25:60 fails on first check (hour)
+      expect(errors[0].message).toMatch(/hour/)
     })
   })
 })

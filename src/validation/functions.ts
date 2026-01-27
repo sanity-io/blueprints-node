@@ -5,6 +5,7 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   validateResource,
 } from '../index.js'
+import {validateScheduleExpression} from '../utils/schedule-parser.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -220,6 +221,13 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
       type: 'missing_parameter',
       message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
     })
+  } else if (hasExpression) {
+    const expr = (event as {expression: unknown}).expression
+    if (typeof expr !== 'string') {
+      errors.push({type: 'invalid_type', message: '`expression` must be a string'})
+    } else {
+      errors.push(...validateScheduleExpression(expr))
+    }
   } else if (hasExplicitFields) {
     if (!('minute' in event)) {
       errors.push({

@@ -1,3 +1,5 @@
+import type {BlueprintError} from '../types/errors.js'
+
 /**
  * Day of week mappings (cron uses 0=Sunday, 1=Monday, etc.)
  */
@@ -38,6 +40,11 @@ const NAMED_TIMES: Record<string, {hour: number; minute: number}> = {
 }
 
 /**
+ * Noise words to ignore during parsing
+ */
+const NOISE_WORDS = new Set(['every', 'at', 'on', 'the', 'of', 'in', 'and', 'to'])
+
+/**
  * Check if a string looks like a cron expression
  */
 function isCronExpression(expr: string): boolean {
@@ -45,15 +52,19 @@ function isCronExpression(expr: string): boolean {
 }
 
 /**
- * Try to parse a token as a time. Returns null if not a time pattern.
- * Throws an error if the pattern is recognized but values are invalid.
+ * Result from trying to parse a time token
  */
-function tryParseTime(token: string): {hour: number; minute: number} | null {
+type TimeParseResult = {success: true; hour: number; minute: number} | {success: false; error: BlueprintError} | {success: null} // not a time pattern
+
+/**
+ * Try to parse a token as a time
+ */
+function tryParseTime(token: string): TimeParseResult {
   const normalized = token.toLowerCase().replace(/\s+/g, '')
 
   // Check named times
   if (normalized in NAMED_TIMES) {
-    return NAMED_TIMES[normalized]
+    return {success: true, ...NAMED_TIMES[normalized]}
   }
 
   // Just :MM format (e.g., :30 for "at half past")
@@ -61,9 +72,12 @@ function tryParseTime(token: string): {hour: number; minute: number} | null {
   if (minuteOnly) {
     const minute = parseInt(minuteOnly[1], 10)
     if (minute < 0 || minute > 59) {
-      throw new Error(`Invalid time: minute must be 0-59, got ${minute}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\``},
+      }
     }
-    return {hour: -1, minute} // -1 signals "use current hour context"
+    return {success: true, hour: -1, minute} // -1 signals "use current hour context"
   }
 
   // 12-hour format: 9am, 9:30am, 9:30pm
@@ -74,10 +88,16 @@ function tryParseTime(token: string): {hour: number; minute: number} | null {
     const period = match12hr[3]
 
     if (hourRaw < 1 || hourRaw > 12) {
-      throw new Error(`Invalid time: hour must be 1-12 for 12-hour format, got ${hourRaw}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid time: hour must be 1-12 for 12-hour format, got \`${hourRaw}\``},
+      }
     }
     if (minute < 0 || minute > 59) {
-      throw new Error(`Invalid time: minute must be 0-59, got ${minute}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\``},
+      }
     }
 
     let hour = hourRaw
@@ -87,7 +107,7 @@ function tryParseTime(token: string): {hour: number; minute: number} | null {
       hour = hour === 12 ? 12 : hour + 12
     }
 
-    return {hour, minute}
+    return {success: true, hour, minute}
   }
 
   // 24-hour format: 14:30, 09:00
@@ -97,28 +117,34 @@ function tryParseTime(token: string): {hour: number; minute: number} | null {
     const minute = parseInt(match24hr[2], 10)
 
     if (hour < 0 || hour > 23) {
-      throw new Error(`Invalid time: hour must be 0-23 for 24-hour format, got ${hour}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid time: hour must be 0-23 for 24-hour format, got \`${hour}\``},
+      }
     }
     if (minute < 0 || minute > 59) {
-      throw new Error(`Invalid time: minute must be 0-59, got ${minute}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\``},
+      }
     }
 
-    return {hour, minute}
+    return {success: true, hour, minute}
   }
 
-  return null
+  return {success: null}
 }
 
 /**
  * Try to parse two tokens as a time (e.g., "9" + "am" or "9:30" + "am")
  */
-function tryParseTwoTokenTime(token1: string, token2: string): {hour: number; minute: number} | null {
+function tryParseTwoTokenTime(token1: string, token2: string): TimeParseResult {
   const combined = token1 + token2
   return tryParseTime(combined)
 }
 
 /**
- * Try to parse a token as a day of week. Returns null if not a day.
+ * Try to parse a token as a day of week
  */
 function tryParseDay(token: string): number | null {
   const normalized = token.toLowerCase().replace(/s$/, '') // Remove trailing 's' for plurals
@@ -153,119 +179,78 @@ function tryParseDayRange(token: string): number[] | null {
 }
 
 /**
- * Try to parse an ordinal day of month (1st, 2nd, 15th, etc.)
- * Throws an error if the pattern is recognized but the value is invalid.
+ * Result from trying to parse an ordinal
  */
-function tryParseOrdinal(token: string): number | null {
+type OrdinalParseResult = {success: true; value: number} | {success: false; error: BlueprintError} | {success: null} // not an ordinal pattern
+
+/**
+ * Try to parse an ordinal day of month (1st, 2nd, 15th, etc.)
+ */
+function tryParseOrdinal(token: string): OrdinalParseResult {
   const match = token.match(/^(\d+)(?:st|nd|rd|th)$/)
-  if (!match) return null
+  if (!match) return {success: null}
   const num = parseInt(match[1], 10)
   if (num < 1 || num > 31) {
-    throw new Error(`Invalid day of month: must be 1-31, got ${num}`)
+    return {
+      success: false,
+      error: {type: 'invalid_value', message: `Invalid day of month: must be 1-31, got \`${num}\``},
+    }
   }
-  return num
+  return {success: true, value: num}
 }
 
 /**
- * Try to parse interval like "5 minutes" or "2 hours" from consecutive tokens.
- * Throws an error if the pattern is recognized but the value is invalid.
+ * Result from trying to parse an interval
  */
-function tryParseInterval(tokens: string[], index: number): {type: 'minute' | 'hour'; value: number; consumed: number} | null {
-  if (index >= tokens.length - 1) return null
+type IntervalParseResult =
+  | {success: true; type: 'minute' | 'hour'; value: number; consumed: number}
+  | {success: false; error: BlueprintError}
+  | {success: null} // not an interval pattern
+
+/**
+ * Try to parse interval like "5 minutes" or "2 hours" from consecutive tokens
+ */
+function tryParseInterval(tokens: string[], index: number): IntervalParseResult {
+  if (index >= tokens.length - 1) return {success: null}
 
   const num = parseInt(tokens[index], 10)
-  if (Number.isNaN(num)) return null
+  if (Number.isNaN(num)) return {success: null}
 
   const unit = tokens[index + 1].toLowerCase()
   if (unit === 'minute' || unit === 'minutes') {
     if (num < 1 || num > 59) {
-      throw new Error(`Invalid interval: minutes must be 1-59, got ${num}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid interval: minutes must be 1-59, got \`${num}\``},
+      }
     }
-    return {type: 'minute', value: num, consumed: 2}
+    return {success: true, type: 'minute', value: num, consumed: 2}
   }
   if (unit === 'hour' || unit === 'hours') {
     if (num < 1 || num > 23) {
-      throw new Error(`Invalid interval: hours must be 1-23, got ${num}`)
+      return {
+        success: false,
+        error: {type: 'invalid_value', message: `Invalid interval: hours must be 1-23, got \`${num}\``},
+      }
     }
-    return {type: 'hour', value: num, consumed: 2}
+    return {success: true, type: 'hour', value: num, consumed: 2}
   }
-  return null
+  return {success: null}
 }
 
 /**
- * Suggest corrections for common typos
+ * Internal parsing logic shared between validate and parse functions
  */
-function suggestCorrection(expr: string): string | null {
-  const normalized = expr.toLowerCase()
-
-  const suggestions: Array<{pattern: RegExp; suggestion: string}> = [
-    {pattern: /\bevry\b/, suggestion: 'every'},
-    {pattern: /\bevey\b/, suggestion: 'every'},
-    {pattern: /\beery\b/, suggestion: 'every'},
-    {pattern: /\bmondayss/, suggestion: 'mondays'},
-    {pattern: /\btuesdayss/, suggestion: 'tuesdays'},
-    {pattern: /\bwednesdayss/, suggestion: 'wednesdays'},
-    {pattern: /\bthursdayss/, suggestion: 'thursdays'},
-    {pattern: /\bfridayss/, suggestion: 'fridays'},
-    {pattern: /\bsaturdayss/, suggestion: 'saturdays'},
-    {pattern: /\bsundayss/, suggestion: 'sundays'},
-    {pattern: /\bweakdays\b/, suggestion: 'weekdays'},
-    {pattern: /\bweakends?\b/, suggestion: 'weekends'},
-    {pattern: /\bweekdyas\b/, suggestion: 'weekdays'},
-  ]
-
-  for (const {pattern, suggestion} of suggestions) {
-    if (pattern.test(normalized)) {
-      return suggestion
-    }
-  }
-
-  return null
-}
-
-/**
- * Noise words to ignore during parsing
- */
-const NOISE_WORDS = new Set(['every', 'at', 'on', 'the', 'of', 'in', 'and', 'to'])
-
-/**
- * Parse a natural language schedule expression into a cron expression.
- *
- * The parser is **forgiving** and **freeform** - it extracts recognized parts
- * (days, times, intervals) and ignores unrecognized tokens like "at", "on", "the".
- *
- * Supported patterns:
- * - "every minute", "every 5 minutes", "every hour", "every 2 hours"
- * - "every day at 9am", "daily 14:30", "9am daily"
- * - "at midnight", "noon"
- * - "morning", "evening"
- * - "mondays 9am", "mon wed fri 9:00", "mon-fri 8am"
- * - "9pm fridays and wed", "wednesday friday 9pm"
- * - "weekdays 9am", "weekends 10am"
- * - "first of the month 9am", "15th noon"
- *
- * If the input is already a valid cron expression, it is returned unchanged.
- *
- * @param expression - Natural language schedule or cron expression
- * @returns Cron expression string
- * @throws Error if the expression cannot be parsed
- */
-export function parseScheduleExpression(expression: string): string {
-  if (!expression || expression.trim() === '') {
-    throw new Error('Schedule expression cannot be empty')
-  }
-
+function parseExpressionInternal(expression: string): {
+  errors: BlueprintError[]
+  cron: string | null
+} {
+  const errors: BlueprintError[] = []
   const trimmed = expression.trim()
 
   // If it's already a cron expression, return as-is
   if (isCronExpression(trimmed)) {
-    return trimmed
-  }
-
-  // Check for typos early
-  const earlySuggestion = suggestCorrection(trimmed)
-  if (earlySuggestion) {
-    throw new Error(`Could not parse schedule expression: "${trimmed}". Did you mean "${earlySuggestion}"?`)
+    return {errors: [], cron: trimmed}
   }
 
   // Normalize and tokenize
@@ -305,17 +290,25 @@ export function parseScheduleExpression(expression: string): string {
 
     // Try interval (e.g., "5 minutes")
     const parsedInterval = tryParseInterval(rawTokens, i)
-    if (parsedInterval) {
+    if (parsedInterval.success === true) {
       interval = {type: parsedInterval.type, value: parsedInterval.value}
       i += parsedInterval.consumed
+      continue
+    } else if (parsedInterval.success === false) {
+      errors.push(parsedInterval.error)
+      i += 2 // skip past the invalid interval
       continue
     }
 
     // Try two-token time first (e.g., "9" + "am" or "9:30" + "pm")
     if (i < rawTokens.length - 1) {
       const twoTokenTime = tryParseTwoTokenTime(token, rawTokens[i + 1])
-      if (twoTokenTime) {
-        time = twoTokenTime
+      if (twoTokenTime.success === true) {
+        time = {hour: twoTokenTime.hour, minute: twoTokenTime.minute}
+        i += 2
+        continue
+      } else if (twoTokenTime.success === false) {
+        errors.push(twoTokenTime.error)
         i += 2
         continue
       }
@@ -323,13 +316,17 @@ export function parseScheduleExpression(expression: string): string {
 
     // Try single-token time
     const parsedTime = tryParseTime(token)
-    if (parsedTime) {
+    if (parsedTime.success === true) {
       // Handle :MM format (minute only)
       if (parsedTime.hour === -1) {
         time = {hour: time?.hour ?? 0, minute: parsedTime.minute}
       } else {
-        time = parsedTime
+        time = {hour: parsedTime.hour, minute: parsedTime.minute}
       }
+      i++
+      continue
+    } else if (parsedTime.success === false) {
+      errors.push(parsedTime.error)
       i++
       continue
     }
@@ -356,8 +353,12 @@ export function parseScheduleExpression(expression: string): string {
 
     // Try ordinal (1st, 15th)
     const ordinal = tryParseOrdinal(token)
-    if (ordinal !== null) {
-      dayOfMonth = ordinal
+    if (ordinal.success === true) {
+      dayOfMonth = ordinal.value
+      i++
+      continue
+    } else if (ordinal.success === false) {
+      errors.push(ordinal.error)
       i++
       continue
     }
@@ -379,23 +380,22 @@ export function parseScheduleExpression(expression: string): string {
   // Handle interval patterns
   if (interval) {
     if (interval.type === 'minute') {
-      return `*/${interval.value} * * * *`
+      return {errors, cron: `*/${interval.value} * * * *`}
     }
     if (interval.type === 'hour') {
-      return `0 */${interval.value} * * *`
+      return {errors, cron: `0 */${interval.value} * * *`}
     }
   }
 
   // Handle every minute
   if (hasMinute) {
-    return '* * * * *'
+    return {errors, cron: '* * * * *'}
   }
 
   // Handle every hour
   if (hasHour) {
     const minute = time?.minute ?? 0
-    // If we have a time with hour=-1 (just minute), use that minute for hourly
-    return `${minute} * * * *`
+    return {errors, cron: `${minute} * * * *`}
   }
 
   // Determine day of week field
@@ -424,11 +424,74 @@ export function parseScheduleExpression(expression: string): string {
   // Validate we have something meaningful
   const hasAnySchedule = time || days.length > 0 || hasWeekdays || hasWeekends || hasDaily || dayOfMonth !== null
   if (!hasAnySchedule) {
-    throw new Error(
-      `Could not parse schedule expression: "${trimmed}". ` +
-        'Supported patterns include: "every day 9am", "weekdays 8am", "mon wed fri 9:00", "every 15 minutes", etc.',
-    )
+    // Only add generic "could not parse" if we don't already have specific errors
+    if (errors.length === 0) {
+      errors.push({
+        type: 'invalid_value',
+        message: `Could not parse schedule expression \`${trimmed}\``,
+      })
+    }
+    return {errors, cron: null}
   }
 
-  return `${minute} ${hour} ${dayOfMonthField} * ${dayOfWeekField}`
+  return {errors, cron: `${minute} ${hour} ${dayOfMonthField} * ${dayOfWeekField}`}
+}
+
+/**
+ * Validates a schedule expression and returns any errors found.
+ *
+ * Checks for:
+ * - Empty expressions
+ * - Invalid time formats (hours, minutes out of range)
+ * - Invalid intervals (minutes, hours out of range)
+ * - Invalid day of month values
+ * - Unrecognizable expressions
+ *
+ * @param expression Natural language schedule or cron expression
+ * @returns Array of validation errors, empty if valid
+ */
+export function validateScheduleExpression(expression: string): BlueprintError[] {
+  if (!expression || expression.trim() === '') {
+    return [{type: 'invalid_value', message: '`expression` cannot be empty'}]
+  }
+
+  const result = parseExpressionInternal(expression)
+  return result.errors
+}
+
+/**
+ * Parse a natural language schedule expression into a cron expression.
+ *
+ * The parser is **forgiving** and **freeform** - it extracts recognized parts
+ * (days, times, intervals) and ignores unrecognized tokens like "at", "on", "the".
+ *
+ * Supported patterns:
+ * - "every minute", "every 5 minutes", "every hour", "every 2 hours"
+ * - "every day at 9am", "daily 14:30", "9am daily"
+ * - "at midnight", "noon"
+ * - "morning", "evening"
+ * - "mondays 9am", "mon wed fri 9:00", "mon-fri 8am"
+ * - "9pm fridays and wed", "wednesday friday 9pm"
+ * - "weekdays 9am", "weekends 10am"
+ * - "first of the month 9am", "15th noon"
+ *
+ * If the input is already a valid cron expression, it is returned unchanged.
+ *
+ * This function assumes the expression has already been validated via
+ * `validateScheduleExpression`. For invalid input, behavior is undefined.
+ *
+ * @param expression Natural language schedule or cron expression
+ * @returns Cron expression string
+ */
+export function parseScheduleExpression(expression: string): string {
+  const trimmed = expression.trim()
+
+  // Fast path for cron expressions
+  if (isCronExpression(trimmed)) {
+    return trimmed
+  }
+
+  const result = parseExpressionInternal(expression)
+  // If validation passed, cron should always be present
+  return result.cron ?? '* * * * *'
 }
