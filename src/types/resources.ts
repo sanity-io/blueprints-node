@@ -17,9 +17,15 @@ export interface BlueprintOwnershipAttachAction {
   id: string
 }
 /**
+ * An ownership action that will cause the referenced resource to be detached from the current stack.
+ */
+export interface BlueprintOwnershipDetachAction {
+  type: 'detach'
+}
+/**
  * A union of all possible ownership actions.
  */
-export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction
+export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction | BlueprintOwnershipDetachAction
 
 /**
  * An ownership action that will cause the referenced project-contained resource to be attached to the current stack.

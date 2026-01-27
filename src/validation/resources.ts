@@ -38,15 +38,17 @@ export function validateResource(resourceConfig: unknown, options?: {projectCont
       }
 
       if ('ownershipAction' in resourceConfig.lifecycle) {
+        const ownershipActionTypes = ['attach', 'detach']
         const ownershipAction = resourceConfig.lifecycle.ownershipAction
+
         if (typeof ownershipAction !== 'object' || ownershipAction === null) {
           errors.push({type: 'invalid_type', message: '`ownershipAction` must be an object'})
         } else if (!('type' in ownershipAction)) {
           errors.push({type: 'missing_parameter', message: '`ownershipAction.type` is required'})
         } else if (typeof ownershipAction.type !== 'string') {
           errors.push({type: 'invalid_type', message: '`ownershipAction.type` must be a string'})
-        } else if (!['attach'].includes(ownershipAction.type)) {
-          errors.push({type: 'invalid_value', message: '`ownershipAction.type` must be attach'})
+        } else if (!ownershipActionTypes.includes(ownershipAction.type)) {
+          errors.push({type: 'invalid_value', message: `\`ownershipAction.type\` must be one of ${ownershipActionTypes.join(', ')}`})
         } else {
           if (ownershipAction.type === 'attach') {
             if (!('id' in ownershipAction)) {

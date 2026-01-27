@@ -70,7 +70,7 @@ describe('validateResource', () => {
 
   test('should return an error if lifecycle.ownershipAction.type is not valid', () => {
     const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'invalid'}}})
-    expect(errors).toContainEqual({type: 'invalid_value', message: '`ownershipAction.type` must be attach'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: '`ownershipAction.type` must be one of attach, detach'})
   })
 
   test('should return an error if lifecycle.ownershipAction has no id', () => {
