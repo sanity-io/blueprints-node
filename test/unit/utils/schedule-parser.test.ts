@@ -67,6 +67,11 @@ describe('parseScheduleExpression', () => {
       expect(parseScheduleExpression('daily at 9am')).toBe('0 9 * * *')
       expect(parseScheduleExpression('daily at 14:30')).toBe('30 14 * * *')
     })
+
+    test('should parse time before "daily"', () => {
+      expect(parseScheduleExpression('9am daily')).toBe('0 9 * * *')
+      expect(parseScheduleExpression('14:30 daily')).toBe('30 14 * * *')
+    })
   })
 
   describe('named times', () => {
@@ -246,6 +251,11 @@ describe('parseScheduleExpression', () => {
       expect(parseScheduleExpression('monday-friday 8:00')).toBe('0 8 * * 1,2,3,4,5')
       expect(parseScheduleExpression('mon-wed 10am')).toBe('0 10 * * 1,2,3')
       expect(parseScheduleExpression('fri-sun noon')).toBe('0 12 * * 0,5,6')
+    })
+
+    test('should parse day ranges that wrap around the week', () => {
+      expect(parseScheduleExpression('fri-mon 9am')).toBe('0 9 * * 0,1,5,6')
+      expect(parseScheduleExpression('sat-tue 8am')).toBe('0 8 * * 0,1,2,6')
     })
 
     test('should parse time before days', () => {

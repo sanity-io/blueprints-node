@@ -158,7 +158,7 @@ defineScheduleFunction({
 ```
 
 **Supported natural language patterns:**
-- `every minute`, `every 5 minutes`, `every hour`, `every 2 hours`
+- `every minute`, `every 5 minutes`, `every hour`, `every hour at :30`
 - `every day at 9am`, `daily 14:30`
 - `at midnight`, `at noon`
 - `every morning`, `every afternoon`, `every evening`

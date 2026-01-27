@@ -67,7 +67,7 @@ function tryParseTime(token: string): TimeParseResult {
     return {success: true, ...NAMED_TIMES[normalized]}
   }
 
-  // Just :MM format (e.g., :30 for "at half past")
+  // Just :MM format (e.g., "every hour at :30")
   const minuteOnly = normalized.match(/^:(\d{1,2})$/)
   if (minuteOnly) {
     const minute = parseInt(minuteOnly[1], 10)
@@ -449,6 +449,7 @@ function parseExpressionInternal(expression: string): {
  *
  * @param expression Natural language schedule or cron expression
  * @returns Array of validation errors, empty if valid
+ * @internal
  */
 export function validateScheduleExpression(expression: string): BlueprintError[] {
   if (!expression || expression.trim() === '') {
@@ -482,6 +483,7 @@ export function validateScheduleExpression(expression: string): BlueprintError[]
  *
  * @param expression Natural language schedule or cron expression
  * @returns Cron expression string
+ * @internal
  */
 export function parseScheduleExpression(expression: string): string {
   const trimmed = expression.trim()

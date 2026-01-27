@@ -19,9 +19,6 @@ export * from './types/robots.js'
 export * from './types/roles.js'
 export * from './types/webhooks.js'
 
-// UTILS - utility functions
-export * from './utils/schedule-parser.js'
-
 // VALIDATION - validation for all resources
 export * from './validation/blueprints.js'
 export * from './validation/cors.js'
