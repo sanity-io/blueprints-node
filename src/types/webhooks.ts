@@ -19,7 +19,7 @@ export interface BlueprintDocumentWebhookResource extends BlueprintResource {
   includeDrafts?: boolean
   includeAllVersions?: boolean
   secret?: string
-  dataset?: string
+  dataset: string
   apiVersion: string
 }
 

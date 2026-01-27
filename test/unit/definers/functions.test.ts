@@ -92,6 +92,16 @@ describe('defineDocumentFunction', () => {
       expect(fn.event.resource?.type).toEqual('dataset')
       expect(fn.event.resource?.id).toEqual('myProject.*')
     })
+
+    test('should allow for creating a function in a specific project', () => {
+      const fn = fns.defineDocumentFunction({
+        name: 'test',
+        src: 'test.js',
+        event: {on: ['update']},
+        project: 'projectId',
+      })
+      expect(fn.project).toEqual('projectId')
+    })
   })
 
   describe('sad paths', () => {
@@ -144,6 +154,16 @@ describe('defineMediaLibraryAssetFunction', () => {
         event: {on: ['update'], includeDrafts: false, resource},
       })
       expect(fn.event.includeDrafts).toEqual(false)
+    })
+
+    test('should allow for creating functions in a specific project', () => {
+      const fn = fns.defineMediaLibraryAssetFunction({
+        name: 'test',
+        src: 'test.js',
+        event: {on: ['update'], resource},
+        project: 'projectId',
+      })
+      expect(fn.project).toEqual('projectId')
     })
   })
 
