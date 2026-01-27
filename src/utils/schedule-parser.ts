@@ -492,6 +492,9 @@ export function parseScheduleExpression(expression: string): string {
   }
 
   const result = parseExpressionInternal(expression)
-  // If validation passed, cron should always be present
-  return result.cron ?? '* * * * *'
+  if (!result.cron) {
+    // Should never happen if validateScheduleExpression was called first
+    throw new Error(`Failed to parse schedule expression: ${expression}`)
+  }
+  return result.cron
 }
