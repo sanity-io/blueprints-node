@@ -61,7 +61,8 @@ interface BlueprintFunctionResourceEventResourceMediaLibrary {
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
 /** Current support Function runtimes */
-type FunctionRuntimes = 'node' | 'nodejs20.x' | 'nodejs22.x' | 'nodejs24.x'
+export const VALID_RUNTIMES = ['node', 'nodejs22.x', 'nodejs24.x'] as const
+export type FunctionRuntimes = (typeof VALID_RUNTIMES)[number]
 
 // --- Main Function Types ---
 
