@@ -50,6 +50,29 @@ describe('defineRobot', () => {
     expect(datasetResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
   })
 
+  test('should accept a valid configuration with an attach lifecycle', () => {
+    const datasetResource = robots.defineRobot({
+      name: 'robot-name',
+      memberships: [
+        {
+          resourceType: 'project',
+          resourceId: 'test-project',
+          roleNames: ['test-role'],
+        },
+      ],
+
+      lifecycle: {
+        ownershipAction: {
+          type: 'attach',
+          projectId: 'test-project',
+          id: 'robot-id',
+        },
+      },
+    })
+
+    expect(datasetResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
+  })
+
   test('should throw if validateRobot returns an error', () => {
     const spy = vi.spyOn(index, 'validateRobot').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>

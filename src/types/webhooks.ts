@@ -1,10 +1,10 @@
-import type {BlueprintResource} from '../index.js'
+import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../index.js'
 
 /** Types of events that can trigger a webhook */
 export type WebhookTrigger = 'create' | 'update' | 'delete'
 
 /** A webhook resource definition */
-export interface BlueprintDocumentWebhookResource extends BlueprintResource {
+export interface BlueprintDocumentWebhookResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.webhook'
   project?: string
   displayName?: string

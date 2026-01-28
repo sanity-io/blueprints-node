@@ -1,4 +1,4 @@
-import type {BlueprintResource} from './resources'
+import type {BlueprintProjectResourceLifecycle, BlueprintResource} from './resources'
 
 /** Resource types that robots can be attached to. */
 export type RobotResourceType = 'organization' | 'project'
@@ -16,7 +16,7 @@ export interface RobotMembership {
  * A robot that provides a token for automated access.
  * @see https://www.sanity.io/docs/content-lake/http-auth#k4c21d7b829fe
  */
-export interface BlueprintRobotResource extends BlueprintResource {
+export interface BlueprintRobotResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.access.robot'
   /** A descriptive label for the robot and its use case */
   label: string

@@ -1,4 +1,4 @@
-import type {BlueprintResource} from '../index.js'
+import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../index.js'
 
 export type AclMode = 'public' | 'private' | 'custom'
 
@@ -6,7 +6,7 @@ export type AclMode = 'public' | 'private' | 'custom'
  * Represents a Dataset resource.
  * @see https://www.sanity.io/docs/content-lake/datasets
  */
-export interface BlueprintDatasetResource extends BlueprintResource {
+export interface BlueprintDatasetResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.dataset'
   /** The name of the dataset. Must be unique within a project. */
   datasetName: string

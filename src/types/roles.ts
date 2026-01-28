@@ -1,4 +1,4 @@
-import type {BlueprintResource} from '../index.js'
+import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../index.js'
 
 /**
  * A permission definition for a role.
@@ -15,7 +15,7 @@ export interface RolePermission {
 /**
  * Configuration for a custom role.
  */
-export interface BlueprintRoleConfig extends Omit<BlueprintResource, 'type'> {
+export interface BlueprintRoleConfig extends Omit<BlueprintResource<BlueprintProjectResourceLifecycle>, 'type'> {
   title: string
   description?: string
   appliesToUsers: boolean
@@ -26,7 +26,7 @@ export interface BlueprintRoleConfig extends Omit<BlueprintResource, 'type'> {
 /**
  * A custom role resource
  */
-export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintResource {
+export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.access.role'
 }
 
