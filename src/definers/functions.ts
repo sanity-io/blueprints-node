@@ -66,7 +66,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project, ...maybeEvent} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
   // event validation and normalization
@@ -98,6 +98,7 @@ export function defineDocumentFunction(
         env,
         robotToken,
         project,
+        runtime
       },
       {
         skipValidation: true, // already done below

@@ -119,7 +119,7 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
   }
 
   if ('runtime' in functionResource) {
-    if (!VALID_RUNTIMES.includes(functionResource.runtime as FunctionRuntimes)) {
+    if (typeof functionResource.runtime !== 'undefined' && !VALID_RUNTIMES.includes(functionResource.runtime as FunctionRuntimes)) {
       errors.push({type: 'invalid_value', message: `\`runtime\` must be one of ${VALID_RUNTIMES.join(', ')}`})
     }
   }
