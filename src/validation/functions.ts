@@ -14,6 +14,8 @@ const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersio
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
 
+const validRuntimeValues = ['node', 'nodejs20.x', 'nodejs22.x', 'nodejs24.x']
+
 /**
  * Validates a document function resource configuration.
  * Checks that the function has a valid event configuration, correct type, and all required base properties.
@@ -114,6 +116,10 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
     if (typeof functionResource.robotToken !== 'string' && typeof functionResource.robotToken !== 'undefined') {
       errors.push({type: 'invalid_type', message: '`robotToken` must be a string'})
     }
+  }
+
+  if ('runtime' in functionResource && typeof functionResource.runtime === 'string' && !validRuntimeValues.includes(functionResource.runtime)) {
+    errors.push({type: 'invalid_value', message: `\`runtime\` must be one of ${validRuntimeValues.join(', ')}`})
   }
 
   return errors
