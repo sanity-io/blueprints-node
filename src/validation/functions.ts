@@ -3,9 +3,9 @@ import {
   type BlueprintError,
   type BlueprintFunctionBaseResourceEvent,
   type BlueprintMediaLibraryFunctionResourceEvent,
-  validateResource,
+  type FunctionRuntimes,
   VALID_RUNTIMES,
-  type FunctionRuntimes
+  validateResource,
 } from '../index.js'
 import {validateScheduleExpression} from '../utils/schedule-parser.js'
 

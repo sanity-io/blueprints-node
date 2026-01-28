@@ -98,7 +98,7 @@ export function defineDocumentFunction(
         env,
         robotToken,
         project,
-        runtime
+        runtime,
       },
       {
         skipValidation: true, // already done below
@@ -155,7 +155,7 @@ export function defineMediaLibraryAssetFunction(
         env,
         robotToken,
         project,
-        runtime
+        runtime,
       },
       {
         skipValidation: true, // already done below
@@ -227,7 +227,7 @@ export function defineScheduleFunction(
         timeout,
         memory,
         env,
-        runtime
+        runtime,
       },
       {
         skipValidation: true, // already done below
@@ -287,7 +287,7 @@ export function defineFunction(
     env,
     robotToken,
     project,
-    runtime
+    runtime,
   }
 
   if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))
