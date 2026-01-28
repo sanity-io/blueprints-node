@@ -50,6 +50,26 @@ describe('defineDocumentWebhook', () => {
     expect(webhookResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
   })
 
+  test('should accept a valid configuration with an attach lifecycle', () => {
+    const webhookResource = webhooks.defineDocumentWebhook({
+      name: 'webhook-name',
+      url: 'http://localhost/',
+      on: ['create'],
+      dataset: 'abcdefg',
+      apiVersion: 'vX',
+
+      lifecycle: {
+        ownershipAction: {
+          type: 'attach',
+          projectId: 'test-project',
+          id: 'webhook-id',
+        },
+      },
+    })
+
+    expect(webhookResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
+  })
+
   test('displayName should default to name if not provided', () => {
     const webhookResource = webhooks.defineDocumentWebhook({
       name: 'webhook-name',

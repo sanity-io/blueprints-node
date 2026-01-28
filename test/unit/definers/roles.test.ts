@@ -53,6 +53,31 @@ describe('defineRole', () => {
 
     expect(roleResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
   })
+
+  test('should accept a valid configuration with an attach lifecycle', () => {
+    const roleResource = roles.defineRole({
+      name: 'role-name',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+
+      lifecycle: {
+        ownershipAction: {
+          type: 'attach',
+          projectId: 'test-project',
+          id: 'role-name',
+        },
+      },
+    })
+
+    expect(roleResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
+  })
 })
 
 describe('defineProjectRole', () => {
@@ -94,5 +119,30 @@ describe('defineProjectRole', () => {
     })
 
     expect(roleResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
+  })
+
+  test('should accept a valid configuration with an attach lifecycle', () => {
+    const roleResource = roles.defineProjectRole('test-project', {
+      name: 'role-name',
+      title: 'Role Name',
+      appliesToRobots: true,
+      appliesToUsers: true,
+      permissions: [
+        {
+          name: 'role-name-read',
+          action: 'read',
+        },
+      ],
+
+      lifecycle: {
+        ownershipAction: {
+          type: 'attach',
+          projectId: 'test-project',
+          id: 'role-name',
+        },
+      },
+    })
+
+    expect(roleResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 })

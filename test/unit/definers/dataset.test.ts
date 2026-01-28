@@ -38,6 +38,23 @@ describe('defineDataset', () => {
     expect(datasetResource.lifecycle?.deletionPolicy).toStrictEqual('allow')
   })
 
+  test('should accept a valid configuration with an attach lifecycle', () => {
+    const datasetResource = datasets.defineDataset({
+      name: 'dataset-name',
+      aclMode: 'public',
+
+      lifecycle: {
+        ownershipAction: {
+          type: 'attach',
+          projectId: 'test-project',
+          id: 'production',
+        },
+      },
+    })
+
+    expect(datasetResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
+  })
+
   test('should throw if validateDataset returns an error', () => {
     const spy = vi.spyOn(index, 'validateDataset').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
