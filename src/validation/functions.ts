@@ -3,6 +3,8 @@ import {
   type BlueprintError,
   type BlueprintFunctionBaseResourceEvent,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  type FunctionRuntimes,
+  VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
 import {validateScheduleExpression} from '../utils/schedule-parser.js'
@@ -113,6 +115,12 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
   if ('robotToken' in functionResource) {
     if (typeof functionResource.robotToken !== 'string' && typeof functionResource.robotToken !== 'undefined') {
       errors.push({type: 'invalid_type', message: '`robotToken` must be a string'})
+    }
+  }
+
+  if ('runtime' in functionResource) {
+    if (typeof functionResource.runtime !== 'undefined' && !VALID_RUNTIMES.includes(functionResource.runtime as FunctionRuntimes)) {
+      errors.push({type: 'invalid_value', message: `\`runtime\` must be one of ${VALID_RUNTIMES.join(', ')}`})
     }
   }
 

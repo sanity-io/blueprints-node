@@ -66,7 +66,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project, ...maybeEvent} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime, ...maybeEvent} = functionConfig
   if (!type) type = 'sanity.function.document'
 
   // event validation and normalization
@@ -98,6 +98,7 @@ export function defineDocumentFunction(
         env,
         robotToken,
         project,
+        runtime,
       },
       {
         skipValidation: true, // already done below
@@ -141,7 +142,7 @@ export function defineMediaLibraryAssetFunction(
     Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
     Partial<BlueprintMediaLibraryFunctionResourceEvent>,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project} = functionConfig
+  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime} = functionConfig
   if (!type) type = 'sanity.function.media-library.asset'
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
@@ -154,6 +155,7 @@ export function defineMediaLibraryAssetFunction(
         env,
         robotToken,
         project,
+        runtime,
       },
       {
         skipValidation: true, // already done below
@@ -214,7 +216,7 @@ export function defineScheduleFunction(
     Pick<BlueprintScheduleFunctionResource, 'event'> &
     Partial<BlueprintScheduleFunctionResourceEvent>,
 ): BlueprintScheduleFunctionResource {
-  let {name, src, event, timeout, memory, env, type, timezone} = functionConfig
+  let {name, src, event, timeout, memory, env, type, timezone, runtime} = functionConfig
   if (!type) type = 'sanity.function.cron'
 
   const functionResource: BlueprintScheduleFunctionResource = {
@@ -225,6 +227,7 @@ export function defineScheduleFunction(
         timeout,
         memory,
         env,
+        runtime,
       },
       {
         skipValidation: true, // already done below
@@ -255,6 +258,7 @@ export function defineScheduleFunction(
  *   src: 'functions/my-function',
  *   timeout: 300,
  *   memory: 1,
+ *   runtime: 'nodejs24.x',
  *   env: {
  *     MY_ENV_VAR: 'my-custom-value'
  *   },
@@ -268,7 +272,7 @@ export function defineFunction(
   functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let {name, src, timeout, memory, env, type, robotToken, project} = functionConfig
+  let {name, src, timeout, memory, env, type, robotToken, project, runtime} = functionConfig
 
   // defaults
   if (!src) src = `functions/${name}`
@@ -283,6 +287,7 @@ export function defineFunction(
     env,
     robotToken,
     project,
+    runtime,
   }
 
   if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))

@@ -60,6 +60,10 @@ interface BlueprintFunctionResourceEventResourceMediaLibrary {
 /** Events that can trigger a function */
 type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
+/** Current support Function runtimes */
+export const VALID_RUNTIMES = ['node', 'nodejs22.x', 'nodejs24.x'] as const
+export type FunctionRuntimes = (typeof VALID_RUNTIMES)[number]
+
 // --- Main Function Types ---
 
 /** Base function resource with common properties for all function types */
@@ -82,6 +86,12 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
    *
    * The `project` attribute must be defined if your blueprint is scoped to an organization. */
   project?: string
+
+  /**
+   * The runtime environment for the function (currently only Node.js is supported)
+   * @default 'nodejs24.x'
+   */
+  runtime?: FunctionRuntimes
 }
 /** A function resource triggered by document events in Sanity datasets */
 export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunctionResource {

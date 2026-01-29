@@ -85,6 +85,11 @@ describe('validateFunction', () => {
       const errors = functions.validateFunction({name: 'test', robotToken: 123})
       expect(errors).toContainEqual({type: 'invalid_type', message: '`robotToken` must be a string'})
     })
+
+    test('should return an error if runtime is not a valid runtime', () => {
+      const errors = functions.validateFunction({name: 'test', type: 'test', runtime: 'python'})
+      expect(errors).toContainEqual({type: 'invalid_value', message: `\`runtime\` must be one of ${index.VALID_RUNTIMES.join(', ')}`})
+    })
   })
 })
 
