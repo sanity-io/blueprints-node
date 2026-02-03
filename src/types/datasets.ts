@@ -5,6 +5,7 @@ export type AclMode = 'public' | 'private' | 'custom'
 /**
  * Represents a Dataset resource.
  * @see https://www.sanity.io/docs/content-lake/datasets
+ * @beta This feature is subject to breaking changes.
  */
 export interface BlueprintDatasetResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.dataset'
@@ -24,6 +25,7 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
 /**
  * Configuration for a Dataset resource.
  * @see https://www.sanity.io/docs/content-lake/datasets
+ * @beta This feature is subject to breaking changes.
  */
 export type BlueprintDatasetConfig = Omit<BlueprintDatasetResource, 'type' | 'datasetName'> & {
   /** The name of the dataset. Must be unique within a project. Defaults to the name of the resource. */

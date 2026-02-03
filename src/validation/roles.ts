@@ -3,6 +3,7 @@ import {type BlueprintError, validateResource} from '../index.js'
 /**
  * Validates that the given resource is a valid Role.
  * @param resource The Role resource
+ * @internal
  * @returns A list of validation errors
  */
 export function validateRole(resource: unknown): BlueprintError[] {
@@ -39,8 +40,9 @@ export function validateRole(resource: unknown): BlueprintError[] {
 }
 
 /**
- * Validates that the given resource is a valid Role.
+ * Validates that the given resource is a valid Project Role.
  * @param resource The Role resource
+ * @internal
  * @returns A list of validation errors
  */
 export function validateProjectRole(resource: unknown): BlueprintError[] {

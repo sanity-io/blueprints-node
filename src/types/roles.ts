@@ -2,6 +2,7 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 
 /**
  * A permission definition for a role.
+ * @beta This feature is subject to breaking changes.
  */
 export interface RolePermission {
   /** Predefined permission name (e.g., 'sanity-all-documents') */
@@ -14,6 +15,7 @@ export interface RolePermission {
 
 /**
  * Configuration for a custom role.
+ * @beta This feature is subject to breaking changes.
  */
 export interface BlueprintRoleConfig extends Omit<BlueprintResource<BlueprintProjectResourceLifecycle>, 'type'> {
   title: string
@@ -25,6 +27,7 @@ export interface BlueprintRoleConfig extends Omit<BlueprintResource<BlueprintPro
 
 /**
  * A custom role resource
+ * @beta This feature is subject to breaking changes.
  */
 export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.access.role'
@@ -32,6 +35,7 @@ export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintRes
 
 /**
  * A custom role resource that is tied to a specific project
+ * @beta This feature is subject to breaking changes.
  */
 export interface BlueprintProjectRoleResource extends BlueprintRoleResource {
   resourceType: 'project'
