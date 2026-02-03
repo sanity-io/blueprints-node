@@ -28,6 +28,7 @@ import {runValidation} from '../utils/validation.js'
  * }),
  * ```
  * @param parameters The configuration of the role
+ * @public
  * @experimental Deploying Roles via Blueprints is experimental.
  * @beta This feature is stabilizing but may still be subject to breaking changes.
  * @returns The role resource
