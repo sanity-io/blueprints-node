@@ -52,6 +52,7 @@ interface RequiredFunctionProperties {
  * })
  * ```
  * @param functionConfig The configuration for the document function
+ * @public
  * @returns The validated document function resource
  */
 export function defineDocumentFunction(
@@ -134,6 +135,7 @@ export function defineDocumentFunction(
  * })
  * ```
  * @param functionConfig The configuration for the media library asset function
+ * @public
  * @returns The validated media library asset function resource
  */
 export function defineMediaLibraryAssetFunction(
@@ -206,7 +208,9 @@ export function defineMediaLibraryAssetFunction(
  *   },
  * })
  * ```
- * @beta
+ * @public
+ * @experimental Deploying Schedule Functions via Blueprints is experimental.
+ * @alpha This feature is not available publicly yet.
  * @param functionConfig The configuration for the schedule function
  * @returns The validated schedule function resource
  */

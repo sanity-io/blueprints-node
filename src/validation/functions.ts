@@ -20,6 +20,7 @@ const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resourc
  * Validates a document function resource configuration.
  * Checks that the function has a valid event configuration, correct type, and all required base properties.
  * @param functionResource The function resource to validate
+ * @internal
  * @returns Array of validation errors, empty if valid
  */
 export function validateDocumentFunction(functionResource: unknown): BlueprintError[] {
@@ -55,6 +56,7 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
  * Validates a media library asset function resource configuration.
  * Checks that the function has a valid event configuration with required resource, correct type, and all required base properties.
  * @param functionResource The function resource to validate
+ * @internal
  * @returns Array of validation errors, empty if valid
  */
 export function validateMediaLibraryAssetFunction(functionResource: unknown): BlueprintError[] {
@@ -80,6 +82,7 @@ export function validateMediaLibraryAssetFunction(functionResource: unknown): Bl
  * Validates base function resource properties.
  * Checks that required fields (name, type) are present and that optional fields have correct types.
  * @param functionResource The function resource to validate
+ * @internal
  * @returns Array of validation errors, empty if valid
  */
 export function validateFunction(functionResource: unknown): BlueprintError[] {
@@ -131,6 +134,7 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
  * Validates a document function event configuration.
  * Checks event trigger types, optional filter/projection, and optional dataset resource scoping.
  * @param event The event configuration to validate
+ * @internal
  * @returns Array of validation errors, empty if valid
  */
 function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
@@ -160,6 +164,7 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
  * Validates a media library function event configuration.
  * Checks event trigger types and ensures required media library resource is present.
  * @param event The event configuration to validate
+ * @internal
  * @returns Array of validation errors, empty if valid
  */
 function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
@@ -185,6 +190,12 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
   return errors
 }
 
+/**
+ * Validates a schedule function resource configuration.
+ * @param functionResource The function resource to validate
+ * @internal
+ * @returns Array of validation errors, empty if valid
+ */
 export function validateScheduleFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
@@ -210,6 +221,12 @@ export function validateScheduleFunction(functionResource: unknown): BlueprintEr
   return errors
 }
 
+/**
+ * Validates a schedule function event configuration.
+ * @param event The event configuration to validate
+ * @internal
+ * @returns Array of validation errors, empty if valid
+ */
 function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
   if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
   if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
@@ -282,6 +299,12 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
   return errors
 }
 
+/**
+ * Validates a schedule function timezone configuration.
+ * @param timezone The timezone to validate
+ * @internal
+ * @returns Array of validation errors, empty if valid
+ */
 function validateScheduleFunctionTimezone(timezone: unknown): BlueprintError[] {
   if (typeof timezone !== 'string') return [{type: 'invalid_type', message: 'Function timezone must be a string'}]
 

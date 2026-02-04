@@ -3,6 +3,7 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 /**
  * Represents a CORS Origin resource.
  * @see https://www.sanity.io/docs/content-lake/cors
+ * @beta This feature is subject to breaking changes.
  */
 export interface BlueprintCorsOriginResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.cors'
@@ -31,6 +32,7 @@ export interface BlueprintCorsOriginResource extends BlueprintResource<Blueprint
 /**
  * Configuration for a CORS Origin resource.
  * @see https://www.sanity.io/docs/content-lake/cors
+ * @beta This feature is subject to breaking changes.
  */
 export type BlueprintCorsOriginConfig = Omit<BlueprintCorsOriginResource, 'type' | 'allowCredentials'> & {
   /**

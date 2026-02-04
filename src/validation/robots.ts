@@ -3,6 +3,7 @@ import {type BlueprintError, validateResource} from '../index.js'
 /**
  * Validates that the given resource is a valid Robot.
  * @param resource The Robot resource
+ * @internal
  * @returns A list of validation errors
  */
 export function validateRobot(resource: unknown): BlueprintError[] {
@@ -60,6 +61,12 @@ export function validateRobot(resource: unknown): BlueprintError[] {
   return errors
 }
 
+/**
+ * Validates that the given membership is a valid Robot membership.
+ * @param membership The membership to validate
+ * @internal
+ * @returns A list of validation errors
+ */
 export function validateRobotMembership(membership: unknown): BlueprintError[] {
   if (!membership) return [{type: 'invalid_value', message: 'Membership config must be provided'}]
   if (typeof membership !== 'object') return [{type: 'invalid_type', message: 'Membership config must be an object'}]

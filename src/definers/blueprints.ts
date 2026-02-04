@@ -11,6 +11,7 @@ import {runValidation} from '../utils/validation.js'
  * })
  * ```
  * @param blueprintConfig The blueprint configuration
+ * @public
  * @returns A blueprint module
  */
 export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintModule {
