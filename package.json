@@ -36,6 +36,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "coverage": "vitest --coverage",
+    "docs:typedocs": "typedoc --json ./docs/typedoc-output.json --includeVersion --entryPointStrategy expand",
     "lint": "biome check .",
     "lint:write": "biome check --write .",
     "posttest": "npm run lint",
@@ -51,6 +52,7 @@
     "@types/node": "^20",
     "@vitest/coverage-v8": "^4.0.17",
     "rimraf": "^6.1.2",
+    "typedoc": "^0.28.16",
     "typescript": "^5.9.3",
     "vitest": "4.0.17"
   },
