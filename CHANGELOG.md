@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.11.0](https://github.com/sanity-io/blueprints-node/compare/v0.10.0...v0.11.0) (2026-02-05)
+
+
+### Features
+
+* add support for natural language to defineScheduleFunction expression ([#56](https://github.com/sanity-io/blueprints-node/issues/56)) ([8c39eec](https://github.com/sanity-io/blueprints-node/commit/8c39eecefc57d8d2e85f014499f357d80376510a))
+* expose runtime variable in functions ([#62](https://github.com/sanity-io/blueprints-node/issues/62)) ([58ae65f](https://github.com/sanity-io/blueprints-node/commit/58ae65f0ff6b3994ead57405823477843736df58))
+
+
+### Bug Fixes
+
+* **docs:** add internal, experimental, and beta markers ([#63](https://github.com/sanity-io/blueprints-node/issues/63)) ([01140a9](https://github.com/sanity-io/blueprints-node/commit/01140a94950c0c68300092adbbe2be5b20ce4af3))
+* **docs:** typedoc optimization and organization ([#65](https://github.com/sanity-io/blueprints-node/issues/65)) ([fb9dd77](https://github.com/sanity-io/blueprints-node/commit/fb9dd773638a23ebf1f993deb6f756aa8cd46352))
+* Ensure resources have proper lifecycle type ([#60](https://github.com/sanity-io/blueprints-node/issues/60)) ([66e5594](https://github.com/sanity-io/blueprints-node/commit/66e5594d1c742f809ec769fa7c8cf5754bb4647c))
+
 ## [0.10.0](https://github.com/sanity-io/blueprints-node/compare/v0.9.0...v0.10.0) (2026-01-27)
 
 
