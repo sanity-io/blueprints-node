@@ -17,6 +17,10 @@ export * from './definers/webhooks.js'
  * @categoryDescription Resource Types
  * These types are used to define the shape of resources in a Blueprint.
  */
+/**
+ * @categoryDescription Functions Types
+ * Resource types for functions in a Blueprint.
+ */
 export * from './types/blueprints.js'
 export * from './types/cors.js'
 export * from './types/datasets.js'
@@ -40,3 +44,9 @@ export * from './validation/resources.js'
 export * from './validation/robots.js'
 export * from './validation/roles.js'
 export * from './validation/webhooks.js'
+
+// Public BLUEPRINTS INTERNALS - published bucket of misc Blueprint types
+/**
+ * @categoryDescription Blueprint Internals
+ * Miscellaneous Blueprint types that make up the public API but are not exported directly.
+ */
