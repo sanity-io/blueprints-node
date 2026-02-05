@@ -10,8 +10,9 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The dataset configuration
  * @public
- * @experimental Deploying Datasets via Blueprints is experimental.
- * @alpha This feature is subject to breaking changes.
+ * @alpha Deploying Datasets via Blueprints is experimental. This feature is subject to breaking changes.
+ * @hidden
+ * @category Definers
  * @returns The dataset resource
  */
 export function defineDataset(parameters: BlueprintDatasetConfig): BlueprintDatasetResource {

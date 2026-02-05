@@ -2,7 +2,10 @@ import type {BlueprintResource} from '../index.js'
 
 // --- Function Event Types ---
 
-/** Base event configuration shared by document and media library function types */
+/**
+ * Base event configuration shared by document and media library function types
+ * @category Functions Types
+ */
 export interface BlueprintFunctionBaseResourceEvent {
   /** Event types that trigger the function. Defaults to ['publish'] */
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
@@ -13,24 +16,37 @@ export interface BlueprintFunctionBaseResourceEvent {
   /** Include draft documents in addition to published documents */
   includeDrafts?: boolean
 }
-/** Event configuration for document functions */
+
+/**
+ * Event configuration for document functions
+ * @category Functions Types
+ */
 export interface BlueprintDocumentFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
   /** Include all versions of documents, not just the current version */
   includeAllVersions?: boolean
   /** Optional dataset resource scoping for the function */
   resource?: BlueprintFunctionResourceEventResourceDataset
 }
-/** Event configuration for media library asset functions */
+
+/**
+ * Event configuration for media library asset functions
+ * @category Functions Types
+ */
 export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFunctionBaseResourceEvent {
   /** Media library resource scoping (required for media library functions) */
   resource: BlueprintFunctionResourceEventResourceMediaLibrary
 }
-/** Union type of all function resource event configurations */
+
+/**
+ * Union type of all function resource event configurations
+ * @category Functions Types
+ */
 export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEvent | BlueprintMediaLibraryFunctionResourceEvent
 
 /**
- * Dataset resource for scoping document functions to specific datasets
- * @example { type: 'dataset', id: 'my-project.production' }
+ * Explicit resource event for schedule functions to specific minutes, hours, days of month, months, and days of week
+ * @example { minute: '0', hour: '9', dayOfMonth: '1', month: '1', dayOfWeek: '1' }
+ * @category Functions Types
  */
 export interface BlueprintScheduleFunctionExplicitResourceEvent {
   minute: string
@@ -39,34 +55,67 @@ export interface BlueprintScheduleFunctionExplicitResourceEvent {
   month: string
   dayOfWeek: string
 }
+
+/**
+ * Expression resource for schedule functions to specific expressions
+ * @example { expression: '0 9 * * *' }
+ * @category Functions Types
+ */
 export interface BlueprintScheduleFunctionExpressionResourceEvent {
   expression: string
 }
+
+/**
+ * Union type of all schedule function resource event configurations
+ * @category Functions Types
+ */
 export type BlueprintScheduleFunctionResourceEvent =
   | BlueprintScheduleFunctionExplicitResourceEvent
   | BlueprintScheduleFunctionExpressionResourceEvent
 
-interface BlueprintFunctionResourceEventResourceDataset {
+/**
+ * Dataset resource for scoping document functions to specific datasets
+ * @example { type: 'dataset', id: 'my-project.production' }
+ * @category Resource Types
+ */
+export interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
-  /** @description A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
+  /** A dataset ID in the format <projectId>.<datasetName>. <datasetName> can be `*` to signify "all datasets in project with ID <projectId>." */
   id: string
 }
-/** Media library resource for scoping media library functions */
-interface BlueprintFunctionResourceEventResourceMediaLibrary {
+
+/**
+ * Media library resource for scoping media library functions
+ * @category Functions Types
+ */
+export interface BlueprintFunctionResourceEventResourceMediaLibrary {
   type: 'media-library'
   id: string
 }
 
-/** Events that can trigger a function */
-type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
+/**
+ * Events that can trigger a function
+ * @category Functions Types
+ */
+export type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
 
-/** Current support Function runtimes */
+/**
+ * Current support Function runtimes
+ * @category Functions Types
+ */
 export const VALID_RUNTIMES = ['node', 'nodejs22.x', 'nodejs24.x'] as const
+/**
+ * Supported function runtimes
+ * @category Functions Types
+ */
 export type FunctionRuntimes = (typeof VALID_RUNTIMES)[number]
 
 // --- Main Function Types ---
 
-/** Base function resource with common properties for all function types */
+/**
+ * Base function resource with common properties for all function types
+ * @category Functions Types
+ */
 export interface BlueprintBaseFunctionResource extends BlueprintResource {
   /** Human-readable display name for the function */
   displayName?: string
@@ -93,18 +142,31 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
    */
   runtime?: FunctionRuntimes
 }
-/** A function resource triggered by document events in Sanity datasets */
+
+/**
+ * A function resource triggered by document events in Sanity datasets
+ * @category Functions Types
+ */
 export interface BlueprintDocumentFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.document'
   /** Event configuration specifying when and how the function is triggered */
   event: BlueprintDocumentFunctionResourceEvent
 }
-/** A function resource triggered by media library asset events */
+
+/**
+ * A function resource triggered by media library asset events
+ * @category Functions Types
+ */
 export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.media-library.asset'
   /** Event configuration specifying when and how the function is triggered */
   event: BlueprintMediaLibraryFunctionResourceEvent
 }
+
+/**
+ * A function resource triggered by schedule events
+ * @category Functions Types
+ */
 export interface BlueprintScheduleFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.cron'
   event: BlueprintScheduleFunctionResourceEvent

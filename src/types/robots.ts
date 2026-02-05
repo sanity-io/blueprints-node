@@ -9,6 +9,7 @@ export type RobotResourceType = 'organization' | 'project'
 /**
  * Defines the robot's roles within a given resource.
  * @beta This feature is subject to breaking changes.
+ * @category Resource Types
  */
 export interface RobotMembership {
   resourceType: RobotResourceType
@@ -20,6 +21,7 @@ export interface RobotMembership {
  * A robot that provides a token for automated access.
  * @see https://www.sanity.io/docs/content-lake/http-auth#k4c21d7b829fe
  * @beta This feature is subject to breaking changes.
+ * @category Resource Types
  */
 export interface BlueprintRobotResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.access.robot'
@@ -35,6 +37,7 @@ export interface BlueprintRobotResource extends BlueprintResource<BlueprintProje
  * Configuration for a robot that provides a token for automated access.
  * @see https://www.sanity.io/docs/content-lake/http-auth#k4c21d7b829fe
  * @beta This feature is subject to breaking changes.
+ * @category Resource Types
  */
 export type BlueprintRobotConfig = Omit<BlueprintRobotResource, 'type' | 'label' | 'token'> & {
   label?: string

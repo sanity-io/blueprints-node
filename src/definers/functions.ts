@@ -28,7 +28,8 @@ type ScheduleFunctionEventKey =
   | keyof BlueprintScheduleFunctionExpressionResourceEvent
 const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
 
-interface RequiredFunctionProperties {
+/** @internal */
+export interface RequiredFunctionProperties {
   name: string
 }
 
@@ -53,6 +54,7 @@ interface RequiredFunctionProperties {
  * ```
  * @param functionConfig The configuration for the document function
  * @public
+ * @category Definers
  * @returns The validated document function resource
  */
 export function defineDocumentFunction(
@@ -136,6 +138,7 @@ export function defineDocumentFunction(
  * ```
  * @param functionConfig The configuration for the media library asset function
  * @public
+ * @category Definers
  * @returns The validated media library asset function resource
  */
 export function defineMediaLibraryAssetFunction(
@@ -209,8 +212,9 @@ export function defineMediaLibraryAssetFunction(
  * })
  * ```
  * @public
- * @experimental Deploying Schedule Functions via Blueprints is experimental.
- * @alpha This feature is not available publicly yet.
+ * @alpha Deploying Schedule Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Definers
  * @param functionConfig The configuration for the schedule function
  * @returns The validated schedule function resource
  */
@@ -270,6 +274,8 @@ export function defineScheduleFunction(
  * ```
  * @param functionConfig The configuration for the function
  * @param options Optional configuration including validation options
+ * @category Definers
+ * @internal
  * @returns The validated function resource
  */
 export function defineFunction(

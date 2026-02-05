@@ -14,8 +14,8 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The webhook configuration
  * @public
- * @experimental Deploying Webhooks via Blueprints is experimental.
- * @beta This feature is stabilizing but may still be subject to breaking changes.
+ * @beta Deploying Webhooks via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Definers
  * @returns The webhook resource
  */
 export function defineDocumentWebhook(parameters: BlueprintDocumentWebhookConfig): BlueprintDocumentWebhookResource {

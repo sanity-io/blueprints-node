@@ -3,7 +3,8 @@ import {type BlueprintError, validateResource} from '../index.js'
 /**
  * Validates that the given resource is a valid Dataset.
  * @param resource The Dataset resource
- * @internal
+ * @hidden
+ * @category Validation
  * @returns A list of validation errors
  */
 export function validateDataset(resource: unknown): BlueprintError[] {
