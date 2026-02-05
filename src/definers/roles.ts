@@ -29,8 +29,8 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The configuration of the role
  * @public
- * @experimental Deploying Roles via Blueprints is experimental.
- * @beta This feature is stabilizing but may still be subject to breaking changes.
+ * @beta Deploying Roles via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Definers
  * @returns The role resource
  */
 export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValidation?: boolean}): BlueprintRoleResource {
@@ -73,6 +73,9 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
  *   }]
  * }),
  * ```
+ * @public
+ * @beta Deploying Roles via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Definers
  * @param projectId The ID of the project to which the role will be scoped
  * @param parameters The configuration of the role
  * @returns The role resource

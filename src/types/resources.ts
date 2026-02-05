@@ -5,13 +5,13 @@
  *  - **replace** if a stack is deployed, the resource will be destroyed and created instead of performing an update. If the resource is removed from the blueprint, it will be destroyed. If the stack is destroyed, the resource will be destroyed.
  *  - **allow** if a stack is destroyed, the resource will be destroyed along with it. If the resource is removed it will be destroyed
  *  - **protect** if a stack is deployed the resource will not be updated. If the resource is removed from the blueprint or the stack is destroyed, deployment will fail.
- * @internal
+ * @category Blueprint Internals
  */
 export type BlueprintResourceDeletionPolicy = 'allow' | 'retain' | 'replace' | 'protect'
 
 /**
  * An ownership action that will cause the referenced resource to be attached to the current stack.
- * @internal
+ * @category Blueprint Internals
  */
 export interface BlueprintOwnershipAttachAction {
   type: 'attach'
@@ -20,20 +20,20 @@ export interface BlueprintOwnershipAttachAction {
 }
 /**
  * An ownership action that will cause the referenced resource to be detached from the current stack.
- * @internal
+ * @category Blueprint Internals
  */
 export interface BlueprintOwnershipDetachAction {
   type: 'detach'
 }
 /**
  * A union of all possible ownership actions.
- * @internal
+ * @category Blueprint Internals
  */
 export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction | BlueprintOwnershipDetachAction
 
 /**
  * An ownership action that will cause the referenced project-contained resource to be attached to the current stack.
- * @internal
+ * @category Blueprint Internals
  */
 export interface BlueprintProjectOwnershipAttachAction extends BlueprintOwnershipAttachAction {
   /** The identifier of the project for resources contained in a project */
@@ -41,13 +41,13 @@ export interface BlueprintProjectOwnershipAttachAction extends BlueprintOwnershi
 }
 /**
  * A union of all possible ownership actions for resources belonging to projects.
- * @internal
+ * @category Blueprint Internals
  */
 export type BlueprintProjectOwnershipAction = BlueprintProjectOwnershipAttachAction
 
 /**
  * Defines the lifcycle policy for this resource.
- * @internal
+ * @category Blueprint Internals
  */
 export interface BlueprintResourceLifecycle {
   deletionPolicy?: BlueprintResourceDeletionPolicy
@@ -57,7 +57,7 @@ export interface BlueprintResourceLifecycle {
 
 /**
  * Defines the lifcycle policy for this resource.
- * @internal
+ * @category Blueprint Internals
  */
 export interface BlueprintProjectResourceLifecycle extends BlueprintResourceLifecycle {
   ownershipAction?: BlueprintProjectOwnershipAction
@@ -65,6 +65,7 @@ export interface BlueprintProjectResourceLifecycle extends BlueprintResourceLife
 
 /**
  * The base type for all resources.
+ * @category Blueprint Internals
  */
 export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle = BlueprintResourceLifecycle> {
   type: string

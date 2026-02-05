@@ -20,7 +20,7 @@ const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resourc
  * Validates a document function resource configuration.
  * Checks that the function has a valid event configuration, correct type, and all required base properties.
  * @param functionResource The function resource to validate
- * @internal
+ * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
 export function validateDocumentFunction(functionResource: unknown): BlueprintError[] {
@@ -56,7 +56,7 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
  * Validates a media library asset function resource configuration.
  * Checks that the function has a valid event configuration with required resource, correct type, and all required base properties.
  * @param functionResource The function resource to validate
- * @internal
+ * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
 export function validateMediaLibraryAssetFunction(functionResource: unknown): BlueprintError[] {
@@ -134,7 +134,6 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
  * Validates a document function event configuration.
  * Checks event trigger types, optional filter/projection, and optional dataset resource scoping.
  * @param event The event configuration to validate
- * @internal
  * @returns Array of validation errors, empty if valid
  */
 function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
@@ -164,7 +163,6 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
  * Validates a media library function event configuration.
  * Checks event trigger types and ensures required media library resource is present.
  * @param event The event configuration to validate
- * @internal
  * @returns Array of validation errors, empty if valid
  */
 function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
@@ -193,7 +191,9 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
 /**
  * Validates a schedule function resource configuration.
  * @param functionResource The function resource to validate
- * @internal
+ * @alpha
+ * @hidden
+ * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
 export function validateScheduleFunction(functionResource: unknown): BlueprintError[] {
@@ -224,7 +224,6 @@ export function validateScheduleFunction(functionResource: unknown): BlueprintEr
 /**
  * Validates a schedule function event configuration.
  * @param event The event configuration to validate
- * @internal
  * @returns Array of validation errors, empty if valid
  */
 function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
@@ -302,7 +301,6 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
 /**
  * Validates a schedule function timezone configuration.
  * @param timezone The timezone to validate
- * @internal
  * @returns Array of validation errors, empty if valid
  */
 function validateScheduleFunctionTimezone(timezone: unknown): BlueprintError[] {

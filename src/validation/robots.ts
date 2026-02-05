@@ -3,7 +3,7 @@ import {type BlueprintError, validateResource} from '../index.js'
 /**
  * Validates that the given resource is a valid Robot.
  * @param resource The Robot resource
- * @internal
+ * @category Validation
  * @returns A list of validation errors
  */
 export function validateRobot(resource: unknown): BlueprintError[] {

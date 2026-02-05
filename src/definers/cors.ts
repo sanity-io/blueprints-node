@@ -11,8 +11,8 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The CORS Origin configuration
  * @public
- * @experimental Deploying CORS Origins via Blueprints is experimental.
- * @beta This feature is stabilizing but may still be subject to breaking changes.
+ * @beta Deploying CORS Origins via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Definers
  * @returns The CORS Origin resource
  */
 export function defineCorsOrigin(parameters: BlueprintCorsOriginConfig): BlueprintCorsOriginResource {

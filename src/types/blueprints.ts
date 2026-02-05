@@ -19,7 +19,10 @@ export interface BlueprintOutput {
   value: string
 }
 
-/** A representation of a Blueprint document */
+/**
+ * A representation of a Blueprint document
+ * @category Blueprint Internals
+ */
 export interface Blueprint {
   $schema: string
   blueprintVersion: string

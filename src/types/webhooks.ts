@@ -3,12 +3,14 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 /**
  * Types of events that can trigger a webhook
  * @beta This feature is subject to breaking changes.
+ * @category Resource Types
  */
 export type WebhookTrigger = 'create' | 'update' | 'delete'
 
 /**
  * A webhook resource definition
  * @beta This feature is subject to breaking changes.
+ * @category Resource Types
  */
 export interface BlueprintDocumentWebhookResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.webhook'
@@ -32,5 +34,6 @@ export interface BlueprintDocumentWebhookResource extends BlueprintResource<Blue
 /**
  * Configuration for a webhook
  * @beta This feature is subject to breaking changes.
+ * @category Resource Types
  */
 export type BlueprintDocumentWebhookConfig = Omit<BlueprintDocumentWebhookResource, 'type'>

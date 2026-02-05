@@ -8,39 +8,39 @@ import {runValidation} from '../utils/validation.js'
  * @internal
  * @returns A list of validation errors
  */
-export function validateResource(resourceConfig: unknown, options?: {projectContained?: boolean}): BlueprintError[] {
-  if (!resourceConfig) return [{type: 'invalid_value', message: 'Resource config must be provided'}]
-  if (typeof resourceConfig !== 'object') return [{type: 'invalid_type', message: 'Resource config must be an object'}]
+export function validateResource(resource: unknown, options?: {projectContained?: boolean}): BlueprintError[] {
+  if (!resource) return [{type: 'invalid_value', message: 'Resource config must be provided'}]
+  if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Resource config must be an object'}]
 
   const errors: BlueprintError[] = []
 
-  if (!('name' in resourceConfig)) {
+  if (!('name' in resource)) {
     errors.push({type: 'missing_parameter', message: '`name` is required'})
-  } else if (typeof resourceConfig.name !== 'string') {
+  } else if (typeof resource.name !== 'string') {
     errors.push({type: 'invalid_type', message: '`name` must be a string'})
   }
 
-  if (!('type' in resourceConfig)) {
+  if (!('type' in resource)) {
     errors.push({type: 'missing_parameter', message: '`type` is required'})
-  } else if (typeof resourceConfig.type !== 'string') {
+  } else if (typeof resource.type !== 'string') {
     errors.push({type: 'invalid_type', message: '`type` must be a string'})
   }
 
-  if ('lifecycle' in resourceConfig) {
-    if (typeof resourceConfig.lifecycle !== 'object' || resourceConfig.lifecycle === null) {
+  if ('lifecycle' in resource) {
+    if (typeof resource.lifecycle !== 'object' || resource.lifecycle === null) {
       errors.push({type: 'invalid_type', message: '`lifecycle` must be an object'})
     } else {
-      if ('deletionPolicy' in resourceConfig.lifecycle) {
-        if (typeof resourceConfig.lifecycle.deletionPolicy !== 'string') {
+      if ('deletionPolicy' in resource.lifecycle) {
+        if (typeof resource.lifecycle.deletionPolicy !== 'string') {
           errors.push({type: 'invalid_type', message: '`deletionPolicy` must be a string'})
-        } else if (!['allow', 'retain', 'replace', 'protect'].includes(resourceConfig.lifecycle.deletionPolicy)) {
+        } else if (!['allow', 'retain', 'replace', 'protect'].includes(resource.lifecycle.deletionPolicy)) {
           errors.push({type: 'invalid_value', message: '`deletionPolicy` must be one of allow, retain, replace, protect'})
         }
       }
 
-      if ('ownershipAction' in resourceConfig.lifecycle) {
+      if ('ownershipAction' in resource.lifecycle) {
         const ownershipActionTypes = ['attach', 'detach']
-        const ownershipAction = resourceConfig.lifecycle.ownershipAction
+        const ownershipAction = resource.lifecycle.ownershipAction
 
         if (typeof ownershipAction !== 'object' || ownershipAction === null) {
           errors.push({type: 'invalid_type', message: '`ownershipAction` must be an object'})

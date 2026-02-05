@@ -1,11 +1,19 @@
 import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../index.js'
 
+/**
+ * The ACL mode for a dataset.
+ * @alpha
+ * @hidden
+ * @category Resource Types
+ */
 export type AclMode = 'public' | 'private' | 'custom'
 
 /**
  * Represents a Dataset resource.
  * @see https://www.sanity.io/docs/content-lake/datasets
  * @alpha This feature is subject to breaking changes.
+ * @hidden
+ * @category Resource Types
  */
 export interface BlueprintDatasetResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.dataset'
@@ -26,6 +34,8 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
  * Configuration for a Dataset resource.
  * @see https://www.sanity.io/docs/content-lake/datasets
  * @alpha This feature is subject to breaking changes.
+ * @hidden
+ * @category Resource Types
  */
 export type BlueprintDatasetConfig = Omit<BlueprintDatasetResource, 'type' | 'datasetName'> & {
   /** The name of the dataset. Must be unique within a project. Defaults to the name of the resource. */

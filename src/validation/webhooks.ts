@@ -3,7 +3,7 @@ import {type BlueprintError, validateResource} from '../index.js'
 /**
  * Validates that the given resource is a valid Document Webhook.
  * @param resource The Document Webhook resource
- * @internal
+ * @category Validation
  * @returns A list of validation errors
  */
 export function validateDocumentWebhook(resource: unknown): BlueprintError[] {

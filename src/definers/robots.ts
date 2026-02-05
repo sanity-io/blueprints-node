@@ -17,8 +17,8 @@ import {runValidation} from '../utils/validation.js'
  *
  * @param parameters The robot configuration
  * @public
- * @experimental Deploying Robots via Blueprints is experimental.
- * @beta This feature is stabilizing but may still be subject to breaking changes.
+ * @beta Deploying Robots via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Definers
  * @returns The robot resource
  */
 export function defineRobot(parameters: BlueprintRobotConfig): BlueprintRobotResource {

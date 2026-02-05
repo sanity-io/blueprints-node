@@ -3,7 +3,7 @@ import {type BlueprintError, validateResource} from '../index.js'
 /**
  * Validates that the given resource is a valid CORS origin.
  * @param resource The CORS origin resource
- * @internal
+ * @category Validation
  * @returns A list of validation errors
  */
 export function validateCorsOrigin(resource: unknown): BlueprintError[] {
