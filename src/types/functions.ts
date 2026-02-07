@@ -7,7 +7,10 @@ import type {BlueprintResource} from '../index.js'
  * @category Functions Types
  */
 export interface BlueprintFunctionBaseResourceEvent {
-  /** Event types that trigger the function. Defaults to ['publish'] */
+  /**
+   * Event types that trigger the function
+   * @defaultValue ['publish']
+   */
   on?: [BlueprintFunctionResourceEventName, ...BlueprintFunctionResourceEventName[]]
   /** GROQ filter expression to match specific documents (e.g., "_type == 'post'") */
   filter?: string
@@ -138,7 +141,7 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
 
   /**
    * The runtime environment for the function (currently only Node.js is supported)
-   * @default 'nodejs24.x'
+   * @defaultValue 'nodejs24.x'
    */
   runtime?: FunctionRuntimes
 }
