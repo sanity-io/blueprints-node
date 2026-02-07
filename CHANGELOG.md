@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/sanity-io/blueprints-node/compare/v0.11.0...v0.12.0) (2026-02-07)
+
+
+### Features
+
+* Robot becomes RobotToken ([#66](https://github.com/sanity-io/blueprints-node/issues/66)) ([1ff5009](https://github.com/sanity-io/blueprints-node/commit/1ff500973e990aae96e2eea54cc86b57f2a7f94f))
+
 ## [0.11.0](https://github.com/sanity-io/blueprints-node/compare/v0.10.0...v0.11.0) (2026-02-05)
 
 
