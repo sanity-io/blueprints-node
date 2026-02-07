@@ -1,44 +1,10 @@
-import type {BlueprintProjectResourceLifecycle, BlueprintResource} from './resources'
+// biome-ignore-all assist/source/organizeImports: sorting imports moves typedocs
 
-/**
- * Resource types that robots can be attached to.
- * @internal
- */
-export type RobotResourceType = 'organization' | 'project'
-
-/**
- * Defines the robot's roles within a given resource.
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- */
-export interface RobotMembership {
-  resourceType: RobotResourceType
-  resourceId: string
-  roleNames: string[]
-}
-
-/**
- * A robot that provides a token for automated access.
- * @see https://www.sanity.io/docs/content-lake/http-auth#k4c21d7b829fe
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- */
-export interface BlueprintRobotResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
-  type: 'sanity.access.robot'
-  /** A descriptive label for the robot and its use case */
-  label: string
-  memberships: RobotMembership[]
-
-  resourceType?: RobotResourceType
-  resourceId?: string
-}
-
-/**
- * Configuration for a robot that provides a token for automated access.
- * @see https://www.sanity.io/docs/content-lake/http-auth#k4c21d7b829fe
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- */
-export type BlueprintRobotConfig = Omit<BlueprintRobotResource, 'type' | 'label' | 'token'> & {
-  label?: string
-}
+/** @deprecated Use {@link BlueprintRobotTokenConfig} instead @hidden */
+export type {BlueprintRobotTokenConfig as BlueprintRobotConfig} from './robotTokens.js'
+/** @deprecated Use {@link BlueprintRobotTokenResource} instead @hidden */
+export type {BlueprintRobotTokenResource as BlueprintRobotResource} from './robotTokens.js'
+/** @deprecated Use {@link RobotTokenMembership} instead @hidden */
+export type {RobotTokenMembership as RobotMembership} from './robotTokens.js'
+/** @deprecated Use {@link RobotTokenResourceType} instead @hidden */
+export type {RobotTokenResourceType as RobotResourceType} from './robotTokens.js'
