@@ -36,8 +36,12 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
  * @alpha This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types
+ * @interface
  */
 export type BlueprintDatasetConfig = Omit<BlueprintDatasetResource, 'type' | 'datasetName'> & {
-  /** The name of the dataset. Must be unique within a project. Defaults to the name of the resource. */
+  /**
+   * The name of the dataset. Must be unique within a project.
+   * @defaultValue The `name` of the resource
+   */
   datasetName?: string
 }

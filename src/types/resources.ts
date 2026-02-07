@@ -28,6 +28,7 @@ export interface BlueprintOwnershipDetachAction {
 /**
  * A union of all possible ownership actions.
  * @category Blueprint Internals
+ * @expand
  */
 export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction | BlueprintOwnershipDetachAction
 
@@ -42,6 +43,7 @@ export interface BlueprintProjectOwnershipAttachAction extends BlueprintOwnershi
 /**
  * A union of all possible ownership actions for resources belonging to projects.
  * @category Blueprint Internals
+ * @expand
  */
 export type BlueprintProjectOwnershipAction = BlueprintProjectOwnershipAttachAction
 
@@ -58,6 +60,7 @@ export interface BlueprintResourceLifecycle {
 /**
  * Defines the lifcycle policy for this resource.
  * @category Blueprint Internals
+ * @experimental
  */
 export interface BlueprintProjectResourceLifecycle extends BlueprintResourceLifecycle {
   ownershipAction?: BlueprintProjectOwnershipAction
@@ -70,6 +73,10 @@ export interface BlueprintProjectResourceLifecycle extends BlueprintResourceLife
 export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle = BlueprintResourceLifecycle> {
   type: string
   name: string
-
+  /**
+   * Defines the lifcycle policy for this resource.
+   * @experimental
+   * @hidden
+   */
   lifecycle?: Lifecycle
 }

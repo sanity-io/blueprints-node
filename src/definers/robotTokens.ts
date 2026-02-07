@@ -1,24 +1,45 @@
 import {type BlueprintRobotTokenConfig, type BlueprintRobotTokenResource, validateRobotToken} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/**
- * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
- * ```
+/*
+ * FUTURE example (move below @example when ready)
+ * @example Cross-resource references
+ * ```ts
+ * defineRole({
+ *   name: 'ci-deploy-role',
+ *   title: 'CI Deploy Role',
+ *   appliesToRobots: true,
+ *   permissions: [{name: 'sanity-project-cors', action: 'create'}],
+ * })
+ *
  * defineRobotToken({
- *   name: 'my-robot',
- *   label: 'My Robot',
+ *   name: 'ci-robot',
+ *   label: 'CI Deploy Robot',
  *   memberships: [{
- *     resourceType: 'project',
- *     resourceId: projectId,
- *     roleNames: ['custom-robot-role'],
+ *     roleNames: ['$.resources.ci-deploy-role'],
  *   }],
  * })
  * ```
+ */
+/**
+ * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
  *
+ * @example
+ * ```ts
+ * defineRobotToken({
+ *   name: 'my-robot',
+ *   memberships: [{
+ *     resourceType: 'project',
+ *     resourceId: projectId,
+ *     roleNames: ['editor'],
+ *   }],
+ * })
+ * ```
  * @param parameters The robot token configuration
  * @public
  * @beta Deploying Robot Tokens via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
+ * @expandType BlueprintRobotTokenConfig
  * @returns The robot token resource
  */
 export function defineRobotToken(parameters: BlueprintRobotTokenConfig): BlueprintRobotTokenResource {

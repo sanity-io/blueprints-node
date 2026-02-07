@@ -7,30 +7,49 @@ import {
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/**
- * Defines a role that is scoped to the same resource as the blueprint.
- * ```
+/*
+ * FUTURE example (move below @example when ready)
+ * @example All options
+ * ```ts
  * defineRole({
- *   name: 'custom-robot-role',
- *   title: 'Custom Robot Role',
+ *   name: 'ci-deploy-role',
+ *   title: 'CI Deploy Role',
+ *   description: 'Permissions for CI/CD pipelines to manage CORS and datasets',
  *   appliesToRobots: true,
  *   appliesToUsers: false,
  *   permissions: [{
  *     name: 'sanity-project-cors',
- *     action: 'create'
+ *     action: 'create',
  *   }, {
  *     name: 'sanity-project-cors',
- *     action: 'read'
+ *     action: 'read',
  *   }, {
  *     name: 'sanity-project-cors',
- *     action: 'delete'
- *   }]
- * }),
+ *     action: 'delete',
+ *   }],
+ * })
+ * ```
+ */
+/**
+ * Defines a role that is scoped to the same resource as the blueprint.
+ *
+ * @example
+ * ```ts
+ * defineRole({
+ *   name: 'custom-robot-role',
+ *   title: 'Custom Robot Role',
+ *   appliesToRobots: true,
+ *   permissions: [{
+ *     name: 'sanity-project-cors',
+ *     action: 'create',
+ *   }],
+ * })
  * ```
  * @param parameters The configuration of the role
  * @public
  * @beta Deploying Roles via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
+ * @expandType BlueprintRoleConfig
  * @returns The role resource
  */
 export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValidation?: boolean}): BlueprintRoleResource {
@@ -53,29 +72,53 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
   return roleResource
 }
 
-/**
- * Defines a role that is scoped to the specified project.
- * ```
- * defineProjectRole(projectId, {
- *   name: 'custom-robot-role',
- *   title: 'Custom Robot Role',
+/*
+ * FUTURE example (move below @example when ready)
+ * @example Cross-resource references
+ * ```ts
+ * const role = defineProjectRole(projectId, {
+ *   name: 'ci-deploy-role',
+ *   title: 'CI Deploy Role',
  *   appliesToRobots: true,
- *   appliesToUsers: false,
  *   permissions: [{
  *     name: 'sanity-project-cors',
- *     action: 'create'
+ *     action: 'create',
  *   }, {
  *     name: 'sanity-project-cors',
- *     action: 'read'
- *   }, {
+ *     action: 'delete',
+ *   }],
+ * })
+ *
+ * defineRobotToken({
+ *   name: 'ci-robot',
+ *   memberships: [{
+ *     resourceType: 'project',
+ *     resourceId: projectId,
+ *     roleNames: ['$.resources.ci-deploy-role'],
+ *   }],
+ * })
+ * ```
+ */
+/**
+ * Defines a role that is scoped to the specified project.
+ *
+ * @example
+ * ```ts
+ * defineProjectRole(projectId, {
+ *   name: 'viewer-role',
+ *   title: 'Viewer',
+ *   appliesToUsers: true,
+ *   permissions: [{
  *     name: 'sanity-project-cors',
- *     action: 'delete'
- *   }]
- * }),
+ *     action: 'read',
+ *   }],
+ * })
  * ```
  * @public
  * @beta Deploying Roles via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @hidden
  * @category Definers
+ * @expandType BlueprintRoleConfig
  * @param projectId The ID of the project to which the role will be scoped
  * @param parameters The configuration of the role
  * @returns The role resource

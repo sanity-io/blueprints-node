@@ -105,18 +105,72 @@ export function defineX(config: XConfig): XResource {
 }
 ```
 
-### JSDoc
-Document all public exports:
+### JSDoc / TypeDoc
+
+This project generates documentation with TypeDoc. All public exports must have thorough JSDoc. When creating or modifying definers and types, always update their JSDoc to match these conventions.
+
+#### Definer functions
+
 ```typescript
 /**
- * Brief description
+ * Brief one-line summary
+ *
+ * @remarks
+ * Extended details (only when the summary needs elaboration).
+ *
+ * @example
+ * ```ts
+ * defineX({
+ *   name: 'my-resource',
+ *   // minimal required fields
+ * })
  * ```
- * Example usage
+ *
+ * @example Advanced usage
+ * ```ts
+ * defineX({
+ *   name: 'my-resource',
+ *   // all fields, cross-resource references, etc.
+ * })
  * ```
- * @param name Description
+ * @param parameters Description
+ * @public
+ * @category Definers
+ * @expandType BlueprintXConfig
  * @returns Description
  */
 ```
+
+Rules:
+- The first `@example` must be **untitled**. It should show minimal required fields including `name`.
+- Additional `@example` blocks must have a **title**. Use these for advanced usage, cross-resource references (`$.resources.*`), or kitchen-sink all-options examples.
+- Use `@expandType TypeName` to inline the parameter type in the docs (requires a named Config type).
+- Use `@remarks` only when the summary needs a longer explanation (e.g. `defineScheduleFunction`).
+
+#### Config types (definer parameter types)
+
+```typescript
+/**
+ * Brief description
+ * @see https://link-to-docs
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @interface
+ */
+export type BlueprintXConfig = Omit<BlueprintXResource, 'type'> & {
+  /**
+   * Field description
+   * @defaultValue fallback value or description
+   */
+  optionalField?: string
+}
+```
+
+Rules:
+- Use `@interface` on type aliases that use `Omit` or intersections so TypeDoc flattens them into a readable property list.
+- Use `@expand` on small types/interfaces (e.g. `RobotTokenMembership`) so they are inlined where referenced.
+- Use `@defaultValue` (not `@default`) on optional properties that have defaults set by the definer. This renders distinctly in the TypeDoc HTML output.
+- Match visibility tags (`@public`, `@beta`, `@alpha`, `@hidden`, `@internal`) between the Config type and its definer.
 
 ### Error Handling
 - Validation functions return error arrays, never throw
@@ -162,8 +216,11 @@ afterEach(() => vi.resetAllMocks())
 ## Adding New Resource Types
 
 1. **Types** (`src/types/newresource.ts`):
-   - Define `BlueprintNewResourceConfig` (input type)
    - Define `BlueprintNewResourceResource extends BlueprintResource` (output type)
+   - Define `BlueprintNewResourceConfig` (input type, usually `Omit<Resource, 'type' | ...>`)
+   - Add `@interface` to the Config type so TypeDoc flattens it
+   - Add `@defaultValue` to any optional properties with defaults
+   - Add `@expand` to small supporting types/interfaces
 
 2. **Validation** (`src/validation/newresource.ts`):
    - Export `validateNewResource(config: unknown): BlueprintError[]`
@@ -172,11 +229,16 @@ afterEach(() => vi.resetAllMocks())
 3. **Definer** (`src/definers/newresource.ts`):
    - Export `defineNewResource(config: XConfig): XResource`
    - Set `type` field, call `runValidation()`
+   - Add JSDoc with untitled `@example` (minimal usage) and titled `@example` (advanced/all-options)
+   - Add `@expandType BlueprintNewResourceConfig` to inline the parameter type in docs
+   - Match visibility tags (`@public`/`@beta`/`@alpha`) with the Config type
 
 4. **Exports** (`src/index.ts`):
    - Add exports for all three files
 
 5. **Tests**: Mirror structure in `test/unit/`
+
+6. **Verify docs**: Run `npx typedoc` and check the generated HTML for correct rendering
 
 ## CI/CD
 
