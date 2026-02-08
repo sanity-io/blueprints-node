@@ -204,10 +204,18 @@ export function defineMediaLibraryAssetFunction(
  * Supports cron expressions or natural language schedules.
  *
  * @remarks
+ * Using a cron expression:
+ * ```ts
+ * defineScheduleFunction({
+ *   name: 'daily-cleanup',
+ *   event: {expression: '0 9 * * *'},
+ * })
+ * ```
+ *
  * Using explicit cron fields:
  * ```ts
  * defineScheduleFunction({
- *   name: 'my-schedule-function',
+ *   name: 'daily-cleanup',
  *   event: {minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
  * })
  * ```
