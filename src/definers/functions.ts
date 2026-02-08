@@ -1,10 +1,14 @@
 import {
+  type BlueprintBaseFunctionConfig,
   type BlueprintBaseFunctionResource,
+  type BlueprintDocumentFunctionConfig,
   type BlueprintDocumentFunctionResource,
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintFunctionBaseResourceEvent,
+  type BlueprintMediaLibraryAssetFunctionConfig,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  type BlueprintScheduleFunctionConfig,
   type BlueprintScheduleFunctionExplicitResourceEvent,
   type BlueprintScheduleFunctionExpressionResourceEvent,
   type BlueprintScheduleFunctionResource,
@@ -27,11 +31,6 @@ type ScheduleFunctionEventKey =
   | keyof BlueprintScheduleFunctionExplicitResourceEvent
   | keyof BlueprintScheduleFunctionExpressionResourceEvent
 const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
-
-/** @internal */
-export interface RequiredFunctionProperties {
-  name: string
-}
 
 /*
  * FUTURE example (move below @example when ready)
@@ -87,22 +86,20 @@ export interface RequiredFunctionProperties {
  * @param functionConfig The configuration for the document function
  * @public
  * @category Definers
+ * @expandType BlueprintDocumentFunctionConfig
  * @returns The validated document function resource
  */
-export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties,
-): BlueprintDocumentFunctionResource
+export function defineDocumentFunction(functionConfig: BlueprintDocumentFunctionConfig): BlueprintDocumentFunctionResource
 
 /** @deprecated Define event properties under the 'event' key instead of specifying them at the top level */
 export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
+  functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource
 
 export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
+  functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime, ...maybeEvent} = functionConfig
-  if (!type) type = 'sanity.function.document'
+  let {name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent} = functionConfig
 
   // event validation and normalization
   if (event) {
@@ -139,7 +136,7 @@ export function defineDocumentFunction(
         skipValidation: true, // already done below
       },
     ),
-    type,
+    type: 'sanity.function.document',
     event,
   }
 
@@ -199,16 +196,13 @@ export function defineDocumentFunction(
  * @param functionConfig The configuration for the media library asset function
  * @public
  * @category Definers
+ * @expandType BlueprintMediaLibraryAssetFunctionConfig
  * @returns The validated media library asset function resource
  */
 export function defineMediaLibraryAssetFunction(
-  functionConfig: Partial<BlueprintMediaLibraryAssetFunctionResource> &
-    RequiredFunctionProperties &
-    Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
-    Partial<BlueprintMediaLibraryFunctionResourceEvent>,
+  functionConfig: BlueprintMediaLibraryAssetFunctionConfig,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime} = functionConfig
-  if (!type) type = 'sanity.function.media-library.asset'
+  const {name, src, event, timeout, memory, env, robotToken, project, runtime} = functionConfig
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
     ...defineFunction(
@@ -226,7 +220,7 @@ export function defineMediaLibraryAssetFunction(
         skipValidation: true, // already done below
       },
     ),
-    type,
+    type: 'sanity.function.media-library.asset',
     event: buildMediaLibraryFunctionEvent(event),
   }
 
@@ -263,17 +257,12 @@ export function defineMediaLibraryAssetFunction(
  * @alpha Deploying Schedule Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Definers
+ * @expandType BlueprintScheduleFunctionConfig
  * @param functionConfig The configuration for the schedule function
  * @returns The validated schedule function resource
  */
-export function defineScheduleFunction(
-  functionConfig: Partial<BlueprintScheduleFunctionResource> &
-    RequiredFunctionProperties &
-    Pick<BlueprintScheduleFunctionResource, 'event'> &
-    Partial<BlueprintScheduleFunctionResourceEvent>,
-): BlueprintScheduleFunctionResource {
-  let {name, src, event, timeout, memory, env, type, timezone, runtime} = functionConfig
-  if (!type) type = 'sanity.function.cron'
+export function defineScheduleFunction(functionConfig: BlueprintScheduleFunctionConfig): BlueprintScheduleFunctionResource {
+  const {name, src, event, timeout, memory, env, timezone, runtime} = functionConfig
 
   const functionResource: BlueprintScheduleFunctionResource = {
     ...defineFunction(
@@ -289,7 +278,7 @@ export function defineScheduleFunction(
         skipValidation: true, // already done below
       },
     ),
-    type,
+    type: 'sanity.function.cron',
     event: buildScheduleFunctionEvent(event),
   }
   if (timezone) {
@@ -313,20 +302,20 @@ export function defineScheduleFunction(
  * @param options Optional configuration including validation options
  * @category Definers
  * @internal
+ * @expandType BlueprintBaseFunctionConfig
  * @returns The validated function resource
  */
 export function defineFunction(
-  functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
+  functionConfig: BlueprintBaseFunctionConfig,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let {name, src, timeout, memory, env, type, robotToken, project, runtime} = functionConfig
+  let {name, src, timeout, memory, env, robotToken, project, runtime} = functionConfig
 
   // defaults
   if (!src) src = `functions/${name}`
-  if (!type) type = 'sanity.function.document'
 
   const functionResource: BlueprintBaseFunctionResource = {
-    type,
+    type: 'sanity.function.document',
     name,
     src,
     timeout,
