@@ -33,7 +33,6 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a role that is scoped to the same resource as the blueprint.
  *
- * @example
  * ```ts
  * defineRole({
  *   name: 'custom-robot-role',
@@ -102,7 +101,6 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
 /**
  * Defines a role that is scoped to the specified project.
  *
- * @example
  * ```ts
  * defineProjectRole(projectId, {
  *   name: 'viewer-role',

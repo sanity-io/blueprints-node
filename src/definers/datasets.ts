@@ -17,7 +17,6 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a Dataset to be managed in a Blueprint.
  *
- * @example
  * ```ts
  * defineDataset({
  *   name: 'staging-dataset',

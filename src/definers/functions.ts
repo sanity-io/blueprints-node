@@ -72,7 +72,6 @@ const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour',
 /**
  * Defines a function that is triggered by document events in Sanity datasets.
  *
- * @example
  * ```ts
  * defineDocumentFunction({
  *   name: 'my-document-function',
@@ -180,7 +179,6 @@ export function defineDocumentFunction(
 /**
  * Defines a function that is triggered by media library events.
  *
- * @example
  * ```ts
  * defineMediaLibraryAssetFunction({
  *   name: 'my-media-library-function',
@@ -246,7 +244,6 @@ export function defineMediaLibraryAssetFunction(
  * `'every 15 minutes'`, `'weekdays at 8am'`, `'fridays in the evening'`,
  * `'mon, wed, fri at 9am'`, `'first of the month at noon'`
  *
- * @example
  * ```ts
  * defineScheduleFunction({
  *   name: 'daily-cleanup',
