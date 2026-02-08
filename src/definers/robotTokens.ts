@@ -24,7 +24,6 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
  *
- * @example
  * ```ts
  * defineRobotToken({
  *   name: 'my-robot',

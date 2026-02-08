@@ -79,7 +79,7 @@ export type BlueprintScheduleFunctionResourceEvent =
 /**
  * Dataset resource for scoping document functions to specific datasets
  * @example { type: 'dataset', id: 'my-project.production' }
- * @category Resource Types
+ * @category Functions Types
  */
 export interface BlueprintFunctionResourceEventResourceDataset {
   type: 'dataset'
@@ -174,4 +174,69 @@ export interface BlueprintScheduleFunctionResource extends BlueprintBaseFunction
   type: 'sanity.function.cron'
   event: BlueprintScheduleFunctionResourceEvent
   timezone?: string
+}
+
+// --- Function Config Types ---
+
+/**
+ * Configuration for defining a base function.
+ * @internal
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintBaseFunctionConfig = Omit<BlueprintBaseFunctionResource, 'type' | 'src'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
+}
+
+/**
+ * Configuration for defining a document function.
+ * @public
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintDocumentFunctionConfig = Omit<BlueprintDocumentFunctionResource, 'type' | 'src' | 'event'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
+  /**
+   * Event configuration specifying when and how the function is triggered
+   * @defaultValue `{on: ['publish']}`
+   */
+  event?: BlueprintDocumentFunctionResourceEvent
+}
+
+/**
+ * Configuration for defining a media library asset function.
+ * @public
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintMediaLibraryAssetFunctionConfig = Omit<BlueprintMediaLibraryAssetFunctionResource, 'type' | 'src'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
+}
+
+/**
+ * Configuration for defining a schedule function.
+ * @public
+ * @alpha Deploying Schedule Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintScheduleFunctionConfig = Omit<BlueprintScheduleFunctionResource, 'type' | 'src'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
 }
