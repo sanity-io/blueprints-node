@@ -89,8 +89,10 @@ const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour',
  * @returns The validated document function resource
  */
 export function defineDocumentFunction(functionConfig: BlueprintDocumentFunctionConfig): BlueprintDocumentFunctionResource
-
-/** @deprecated Define event properties under the 'event' key instead of specifying them at the top level */
+/**
+ * @deprecated Define event properties under the 'event' key instead of specifying them at the top level
+ * @hidden
+ */
 export function defineDocumentFunction(
   functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource
