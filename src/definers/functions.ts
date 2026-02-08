@@ -120,21 +120,7 @@ export function defineDocumentFunction(
   }
 
   const functionResource: BlueprintDocumentFunctionResource = {
-    ...defineFunction(
-      {
-        name,
-        src,
-        timeout,
-        memory,
-        env,
-        robotToken,
-        project,
-        runtime,
-      },
-      {
-        skipValidation: true, // already done below
-      },
-    ),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.document',
     event,
   }
@@ -200,24 +186,10 @@ export function defineDocumentFunction(
 export function defineMediaLibraryAssetFunction(
   functionConfig: BlueprintMediaLibraryAssetFunctionConfig,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  const {name, src, event, timeout, memory, env, robotToken, project, runtime} = functionConfig
+  const {event} = functionConfig
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
-    ...defineFunction(
-      {
-        name,
-        src,
-        timeout,
-        memory,
-        env,
-        robotToken,
-        project,
-        runtime,
-      },
-      {
-        skipValidation: true, // already done below
-      },
-    ),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.media-library.asset',
     event: buildMediaLibraryFunctionEvent(event),
   }
@@ -259,28 +231,15 @@ export function defineMediaLibraryAssetFunction(
  * @returns The validated schedule function resource
  */
 export function defineScheduleFunction(functionConfig: BlueprintScheduleFunctionConfig): BlueprintScheduleFunctionResource {
-  const {name, src, event, timeout, memory, env, timezone, runtime} = functionConfig
+  const {event, timezone} = functionConfig
 
   const functionResource: BlueprintScheduleFunctionResource = {
-    ...defineFunction(
-      {
-        name,
-        src,
-        timeout,
-        memory,
-        env,
-        runtime,
-      },
-      {
-        skipValidation: true, // already done below
-      },
-    ),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.cron',
     event: buildScheduleFunctionEvent(event),
   }
-  if (timezone) {
-    functionResource.timezone = timezone
-  }
+
+  if (timezone) functionResource.timezone = timezone
 
   runValidation(() => validateScheduleFunction(functionResource))
 
@@ -306,15 +265,13 @@ export function defineFunction(
   functionConfig: BlueprintBaseFunctionConfig,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let {name, src, timeout, memory, env, robotToken, project, runtime} = functionConfig
-
-  // defaults
-  if (!src) src = `functions/${name}`
+  const {name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle} = functionConfig
 
   const functionResource: BlueprintBaseFunctionResource = {
     type: 'sanity.function.document',
     name,
-    src,
+    src: src ?? `functions/${name}`,
+    displayName,
     timeout,
     memory,
     env,
@@ -322,6 +279,8 @@ export function defineFunction(
     project,
     runtime,
   }
+
+  if (lifecycle) functionResource.lifecycle = lifecycle
 
   if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))
 
