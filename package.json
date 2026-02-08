@@ -49,13 +49,13 @@
     "typecheck": "tsc --noEmit --project tsconfig.test.json"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.11",
+    "@biomejs/biome": "2.3.14",
     "@types/node": "^20",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/coverage-v8": "^4.0.18",
     "rimraf": "^6.1.2",
     "typedoc": "^0.28.16",
     "typescript": "^5.9.3",
-    "vitest": "4.0.17"
+    "vitest": "4.0.18"
   },
   "engines": {
     "node": ">=20"

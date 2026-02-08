@@ -24,7 +24,6 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a webhook that is called when document changes occur.
  *
- * @example
  * ```ts
  * defineDocumentWebhook({
  *   name: 'my-webhook',

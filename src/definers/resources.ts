@@ -17,7 +17,6 @@ import {assertResource, type BlueprintResource} from '../index.js'
  * @remarks
  * This is useful if the resource type does not yet have a `define*` function.
  *
- * @example
  * ```ts
  * defineResource({
  *   name: 'my-resource',

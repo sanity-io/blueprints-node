@@ -16,7 +16,6 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a CORS Origin to be managed in a Blueprint.
  *
- * @example
  * ```ts
  * defineCorsOrigin({
  *   name: 'my-cors-origin',

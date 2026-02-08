@@ -29,7 +29,6 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Define a Blueprint to manage Sanity resources
  *
- * @example
  * ```ts
  * defineBlueprint({
  *   resources: [
