@@ -4,6 +4,7 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
  * A permission definition for a role.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @expand
  */
 export interface RolePermission {
   /** Predefined permission name (e.g., 'sanity-all-documents') */

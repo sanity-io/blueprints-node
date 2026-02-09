@@ -1,10 +1,14 @@
 import {
+  type BlueprintBaseFunctionConfig,
   type BlueprintBaseFunctionResource,
+  type BlueprintDocumentFunctionConfig,
   type BlueprintDocumentFunctionResource,
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintFunctionBaseResourceEvent,
+  type BlueprintMediaLibraryAssetFunctionConfig,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  type BlueprintScheduleFunctionConfig,
   type BlueprintScheduleFunctionExplicitResourceEvent,
   type BlueprintScheduleFunctionExpressionResourceEvent,
   type BlueprintScheduleFunctionResource,
@@ -28,49 +32,75 @@ type ScheduleFunctionEventKey =
   | keyof BlueprintScheduleFunctionExpressionResourceEvent
 const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
 
-/** @internal */
-export interface RequiredFunctionProperties {
-  name: string
-}
-
-/**
- * Defines a function that is triggered by document events in Sanity datasets.
- * ```
+/*
+ * FUTURE example (move below @example when ready)
+ * @example With robot token reference
+ * ```ts
+ * defineRole({
+ *   name: 'fn-role',
+ *   title: 'Function Role',
+ *   appliesToRobots: true,
+ *   permissions: [{name: 'sanity-project-dataset', action: 'read'}],
+ * })
+ *
+ * defineRobotToken({
+ *   name: 'fn-robot',
+ *   memberships: [{
+ *     roleNames: ['$.resources.fn-role'],
+ *   }],
+ * })
+ *
  * defineDocumentFunction({
- *   name: 'my-document-function',
- *   src: 'functions/my-function',
+ *   name: 'sync-to-external',
+ *   src: 'functions/sync',
  *   memory: 3,
  *   timeout: 300,
+ *   robotToken: '$.resources.fn-robot',
  *   event: {
  *     on: ['create', 'update'],
- *     filter: "_type == 'some-type'",
- *     projection: "{title, _id, _type}",
+ *     filter: "_type == 'product'",
+ *     projection: "{_id, title, slug}",
  *     includeDrafts: false,
  *   },
  *   env: {
- *     MY_ENV_VAR: 'custom-value',
+ *     EXTERNAL_API_URL: 'https://api.example.com',
+ *     SUPER_SECRET: process.env.SUPER_SECRET,
+ *   },
+ * })
+ * ```
+ */
+/**
+ * Defines a function that is triggered by document events in Sanity datasets.
+ *
+ * ```ts
+ * defineDocumentFunction({
+ *   name: 'my-document-function',
+ *   event: {
+ *     on: ['create', 'update'],
+ *     filter: "_type == 'post'",
+ *     projection: "{_id, title, slug}",
  *   },
  * })
  * ```
  * @param functionConfig The configuration for the document function
  * @public
  * @category Definers
+ * @expandType BlueprintDocumentFunctionConfig
  * @returns The validated document function resource
  */
+export function defineDocumentFunction(functionConfig: BlueprintDocumentFunctionConfig): BlueprintDocumentFunctionResource
+/**
+ * @deprecated Define event properties under the 'event' key instead of specifying them at the top level
+ * @hidden
+ */
 export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties,
+  functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource
 
-/** @deprecated Define event properties under the 'event' key instead of specifying them at the top level */
 export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
-): BlueprintDocumentFunctionResource
-
-export function defineDocumentFunction(
-  functionConfig: Partial<BlueprintDocumentFunctionResource> & RequiredFunctionProperties & Partial<BlueprintDocumentFunctionResourceEvent>,
+  functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime, ...maybeEvent} = functionConfig
-  if (!type) type = 'sanity.function.document'
+  let {name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent} = functionConfig
 
   // event validation and normalization
   if (event) {
@@ -92,22 +122,8 @@ export function defineDocumentFunction(
   }
 
   const functionResource: BlueprintDocumentFunctionResource = {
-    ...defineFunction(
-      {
-        name,
-        src,
-        timeout,
-        memory,
-        env,
-        robotToken,
-        project,
-        runtime,
-      },
-      {
-        skipValidation: true, // already done below
-      },
-    ),
-    type,
+    ...defineFunction(functionConfig, {skipValidation: true}),
+    type: 'sanity.function.document',
     event,
   }
 
@@ -116,57 +132,67 @@ export function defineDocumentFunction(
   return functionResource
 }
 
-/**
- * Defines a function that is triggered by media library events.
- * ```
+/*
+ * FUTURE example (move below @example when ready)
+ * @example With robot token reference
+ * ```ts
+ * defineRobotToken({
+ *   name: 'media-robot',
+ *   memberships: [{
+ *     resourceType: 'project',
+ *     resourceId: projectId,
+ *     roleNames: ['editor'],
+ *   }],
+ * })
+ *
  * defineMediaLibraryAssetFunction({
- *   name: 'my-media-library-function',
- *   src: 'functions/media-library-function',
+ *   name: 'process-uploads',
+ *   src: 'functions/process-uploads-v2',
+ *   robotToken: '$.resources.media-robot',
  *   event: {
  *     on: ['create', 'update'],
  *     resource: {
  *       type: 'media-library',
  *       id: 'my-media-library-id',
  *     },
- *     filter: "type == 'my-type'",
+ *     filter: "type == 'image'",
  *     projection: "{_id}",
  *   },
  *   env: {
- *     MY_ENV_VAR: 'custom-value',
+ *     CDN_BUCKET: 'my-cdn-bucket',
+ *   },
+ * })
+ * ```
+ */
+/**
+ * Defines a function that is triggered by media library events.
+ *
+ * ```ts
+ * defineMediaLibraryAssetFunction({
+ *   name: 'my-media-library-function',
+ *   event: {
+ *     on: ['create'],
+ *     resource: {
+ *       type: 'media-library',
+ *       id: 'my-media-library-id',
+ *     },
  *   },
  * })
  * ```
  * @param functionConfig The configuration for the media library asset function
  * @public
  * @category Definers
+ * @expandType BlueprintMediaLibraryAssetFunctionConfig
  * @returns The validated media library asset function resource
  */
 export function defineMediaLibraryAssetFunction(
-  functionConfig: Partial<BlueprintMediaLibraryAssetFunctionResource> &
-    RequiredFunctionProperties &
-    Pick<BlueprintMediaLibraryAssetFunctionResource, 'event'> &
-    Partial<BlueprintMediaLibraryFunctionResourceEvent>,
+  functionConfig: BlueprintMediaLibraryAssetFunctionConfig,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  let {name, src, event, timeout, memory, env, type, robotToken, project, runtime} = functionConfig
-  if (!type) type = 'sanity.function.media-library.asset'
+  const {event} = functionConfig
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
-    ...defineFunction(
-      {
-        name,
-        src,
-        timeout,
-        memory,
-        env,
-        robotToken,
-        project,
-        runtime,
-      },
-      {
-        skipValidation: true, // already done below
-      },
-    ),
-    type,
+    ...defineFunction(functionConfig, {skipValidation: true}),
+    type: 'sanity.function.media-library.asset',
     event: buildMediaLibraryFunctionEvent(event),
   }
 
@@ -179,74 +205,51 @@ export function defineMediaLibraryAssetFunction(
  * Defines a function that is triggered on a schedule.
  * Supports cron expressions or natural language schedules.
  *
- * ```
- * // Using cron expression
+ * @remarks
+ * Using a cron expression:
+ * ```ts
  * defineScheduleFunction({
  *   name: 'daily-cleanup',
  *   event: {expression: '0 9 * * *'},
  * })
+ * ```
  *
- * // Using natural language
+ * Using explicit cron fields:
+ * ```ts
  * defineScheduleFunction({
- *   name: 'daily-report',
- *   event: {expression: 'every day at 9am'},
+ *   name: 'daily-cleanup',
+ *   event: {minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
  * })
+ * ```
  *
- * // More natural language examples:
- * // 'every 15 minutes'
- * // 'weekdays at 8am'
- * // 'fridays in the evening'
- * // 'mon, wed, fri at 9am'
- * // 'first of the month at noon'
+ * The `event.expression` field accepts standard cron expressions or natural language:
+ * `'every 15 minutes'`, `'weekdays at 8am'`, `'fridays in the evening'`,
+ * `'mon, wed, fri at 9am'`, `'first of the month at noon'`
  *
- * // Using explicit cron fields
+ * ```ts
  * defineScheduleFunction({
- *   name: 'my-schedule-function',
- *   event: {
- *     minute: '0',
- *     hour: '9',
- *     dayOfMonth: '*',
- *     month: '*',
- *     dayOfWeek: '*',
- *   },
+ *   name: 'daily-cleanup',
+ *   event: {expression: 'every day at 9am'},
  * })
  * ```
  * @public
  * @alpha Deploying Schedule Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Definers
+ * @expandType BlueprintScheduleFunctionConfig
  * @param functionConfig The configuration for the schedule function
  * @returns The validated schedule function resource
  */
-export function defineScheduleFunction(
-  functionConfig: Partial<BlueprintScheduleFunctionResource> &
-    RequiredFunctionProperties &
-    Pick<BlueprintScheduleFunctionResource, 'event'> &
-    Partial<BlueprintScheduleFunctionResourceEvent>,
-): BlueprintScheduleFunctionResource {
-  let {name, src, event, timeout, memory, env, type, timezone, runtime} = functionConfig
-  if (!type) type = 'sanity.function.cron'
+export function defineScheduleFunction(functionConfig: BlueprintScheduleFunctionConfig): BlueprintScheduleFunctionResource {
+  const {event, timezone} = functionConfig
 
   const functionResource: BlueprintScheduleFunctionResource = {
-    ...defineFunction(
-      {
-        name,
-        src,
-        timeout,
-        memory,
-        env,
-        runtime,
-      },
-      {
-        skipValidation: true, // already done below
-      },
-    ),
-    type,
+    ...defineFunction(functionConfig, {skipValidation: true}),
+    type: 'sanity.function.cron',
     event: buildScheduleFunctionEvent(event),
   }
-  if (timezone) {
-    functionResource.timezone = timezone
-  }
+
+  if (timezone) functionResource.timezone = timezone
 
   runValidation(() => validateScheduleFunction(functionResource))
 
@@ -260,38 +263,25 @@ export function defineScheduleFunction(
 
 /**
  * Defines a base function resource with common properties.
- * ```
- * defineFunction({
- *   name: 'my-function',
- *   src: 'functions/my-function',
- *   timeout: 300,
- *   memory: 1,
- *   runtime: 'nodejs24.x',
- *   env: {
- *     MY_ENV_VAR: 'my-custom-value'
- *   },
- * })
- * ```
+ *
  * @param functionConfig The configuration for the function
  * @param options Optional configuration including validation options
  * @category Definers
  * @internal
+ * @expandType BlueprintBaseFunctionConfig
  * @returns The validated function resource
  */
 export function defineFunction(
-  functionConfig: Partial<BlueprintBaseFunctionResource> & RequiredFunctionProperties,
+  functionConfig: BlueprintBaseFunctionConfig,
   options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  let {name, src, timeout, memory, env, type, robotToken, project, runtime} = functionConfig
-
-  // defaults
-  if (!src) src = `functions/${name}`
-  if (!type) type = 'sanity.function.document'
+  const {name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle} = functionConfig
 
   const functionResource: BlueprintBaseFunctionResource = {
-    type,
+    type: 'sanity.function.document',
     name,
-    src,
+    src: src ?? `functions/${name}`,
+    displayName,
     timeout,
     memory,
     env,
@@ -299,6 +289,8 @@ export function defineFunction(
     project,
     runtime,
   }
+
+  if (lifecycle) functionResource.lifecycle = lifecycle
 
   if (options?.skipValidation !== true) runValidation(() => validateFunction(functionResource))
 

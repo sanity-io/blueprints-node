@@ -48,7 +48,7 @@ jobs:
         id: generate
         run: |
           echo "🔄 Generating TypeDoc documentation..."
-          npm run docs:typedocs
+          npm run docs:typedoc
 
           # Check if the file was generated successfully
           if [ -f "docs/typedoc-output.json" ]; then
@@ -74,6 +74,15 @@ jobs:
           path: docs/typedoc-output.json
           retention-days: 1
 
+      - name: Upload HTML docs artifact
+        if: github.event_name == 'pull_request' && steps.generate.outputs.success == 'true'
+        id: html-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: typedoc-html-pr-${{ github.event.pull_request.number }}
+          path: docs/html
+          retention-days: 7
+
       - name: Comment on PR
         if: github.event_name == 'pull_request' && steps.generate.outputs.success == 'true'
         uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3
@@ -87,6 +96,7 @@ jobs:
             - **File size:** ${{ steps.generate.outputs.file_size }}
             - **Total exports:** ${{ steps.generate.outputs.export_count }}
             - **Artifact:** `typedoc-${{ github.sha }}`
+            - **HTML docs preview:** [Download artifact](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.html-artifact.outputs.artifact-id }})
 
             The TypeDoc JSON file has been generated and validated. All documentation scripts completed successfully.
 

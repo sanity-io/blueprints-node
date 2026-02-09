@@ -10,6 +10,7 @@ export type RobotTokenResourceType = 'organization' | 'project'
  * Defines the robot token's roles within a given resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @expand
  */
 export interface RobotTokenMembership {
   resourceType: RobotTokenResourceType
@@ -38,7 +39,12 @@ export interface BlueprintRobotTokenResource extends BlueprintResource<Blueprint
  * @see https://www.sanity.io/docs/content-lake/http-auth#k4c21d7b829fe
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @interface
  */
 export type BlueprintRobotTokenConfig = Omit<BlueprintRobotTokenResource, 'type' | 'label' | 'token'> & {
+  /**
+   * A descriptive label for the robot token and its use case
+   * @defaultValue The `name` of the resource
+   */
   label?: string
 }

@@ -15,6 +15,10 @@ export type WebhookTrigger = 'create' | 'update' | 'delete'
 export interface BlueprintDocumentWebhookResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.project.webhook'
   project?: string
+  /**
+   * Display name shown in the Sanity dashboard
+   * @defaultValue The `name` of the resource
+   */
   displayName?: string
   description?: string | null
   url: string
@@ -28,6 +32,7 @@ export interface BlueprintDocumentWebhookResource extends BlueprintResource<Blue
   includeAllVersions?: boolean
   secret?: string
   dataset: string
+  /** Must start with 'v' and use the format YYYY-MM-DD */
   apiVersion: string
 }
 
@@ -35,5 +40,6 @@ export interface BlueprintDocumentWebhookResource extends BlueprintResource<Blue
  * Configuration for a webhook
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @interface
  */
 export type BlueprintDocumentWebhookConfig = Omit<BlueprintDocumentWebhookResource, 'type'>

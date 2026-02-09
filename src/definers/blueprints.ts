@@ -1,13 +1,50 @@
 import {type Blueprint, type BlueprintModule, type BlueprintsApiConfig, validateBlueprint} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/**
- * Define a Blueprint to manage Sanity resources
- * ```
+/*
+ * FUTURE example (move below @example when ready)
+ * @example With deployment API config
+ * ```ts
  * defineBlueprint({
  *   resources: [
- *     // list of managed resources
- *   ]
+ *     defineCorsOrigin({
+ *       name: 'cors-localhost',
+ *       origin: 'http://localhost:3333'
+ *     }),
+ *     defineRole({
+ *       name: 'role-ci',
+ *       title: 'CI Role',
+ *       appliesToRobots: true,
+ *       permissions: []
+ *     }),
+ *     defineRobotToken({
+ *       name: 'ci-robot',
+ *       memberships: [{
+ *        roleNames: ['$.resources.ci-role']}],
+ *     }),
+ *   ],
+ * })
+ * ```
+ */
+/**
+ * Define a Blueprint to manage Sanity resources
+ *
+ * ```ts
+ * defineBlueprint({
+ *   resources: [
+ *     defineCorsOrigin({
+ *       name: 'localhost-origin',
+ *       origin: 'http://localhost:3333',
+ *     }),
+ *     defineDocumentFunction({
+ *       name: 'update-search-index',
+ *       event: {
+ *         on: ['create', 'update'],
+ *         filter: "_type == 'post'",
+ *         projection: "{_id, title, slug}",
+ *       },
+ *     }),
+ *   ],
  * })
  * ```
  * @param blueprintConfig The blueprint configuration
