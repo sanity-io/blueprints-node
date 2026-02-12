@@ -1,4 +1,5 @@
 import {type BlueprintError, validateResource} from '../index.js'
+import {isReference} from '../utils/validation.js'
 
 /**
  * Validates that the given resource is a valid CORS origin.
@@ -28,6 +29,11 @@ export function validateCorsOrigin(resource: unknown): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: 'CORS Origin URL is required'})
   } else if (typeof resource.origin !== 'string') {
     errors.push({type: 'invalid_type', message: 'CORS Origin URL must be a string'})
+  } else if (!isReference(resource.origin)) {
+    const isSpecialValue = resource.origin === '*' || resource.origin === 'null' || resource.origin === 'file:///*'
+    if (!isSpecialValue && !resource.origin.includes('://')) {
+      errors.push({type: 'invalid_format', message: 'CORS Origin must include a protocol (e.g. https://)'})
+    }
   }
 
   if ('project' in resource) {

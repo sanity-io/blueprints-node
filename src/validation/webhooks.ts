@@ -1,4 +1,5 @@
 import {type BlueprintError, validateResource} from '../index.js'
+import {isReference} from '../utils/validation.js'
 
 /**
  * Validates that the given resource is a valid Document Webhook.
@@ -36,8 +37,7 @@ export function validateDocumentWebhook(resource: unknown): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: 'Webhook URL is required'})
   } else if (typeof resource.url !== 'string') {
     errors.push({type: 'invalid_type', message: 'Webhook URL must be a string'})
-  } else {
-    // Validate URL format
+  } else if (!isReference(resource.url)) {
     try {
       new URL(resource.url)
     } catch {
@@ -64,7 +64,9 @@ export function validateDocumentWebhook(resource: unknown): BlueprintError[] {
   // Validate dataset pattern
   if (!('dataset' in resource)) {
     errors.push({type: 'missing_parameter', message: 'Webhook dataset is required'})
-  } else if (typeof resource.dataset !== 'string' || !/^[a-z0-9-_]+$/.test(resource.dataset)) {
+  } else if (typeof resource.dataset !== 'string') {
+    errors.push({type: 'invalid_format', message: 'Dataset must be a string'})
+  } else if (!isReference(resource.dataset) && !/^[a-z0-9-_]+$/.test(resource.dataset)) {
     errors.push({type: 'invalid_format', message: 'Dataset must match pattern: ^[a-z0-9-_]+$'})
   }
 

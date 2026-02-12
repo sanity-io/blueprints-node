@@ -99,6 +99,24 @@ describe('validateResource', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.projectId` must be a string'})
   })
 
+  test('should return an error if lifecycle.dependsOn is not a string', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {dependsOn: 123}})
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`lifecycle.dependsOn` must be a string'})
+  })
+
+  test('should return an error if lifecycle.dependsOn does not start with $.resources.', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {dependsOn: 'some-resource'}})
+    expect(errors).toContainEqual({
+      type: 'invalid_value',
+      message: '`lifecycle.dependsOn` must be a resource reference starting with `$.resources.`',
+    })
+  })
+
+  test('should accept a valid lifecycle.dependsOn reference', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {dependsOn: '$.resources.my-dataset'}})
+    expect(errors).toHaveLength(0)
+  })
+
   test('should return no errors for a valid resource', () => {
     const errors = validateResource({
       name: 'test',

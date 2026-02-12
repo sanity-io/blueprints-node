@@ -55,7 +55,7 @@ const _aclModeCustom: AclMode = 'custom'
 
 const corsOriginConfig: BlueprintCorsOriginConfig = {
   name: 'cors-name',
-  origin: 'url',
+  origin: 'https://example.com',
   allowCredentials: true,
   project: 'projectId',
 }
