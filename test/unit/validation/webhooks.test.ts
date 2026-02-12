@@ -216,6 +216,39 @@ describe('validateDocumentWebhook', () => {
     expect(spy).toHaveBeenCalledOnce()
   })
 
+  test('should skip URL validation when value is a reference', () => {
+    const errors = webhooks.validateDocumentWebhook({
+      name: 'webhook-name',
+      type: 'sanity.project.webhook',
+      url: '$.values.webhook-url',
+      on: ['create'],
+      dataset: 'abcdefg',
+    })
+    expect(errors).toHaveLength(0)
+  })
+
+  test('should skip dataset validation when value is a reference', () => {
+    const errors = webhooks.validateDocumentWebhook({
+      name: 'webhook-name',
+      type: 'sanity.project.webhook',
+      url: 'http://localhost/',
+      on: ['create'],
+      dataset: '$.resources.prod-dataset',
+    })
+    expect(errors).toHaveLength(0)
+  })
+
+  test('should skip both URL and dataset validation when values are references', () => {
+    const errors = webhooks.validateDocumentWebhook({
+      name: 'webhook-name',
+      type: 'sanity.project.webhook',
+      url: '$.values.domain',
+      on: ['create'],
+      dataset: '$.values.prod-dataset',
+    })
+    expect(errors).toHaveLength(0)
+  })
+
   test('should accept a valid configuration', () => {
     const errors = webhooks.validateDocumentWebhook({
       name: 'webhook-name',

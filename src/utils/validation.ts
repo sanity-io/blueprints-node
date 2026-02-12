@@ -12,3 +12,14 @@ export function runValidation(validator: () => BlueprintError[]) {
     throw new Error(message)
   }
 }
+
+/**
+ * Checks whether a value is a blueprint reference expression (`$.resources.*` or `$.values.*`).
+ *
+ * @param value The value to check
+ * @returns `true` if the value is a resource or values reference
+ * @internal
+ */
+export function isReference(value: unknown): boolean {
+  return typeof value === 'string' && (value.startsWith('$.resources.') || value.startsWith('$.values.'))
+}

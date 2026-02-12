@@ -77,6 +77,55 @@ describe('validateCorsOrigin', () => {
     expect(spy).toHaveBeenCalledOnce()
   })
 
+  test('should return an error if origin does not include a protocol', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'example.com',
+    })
+    expect(errors).toContainEqual({type: 'invalid_format', message: 'CORS Origin must include a protocol (http:// or https://)'})
+  })
+
+  test('should accept an origin with http:// protocol', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost/',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should accept an origin with https:// protocol', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'https://example.com',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should skip origin validation when value is a $.values. reference', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: '$.values.my-origin',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should skip origin validation when value is a $.resources. reference', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: '$.resources.my-origin',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
   test('should accept a valid configuration', () => {
     const errors = cors.validateCorsOrigin({
       name: 'origin-name',

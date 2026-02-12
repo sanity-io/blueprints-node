@@ -58,11 +58,21 @@ describe('defineCorsOrigin', () => {
   })
 
   test('allowCredentials should default to false if not provided', () => {
-    const webhookResource = cors.defineCorsOrigin({
+    const corsResource = cors.defineCorsOrigin({
       name: 'origin-name',
       origin: 'http://localhost/',
     })
 
-    expect(webhookResource.allowCredentials).toStrictEqual(false)
+    expect(corsResource.allowCredentials).toStrictEqual(false)
+  })
+
+  test('should accept a valid configuration with dependsOn', () => {
+    const corsResource = cors.defineCorsOrigin({
+      name: 'origin-name',
+      origin: 'https://example.com',
+      dependsOn: '$.resources.my-dataset',
+    })
+
+    expect(corsResource.dependsOn).toStrictEqual('$.resources.my-dataset')
   })
 })
