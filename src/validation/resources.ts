@@ -68,14 +68,14 @@ export function validateResource(resource: unknown, options?: {projectContained?
           }
         }
       }
-    }
-  }
 
-  if ('dependsOn' in resource) {
-    if (typeof resource.dependsOn !== 'string') {
-      errors.push({type: 'invalid_type', message: '`dependsOn` must be a string'})
-    } else if (!resource.dependsOn.startsWith('$.resources.')) {
-      errors.push({type: 'invalid_value', message: '`dependsOn` must be a resource reference starting with `$.resources.`'})
+      if ('dependsOn' in resource.lifecycle) {
+        if (typeof resource.lifecycle.dependsOn !== 'string') {
+          errors.push({type: 'invalid_type', message: '`lifecycle.dependsOn` must be a string'})
+        } else if (!resource.lifecycle.dependsOn.startsWith('$.resources.')) {
+          errors.push({type: 'invalid_value', message: '`lifecycle.dependsOn` must be a resource reference starting with `$.resources.`'})
+        }
+      }
     }
   }
 

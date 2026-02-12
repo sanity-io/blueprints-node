@@ -66,13 +66,15 @@ describe('defineCorsOrigin', () => {
     expect(corsResource.allowCredentials).toStrictEqual(false)
   })
 
-  test('should accept a valid configuration with dependsOn', () => {
+  test('should accept a valid configuration with lifecycle.dependsOn', () => {
     const corsResource = cors.defineCorsOrigin({
       name: 'origin-name',
       origin: 'https://example.com',
-      dependsOn: '$.resources.my-dataset',
+      lifecycle: {
+        dependsOn: '$.resources.my-dataset',
+      },
     })
 
-    expect(corsResource.dependsOn).toStrictEqual('$.resources.my-dataset')
+    expect(corsResource.lifecycle?.dependsOn).toStrictEqual('$.resources.my-dataset')
   })
 })

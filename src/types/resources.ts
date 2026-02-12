@@ -55,6 +55,22 @@ export interface BlueprintResourceLifecycle {
   deletionPolicy?: BlueprintResourceDeletionPolicy
 
   ownershipAction?: BlueprintOwnershipAction
+
+  /**
+   * Declares a dependency on another resource in the blueprint.
+   * The referenced resource will be deployed before this one.
+   *
+   * The value must be a resource reference starting with `$.resources.` followed by the name of
+   * the resource this resource depends on.
+   *
+   * @example
+   * ```ts
+   * lifecycle: {
+   *   dependsOn: '$.resources.my-dataset',
+   * }
+   * ```
+   */
+  dependsOn?: string
 }
 
 /**
@@ -81,6 +97,4 @@ export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle 
    * @hidden
    */
   lifecycle?: Lifecycle
-  /** Force a dependency on another resource in the blueprint. e.g. '$.resources.production-dataset' */
-  dependsOn?: string
 }
