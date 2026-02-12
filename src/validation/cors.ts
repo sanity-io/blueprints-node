@@ -30,8 +30,9 @@ export function validateCorsOrigin(resource: unknown): BlueprintError[] {
   } else if (typeof resource.origin !== 'string') {
     errors.push({type: 'invalid_type', message: 'CORS Origin URL must be a string'})
   } else if (!isReference(resource.origin)) {
-    if (!resource.origin.startsWith('http://') && !resource.origin.startsWith('https://')) {
-      errors.push({type: 'invalid_format', message: 'CORS Origin must include a protocol (http:// or https://)'})
+    const isSpecialValue = resource.origin === '*' || resource.origin === 'null' || resource.origin === 'file:///*'
+    if (!isSpecialValue && !resource.origin.includes('://')) {
+      errors.push({type: 'invalid_format', message: 'CORS Origin must include a protocol (e.g. https://)'})
     }
   }
 

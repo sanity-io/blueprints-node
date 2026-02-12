@@ -93,7 +93,16 @@ describe('validateCorsOrigin', () => {
       type: 'sanity.project.cors',
       origin: 'example.com',
     })
-    expect(errors).toContainEqual({type: 'invalid_format', message: 'CORS Origin must include a protocol (http:// or https://)'})
+    expect(errors).toContainEqual({type: 'invalid_format', message: 'CORS Origin must include a protocol (e.g. https://)'})
+  })
+
+  test('should return an error if origin is a bare domain with port', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'localhost:3000',
+    })
+    expect(errors).toContainEqual({type: 'invalid_format', message: 'CORS Origin must include a protocol (e.g. https://)'})
   })
 
   test('should accept an origin with http:// protocol', () => {
@@ -111,6 +120,57 @@ describe('validateCorsOrigin', () => {
       name: 'origin-name',
       type: 'sanity.project.cors',
       origin: 'https://example.com',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should accept the wildcard origin *', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: '*',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should accept the null origin', () => {
+    // no idea what the string "null" means, but the API accepts it
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'null',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should accept the file:/// wildcard origin', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'file:///*',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should accept wildcard hostname origins', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'https://*.example.com',
+      project: 'abcdefg',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should accept wildcard port origins', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost:*',
       project: 'abcdefg',
     })
     expect(errors, JSON.stringify(errors)).toHaveLength(0)
