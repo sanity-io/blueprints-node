@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/sanity-io/blueprints-node/compare/v0.12.0...v0.12.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* **validation:** references passthru, lifecycle.dependsOn allowed, cors origin values ([#71](https://github.com/sanity-io/blueprints-node/issues/71)) ([bad4495](https://github.com/sanity-io/blueprints-node/commit/bad44957123633e257229a189c699bbf42f90ee7))
+
 ## [0.12.0](https://github.com/sanity-io/blueprints-node/compare/v0.11.0...v0.12.0) (2026-02-09)
 
 
