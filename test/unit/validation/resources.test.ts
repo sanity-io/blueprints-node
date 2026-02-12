@@ -99,6 +99,21 @@ describe('validateResource', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.projectId` must be a string'})
   })
 
+  test('should return an error if dependsOn is not a string', () => {
+    const errors = validateResource({name: 'test', type: 'test', dependsOn: 123})
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`dependsOn` must be a string'})
+  })
+
+  test('should return an error if dependsOn does not start with $.resources.', () => {
+    const errors = validateResource({name: 'test', type: 'test', dependsOn: 'some-resource'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: '`dependsOn` must be a resource reference starting with `$.resources.`'})
+  })
+
+  test('should accept a valid dependsOn reference', () => {
+    const errors = validateResource({name: 'test', type: 'test', dependsOn: '$.resources.my-dataset'})
+    expect(errors).toHaveLength(0)
+  })
+
   test('should return no errors for a valid resource', () => {
     const errors = validateResource({
       name: 'test',

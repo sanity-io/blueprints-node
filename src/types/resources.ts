@@ -71,7 +71,9 @@ export interface BlueprintProjectResourceLifecycle extends BlueprintResourceLife
  * @category Blueprint Internals
  */
 export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle = BlueprintResourceLifecycle> {
+  /** The type of the resource. e.g. 'sanity.project.webhook' */
   type: string
+  /** The name of the resource. Unique within the blueprint. e.g. 'sync-webhook' */
   name: string
   /**
    * Defines the lifcycle policy for this resource.
@@ -79,4 +81,6 @@ export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle 
    * @hidden
    */
   lifecycle?: Lifecycle
+  /** Force a dependency on another resource in the blueprint. e.g. '$.resources.production-dataset' */
+  dependsOn?: string
 }

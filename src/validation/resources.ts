@@ -71,6 +71,14 @@ export function validateResource(resource: unknown, options?: {projectContained?
     }
   }
 
+  if ('dependsOn' in resource) {
+    if (typeof resource.dependsOn !== 'string') {
+      errors.push({type: 'invalid_type', message: '`dependsOn` must be a string'})
+    } else if (!resource.dependsOn.startsWith('$.resources.')) {
+      errors.push({type: 'invalid_value', message: '`dependsOn` must be a resource reference starting with `$.resources.`'})
+    }
+  }
+
   return errors
 }
 
