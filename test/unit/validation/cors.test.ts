@@ -64,6 +64,16 @@ describe('validateCorsOrigin', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin project must be a string'})
   })
 
+  test('should accept an reference for project', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost/',
+      project: '$.resources.new-project',
+    })
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
   test('should return an error if validateResource returns an error', () => {
     const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     const errors = cors.validateCorsOrigin({
