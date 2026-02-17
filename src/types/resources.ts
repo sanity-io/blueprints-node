@@ -45,7 +45,7 @@ export interface BlueprintProjectOwnershipAttachAction extends BlueprintOwnershi
  * @category Blueprint Internals
  * @expand
  */
-export type BlueprintProjectOwnershipAction = BlueprintProjectOwnershipAttachAction
+export type BlueprintProjectOwnershipAction = BlueprintProjectOwnershipAttachAction | BlueprintOwnershipDetachAction
 
 /**
  * Defines the lifcycle policy for this resource.
