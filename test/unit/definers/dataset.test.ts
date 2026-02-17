@@ -52,6 +52,9 @@ describe('defineDataset', () => {
       },
     })
 
+    if (datasetResource.lifecycle?.ownershipAction?.type !== 'attach') {
+      throw new Error('expected ownershipAction with type attach')
+    }
     expect(datasetResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 

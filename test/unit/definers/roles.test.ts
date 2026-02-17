@@ -76,6 +76,9 @@ describe('defineRole', () => {
       },
     })
 
+    if (roleResource.lifecycle?.ownershipAction?.type !== 'attach') {
+      throw new Error('expected ownershipAction with type attach')
+    }
     expect(roleResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 })
@@ -143,6 +146,9 @@ describe('defineProjectRole', () => {
       },
     })
 
+    if (roleResource.lifecycle?.ownershipAction?.type !== 'attach') {
+      throw new Error('expected ownershipAction with type attach')
+    }
     expect(roleResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 })

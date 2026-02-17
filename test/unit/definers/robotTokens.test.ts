@@ -70,6 +70,9 @@ describe('defineRobotToken', () => {
       },
     })
 
+    if (resource.lifecycle?.ownershipAction?.type !== 'attach') {
+      throw new Error('expected ownershipAction with type attach')
+    }
     expect(resource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 
