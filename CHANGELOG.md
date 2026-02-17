@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/sanity-io/blueprints-node/compare/v0.12.1...v0.12.2) (2026-02-17)
+
+
+### Bug Fixes
+
+* Add detach type to project ownership type union ([#74](https://github.com/sanity-io/blueprints-node/issues/74)) ([9fe7a36](https://github.com/sanity-io/blueprints-node/commit/9fe7a36f125d52d5fde5485aab8c2795e824ada0))
+
 ## [0.12.1](https://github.com/sanity-io/blueprints-node/compare/v0.12.0...v0.12.1) (2026-02-12)
 
 
