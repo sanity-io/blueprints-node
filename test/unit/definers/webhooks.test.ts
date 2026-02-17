@@ -67,6 +67,9 @@ describe('defineDocumentWebhook', () => {
       },
     })
 
+    if (webhookResource.lifecycle?.ownershipAction?.type !== 'attach') {
+      throw new Error('expected ownershipAction with type attach')
+    }
     expect(webhookResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 
