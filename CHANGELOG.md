@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.3](https://github.com/sanity-io/blueprints-node/compare/v0.12.2...v0.12.3) (2026-03-04)
+
+
+### Bug Fixes
+
+* always return explicit cron format ([#76](https://github.com/sanity-io/blueprints-node/issues/76)) ([731d77d](https://github.com/sanity-io/blueprints-node/commit/731d77d975d9c87a85dba2b238f093ab2c0dcc98))
+
 ## [0.12.2](https://github.com/sanity-io/blueprints-node/compare/v0.12.1...v0.12.2) (2026-02-17)
 
 
