@@ -253,9 +253,10 @@ export function defineScheduleFunction(functionConfig: BlueprintScheduleFunction
 
   runValidation(() => validateScheduleFunction(functionResource))
 
-  // Parse expression after validation (validation ensures it's valid)
+  // Always normalize to explicit fields (minute, hour, dayOfWeek, month, dayOfMonth)
   if ('expression' in functionResource.event && functionResource.event.expression) {
-    functionResource.event.expression = parseScheduleExpression(functionResource.event.expression)
+    const cron = parseScheduleExpression(functionResource.event.expression)
+    functionResource.event = cronStringToExplicitEvent(cron)
   }
 
   return functionResource
@@ -342,4 +343,18 @@ function buildScheduleFunctionEvent(event: BlueprintScheduleFunctionResourceEven
   return Object.fromEntries(
     Object.entries(event).filter(([key]) => SCHEDULE_EVENT_KEYS.has(key as ScheduleFunctionEventKey)),
   ) as BlueprintScheduleFunctionResourceEvent
+}
+
+/**
+ * Converts a cron expression string (minute hour dayOfMonth month dayOfWeek) to explicit event fields.
+ * @param cron Cron string with five space-separated fields
+ * @returns Explicit schedule event with minute, hour, dayOfMonth, month, dayOfWeek
+ */
+function cronStringToExplicitEvent(cron: string): BlueprintScheduleFunctionExplicitResourceEvent {
+  const parts = cron.trim().split(/\s+/)
+  if (parts.length !== 5) {
+    throw new Error(`Invalid cron string: expected 5 fields, got ${parts.length}`)
+  }
+  const [minute, hour, dayOfMonth, month, dayOfWeek] = parts
+  return {minute, hour, dayOfMonth, month, dayOfWeek}
 }
