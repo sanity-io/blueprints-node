@@ -194,39 +194,39 @@ describe('defineScheduleFunction', () => {
       expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
     })
 
-    test('should create a scheduled event with expression', () => {
+    test('should normalize expression to explicit cron fields', () => {
       const event = {expression: '* * * * *'}
       const fn = fns.defineScheduleFunction({
         name: 'test',
         event,
       })
-      expect(fn.event).toEqual({expression: '* * * * *'})
+      expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
     })
 
     test('should create a scheduled function with optional timezone', () => {
-      const event = {expression: '* * * * *'}
       const fn = fns.defineScheduleFunction({
         name: 'test',
-        event,
+        event: {expression: '* * * * *'},
         timezone: 'America/New_York',
       })
       expect(fn.timezone).toEqual('America/New_York')
+      expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
     })
 
-    test('should parse natural language expression to cron', () => {
+    test('should parse natural language expression to explicit cron fields', () => {
       const fn = fns.defineScheduleFunction({
         name: 'test',
         event: {expression: 'every day at 9am'},
       })
-      expect(fn.event).toEqual({expression: '0 9 * * *'})
+      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
     })
 
-    test('should pass through valid cron expressions unchanged', () => {
+    test('should normalize cron expression to explicit fields', () => {
       const fn = fns.defineScheduleFunction({
         name: 'test',
         event: {expression: '0 9 * * 1-5'},
       })
-      expect(fn.event).toEqual({expression: '0 9 * * 1-5'})
+      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1-5'})
     })
 
     test('should parse weekday natural language', () => {
@@ -234,7 +234,7 @@ describe('defineScheduleFunction', () => {
         name: 'test',
         event: {expression: 'weekdays at 8am'},
       })
-      expect(fn.event).toEqual({expression: '0 8 * * 1-5'})
+      expect(fn.event).toEqual({minute: '0', hour: '8', dayOfMonth: '*', month: '*', dayOfWeek: '1-5'})
     })
 
     test('should parse specific weekday with time', () => {
@@ -242,7 +242,7 @@ describe('defineScheduleFunction', () => {
         name: 'test',
         event: {expression: 'fridays at 9am'},
       })
-      expect(fn.event).toEqual({expression: '0 9 * * 5'})
+      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '5'})
     })
 
     test('should parse time of day period', () => {
@@ -250,7 +250,7 @@ describe('defineScheduleFunction', () => {
         name: 'test',
         event: {expression: 'fridays in the evening'},
       })
-      expect(fn.event).toEqual({expression: '0 18 * * 5'})
+      expect(fn.event).toEqual({minute: '0', hour: '18', dayOfMonth: '*', month: '*', dayOfWeek: '5'})
     })
 
     test('should parse multiple weekdays', () => {
@@ -258,7 +258,7 @@ describe('defineScheduleFunction', () => {
         name: 'test',
         event: {expression: 'mon, wed, fri at 9am'},
       })
-      expect(fn.event).toEqual({expression: '0 9 * * 1,3,5'})
+      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1,3,5'})
     })
 
     test('should parse interval schedules', () => {
@@ -266,7 +266,7 @@ describe('defineScheduleFunction', () => {
         name: 'test',
         event: {expression: 'every 15 minutes'},
       })
-      expect(fn.event).toEqual({expression: '*/15 * * * *'})
+      expect(fn.event).toEqual({minute: '*/15', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
     })
   })
 
