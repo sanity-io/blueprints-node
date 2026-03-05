@@ -7,7 +7,7 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
-import {validateScheduleExpression} from '../utils/schedule-parser.js'
+import { validateScheduledExpression } from '../utils/schedule-parser.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -24,8 +24,8 @@ const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resourc
  * @returns Array of validation errors, empty if valid
  */
 export function validateDocumentFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
-  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
+  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
 
   const errors: BlueprintError[] = validateFunction(functionResource)
 
@@ -46,7 +46,7 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.document') {
-    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.document`'})
+    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.document`' })
   }
 
   return errors
@@ -60,19 +60,19 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
  * @returns Array of validation errors, empty if valid
  */
 export function validateMediaLibraryAssetFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
-  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
+  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
 
   const errors: BlueprintError[] = validateFunction(functionResource)
 
   if ('event' in functionResource) {
     errors.push(...validateMediaLibraryFunctionEvent(functionResource.event))
   } else {
-    errors.push({type: 'missing_parameter', message: '`event` is required for a media library function'})
+    errors.push({ type: 'missing_parameter', message: '`event` is required for a media library function' })
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.media-library.asset') {
-    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.media-library.asset`'})
+    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.media-library.asset`' })
   }
 
   return errors
@@ -86,44 +86,44 @@ export function validateMediaLibraryAssetFunction(functionResource: unknown): Bl
  * @returns Array of validation errors, empty if valid
  */
 export function validateFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
-  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
+  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
 
   const errors: BlueprintError[] = validateResource(functionResource)
 
   if (!('name' in functionResource)) {
-    errors.push({type: 'missing_parameter', message: '`name` is required'})
+    errors.push({ type: 'missing_parameter', message: '`name` is required' })
   } else if (typeof functionResource.name !== 'string') {
-    errors.push({type: 'invalid_type', message: '`name` must be a string'})
+    errors.push({ type: 'invalid_type', message: '`name` must be a string' })
   }
 
   if (!('type' in functionResource)) {
-    errors.push({type: 'missing_parameter', message: '`type` is required'})
+    errors.push({ type: 'missing_parameter', message: '`type` is required' })
   } else if (typeof functionResource.type !== 'string') {
-    errors.push({type: 'invalid_type', message: '`type` must be a string'})
+    errors.push({ type: 'invalid_type', message: '`type` must be a string' })
   }
 
   // type validation
   if ('memory' in functionResource) {
     if (typeof functionResource.memory !== 'number' && typeof functionResource.memory !== 'undefined') {
-      errors.push({type: 'invalid_type', message: '`memory` must be a number'})
+      errors.push({ type: 'invalid_type', message: '`memory` must be a number' })
     }
   }
   if ('timeout' in functionResource) {
     if (typeof functionResource.timeout !== 'number' && typeof functionResource.timeout !== 'undefined') {
-      errors.push({type: 'invalid_type', message: '`timeout` must be a number'})
+      errors.push({ type: 'invalid_type', message: '`timeout` must be a number' })
     }
   }
 
   if ('robotToken' in functionResource) {
     if (typeof functionResource.robotToken !== 'string' && typeof functionResource.robotToken !== 'undefined') {
-      errors.push({type: 'invalid_type', message: '`robotToken` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`robotToken` must be a string' })
     }
   }
 
   if ('runtime' in functionResource) {
     if (typeof functionResource.runtime !== 'undefined' && !VALID_RUNTIMES.includes(functionResource.runtime as FunctionRuntimes)) {
-      errors.push({type: 'invalid_value', message: `\`runtime\` must be one of ${VALID_RUNTIMES.join(', ')}`})
+      errors.push({ type: 'invalid_value', message: `\`runtime\` must be one of ${VALID_RUNTIMES.join(', ')}` })
     }
   }
 
@@ -137,8 +137,8 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
  * @returns Array of validation errors, empty if valid
  */
 function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
-  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
+  if (!event) return [{ type: 'invalid_value', message: 'Function event must be provided' }]
+  if (typeof event !== 'object') return [{ type: 'invalid_type', message: 'Function event must be an object' }]
 
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => DOCUMENT_EVENT_KEYS.has(key as DocumentFunctionEventKey)),
@@ -149,12 +149,12 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
     on: cleanEvent.on || ['publish'],
     ...cleanEvent,
   }
-  if (!Array.isArray(fullEvent.on)) errors.push({type: 'invalid_type', message: '`event.on` must be an array'})
+  if (!Array.isArray(fullEvent.on)) errors.push({ type: 'invalid_type', message: '`event.on` must be an array' })
   if (fullEvent.resource) {
     if (!fullEvent.resource.type || fullEvent.resource.type !== 'dataset')
-      errors.push({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
+      errors.push({ type: 'invalid_value', message: '`event.resource.type` must be "dataset"' })
     if (!fullEvent.resource.id || fullEvent.resource.id.split('.').length !== 2)
-      errors.push({type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>'})
+      errors.push({ type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>' })
   }
   return errors
 }
@@ -166,8 +166,8 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
  * @returns Array of validation errors, empty if valid
  */
 function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
-  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
+  if (!event) return [{ type: 'invalid_value', message: 'Function event must be provided' }]
+  if (typeof event !== 'object') return [{ type: 'invalid_type', message: 'Function event must be an object' }]
 
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => MEDIA_LIBRARY_EVENT_KEYS.has(key as MediaLibraryFunctionEventKey)),
@@ -178,42 +178,42 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
     on: cleanEvent.on || ['publish'],
     ...cleanEvent,
   }
-  if (!Array.isArray(fullEvent.on)) errors.push({type: 'invalid_type', message: '`event.on` must be an array'})
+  if (!Array.isArray(fullEvent.on)) errors.push({ type: 'invalid_type', message: '`event.on` must be an array' })
   if (fullEvent.resource) {
     if (!fullEvent.resource.type || fullEvent.resource.type !== 'media-library')
-      errors.push({type: 'invalid_value', message: '`event.resource.type` must be "media-library"'})
+      errors.push({ type: 'invalid_value', message: '`event.resource.type` must be "media-library"' })
   } else {
-    errors.push({type: 'missing_parameter', message: '`resource` is required for a media library function'})
+    errors.push({ type: 'missing_parameter', message: '`resource` is required for a media library function' })
   }
   return errors
 }
 
 /**
- * Validates a schedule function resource configuration.
+ * Validates a scheduled function resource configuration.
  * @param functionResource The function resource to validate
  * @alpha
  * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
-export function validateScheduleFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
-  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+export function validateScheduledFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
+  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
 
   const errors: BlueprintError[] = []
 
   if ('event' in functionResource) {
-    errors.push(...validateScheduleFunctionEvent(functionResource.event))
+    errors.push(...validateScheduledFunctionEvent(functionResource.event))
   } else {
-    errors.push({type: 'missing_parameter', message: '`event` is required for a schedule function'})
+    errors.push({ type: 'missing_parameter', message: '`event` is required for a scheduled function' })
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.cron') {
-    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.cron`'})
+    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.cron`' })
   }
 
   if ('timezone' in functionResource) {
-    errors.push(...validateScheduleFunctionTimezone(functionResource.timezone))
+    errors.push(...validateScheduledFunctionTimezone(functionResource.timezone))
   }
 
   errors.push(...validateFunction(functionResource))
@@ -222,13 +222,13 @@ export function validateScheduleFunction(functionResource: unknown): BlueprintEr
 }
 
 /**
- * Validates a schedule function event configuration.
+ * Validates a scheduled function event configuration.
  * @param event The event configuration to validate
  * @returns Array of validation errors, empty if valid
  */
-function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
-  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
+function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event) return [{ type: 'invalid_value', message: 'Function event must be provided' }]
+  if (typeof event !== 'object') return [{ type: 'invalid_type', message: 'Function event must be an object' }]
 
   const errors: BlueprintError[] = []
 
@@ -246,11 +246,11 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
       message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
     })
   } else if (hasExpression) {
-    const expr = (event as {expression: unknown}).expression
+    const expr = (event as { expression: unknown }).expression
     if (typeof expr !== 'string') {
-      errors.push({type: 'invalid_type', message: '`expression` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`expression` must be a string' })
     } else {
-      errors.push(...validateScheduleExpression(expr))
+      errors.push(...validateScheduledExpression(expr))
     }
   } else if (hasExplicitFields) {
     if (!('minute' in event)) {
@@ -259,7 +259,7 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
         message: '`minute` must be provided',
       })
     } else if (typeof event.minute !== 'string') {
-      errors.push({type: 'invalid_type', message: '`minute` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`minute` must be a string' })
     }
     if (!('hour' in event)) {
       errors.push({
@@ -267,7 +267,7 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
         message: '`hour` must be provided',
       })
     } else if (typeof event.hour !== 'string') {
-      errors.push({type: 'invalid_type', message: '`hour` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`hour` must be a string' })
     }
     if (!('dayOfWeek' in event)) {
       errors.push({
@@ -275,7 +275,7 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
         message: '`dayOfWeek` must be provided',
       })
     } else if (typeof event.dayOfWeek !== 'string') {
-      errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`dayOfWeek` must be a string' })
     }
     if (!('month' in event)) {
       errors.push({
@@ -283,7 +283,7 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
         message: '`month` must be provided',
       })
     } else if (typeof event.month !== 'string') {
-      errors.push({type: 'invalid_type', message: '`month` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`month` must be a string' })
     }
     if (!('dayOfMonth' in event)) {
       errors.push({
@@ -291,7 +291,7 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
         message: '`dayOfMonth` must be provided',
       })
     } else if (typeof event.dayOfMonth !== 'string') {
-      errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
+      errors.push({ type: 'invalid_type', message: '`dayOfMonth` must be a string' })
     }
   }
 
@@ -299,17 +299,17 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
 }
 
 /**
- * Validates a schedule function timezone configuration.
+ * Validates a scheduled function timezone configuration.
  * @param timezone The timezone to validate
  * @returns Array of validation errors, empty if valid
  */
-function validateScheduleFunctionTimezone(timezone: unknown): BlueprintError[] {
-  if (typeof timezone !== 'string') return [{type: 'invalid_type', message: 'Function timezone must be a string'}]
+function validateScheduledFunctionTimezone(timezone: unknown): BlueprintError[] {
+  if (typeof timezone !== 'string') return [{ type: 'invalid_type', message: 'Function timezone must be a string' }]
 
   const errors: BlueprintError[] = []
 
   try {
-    Intl.DateTimeFormat(undefined, {timeZone: timezone})
+    Intl.DateTimeFormat(undefined, { timeZone: timezone })
   } catch {
     errors.push({
       type: 'invalid_value',

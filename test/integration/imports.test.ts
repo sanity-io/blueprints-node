@@ -9,7 +9,7 @@ import {
   defineProjectRole,
   defineResource,
   defineRole,
-  defineScheduleFunction,
+  defineScheduledFunction,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -20,7 +20,7 @@ import {
   validateResource,
   validateRole,
 } from '@sanity/blueprints'
-import {describe, expect, it} from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('package imports', () => {
   it('should import defineBlueprint', () => {
@@ -39,8 +39,8 @@ describe('package imports', () => {
     expect(defineDocumentFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineScheduleFunction', () => {
-    expect(defineScheduleFunction).toBeInstanceOf(Function)
+  it('should import defineScheduledFunction', () => {
+    expect(defineScheduledFunction).toBeInstanceOf(Function)
   })
 
   it('should import defineDocumentWebhook', () => {

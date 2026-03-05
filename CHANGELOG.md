@@ -45,7 +45,7 @@
 
 ### Features
 
-* add support for natural language to defineScheduleFunction expression ([#56](https://github.com/sanity-io/blueprints-node/issues/56)) ([8c39eec](https://github.com/sanity-io/blueprints-node/commit/8c39eecefc57d8d2e85f014499f357d80376510a))
+* add support for natural language to defineScheduledFunction expression ([#56](https://github.com/sanity-io/blueprints-node/issues/56)) ([8c39eec](https://github.com/sanity-io/blueprints-node/commit/8c39eecefc57d8d2e85f014499f357d80376510a))
 * expose runtime variable in functions ([#62](https://github.com/sanity-io/blueprints-node/issues/62)) ([58ae65f](https://github.com/sanity-io/blueprints-node/commit/58ae65f0ff6b3994ead57405823477843736df58))
 
 
@@ -72,7 +72,7 @@
 
 ### Features
 
-* defineScheduleFunction ([#41](https://github.com/sanity-io/blueprints-node/issues/41)) ([e7b3ae5](https://github.com/sanity-io/blueprints-node/commit/e7b3ae5fdcea79cc4f4f9c8d00f10bea59a42499))
+* defineScheduledFunction ([#41](https://github.com/sanity-io/blueprints-node/issues/41)) ([e7b3ae5](https://github.com/sanity-io/blueprints-node/commit/e7b3ae5fdcea79cc4f4f9c8d00f10bea59a42499))
 
 
 ### Bug Fixes

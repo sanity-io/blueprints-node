@@ -1,4 +1,4 @@
-import type {BlueprintResource} from '../index.js'
+import type { BlueprintResource } from '../index.js'
 
 // --- Function Event Types ---
 
@@ -47,11 +47,11 @@ export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFun
 export type BlueprintFunctionResourceEvent = BlueprintDocumentFunctionResourceEvent | BlueprintMediaLibraryFunctionResourceEvent
 
 /**
- * Explicit resource event for schedule functions to specific minutes, hours, days of month, months, and days of week
+ * Explicit resource event for scheduled functions to specific minutes, hours, days of month, months, and days of week
  * @example { minute: '0', hour: '9', dayOfMonth: '1', month: '1', dayOfWeek: '1' }
  * @category Functions Types
  */
-export interface BlueprintScheduleFunctionExplicitResourceEvent {
+export interface BlueprintScheduledFunctionExplicitResourceEvent {
   minute: string
   hour: string
   dayOfMonth: string
@@ -60,21 +60,21 @@ export interface BlueprintScheduleFunctionExplicitResourceEvent {
 }
 
 /**
- * Expression resource for schedule functions to specific expressions
+ * Expression resource for scheduled functions to specific expressions
  * @example { expression: '0 9 * * *' }
  * @category Functions Types
  */
-export interface BlueprintScheduleFunctionExpressionResourceEvent {
+export interface BlueprintScheduledFunctionExpressionResourceEvent {
   expression: string
 }
 
 /**
- * Union type of all schedule function resource event configurations
+ * Union type of all scheduled function resource event configurations
  * @category Functions Types
  */
-export type BlueprintScheduleFunctionResourceEvent =
-  | BlueprintScheduleFunctionExplicitResourceEvent
-  | BlueprintScheduleFunctionExpressionResourceEvent
+export type BlueprintScheduledFunctionResourceEvent =
+  | BlueprintScheduledFunctionExplicitResourceEvent
+  | BlueprintScheduledFunctionExpressionResourceEvent
 
 /**
  * Dataset resource for scoping document functions to specific datasets
@@ -167,12 +167,12 @@ export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBas
 }
 
 /**
- * A function resource triggered by schedule events
+ * A function resource triggered by scheduled events
  * @category Functions Types
  */
-export interface BlueprintScheduleFunctionResource extends BlueprintBaseFunctionResource {
+export interface BlueprintScheduledFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.cron'
-  event: BlueprintScheduleFunctionResourceEvent
+  event: BlueprintScheduledFunctionResourceEvent
   timezone?: string
 }
 
@@ -226,14 +226,14 @@ export type BlueprintMediaLibraryAssetFunctionConfig = Omit<BlueprintMediaLibrar
 }
 
 /**
- * Configuration for defining a schedule function.
+ * Configuration for defining a scheduled function.
  * @public
- * @alpha Deploying Schedule Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Scheduled Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Functions Types
  * @interface
  */
-export type BlueprintScheduleFunctionConfig = Omit<BlueprintScheduleFunctionResource, 'type' | 'src'> & {
+export type BlueprintScheduledFunctionConfig = Omit<BlueprintScheduledFunctionResource, 'type' | 'src'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`

@@ -8,18 +8,18 @@ import {
   type BlueprintMediaLibraryAssetFunctionConfig,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
-  type BlueprintScheduleFunctionConfig,
-  type BlueprintScheduleFunctionExplicitResourceEvent,
-  type BlueprintScheduleFunctionExpressionResourceEvent,
-  type BlueprintScheduleFunctionResource,
-  type BlueprintScheduleFunctionResourceEvent,
+  type BlueprintScheduledFunctionConfig,
+  type BlueprintScheduledFunctionExplicitResourceEvent,
+  type BlueprintScheduledFunctionExpressionResourceEvent,
+  type BlueprintScheduledFunctionResource,
+  type BlueprintScheduledFunctionResourceEvent,
   validateDocumentFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
-  validateScheduleFunction,
+  validateScheduledFunction,
 } from '../index.js'
-import {parseScheduleExpression} from '../utils/schedule-parser.js'
-import {runValidation} from '../utils/validation.js'
+import { parseScheduledExpression } from '../utils/schedule-parser.js'
+import { runValidation } from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -27,10 +27,10 @@ type DocumentFunctionEventKey = keyof BlueprintDocumentFunctionResourceEvent
 const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersions', 'resource', ...BASE_EVENT_KEYS.values()])
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
-type ScheduleFunctionEventKey =
-  | keyof BlueprintScheduleFunctionExplicitResourceEvent
-  | keyof BlueprintScheduleFunctionExpressionResourceEvent
-const SCHEDULE_EVENT_KEYS = new Set<ScheduleFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
+type ScheduledFunctionEventKey =
+  | keyof BlueprintScheduledFunctionExplicitResourceEvent
+  | keyof BlueprintScheduledFunctionExpressionResourceEvent
+const SCHEDULED_EVENT_KEYS = new Set<ScheduledFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
 
 /*
  * FUTURE example (move below @example when ready)
@@ -100,7 +100,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let {name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent} = functionConfig
+  let { name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent } = functionConfig
 
   // event validation and normalization
   if (event) {
@@ -122,7 +122,7 @@ export function defineDocumentFunction(
   }
 
   const functionResource: BlueprintDocumentFunctionResource = {
-    ...defineFunction(functionConfig, {skipValidation: true}),
+    ...defineFunction(functionConfig, { skipValidation: true }),
     type: 'sanity.function.document',
     event,
   }
@@ -188,10 +188,10 @@ export function defineDocumentFunction(
 export function defineMediaLibraryAssetFunction(
   functionConfig: BlueprintMediaLibraryAssetFunctionConfig,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  const {event} = functionConfig
+  const { event } = functionConfig
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
-    ...defineFunction(functionConfig, {skipValidation: true}),
+    ...defineFunction(functionConfig, { skipValidation: true }),
     type: 'sanity.function.media-library.asset',
     event: buildMediaLibraryFunctionEvent(event),
   }
@@ -208,7 +208,7 @@ export function defineMediaLibraryAssetFunction(
  * @remarks
  * Using a cron expression:
  * ```ts
- * defineScheduleFunction({
+ * defineScheduledFunction({
  *   name: 'daily-cleanup',
  *   event: {expression: '0 9 * * *'},
  * })
@@ -216,7 +216,7 @@ export function defineMediaLibraryAssetFunction(
  *
  * Using explicit cron fields:
  * ```ts
- * defineScheduleFunction({
+ * defineScheduledFunction({
  *   name: 'daily-cleanup',
  *   event: {minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
  * })
@@ -227,39 +227,48 @@ export function defineMediaLibraryAssetFunction(
  * `'mon, wed, fri at 9am'`, `'first of the month at noon'`
  *
  * ```ts
- * defineScheduleFunction({
+ * defineScheduledFunction({
  *   name: 'daily-cleanup',
  *   event: {expression: 'every day at 9am'},
  * })
  * ```
  * @public
- * @alpha Deploying Schedule Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Scheduled Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Definers
- * @expandType BlueprintScheduleFunctionConfig
- * @param functionConfig The configuration for the schedule function
- * @returns The validated schedule function resource
+ * @expandType BlueprintScheduledFunctionConfig
+ * @param functionConfig The configuration for the scheduled function
+ * @returns The validated scheduled function resource
  */
-export function defineScheduleFunction(functionConfig: BlueprintScheduleFunctionConfig): BlueprintScheduleFunctionResource {
-  const {event, timezone} = functionConfig
+export function defineScheduledFunction(functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
+  const { event, timezone } = functionConfig
 
-  const functionResource: BlueprintScheduleFunctionResource = {
-    ...defineFunction(functionConfig, {skipValidation: true}),
+  const functionResource: BlueprintScheduledFunctionResource = {
+    ...defineFunction(functionConfig, { skipValidation: true }),
     type: 'sanity.function.cron',
-    event: buildScheduleFunctionEvent(event),
+    event: buildScheduledFunctionEvent(event),
   }
 
   if (timezone) functionResource.timezone = timezone
 
-  runValidation(() => validateScheduleFunction(functionResource))
+  runValidation(() => validateScheduledFunction(functionResource))
 
   // Always normalize to explicit fields (minute, hour, dayOfWeek, month, dayOfMonth)
   if ('expression' in functionResource.event && functionResource.event.expression) {
-    const cron = parseScheduleExpression(functionResource.event.expression)
+    const cron = parseScheduledExpression(functionResource.event.expression)
     functionResource.event = cronStringToExplicitEvent(cron)
   }
 
   return functionResource
+}
+
+/**
+ * @deprecated Define scheduled functions using `defineScheduledFunction` instead
+ * @hidden
+ */
+export function defineScheduleFunction(
+  functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
+  return defineScheduledFunction(functionConfig)
 }
 
 /**
@@ -274,9 +283,9 @@ export function defineScheduleFunction(functionConfig: BlueprintScheduleFunction
  */
 export function defineFunction(
   functionConfig: BlueprintBaseFunctionConfig,
-  options?: {skipValidation?: boolean},
+  options?: { skipValidation?: boolean },
 ): BlueprintBaseFunctionResource {
-  const {name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle} = functionConfig
+  const { name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle } = functionConfig
 
   const functionResource: BlueprintBaseFunctionResource = {
     type: 'sanity.function.document',
@@ -334,27 +343,27 @@ function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionReso
 }
 
 /**
- * Builds a schedule function event configuration.
+ * Builds a scheduled function event configuration.
  * Filters out non-event properties. Does not parse expressions.
- * @param event Schedule function event configuration
- * @returns Cleaned schedule function event configuration
+ * @param event Scheduled function event configuration
+ * @returns Cleaned scheduled function event configuration
  */
-function buildScheduleFunctionEvent(event: BlueprintScheduleFunctionResourceEvent): BlueprintScheduleFunctionResourceEvent {
+function buildScheduledFunctionEvent(event: BlueprintScheduledFunctionResourceEvent): BlueprintScheduledFunctionResourceEvent {
   return Object.fromEntries(
-    Object.entries(event).filter(([key]) => SCHEDULE_EVENT_KEYS.has(key as ScheduleFunctionEventKey)),
-  ) as BlueprintScheduleFunctionResourceEvent
+    Object.entries(event).filter(([key]) => SCHEDULED_EVENT_KEYS.has(key as ScheduledFunctionEventKey)),
+  ) as BlueprintScheduledFunctionResourceEvent
 }
 
 /**
  * Converts a cron expression string (minute hour dayOfMonth month dayOfWeek) to explicit event fields.
  * @param cron Cron string with five space-separated fields
- * @returns Explicit schedule event with minute, hour, dayOfMonth, month, dayOfWeek
+ * @returns Explicit scheduled event with minute, hour, dayOfMonth, month, dayOfWeek
  */
-function cronStringToExplicitEvent(cron: string): BlueprintScheduleFunctionExplicitResourceEvent {
+function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExplicitResourceEvent {
   const parts = cron.trim().split(/\s+/)
   if (parts.length !== 5) {
     throw new Error(`Invalid cron string: expected 5 fields, got ${parts.length}`)
   }
   const [minute, hour, dayOfMonth, month, dayOfWeek] = parts
-  return {minute, hour, dayOfMonth, month, dayOfWeek}
+  return { minute, hour, dayOfMonth, month, dayOfWeek }
 }
