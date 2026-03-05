@@ -47,15 +47,15 @@ describe('defineDataset', () => {
 
   test('should return an error if name is not provided', () => {
     const errors = datasets.validateDataset({})
-    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Dataset name is required'})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
   })
 
   test('should return an error if name is not a string', () => {
     const errors = datasets.validateDataset({name: 1})
-    expect(errors).toContainEqual({type: 'invalid_type', message: 'Dataset name must be a string'})
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`name` must be a string'})
   })
 
-  test('should return an error if type is not sanity.project.cors', () => {
+  test('should return an error if type is not sanity.project.dataset', () => {
     const errors = datasets.validateDataset({type: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Dataset type must be `sanity.project.dataset`'})
   })
