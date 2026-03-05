@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/sanity-io/blueprints-node/compare/v0.13.0...v0.13.1) (2026-03-05)
+
+
+### Bug Fixes
+
+* rename defineScheduleFunction to defineScheduledFunction ([#80](https://github.com/sanity-io/blueprints-node/issues/80)) ([eb54695](https://github.com/sanity-io/blueprints-node/commit/eb546953a3cea0775401777450b64c9b3ecb2b73))
+
 ## [0.13.0](https://github.com/sanity-io/blueprints-node/compare/v0.12.3...v0.13.0) (2026-03-05)
 
 
