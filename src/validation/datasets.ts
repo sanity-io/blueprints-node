@@ -13,15 +13,7 @@ export function validateDataset(resource: unknown): BlueprintError[] {
 
   const errors: BlueprintError[] = validateResource(resource, {projectContained: true})
 
-  if (!('name' in resource) || !resource.name) {
-    errors.push({type: 'missing_parameter', message: 'Dataset name is required'})
-  } else if (typeof resource.name !== 'string') {
-    errors.push({type: 'invalid_type', message: 'Dataset name must be a string'})
-  }
-
-  if (!('type' in resource)) {
-    errors.push({type: 'missing_parameter', message: 'Dataset type is required'})
-  } else if (resource.type !== 'sanity.project.dataset') {
+  if ('type' in resource && resource.type !== 'sanity.project.dataset') {
     errors.push({type: 'invalid_value', message: 'Dataset type must be `sanity.project.dataset`'})
   }
 
