@@ -7,7 +7,7 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
-import {validateScheduleExpression} from '../utils/schedule-parser.js'
+import {validateScheduledExpression} from '../utils/schedule-parser.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -189,23 +189,23 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
 }
 
 /**
- * Validates a schedule function resource configuration.
+ * Validates a scheduled function resource configuration.
  * @param functionResource The function resource to validate
  * @alpha
  * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
-export function validateScheduleFunction(functionResource: unknown): BlueprintError[] {
+export function validateScheduledFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if ('event' in functionResource) {
-    errors.push(...validateScheduleFunctionEvent(functionResource.event))
+    errors.push(...validateScheduledFunctionEvent(functionResource.event))
   } else {
-    errors.push({type: 'missing_parameter', message: '`event` is required for a schedule function'})
+    errors.push({type: 'missing_parameter', message: '`event` is required for a scheduled function'})
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.cron') {
@@ -213,7 +213,7 @@ export function validateScheduleFunction(functionResource: unknown): BlueprintEr
   }
 
   if ('timezone' in functionResource) {
-    errors.push(...validateScheduleFunctionTimezone(functionResource.timezone))
+    errors.push(...validateScheduledFunctionTimezone(functionResource.timezone))
   }
 
   errors.push(...validateFunction(functionResource))
@@ -222,11 +222,11 @@ export function validateScheduleFunction(functionResource: unknown): BlueprintEr
 }
 
 /**
- * Validates a schedule function event configuration.
+ * Validates a scheduled function event configuration.
  * @param event The event configuration to validate
  * @returns Array of validation errors, empty if valid
  */
-function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
+function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
   if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
   if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
 
@@ -250,7 +250,7 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
     if (typeof expr !== 'string') {
       errors.push({type: 'invalid_type', message: '`expression` must be a string'})
     } else {
-      errors.push(...validateScheduleExpression(expr))
+      errors.push(...validateScheduledExpression(expr))
     }
   } else if (hasExplicitFields) {
     if (!('minute' in event)) {
@@ -299,11 +299,11 @@ function validateScheduleFunctionEvent(event: unknown): BlueprintError[] {
 }
 
 /**
- * Validates a schedule function timezone configuration.
+ * Validates a scheduled function timezone configuration.
  * @param timezone The timezone to validate
  * @returns Array of validation errors, empty if valid
  */
-function validateScheduleFunctionTimezone(timezone: unknown): BlueprintError[] {
+function validateScheduledFunctionTimezone(timezone: unknown): BlueprintError[] {
   if (typeof timezone !== 'string') return [{type: 'invalid_type', message: 'Function timezone must be a string'}]
 
   const errors: BlueprintError[] = []

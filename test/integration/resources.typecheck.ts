@@ -20,8 +20,8 @@ import {
   type BlueprintResource,
   type BlueprintRoleConfig,
   type BlueprintRoleResource,
-  type BlueprintScheduleFunctionResource,
-  type BlueprintScheduleFunctionResourceEvent,
+  type BlueprintScheduledFunctionResource,
+  type BlueprintScheduledFunctionResourceEvent,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -29,7 +29,7 @@ import {
   defineMediaLibraryAssetFunction,
   defineProjectRole,
   defineRole,
-  defineScheduleFunction,
+  defineScheduledFunction,
   type RolePermission,
   validateBlueprint,
   validateCorsOrigin,
@@ -40,7 +40,7 @@ import {
   validateMediaLibraryAssetFunction,
   validateResource,
   validateRole,
-  validateScheduleFunction,
+  validateScheduledFunction,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
 } from '@sanity/blueprints'
@@ -82,16 +82,16 @@ const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocume
 const _webhookTriggerCreate: WebhookTrigger = 'create'
 const _webhookTriggerUpdate: WebhookTrigger = 'update'
 const _webhookTriggerDelete: WebhookTrigger = 'delete'
-const scheduleFunctionResourceEvent: BlueprintScheduleFunctionResourceEvent = {
+const scheduledFunctionResourceEvent: BlueprintScheduledFunctionResourceEvent = {
   minute: '*',
   hour: '*',
   dayOfMonth: '*',
   month: '*',
   dayOfWeek: '*',
 }
-const scheduleFunctionResource: BlueprintScheduleFunctionResource = defineScheduleFunction({
+const scheduledFunctionResource: BlueprintScheduledFunctionResource = defineScheduledFunction({
   name: 'sup',
-  event: scheduleFunctionResourceEvent,
+  event: scheduledFunctionResourceEvent,
   timezone: 'America/New_York',
 })
 
@@ -174,4 +174,4 @@ validateFunction({name: 'test-function'})
 validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
 validateResource(blueprintResource)
 validateRole(roleResource)
-validateScheduleFunction(scheduleFunctionResource)
+validateScheduledFunction(scheduledFunctionResource)

@@ -183,11 +183,11 @@ describe('defineMediaLibraryAssetFunction', () => {
   })
 })
 
-describe('defineScheduleFunction', () => {
+describe('defineScheduledFunction', () => {
   describe('happy paths', () => {
     test('should create a scheduled event with explicit cron fields', () => {
       const event = {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event,
       })
@@ -196,7 +196,7 @@ describe('defineScheduleFunction', () => {
 
     test('should normalize expression to explicit cron fields', () => {
       const event = {expression: '* * * * *'}
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event,
       })
@@ -204,7 +204,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should create a scheduled function with optional timezone', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: '* * * * *'},
         timezone: 'America/New_York',
@@ -214,7 +214,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should parse natural language expression to explicit cron fields', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: 'every day at 9am'},
       })
@@ -222,7 +222,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should normalize cron expression to explicit fields', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: '0 9 * * 1-5'},
       })
@@ -230,7 +230,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should parse weekday natural language', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: 'weekdays at 8am'},
       })
@@ -238,7 +238,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should parse specific weekday with time', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: 'fridays at 9am'},
       })
@@ -246,7 +246,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should parse time of day period', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: 'fridays in the evening'},
       })
@@ -254,7 +254,7 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should parse multiple weekdays', () => {
-      const fn = fns.defineScheduleFunction({
+      const fn = fns.defineScheduledFunction({
         name: 'test',
         event: {expression: 'mon, wed, fri at 9am'},
       })
@@ -262,6 +262,14 @@ describe('defineScheduleFunction', () => {
     })
 
     test('should parse interval schedules', () => {
+      const fn = fns.defineScheduledFunction({
+        name: 'test',
+        event: {expression: 'every 15 minutes'},
+      })
+      expect(fn.event).toEqual({minute: '*/15', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+    })
+
+    test('deprecated method defineScheduleFunction should work', () => {
       const fn = fns.defineScheduleFunction({
         name: 'test',
         event: {expression: 'every 15 minutes'},
@@ -275,10 +283,10 @@ describe('defineScheduleFunction', () => {
       vi.resetAllMocks()
     })
 
-    test('should throw an error if validateScheduleFunction returns an error', () => {
-      const spy = vi.spyOn(index, 'validateScheduleFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+    test('should throw an error if validateScheduledFunction returns an error', () => {
+      const spy = vi.spyOn(index, 'validateScheduledFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
       expect(() =>
-        fns.defineScheduleFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
+        fns.defineScheduledFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
       ).toThrow('this is a test')
 
       expect(spy).toHaveBeenCalledOnce()

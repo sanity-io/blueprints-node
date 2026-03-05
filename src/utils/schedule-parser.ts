@@ -428,7 +428,7 @@ function parseExpressionInternal(expression: string): {
     if (errors.length === 0) {
       errors.push({
         type: 'invalid_value',
-        message: `Could not parse schedule expression \`${trimmed}\``,
+        message: `Could not parse scheduled expression \`${trimmed}\``,
       })
     }
     return {errors, cron: null}
@@ -438,7 +438,7 @@ function parseExpressionInternal(expression: string): {
 }
 
 /**
- * Validates a schedule expression and returns any errors found.
+ * Validates a scheduled expression and returns any errors found.
  *
  * Checks for:
  * - Empty expressions
@@ -447,11 +447,11 @@ function parseExpressionInternal(expression: string): {
  * - Invalid day of month values
  * - Unrecognizable expressions
  *
- * @param expression Natural language schedule or cron expression
+ * @param expression Natural language scheduled or cron expression
  * @returns Array of validation errors, empty if valid
  * @internal
  */
-export function validateScheduleExpression(expression: string): BlueprintError[] {
+export function validateScheduledExpression(expression: string): BlueprintError[] {
   if (!expression || expression.trim() === '') {
     return [{type: 'invalid_value', message: '`expression` cannot be empty'}]
   }
@@ -461,7 +461,7 @@ export function validateScheduleExpression(expression: string): BlueprintError[]
 }
 
 /**
- * Parse a natural language schedule expression into a cron expression.
+ * Parse a natural language scheduled expression into a cron expression.
  *
  * The parser is **forgiving** and **freeform** - it extracts recognized parts
  * (days, times, intervals) and ignores unrecognized tokens like "at", "on", "the".
@@ -479,13 +479,13 @@ export function validateScheduleExpression(expression: string): BlueprintError[]
  * If the input is already a valid cron expression, it is returned unchanged.
  *
  * This function assumes the expression has already been validated via
- * `validateScheduleExpression`. For invalid input, behavior is undefined.
+ * `validateScheduledExpression`. For invalid input, behavior is undefined.
  *
- * @param expression Natural language schedule or cron expression
+ * @param expression Natural language scheduled or cron expression
  * @returns Cron expression string
  * @internal
  */
-export function parseScheduleExpression(expression: string): string {
+export function parseScheduledExpression(expression: string): string {
   const trimmed = expression.trim()
 
   // Fast path for cron expressions
@@ -495,7 +495,7 @@ export function parseScheduleExpression(expression: string): string {
 
   const result = parseExpressionInternal(expression)
   if (!result.cron) {
-    // Should never happen if validateScheduleExpression was called first
+    // Should never happen if validateScheduledExpression was called first
     throw new Error(`Failed to parse schedule expression: ${expression}`)
   }
   return result.cron

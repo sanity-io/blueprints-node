@@ -145,7 +145,7 @@ Rules:
 - The first `@example` must be **untitled**. It should show minimal required fields including `name`.
 - Additional `@example` blocks must have a **title**. Use these for advanced usage, cross-resource references (`$.resources.*`), or kitchen-sink all-options examples.
 - Use `@expandType TypeName` to inline the parameter type in the docs (requires a named Config type).
-- Use `@remarks` only when the summary needs a longer explanation (e.g. `defineScheduleFunction`).
+- Use `@remarks` only when the summary needs a longer explanation (e.g. `defineScheduledFunction`).
 
 #### Config types (definer parameter types)
 
