@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/sanity-io/blueprints-node/compare/v0.12.3...v0.13.0) (2026-03-05)
+
+
+### Features
+
+* Add project helper and validation ([#78](https://github.com/sanity-io/blueprints-node/issues/78)) ([78a6094](https://github.com/sanity-io/blueprints-node/commit/78a60947abd501244726f301cafbfafa3b4ad7eb))
+
 ## [0.12.3](https://github.com/sanity-io/blueprints-node/compare/v0.12.2...v0.12.3) (2026-03-04)
 
 
