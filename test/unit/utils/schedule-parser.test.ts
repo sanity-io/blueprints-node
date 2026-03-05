@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'vitest'
-import { parseScheduledExpression, validateScheduledExpression } from '../../../src/utils/schedule-parser.js'
+import {describe, expect, test} from 'vitest'
+import {parseScheduledExpression, validateScheduledExpression} from '../../../src/utils/schedule-parser.js'
 
 describe('parseScheduledExpression', () => {
   describe('cron passthrough', () => {

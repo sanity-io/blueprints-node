@@ -18,8 +18,8 @@ import {
   validateMediaLibraryAssetFunction,
   validateScheduledFunction,
 } from '../index.js'
-import { parseScheduledExpression } from '../utils/schedule-parser.js'
-import { runValidation } from '../utils/validation.js'
+import {parseScheduledExpression} from '../utils/schedule-parser.js'
+import {runValidation} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -100,7 +100,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let { name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent } = functionConfig
+  let {name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent} = functionConfig
 
   // event validation and normalization
   if (event) {
@@ -122,7 +122,7 @@ export function defineDocumentFunction(
   }
 
   const functionResource: BlueprintDocumentFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.document',
     event,
   }
@@ -188,10 +188,10 @@ export function defineDocumentFunction(
 export function defineMediaLibraryAssetFunction(
   functionConfig: BlueprintMediaLibraryAssetFunctionConfig,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  const { event } = functionConfig
+  const {event} = functionConfig
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.media-library.asset',
     event: buildMediaLibraryFunctionEvent(event),
   }
@@ -241,10 +241,10 @@ export function defineMediaLibraryAssetFunction(
  * @returns The validated scheduled function resource
  */
 export function defineScheduledFunction(functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
-  const { event, timezone } = functionConfig
+  const {event, timezone} = functionConfig
 
   const functionResource: BlueprintScheduledFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.cron',
     event: buildScheduledFunctionEvent(event),
   }
@@ -266,8 +266,7 @@ export function defineScheduledFunction(functionConfig: BlueprintScheduledFuncti
  * @deprecated Define scheduled functions using `defineScheduledFunction` instead
  * @hidden
  */
-export function defineScheduleFunction(
-  functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
+export function defineScheduleFunction(functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
   return defineScheduledFunction(functionConfig)
 }
 
@@ -283,9 +282,9 @@ export function defineScheduleFunction(
  */
 export function defineFunction(
   functionConfig: BlueprintBaseFunctionConfig,
-  options?: { skipValidation?: boolean },
+  options?: {skipValidation?: boolean},
 ): BlueprintBaseFunctionResource {
-  const { name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle } = functionConfig
+  const {name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle} = functionConfig
 
   const functionResource: BlueprintBaseFunctionResource = {
     type: 'sanity.function.document',
@@ -365,5 +364,5 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
     throw new Error(`Invalid cron string: expected 5 fields, got ${parts.length}`)
   }
   const [minute, hour, dayOfMonth, month, dayOfWeek] = parts
-  return { minute, hour, dayOfMonth, month, dayOfWeek }
+  return {minute, hour, dayOfMonth, month, dayOfWeek}
 }

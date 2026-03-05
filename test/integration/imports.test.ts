@@ -20,7 +20,7 @@ import {
   validateResource,
   validateRole,
 } from '@sanity/blueprints'
-import { describe, expect, it } from 'vitest'
+import {describe, expect, it} from 'vitest'
 
 describe('package imports', () => {
   it('should import defineBlueprint', () => {

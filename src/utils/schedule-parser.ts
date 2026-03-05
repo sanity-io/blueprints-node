@@ -1,4 +1,4 @@
-import type { BlueprintError } from '../types/errors.js'
+import type {BlueprintError} from '../types/errors.js'
 
 /**
  * Day of week mappings (cron uses 0=Sunday, 1=Monday, etc.)
@@ -30,13 +30,13 @@ const DAYS_OF_WEEK: Record<string, number> = {
 /**
  * Named time mappings (hour, minute)
  */
-const NAMED_TIMES: Record<string, { hour: number; minute: number }> = {
-  midnight: { hour: 0, minute: 0 },
-  noon: { hour: 12, minute: 0 },
-  midday: { hour: 12, minute: 0 },
-  morning: { hour: 9, minute: 0 },
-  afternoon: { hour: 14, minute: 0 },
-  evening: { hour: 18, minute: 0 },
+const NAMED_TIMES: Record<string, {hour: number; minute: number}> = {
+  midnight: {hour: 0, minute: 0},
+  noon: {hour: 12, minute: 0},
+  midday: {hour: 12, minute: 0},
+  morning: {hour: 9, minute: 0},
+  afternoon: {hour: 14, minute: 0},
+  evening: {hour: 18, minute: 0},
 }
 
 /**
@@ -54,7 +54,7 @@ function isCronExpression(expr: string): boolean {
 /**
  * Result from trying to parse a time token
  */
-type TimeParseResult = { success: true; hour: number; minute: number } | { success: false; error: BlueprintError } | { success: null } // not a time pattern
+type TimeParseResult = {success: true; hour: number; minute: number} | {success: false; error: BlueprintError} | {success: null} // not a time pattern
 
 /**
  * Try to parse a token as a time
@@ -64,7 +64,7 @@ function tryParseTime(token: string): TimeParseResult {
 
   // Check named times
   if (normalized in NAMED_TIMES) {
-    return { success: true, ...NAMED_TIMES[normalized] }
+    return {success: true, ...NAMED_TIMES[normalized]}
   }
 
   // Just :MM format (e.g., "every hour at :30")
@@ -74,10 +74,10 @@ function tryParseTime(token: string): TimeParseResult {
     if (minute < 0 || minute > 59) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\`` },
+        error: {type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\``},
       }
     }
-    return { success: true, hour: -1, minute } // -1 signals "use current hour context"
+    return {success: true, hour: -1, minute} // -1 signals "use current hour context"
   }
 
   // 12-hour format: 9am, 9:30am, 9:30pm
@@ -90,13 +90,13 @@ function tryParseTime(token: string): TimeParseResult {
     if (hourRaw < 1 || hourRaw > 12) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid time: hour must be 1-12 for 12-hour format, got \`${hourRaw}\`` },
+        error: {type: 'invalid_value', message: `Invalid time: hour must be 1-12 for 12-hour format, got \`${hourRaw}\``},
       }
     }
     if (minute < 0 || minute > 59) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\`` },
+        error: {type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\``},
       }
     }
 
@@ -107,7 +107,7 @@ function tryParseTime(token: string): TimeParseResult {
       hour = hour === 12 ? 12 : hour + 12
     }
 
-    return { success: true, hour, minute }
+    return {success: true, hour, minute}
   }
 
   // 24-hour format: 14:30, 09:00
@@ -119,20 +119,20 @@ function tryParseTime(token: string): TimeParseResult {
     if (hour < 0 || hour > 23) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid time: hour must be 0-23 for 24-hour format, got \`${hour}\`` },
+        error: {type: 'invalid_value', message: `Invalid time: hour must be 0-23 for 24-hour format, got \`${hour}\``},
       }
     }
     if (minute < 0 || minute > 59) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\`` },
+        error: {type: 'invalid_value', message: `Invalid time: minute must be 0-59, got \`${minute}\``},
       }
     }
 
-    return { success: true, hour, minute }
+    return {success: true, hour, minute}
   }
 
-  return { success: null }
+  return {success: null}
 }
 
 /**
@@ -181,61 +181,61 @@ function tryParseDayRange(token: string): number[] | null {
 /**
  * Result from trying to parse an ordinal
  */
-type OrdinalParseResult = { success: true; value: number } | { success: false; error: BlueprintError } | { success: null } // not an ordinal pattern
+type OrdinalParseResult = {success: true; value: number} | {success: false; error: BlueprintError} | {success: null} // not an ordinal pattern
 
 /**
  * Try to parse an ordinal day of month (1st, 2nd, 15th, etc.)
  */
 function tryParseOrdinal(token: string): OrdinalParseResult {
   const match = token.match(/^(\d+)(?:st|nd|rd|th)$/)
-  if (!match) return { success: null }
+  if (!match) return {success: null}
   const num = parseInt(match[1], 10)
   if (num < 1 || num > 31) {
     return {
       success: false,
-      error: { type: 'invalid_value', message: `Invalid day of month: must be 1-31, got \`${num}\`` },
+      error: {type: 'invalid_value', message: `Invalid day of month: must be 1-31, got \`${num}\``},
     }
   }
-  return { success: true, value: num }
+  return {success: true, value: num}
 }
 
 /**
  * Result from trying to parse an interval
  */
 type IntervalParseResult =
-  | { success: true; type: 'minute' | 'hour'; value: number; consumed: number }
-  | { success: false; error: BlueprintError }
-  | { success: null } // not an interval pattern
+  | {success: true; type: 'minute' | 'hour'; value: number; consumed: number}
+  | {success: false; error: BlueprintError}
+  | {success: null} // not an interval pattern
 
 /**
  * Try to parse interval like "5 minutes" or "2 hours" from consecutive tokens
  */
 function tryParseInterval(tokens: string[], index: number): IntervalParseResult {
-  if (index >= tokens.length - 1) return { success: null }
+  if (index >= tokens.length - 1) return {success: null}
 
   const num = parseInt(tokens[index], 10)
-  if (Number.isNaN(num)) return { success: null }
+  if (Number.isNaN(num)) return {success: null}
 
   const unit = tokens[index + 1].toLowerCase()
   if (unit === 'minute' || unit === 'minutes') {
     if (num < 1 || num > 59) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid interval: minutes must be 1-59, got \`${num}\`` },
+        error: {type: 'invalid_value', message: `Invalid interval: minutes must be 1-59, got \`${num}\``},
       }
     }
-    return { success: true, type: 'minute', value: num, consumed: 2 }
+    return {success: true, type: 'minute', value: num, consumed: 2}
   }
   if (unit === 'hour' || unit === 'hours') {
     if (num < 1 || num > 23) {
       return {
         success: false,
-        error: { type: 'invalid_value', message: `Invalid interval: hours must be 1-23, got \`${num}\`` },
+        error: {type: 'invalid_value', message: `Invalid interval: hours must be 1-23, got \`${num}\``},
       }
     }
-    return { success: true, type: 'hour', value: num, consumed: 2 }
+    return {success: true, type: 'hour', value: num, consumed: 2}
   }
-  return { success: null }
+  return {success: null}
 }
 
 /**
@@ -250,7 +250,7 @@ function parseExpressionInternal(expression: string): {
 
   // If it's already a cron expression, return as-is
   if (isCronExpression(trimmed)) {
-    return { errors: [], cron: trimmed }
+    return {errors: [], cron: trimmed}
   }
 
   // Normalize and tokenize
@@ -259,10 +259,10 @@ function parseExpressionInternal(expression: string): {
   const rawTokens = normalized.split(/[\s,]+/).filter(Boolean)
 
   // Extract components
-  let time: { hour: number; minute: number } | null = null
+  let time: {hour: number; minute: number} | null = null
   const days: number[] = []
   let dayOfMonth: number | null = null
-  let interval: { type: 'minute' | 'hour'; value: number } | null = null
+  let interval: {type: 'minute' | 'hour'; value: number} | null = null
   let hasWeekdays = false
   let hasWeekends = false
   let hasDaily = false
@@ -291,7 +291,7 @@ function parseExpressionInternal(expression: string): {
     // Try interval (e.g., "5 minutes")
     const parsedInterval = tryParseInterval(rawTokens, i)
     if (parsedInterval.success === true) {
-      interval = { type: parsedInterval.type, value: parsedInterval.value }
+      interval = {type: parsedInterval.type, value: parsedInterval.value}
       i += parsedInterval.consumed
       continue
     } else if (parsedInterval.success === false) {
@@ -304,7 +304,7 @@ function parseExpressionInternal(expression: string): {
     if (i < rawTokens.length - 1) {
       const twoTokenTime = tryParseTwoTokenTime(token, rawTokens[i + 1])
       if (twoTokenTime.success === true) {
-        time = { hour: twoTokenTime.hour, minute: twoTokenTime.minute }
+        time = {hour: twoTokenTime.hour, minute: twoTokenTime.minute}
         i += 2
         continue
       } else if (twoTokenTime.success === false) {
@@ -319,9 +319,9 @@ function parseExpressionInternal(expression: string): {
     if (parsedTime.success === true) {
       // Handle :MM format (minute only)
       if (parsedTime.hour === -1) {
-        time = { hour: time?.hour ?? 0, minute: parsedTime.minute }
+        time = {hour: time?.hour ?? 0, minute: parsedTime.minute}
       } else {
-        time = { hour: parsedTime.hour, minute: parsedTime.minute }
+        time = {hour: parsedTime.hour, minute: parsedTime.minute}
       }
       i++
       continue
@@ -380,22 +380,22 @@ function parseExpressionInternal(expression: string): {
   // Handle interval patterns
   if (interval) {
     if (interval.type === 'minute') {
-      return { errors, cron: `*/${interval.value} * * * *` }
+      return {errors, cron: `*/${interval.value} * * * *`}
     }
     if (interval.type === 'hour') {
-      return { errors, cron: `0 */${interval.value} * * *` }
+      return {errors, cron: `0 */${interval.value} * * *`}
     }
   }
 
   // Handle every minute
   if (hasMinute) {
-    return { errors, cron: '* * * * *' }
+    return {errors, cron: '* * * * *'}
   }
 
   // Handle every hour
   if (hasHour) {
     const minute = time?.minute ?? 0
-    return { errors, cron: `${minute} * * * *` }
+    return {errors, cron: `${minute} * * * *`}
   }
 
   // Determine day of week field
@@ -431,10 +431,10 @@ function parseExpressionInternal(expression: string): {
         message: `Could not parse scheduled expression \`${trimmed}\``,
       })
     }
-    return { errors, cron: null }
+    return {errors, cron: null}
   }
 
-  return { errors, cron: `${minute} ${hour} ${dayOfMonthField} * ${dayOfWeekField}` }
+  return {errors, cron: `${minute} ${hour} ${dayOfMonthField} * ${dayOfWeekField}`}
 }
 
 /**
@@ -453,7 +453,7 @@ function parseExpressionInternal(expression: string): {
  */
 export function validateScheduledExpression(expression: string): BlueprintError[] {
   if (!expression || expression.trim() === '') {
-    return [{ type: 'invalid_value', message: '`expression` cannot be empty' }]
+    return [{type: 'invalid_value', message: '`expression` cannot be empty'}]
   }
 
   const result = parseExpressionInternal(expression)

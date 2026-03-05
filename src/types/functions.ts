@@ -1,4 +1,4 @@
-import type { BlueprintResource } from '../index.js'
+import type {BlueprintResource} from '../index.js'
 
 // --- Function Event Types ---
 
