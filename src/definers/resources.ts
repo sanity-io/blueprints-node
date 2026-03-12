@@ -1,4 +1,4 @@
-import {assertResource, type BlueprintResource} from '../index.js'
+import {assertResource, type BlueprintCrossStackReferenceResourceConfig, type BlueprintResource} from '../index.js'
 
 /*
  * FUTURE example (move below @example when ready)
@@ -36,4 +36,25 @@ export function defineResource(resourceConfig: Partial<BlueprintResource>): Blue
   assertResource(resource)
 
   return resource
+}
+
+/**
+ * Creates a reference to a resource in another stack
+ * @param params The parameters for referencing the project
+ * @category Definers
+ * @expandType BlueprintResource
+ * @internal
+ */
+export function referenceResource({name, type, stack, localName}: BlueprintCrossStackReferenceResourceConfig): BlueprintResource {
+  return {
+    type,
+    name: localName || name,
+    lifecycle: {
+      ownershipAction: {
+        type: 'reference',
+        stack,
+        name,
+      },
+    },
+  }
 }

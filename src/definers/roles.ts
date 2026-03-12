@@ -1,7 +1,10 @@
 import {
+  type BlueprintCrossStackReferenceConfig,
   type BlueprintProjectRoleResource,
+  type BlueprintResource,
   type BlueprintRoleConfig,
   type BlueprintRoleResource,
+  referenceResource,
   validateProjectRole,
   validateRole,
 } from '../index.js'
@@ -133,4 +136,25 @@ export function defineProjectRole(projectId: string, parameters: BlueprintRoleCo
   runValidation(() => validateProjectRole(projectRoleResource))
 
   return projectRoleResource
+}
+
+/**
+ * Creates a reference to a role in another stack.
+ *
+ * ```ts
+ * referenceRole({
+ *   name: 'editor-role',
+ *   stack: 'editorial',
+ * })
+ * ```
+ *
+ * @public
+ * @beta Referencing Roles via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Referencers
+ * @expandType BlueprintCrossStackReferenceConfig
+ * @param params The parameters for referencing the role
+ * @returns The role reference
+ */
+export function referenceRole({name, stack, localName}: BlueprintCrossStackReferenceConfig): BlueprintResource {
+  return referenceResource({name, stack, localName, type: 'sanity.access.role'})
 }

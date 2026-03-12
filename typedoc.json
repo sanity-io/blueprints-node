@@ -11,6 +11,7 @@
   "excludeExternals": true,
   "categoryOrder": [
     "Definers", // src/definers/
+    "Referencers", // src/definers/
     "Resource Types", // src/types/
     "Functions Types", // function resource types
     "Validation", // src/validation/

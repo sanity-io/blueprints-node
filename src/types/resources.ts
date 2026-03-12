@@ -26,11 +26,24 @@ export interface BlueprintOwnershipDetachAction {
   type: 'detach'
 }
 /**
+ * An ownership action that will cause the resource to be read during deployment so it can be referenced
+ * by other resources. Note that referenced resources must be in the same project or organization as the
+ * current stack.
+ * @category Blueprint Internals
+ */
+export interface BlueprintOwnershipReferenceAction {
+  type: 'reference'
+  /** The name or id of the stack where the resource is attached */
+  stack: string
+  /** The name of the resource to be referenced */
+  name: string
+}
+/**
  * A union of all possible ownership actions.
  * @category Blueprint Internals
  * @expand
  */
-export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction | BlueprintOwnershipDetachAction
+export type BlueprintOwnershipAction = BlueprintOwnershipAttachAction | BlueprintOwnershipDetachAction | BlueprintOwnershipReferenceAction
 
 /**
  * An ownership action that will cause the referenced project-contained resource to be attached to the current stack.
@@ -45,7 +58,10 @@ export interface BlueprintProjectOwnershipAttachAction extends BlueprintOwnershi
  * @category Blueprint Internals
  * @expand
  */
-export type BlueprintProjectOwnershipAction = BlueprintProjectOwnershipAttachAction | BlueprintOwnershipDetachAction
+export type BlueprintProjectOwnershipAction =
+  | BlueprintProjectOwnershipAttachAction
+  | BlueprintOwnershipDetachAction
+  | BlueprintOwnershipReferenceAction
 
 /**
  * Defines the lifcycle policy for this resource.
@@ -97,4 +113,26 @@ export interface BlueprintResource<Lifecycle extends BlueprintResourceLifecycle 
    * @hidden
    */
   lifecycle?: Lifecycle
+}
+
+/**
+ * The configuration for referencing a resource in another stack.
+ * @category Blueprint Internals
+ */
+export interface BlueprintCrossStackReferenceConfig {
+  /** The name of the resource in the other stack */
+  name: string
+  /** The name or id of the stack being referenced */
+  stack: string
+  /** The local name of the resource, defaults to the name of the other resource */
+  localName?: string
+}
+
+/**
+ * The configuration for referencing a resource in another stack including the type of resource.
+ * @category Blueprint Internals
+ */
+export interface BlueprintCrossStackReferenceResourceConfig extends BlueprintCrossStackReferenceConfig {
+  /** The type of resource being referenced (e.g. `sanity.project`) */
+  type: string
 }
