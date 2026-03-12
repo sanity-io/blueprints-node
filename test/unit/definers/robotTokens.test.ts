@@ -94,3 +94,32 @@ describe('defineRobotToken', () => {
     expect(spy).toHaveBeenCalledOnce()
   })
 })
+
+describe('referenceRobotToken', () => {
+  test('should create a reference to a robot token', () => {
+    const ref = robotTokens.referenceRobotToken({
+      name: 'ref-resource',
+      stack: 'test-stack',
+      localName: 'local-resource',
+    })
+
+    expect(ref.name).toBe('local-resource')
+    expect(ref.type).toBe('sanity.access.robot')
+    expect(ref.lifecycle?.ownershipAction?.type).toBe('reference')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.stack).toBe('test-stack')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.name).toBe('ref-resource')
+  })
+
+  test('should create a reference to a resource using the name as the local name', () => {
+    const ref = robotTokens.referenceRobotToken({
+      name: 'ref-resource',
+      stack: 'test-stack',
+    })
+
+    expect(ref.name).toBe('ref-resource')
+    expect(ref.type).toBe('sanity.access.robot')
+    expect(ref.lifecycle?.ownershipAction?.type).toBe('reference')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.stack).toBe('test-stack')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.name).toBe('ref-resource')
+  })
+})

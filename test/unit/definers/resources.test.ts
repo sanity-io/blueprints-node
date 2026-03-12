@@ -29,3 +29,34 @@ describe('defineResource', () => {
     expect(r.lifecycle?.deletionPolicy).toEqual('allow')
   })
 })
+
+describe('referenceResource', () => {
+  test('should create a reference to a resource', () => {
+    const ref = resources.referenceResource({
+      name: 'ref-resource',
+      type: 'test',
+      stack: 'test-stack',
+      localName: 'local-resource',
+    })
+
+    expect(ref.name).toBe('local-resource')
+    expect(ref.type).toBe('test')
+    expect(ref.lifecycle?.ownershipAction?.type).toBe('reference')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.stack).toBe('test-stack')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.name).toBe('ref-resource')
+  })
+
+  test('should create a reference to a resource using the name as the local name', () => {
+    const ref = resources.referenceResource({
+      name: 'ref-resource',
+      type: 'test',
+      stack: 'test-stack',
+    })
+
+    expect(ref.name).toBe('ref-resource')
+    expect(ref.type).toBe('test')
+    expect(ref.lifecycle?.ownershipAction?.type).toBe('reference')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.stack).toBe('test-stack')
+    expect(ref.lifecycle?.ownershipAction?.type === 'reference' && ref.lifecycle?.ownershipAction?.name).toBe('ref-resource')
+  })
+})
