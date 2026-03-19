@@ -18,11 +18,13 @@ describe('defineDataset', () => {
   test('should accept a valid configuration and set the type', () => {
     const datasetResource = datasets.defineDataset({
       name: 'dataset-name',
+      description: 'valid dataset',
       aclMode: 'public',
     })
 
     expect(datasetResource.type).toStrictEqual('sanity.project.dataset')
     expect(datasetResource.datasetName).toStrictEqual('dataset-name')
+    expect(datasetResource.description).toStrictEqual('valid dataset')
   })
 
   test('should accept a valid configuration with a lifecycle', () => {
