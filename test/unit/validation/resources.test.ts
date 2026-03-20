@@ -70,7 +70,7 @@ describe('validateResource', () => {
 
   test('should return an error if lifecycle.ownershipAction.type is not valid', () => {
     const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'invalid'}}})
-    expect(errors).toContainEqual({type: 'invalid_value', message: '`ownershipAction.type` must be one of attach, detach'})
+    expect(errors).toContainEqual({type: 'invalid_value', message: '`ownershipAction.type` must be one of attach, detach, reference'})
   })
 
   test('should return an error if lifecycle.ownershipAction has no id', () => {
@@ -99,6 +99,34 @@ describe('validateResource', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.projectId` must be a string'})
   })
 
+  test('should return an error if lifecycle.ownershipAction has no name', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'reference'}}})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: '`ownershipAction.name` is required for reference'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction.name is not a string', () => {
+    const errors = validateResource({
+      name: 'test',
+      type: 'test',
+      lifecycle: {ownershipAction: {type: 'reference', name: 1, stack: 'test-stack'}},
+    })
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.name` must be a string'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction has no stack', () => {
+    const errors = validateResource({name: 'test', type: 'test', lifecycle: {ownershipAction: {type: 'reference', name: 'name'}}})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: '`ownershipAction.stack` is required for reference'})
+  })
+
+  test('should return an error if lifecycle.ownershipAction.stack is not a string', () => {
+    const errors = validateResource({
+      name: 'test',
+      type: 'test',
+      lifecycle: {ownershipAction: {type: 'reference', name: 'name', stack: 1}},
+    })
+    expect(errors).toContainEqual({type: 'invalid_type', message: '`ownershipAction.stack` must be a string'})
+  })
+
   test('should return an error if lifecycle.dependsOn is not a string', () => {
     const errors = validateResource({name: 'test', type: 'test', lifecycle: {dependsOn: 123}})
     expect(errors).toContainEqual({type: 'invalid_type', message: '`lifecycle.dependsOn` must be a string'})
@@ -117,7 +145,7 @@ describe('validateResource', () => {
     expect(errors).toHaveLength(0)
   })
 
-  test('should return no errors for a valid resource', () => {
+  test('should return no errors for a valid resource (attach)', () => {
     const errors = validateResource({
       name: 'test',
       type: 'test',
@@ -126,6 +154,36 @@ describe('validateResource', () => {
         ownershipAction: {
           type: 'attach',
           id: 'test-id',
+        },
+      },
+    })
+    expect(errors).toHaveLength(0)
+  })
+
+  test('should return no errors for a valid resource (detach)', () => {
+    const errors = validateResource({
+      name: 'test',
+      type: 'test',
+      lifecycle: {
+        deletionPolicy: 'allow',
+        ownershipAction: {
+          type: 'detach',
+        },
+      },
+    })
+    expect(errors).toHaveLength(0)
+  })
+
+  test('should return no errors for a valid resource (reference)', () => {
+    const errors = validateResource({
+      name: 'test',
+      type: 'test',
+      lifecycle: {
+        deletionPolicy: 'allow',
+        ownershipAction: {
+          type: 'reference',
+          name: 'test-name',
+          stack: 'test-stack',
         },
       },
     })

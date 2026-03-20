@@ -46,15 +46,19 @@ export function defineResource(resourceConfig: Partial<BlueprintResource>): Blue
  * @internal
  */
 export function referenceResource({name, type, stack, localName}: BlueprintCrossStackReferenceResourceConfig): BlueprintResource {
-  return {
+  const resource = {
     type,
     name: localName || name,
     lifecycle: {
       ownershipAction: {
-        type: 'reference',
+        type: 'reference' as const,
         stack,
         name,
       },
     },
   }
+
+  assertResource(resource)
+
+  return resource
 }
