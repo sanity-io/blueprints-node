@@ -19,6 +19,8 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
   type: 'sanity.project.dataset'
   /** The name of the dataset. Must be unique within a project. */
   datasetName: string
+  /** The dataset description */
+  description?: string
   /** The ACL mode to set for the new dataset. Defaults to public. */
   aclMode?: AclMode
 

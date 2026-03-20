@@ -17,6 +17,13 @@ export function validateDataset(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'Dataset type must be `sanity.project.dataset`'})
   }
 
+  // validate description if provided
+  if ('description' in resource) {
+    if (typeof resource.description !== 'string') {
+      errors.push({type: 'invalid_type', message: 'Dataset description must be a string'})
+    }
+  }
+
   // validate ACL mode if provided
   if ('aclMode' in resource) {
     if (typeof resource.aclMode !== 'string') {

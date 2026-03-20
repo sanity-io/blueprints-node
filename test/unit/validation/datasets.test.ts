@@ -76,6 +76,14 @@ describe('defineDataset', () => {
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Dataset aclMode must be one of `custom`, `public`, or `private`'})
   })
 
+  test('should return an error if invalid description data type is provided', () => {
+    const errors = datasets.validateDataset({
+      name: 'dataset-name',
+      description: 1,
+    })
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Dataset description must be a string'})
+  })
+
   test('should return an error if invalid project data type is provided', () => {
     const errors = datasets.validateDataset({
       name: 'dataset-name',
