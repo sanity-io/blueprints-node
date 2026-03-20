@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.0](https://github.com/sanity-io/blueprints-node/compare/v0.13.1...v0.14.0) (2026-03-20)
+
+
+### Features
+
+* Support for dataset description ([#83](https://github.com/sanity-io/blueprints-node/issues/83)) ([e7c500e](https://github.com/sanity-io/blueprints-node/commit/e7c500e8f9a1022cce0a6e468cd3eca3ac0ee8ab))
+* Support for references ([#82](https://github.com/sanity-io/blueprints-node/issues/82)) ([a6c73d1](https://github.com/sanity-io/blueprints-node/commit/a6c73d168b7842fea63e6a777317b80568ef2421))
+
 ## [0.13.1](https://github.com/sanity-io/blueprints-node/compare/v0.13.0...v0.13.1) (2026-03-05)
 
 
