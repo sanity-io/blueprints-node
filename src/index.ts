@@ -3,6 +3,10 @@
  * @categoryDescription Definers
  * These functions are used to define resources in a Blueprint.
  */
+/**
+ * @categoryDescription Referencers
+ * These functions are used to reference resources in another Blueprint.
+ */
 export * from './definers/blueprints.js'
 export * from './definers/cors.js'
 export * from './definers/datasets.js'

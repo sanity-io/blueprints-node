@@ -16,6 +16,7 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
+  type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintResource,
   type BlueprintRoleConfig,
@@ -64,6 +65,7 @@ const corsOriginResource: BlueprintCorsOriginResource = defineCorsOrigin(corsOri
 const datasetConfig: BlueprintDatasetConfig = {
   name: 'dataset-name',
   aclMode: 'public',
+  description: 'description',
   datasetName: 'production',
   project: 'projectId',
 }
@@ -141,6 +143,34 @@ const roleResource: BlueprintRoleResource = defineRole(roleConfig)
 const projectRoleResource: BlueprintProjectRoleResource = defineProjectRole('projectId', roleConfig)
 
 const blueprintResource: BlueprintResource = {name: 'test-resource', type: 'test'}
+
+const _blueprintProjectLifecycleAttach: BlueprintProjectResourceLifecycle = {
+  deletionPolicy: 'allow',
+  dependsOn: '$.resources.test',
+  ownershipAction: {
+    type: 'attach',
+    projectId: 'project',
+    id: 'id',
+  },
+}
+
+const _blueprintProjectLifecycleDetach: BlueprintProjectResourceLifecycle = {
+  deletionPolicy: 'allow',
+  dependsOn: '$.resources.test',
+  ownershipAction: {
+    type: 'detach',
+  },
+}
+
+const _blueprintProjectLifecycleReference: BlueprintProjectResourceLifecycle = {
+  deletionPolicy: 'allow',
+  dependsOn: '$.resources.test',
+  ownershipAction: {
+    type: 'reference',
+    name: 'name',
+    stack: 'stack',
+  },
+}
 
 const blueprintOutput: BlueprintOutput = {name: 'output', value: 'value'}
 const blueprint: Blueprint = {

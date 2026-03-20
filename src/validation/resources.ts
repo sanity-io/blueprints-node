@@ -39,7 +39,7 @@ export function validateResource(resource: unknown, options?: {projectContained?
       }
 
       if ('ownershipAction' in resource.lifecycle) {
-        const ownershipActionTypes = ['attach', 'detach']
+        const ownershipActionTypes = ['attach', 'detach', 'reference']
         const ownershipAction = resource.lifecycle.ownershipAction
 
         if (typeof ownershipAction !== 'object' || ownershipAction === null) {
@@ -64,6 +64,18 @@ export function validateResource(resource: unknown, options?: {projectContained?
               } else if (typeof ownershipAction.projectId !== 'string') {
                 errors.push({type: 'invalid_type', message: '`ownershipAction.projectId` must be a string'})
               }
+            }
+          } else if (ownershipAction.type === 'reference') {
+            if (!('name' in ownershipAction)) {
+              errors.push({type: 'missing_parameter', message: '`ownershipAction.name` is required for reference'})
+            } else if (typeof ownershipAction.name !== 'string') {
+              errors.push({type: 'invalid_type', message: '`ownershipAction.name` must be a string'})
+            }
+
+            if (!('stack' in ownershipAction)) {
+              errors.push({type: 'missing_parameter', message: '`ownershipAction.stack` is required for reference'})
+            } else if (typeof ownershipAction.stack !== 'string') {
+              errors.push({type: 'invalid_type', message: '`ownershipAction.stack` must be a string'})
             }
           }
         }

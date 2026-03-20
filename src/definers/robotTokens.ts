@@ -1,4 +1,11 @@
-import {type BlueprintRobotTokenConfig, type BlueprintRobotTokenResource, validateRobotToken} from '../index.js'
+import {
+  type BlueprintCrossStackReferenceConfig,
+  type BlueprintResource,
+  type BlueprintRobotTokenConfig,
+  type BlueprintRobotTokenResource,
+  referenceResource,
+  validateRobotToken,
+} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 /*
@@ -53,4 +60,25 @@ export function defineRobotToken(parameters: BlueprintRobotTokenConfig): Bluepri
   runValidation(() => validateRobotToken(robotResource))
 
   return robotResource
+}
+
+/**
+ * Creates a reference to a robot token in another stack.
+ *
+ * ```ts
+ * referenceRobotToken({
+ *   name: 'editor-token',
+ *   stack: 'editorial',
+ * })
+ * ```
+ *
+ * @public
+ * @beta Referencing Robot Tokens via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Referencers
+ * @expandType BlueprintCrossStackReferenceConfig
+ * @param params The parameters for referencing the robot token
+ * @returns The robot token reference
+ */
+export function referenceRobotToken({name, stack, localName}: BlueprintCrossStackReferenceConfig): BlueprintResource {
+  return referenceResource({name, stack, localName, type: 'sanity.access.robot'})
 }
