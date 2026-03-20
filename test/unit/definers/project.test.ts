@@ -66,7 +66,7 @@ describe('defineProject', () => {
   })
 })
 
-describe('referenceRobotToken', () => {
+describe('referenceProject', () => {
   test('should create a reference to a robot token', () => {
     const ref = projects.referenceProject({
       name: 'ref-resource',
