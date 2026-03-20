@@ -40,7 +40,7 @@ export function defineResource(resourceConfig: Partial<BlueprintResource>): Blue
 
 /**
  * Creates a reference to a resource in another stack
- * @param params The parameters for referencing the project
+ * @param params The parameters for referencing the resource
  * @category Definers
  * @expandType BlueprintResource
  * @internal
