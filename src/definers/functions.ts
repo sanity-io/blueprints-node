@@ -13,10 +13,13 @@ import {
   type BlueprintScheduledFunctionExpressionResourceEvent,
   type BlueprintScheduledFunctionResource,
   type BlueprintScheduledFunctionResourceEvent,
+  type BlueprintSyncTagInvalidateFunctionConfig,
+  type BlueprintSyncTagInvalidateFunctionResource,
   validateDocumentFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
   validateScheduledFunction,
+  validateSyncTagInvalidateFunction,
 } from '../index.js'
 import {parseScheduledExpression} from '../utils/schedule-parser.js'
 import {runValidation} from '../utils/validation.js'
@@ -268,6 +271,53 @@ export function defineScheduledFunction(functionConfig: BlueprintScheduledFuncti
  */
 export function defineScheduleFunction(functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
   return defineScheduledFunction(functionConfig)
+}
+
+/**
+ * Defines a function that is triggered on a sync tag invalidate event.
+ *
+ * @remarks
+ * Using implicit event scoping to all datasets in the function project:
+ * ```ts
+ * defineSyncTagInvalidateFunction({
+ *   name: 'bustin-caches',
+ * })
+ * ```
+ *
+ * Using explicit event scoping to a particular dataset in the function project:
+ * ```ts
+ * defineSyncTagInvalidateFunction({
+ *   name: 'bustin-caches',
+ *   event: {
+ *     resource: {
+ *       type: 'dataset',
+ *       id: 'myProj.myDataset',
+ *     },
+ *   },
+ * })
+ * ```
+ * @public
+ * @alpha Deploying Sync Tag Invalidate Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Definers
+ * @expandType BlueprintSyncTagInvalidateFunctionConfig
+ * @param functionConfig The configuration for the sync tag invalidate function
+ * @returns The validated sync tag invalidate function resource
+ */
+export function defineSyncTagInvalidateFunction(
+  functionConfig: BlueprintSyncTagInvalidateFunctionConfig,
+): BlueprintSyncTagInvalidateFunctionResource {
+  const {event} = functionConfig
+
+  const functionResource: BlueprintSyncTagInvalidateFunctionResource = {
+    ...defineFunction(functionConfig, {skipValidation: true}),
+    type: 'sanity.function.sync-tag-invalidate',
+    ...(event?.resource ? {event} : {}),
+  }
+
+  runValidation(() => validateSyncTagInvalidateFunction(functionResource))
+
+  return functionResource
 }
 
 /**

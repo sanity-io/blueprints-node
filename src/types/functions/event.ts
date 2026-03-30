@@ -39,6 +39,15 @@ export interface BlueprintMediaLibraryFunctionResourceEvent extends BlueprintFun
 }
 
 /**
+ * Event configuration for sync tag invalidate functions
+ * @category Functions Types
+ */
+export interface BlueprintSyncTagInvalidateFunctionResourceEvent {
+  /** Optional dataset resource scoping for the function */
+  resource?: BlueprintFunctionResourceEventResourceDataset
+}
+
+/**
  * Explicit resource event for scheduled functions to specific minutes, hours, days of month, months, and days of week
  * @example { minute: '0', hour: '9', dayOfMonth: '1', month: '1', dayOfWeek: '1' }
  * @category Functions Types
@@ -76,6 +85,7 @@ export type BlueprintFunctionResourceEvent =
   | BlueprintDocumentFunctionResourceEvent
   | BlueprintMediaLibraryFunctionResourceEvent
   | BlueprintScheduledFunctionResourceEvent
+  | BlueprintSyncTagInvalidateFunctionResourceEvent
 
 /**
  * Dataset resource for scoping document functions to specific datasets

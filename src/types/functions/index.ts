@@ -3,6 +3,7 @@ import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
   BlueprintScheduledFunctionResourceEvent,
+  BlueprintSyncTagInvalidateFunctionResourceEvent,
 } from './event.js'
 
 export * from './event.js'
@@ -81,6 +82,15 @@ export interface BlueprintScheduledFunctionResource extends BlueprintBaseFunctio
   timezone?: string
 }
 
+/**
+ * A function resource triggered by sync tag invalidate events
+ * @category Functions Types
+ */
+export interface BlueprintSyncTagInvalidateFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.sync-tag-invalidate'
+  event?: BlueprintSyncTagInvalidateFunctionResourceEvent
+}
+
 // --- Function Config Types ---
 
 /**
@@ -139,6 +149,22 @@ export type BlueprintMediaLibraryAssetFunctionConfig = Omit<BlueprintMediaLibrar
  * @interface
  */
 export type BlueprintScheduledFunctionConfig = Omit<BlueprintScheduledFunctionResource, 'type' | 'src'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
+}
+
+/**
+ * Configuration for defining a sync tag invalidate function.
+ * @public
+ * @alpha Deploying Sync Tag Invalidate Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInvalidateFunctionResource, 'type' | 'src'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`

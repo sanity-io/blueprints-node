@@ -151,14 +151,23 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
   }
   if (!Array.isArray(fullEvent.on)) errors.push({type: 'invalid_type', message: '`event.on` must be an array'})
   if (fullEvent.resource) {
-    if (!fullEvent.resource.type || fullEvent.resource.type !== 'dataset')
-      errors.push({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
-    if (!fullEvent.resource.id || fullEvent.resource.id.split('.').length !== 2)
-      errors.push({type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>'})
+    errors.push(...validateFunctionEventResourceDataset(fullEvent))
   }
   return errors
 }
 
+function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] {
+  const errors: BlueprintError[] = []
+  if (!event || typeof event !== 'object') return [{type: 'invalid_value', message: '`event` must be an object'}]
+  if (!('resource' in event)) return [{type: 'invalid_value', message: '`event.resource` must exist'}]
+  const resource = event.resource
+  if (!resource || typeof resource !== 'object') return [{type: 'invalid_value', message: '`event.resource` must be an object'}]
+  if (!('type' in resource) || !resource.type || resource.type !== 'dataset')
+    errors.push({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
+  if (!('id' in resource) || !resource.id || typeof resource.id !== 'string' || resource.id.split('.').length !== 2)
+    errors.push({type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>'})
+  return errors
+}
 /**
  * Validates a media library function event configuration.
  * Checks event trigger types and ensures required media library resource is present.
@@ -316,6 +325,33 @@ function validateScheduledFunctionTimezone(timezone: unknown): BlueprintError[] 
       message: '`timezone` must be a valid IANA timezone',
     })
   }
+
+  return errors
+}
+
+/**
+ * Validates a sync tag invalidate function resource configuration.
+ * @param functionResource The function resource to validate
+ * @alpha
+ * @hidden
+ * @category Functions Types
+ * @returns Array of validation errors, empty if valid
+ */
+export function validateSyncTagInvalidateFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.sync-tag-invalidate') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.sync-tag-invalidate`'})
+  }
+
+  if ('event' in functionResource) {
+    errors.push(...validateFunctionEventResourceDataset(functionResource.event))
+  }
+
+  errors.push(...validateFunction(functionResource))
 
   return errors
 }
