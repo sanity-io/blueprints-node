@@ -23,6 +23,8 @@ import {
   type BlueprintRoleResource,
   type BlueprintScheduledFunctionResource,
   type BlueprintScheduledFunctionResourceEvent,
+  type BlueprintSyncTagInvalidateFunctionResource,
+  type BlueprintSyncTagInvalidateFunctionResourceEvent,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -31,6 +33,7 @@ import {
   defineProjectRole,
   defineRole,
   defineScheduledFunction,
+  defineSyncTagInvalidateFunction,
   type RolePermission,
   validateBlueprint,
   validateCorsOrigin,
@@ -42,6 +45,7 @@ import {
   validateResource,
   validateRole,
   validateScheduledFunction,
+  validateSyncTagInvalidateFunction,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
 } from '@sanity/blueprints'
@@ -95,6 +99,14 @@ const scheduledFunctionResource: BlueprintScheduledFunctionResource = defineSche
   name: 'sup',
   event: scheduledFunctionResourceEvent,
   timezone: 'America/New_York',
+})
+const _bareSyncTagInvalidateFunctionResourceEvent: BlueprintSyncTagInvalidateFunctionResourceEvent = {}
+const fullyQualifiedSyncTagInvalidateFunctionResourceEvent: BlueprintSyncTagInvalidateFunctionResourceEvent = {
+  resource: {type: 'dataset', id: 'proj.dataset'},
+}
+const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = defineSyncTagInvalidateFunction({
+  name: 'yoyoyo',
+  event: fullyQualifiedSyncTagInvalidateFunctionResourceEvent,
 })
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
@@ -205,3 +217,4 @@ validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
 validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
+validateSyncTagInvalidateFunction(syncTagInvalidateFunction)

@@ -10,6 +10,7 @@ import {
   defineResource,
   defineRole,
   defineScheduledFunction,
+  defineSyncTagInvalidateFunction,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -19,6 +20,7 @@ import {
   validateMediaLibraryAssetFunction,
   validateResource,
   validateRole,
+  validateSyncTagInvalidateFunction,
 } from '@sanity/blueprints'
 import {describe, expect, it} from 'vitest'
 
@@ -41,6 +43,10 @@ describe('package imports', () => {
 
   it('should import defineScheduledFunction', () => {
     expect(defineScheduledFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import defineSyncTagInvalidateFunction', () => {
+    expect(defineSyncTagInvalidateFunction).toBeInstanceOf(Function)
   })
 
   it('should import defineDocumentWebhook', () => {
@@ -81,6 +87,10 @@ describe('package imports', () => {
 
   it('should import validateDocumentFunction', () => {
     expect(validateDocumentFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import validateSyncTagInvalidateFunction', () => {
+    expect(validateSyncTagInvalidateFunction).toBeInstanceOf(Function)
   })
 
   it('should import validateDocumentWebhook', () => {
