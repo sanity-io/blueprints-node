@@ -158,8 +158,8 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
 
 function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] {
   const errors: BlueprintError[] = []
-  if (!event || typeof event !== 'object') return [{type: 'invalid_value', message: '`event must be an object'}]
-  if (!('resource' in event)) return [{type: 'invalid_value', message: '`event.resource must exist'}]
+  if (!event || typeof event !== 'object') return [{type: 'invalid_value', message: '`event` must be an object'}]
+  if (!('resource' in event)) return [{type: 'invalid_value', message: '`event.resource` must exist'}]
   const resource = event.resource
   if (!resource || typeof resource !== 'object') return [{type: 'invalid_value', message: '`event.resource` must be an object'}]
   if (!('type' in resource) || !resource.type || resource.type !== 'dataset')
