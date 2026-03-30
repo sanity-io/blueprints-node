@@ -241,7 +241,7 @@ describe('validateMediaLibraryAssetFunction', () => {
 
 describe('validateScheduledFunction', () => {
   describe('happy paths', () => {
-    test('should accept a valid media library function', () => {
+    test('should accept a valid scheduled function', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
@@ -249,7 +249,7 @@ describe('validateScheduledFunction', () => {
       })
       expect(errors).toHaveLength(0)
     })
-    test('should accept a valid media library function with optional timezone', () => {
+    test('should accept a valid scheduled function with optional timezone', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
@@ -369,6 +369,64 @@ describe('validateScheduledFunction', () => {
         event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: 1},
       })
       expect(errors).toContainEqual({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+    })
+  })
+})
+
+describe('validateSyncTagInvalidateFunction', () => {
+  describe('happy paths', () => {
+    test('should accept a valid sync tag invalidate function without any optional properties', () => {
+      const errors = functions.validateSyncTagInvalidateFunction({
+        name: 'test',
+        type: 'sanity.function.sync-tag-invalidate',
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a valid sync tag invalidate function with optional dataset specifier', () => {
+      const errors = functions.validateSyncTagInvalidateFunction({
+        name: 'test',
+        type: 'sanity.function.sync-tag-invalidate',
+        event: {resource: {type: 'dataset', id: 'myProj.myDataset'}},
+      })
+      expect(errors).toStrictEqual([])
+    })
+  })
+  describe('sad paths', () => {
+    test('should return an error if the type is not `sanity.function.sync-tag-invalidate`', () => {
+      const errors = functions.validateSyncTagInvalidateFunction({type: 'invalid'})
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.sync-tag-invalidate`',
+      })
+    })
+    test('should return an error if event.resource is invalid', () => {
+      let errors = functions.validateSyncTagInvalidateFunction({
+        name: 'test',
+        type: 'sanity.function.sync-tag-invalidate',
+        event: {resource: true},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`event.resource` must be an object',
+      })
+      errors = functions.validateSyncTagInvalidateFunction({
+        name: 'test',
+        type: 'sanity.function.sync-tag-invalidate',
+        event: {resource: {id: 'proj.dataset'}},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`event.resource.type` must be "dataset"',
+      })
+      errors = functions.validateSyncTagInvalidateFunction({
+        name: 'test',
+        type: 'sanity.function.sync-tag-invalidate',
+        event: {resource: {type: 'dataset'}},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_format',
+        message: '`event.resource.id` must be in the format <projectId>.<datasetName>',
+      })
     })
   })
 })
