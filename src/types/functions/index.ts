@@ -25,7 +25,7 @@ export type FunctionRuntimes = (typeof VALID_RUNTIMES)[number]
  * Base function resource with common properties for all function types
  * @category Functions Types
  */
-export interface BlueprintBaseFunctionResource extends BlueprintResource {
+interface BlueprintCommonFunctionResource extends BlueprintResource {
   /** Human-readable display name for the function */
   displayName?: string
   /** Path to the function source code */
@@ -40,16 +40,22 @@ export interface BlueprintBaseFunctionResource extends BlueprintResource {
   robotToken?: string
 
   /**
-   * The project ID of the project that contains your function.
-   *
-   * The `project` attribute must be defined if your blueprint is scoped to an organization. */
-  project?: string
-
-  /**
    * The runtime environment for the function (currently only Node.js is supported)
    * @defaultValue 'nodejs24.x'
    */
   runtime?: FunctionRuntimes
+}
+
+/**
+ * Base function resource with common properties for all function types that can belong to projects.
+ * @category Functions Types
+ */
+export interface BlueprintBaseFunctionResource extends BlueprintCommonFunctionResource {
+  /**
+   * The project ID of the project that contains your function.
+   *
+   * The `project` attribute must be defined if your blueprint is scoped to an organization. */
+  project?: string
 }
 
 /**
@@ -76,7 +82,7 @@ export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBas
  * A function resource triggered by scheduled events
  * @category Functions Types
  */
-export interface BlueprintScheduledFunctionResource extends BlueprintBaseFunctionResource {
+export interface BlueprintScheduledFunctionResource extends BlueprintCommonFunctionResource {
   type: 'sanity.function.cron'
   event: BlueprintScheduledFunctionResourceEvent
   timezone?: string
