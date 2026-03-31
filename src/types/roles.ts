@@ -19,30 +19,65 @@ export interface RolePermission {
  * Configuration for a custom role.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @interface
  */
-export interface BlueprintRoleConfig extends Omit<BlueprintResource<BlueprintProjectResourceLifecycle>, 'type'> {
-  title: string
-  description?: string
-  appliesToUsers: boolean
-  appliesToRobots: boolean
-  permissions: RolePermission[]
+export type BlueprintRoleConfig = Omit<BlueprintResource<BlueprintProjectResourceLifecycle>, 'type'> &
+  (
+    | {
+        /**
+         * A descriptive title for the role
+         * @defaultValue The `name` of the resource
+         * @hidden
+         */
+        title: string
+      }
+    | {
+        /**
+         * A descriptive title for the role
+         * @defaultValue The `name` of the resource
+         */
+        displayName: string
+      }
+  ) & {
+    description?: string
+    appliesToUsers: boolean
+    appliesToRobots: boolean
+    permissions: RolePermission[]
+  }
+
+type RoleDisplay = {
+  /**
+   * A descriptive title for the role
+   * @defaultValue The `name` of the resource
+   * @hidden
+   */
+  title?: string
+  /**
+   * A descriptive title for the role
+   * @defaultValue The `name` of the resource
+   */
+  displayName?: string
 }
 
 /**
  * A custom role resource
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @interface
  */
-export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintResource<BlueprintProjectResourceLifecycle> {
-  type: 'sanity.access.role'
-}
+export type BlueprintRoleResource = Omit<BlueprintRoleConfig, 'title' | 'displayName'> &
+  RoleDisplay &
+  BlueprintResource<BlueprintProjectResourceLifecycle> & {
+    type: 'sanity.access.role'
+  }
 
 /**
  * A custom role resource that is tied to a specific project
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @interface
  */
-export interface BlueprintProjectRoleResource extends BlueprintRoleResource {
+export type BlueprintProjectRoleResource = BlueprintRoleResource & {
   resourceType: 'project'
   resourceId: string
 }

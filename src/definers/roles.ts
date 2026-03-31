@@ -16,7 +16,7 @@ import {runValidation} from '../utils/validation.js'
  * ```ts
  * defineRole({
  *   name: 'ci-deploy-role',
- *   title: 'CI Deploy Role',
+ *   displayname: 'CI Deploy Role',
  *   description: 'Permissions for CI/CD pipelines to manage CORS and datasets',
  *   appliesToRobots: true,
  *   appliesToUsers: false,
@@ -39,7 +39,7 @@ import {runValidation} from '../utils/validation.js'
  * ```ts
  * defineRole({
  *   name: 'custom-robot-role',
- *   title: 'Custom Robot Role',
+ *   displayname: 'Custom Robot Role',
  *   appliesToRobots: true,
  *   permissions: [{
  *     name: 'sanity-project-cors',
@@ -58,7 +58,8 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
   const roleResource: BlueprintRoleResource = {
     name: parameters.name,
     type: 'sanity.access.role',
-    title: parameters.title,
+    title: ('title' in parameters && parameters.title) || undefined,
+    displayName: ('displayName' in parameters && parameters.displayName) || undefined,
     description: parameters.description,
     appliesToUsers: parameters.appliesToUsers,
     appliesToRobots: parameters.appliesToRobots,
@@ -80,7 +81,7 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
  * ```ts
  * const role = defineProjectRole(projectId, {
  *   name: 'ci-deploy-role',
- *   title: 'CI Deploy Role',
+ *   displayname: 'CI Deploy Role',
  *   appliesToRobots: true,
  *   permissions: [{
  *     name: 'sanity-project-cors',
@@ -107,7 +108,7 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
  * ```ts
  * defineProjectRole(projectId, {
  *   name: 'viewer-role',
- *   title: 'Viewer',
+ *   displayname: 'Viewer',
  *   appliesToUsers: true,
  *   permissions: [{
  *     name: 'sanity-project-cors',

@@ -14,14 +14,14 @@ import {runValidation} from '../utils/validation.js'
  * ```ts
  * defineRole({
  *   name: 'ci-deploy-role',
- *   title: 'CI Deploy Role',
+ *   displayName: 'CI Deploy Role',
  *   appliesToRobots: true,
  *   permissions: [{name: 'sanity-project-cors', action: 'create'}],
  * })
  *
  * defineRobotToken({
  *   name: 'ci-robot',
- *   label: 'CI Deploy Robot',
+ *   displayname: 'CI Deploy Robot',
  *   memberships: [{
  *     roleNames: ['$.resources.ci-deploy-role'],
  *   }],
@@ -49,11 +49,13 @@ import {runValidation} from '../utils/validation.js'
  * @returns The robot token resource
  */
 export function defineRobotToken(parameters: BlueprintRobotTokenConfig): BlueprintRobotTokenResource {
-  const label = parameters.label || parameters.name
+  const label = ('label' in parameters && parameters.label) || parameters.name
+  const displayName = ('displayName' in parameters && parameters.displayName) || parameters.name
 
   const robotResource: BlueprintRobotTokenResource = {
     ...parameters,
     label,
+    displayName,
     type: 'sanity.access.robot',
   }
 

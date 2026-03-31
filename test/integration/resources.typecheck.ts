@@ -19,6 +19,7 @@ import {
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintResource,
+  type BlueprintRobotTokenConfig,
   type BlueprintRoleConfig,
   type BlueprintRoleResource,
   type BlueprintScheduledFunctionResource,
@@ -31,9 +32,11 @@ import {
   defineDocumentWebhook,
   defineMediaLibraryAssetFunction,
   defineProjectRole,
+  defineRobotToken,
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
+  type RobotMembership,
   type RolePermission,
   validateBlueprint,
   validateCorsOrigin,
@@ -141,6 +144,18 @@ const mediaLibraryAssetFunctionResource: BlueprintMediaLibraryAssetFunctionResou
   name: 'required',
   event: mediaLibraryAssetFunctionEvent,
 })
+
+const robotTokenMembership: RobotMembership = {
+  resourceType: 'organization',
+  resourceId: 'test-org',
+  roleNames: ['my-role'],
+}
+const robotTokenConfig: BlueprintRobotTokenConfig = {
+  name: 'my-robot',
+  displayName: 'HAL',
+  memberships: [robotTokenMembership],
+}
+const _robotTokenResource = defineRobotToken(robotTokenConfig)
 
 const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
 const roleConfig: BlueprintRoleConfig = {
