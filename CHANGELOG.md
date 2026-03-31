@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/sanity-io/blueprints-node/compare/v0.14.0...v0.15.0) (2026-03-30)
+
+
+### Features
+
+* add support for sync-tag-invalidate functions ([#86](https://github.com/sanity-io/blueprints-node/issues/86)) ([d5004bc](https://github.com/sanity-io/blueprints-node/commit/d5004bcc762e2e510554ff3d5aa03feda04ea880))
+
 ## [0.14.0](https://github.com/sanity-io/blueprints-node/compare/v0.13.1...v0.14.0) (2026-03-20)
 
 
