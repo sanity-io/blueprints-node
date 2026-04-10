@@ -9,6 +9,7 @@ import {
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintScheduledFunctionConfig,
+  type BlueprintScheduledFunctionConfigEvent,
   type BlueprintScheduledFunctionExplicitResourceEvent,
   type BlueprintScheduledFunctionExpressionResourceEvent,
   type BlueprintScheduledFunctionResource,
@@ -247,20 +248,20 @@ export function defineScheduledFunction(functionConfig: BlueprintScheduledFuncti
   const {event, timezone} = functionConfig
 
   const functionResource: BlueprintScheduledFunctionResource = {
-    ...defineFunction(functionConfig, {skipValidation: true}),
+    ...defineFunction(functionConfig, {skipValidation: true, scopeType: 'organization'}),
     type: 'sanity.function.cron',
     event: buildScheduledFunctionEvent(event),
   }
 
   if (timezone) functionResource.timezone = timezone
 
-  runValidation(() => validateScheduledFunction(functionResource))
-
   // Always normalize to explicit fields (minute, hour, dayOfWeek, month, dayOfMonth)
-  if ('expression' in functionResource.event && functionResource.event.expression) {
+  if ('expression' in functionResource.event && typeof functionResource.event.expression === 'string') {
     const cron = parseScheduledExpression(functionResource.event.expression)
     functionResource.event = cronStringToExplicitEvent(cron)
   }
+
+  runValidation(() => validateScheduledFunction(functionResource))
 
   return functionResource
 }
@@ -332,7 +333,7 @@ export function defineSyncTagInvalidateFunction(
  */
 export function defineFunction(
   functionConfig: BlueprintBaseFunctionConfig,
-  options?: {skipValidation?: boolean},
+  options?: {skipValidation?: boolean; scopeType?: 'organization'},
 ): BlueprintBaseFunctionResource {
   const {name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle} = functionConfig
 
@@ -345,9 +346,10 @@ export function defineFunction(
     memory,
     env,
     robotToken,
-    project,
     runtime,
   }
+
+  if (options?.scopeType !== 'organization' && project) functionResource.project = project
 
   if (lifecycle) functionResource.lifecycle = lifecycle
 
@@ -397,7 +399,7 @@ function buildMediaLibraryFunctionEvent(event: BlueprintMediaLibraryFunctionReso
  * @param event Scheduled function event configuration
  * @returns Cleaned scheduled function event configuration
  */
-function buildScheduledFunctionEvent(event: BlueprintScheduledFunctionResourceEvent): BlueprintScheduledFunctionResourceEvent {
+function buildScheduledFunctionEvent(event: BlueprintScheduledFunctionConfigEvent): BlueprintScheduledFunctionResourceEvent {
   return Object.fromEntries(
     Object.entries(event).filter(([key]) => SCHEDULED_EVENT_KEYS.has(key as ScheduledFunctionEventKey)),
   ) as BlueprintScheduledFunctionResourceEvent

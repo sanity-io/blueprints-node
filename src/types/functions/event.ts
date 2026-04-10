@@ -70,10 +70,16 @@ export interface BlueprintScheduledFunctionExpressionResourceEvent {
 }
 
 /**
+ * Union type of all scheduled function resource events
+ * @category Functions Types
+ */
+export type BlueprintScheduledFunctionResourceEvent = BlueprintScheduledFunctionExplicitResourceEvent
+
+/**
  * Union type of all scheduled function resource event configurations
  * @category Functions Types
  */
-export type BlueprintScheduledFunctionResourceEvent =
+export type BlueprintScheduledFunctionConfigEvent =
   | BlueprintScheduledFunctionExplicitResourceEvent
   | BlueprintScheduledFunctionExpressionResourceEvent
 
