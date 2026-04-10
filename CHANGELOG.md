@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.15.1](https://github.com/sanity-io/blueprints-node/compare/v0.15.0...v0.15.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* Ensure scheduled functions cannot be created in a project ([#89](https://github.com/sanity-io/blueprints-node/issues/89)) ([638c3c8](https://github.com/sanity-io/blueprints-node/commit/638c3c8674a732fd91b6ac11d2728b532da651f4))
+* Prevent expression from being allowed in scheduled function event ([#91](https://github.com/sanity-io/blueprints-node/issues/91)) ([6f16e11](https://github.com/sanity-io/blueprints-node/commit/6f16e11548ca0fd9a64d121c47175e933fafa960))
+* Update deps (except TypeScript) ([#92](https://github.com/sanity-io/blueprints-node/issues/92)) ([0c65aec](https://github.com/sanity-io/blueprints-node/commit/0c65aec104e5507374a693327725c312f4759f19))
+
 ## [0.15.0](https://github.com/sanity-io/blueprints-node/compare/v0.14.0...v0.15.0) (2026-03-30)
 
 
