@@ -7,7 +7,6 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
-import {validateScheduledExpression} from '../utils/schedule-parser.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -242,66 +241,52 @@ function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
   const errors: BlueprintError[] = []
 
   const hasExpression = 'expression' in event
-  const hasExplicitFields = 'minute' in event || 'hour' in event || 'dayOfMonth' in event || 'month' in event || 'dayOfWeek' in event
 
-  if (hasExpression && hasExplicitFields) {
+  if (hasExpression) {
     errors.push({
       type: 'invalid_property',
-      message: 'Cannot specify both `expression` and explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`)',
+      message: 'Cannot specify `expression`. Use `defineScheduledFunction` to convert this to explicit fields',
     })
-  } else if (!hasExpression && !hasExplicitFields) {
+  }
+  if (!('minute' in event)) {
     errors.push({
       type: 'missing_parameter',
-      message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
+      message: '`minute` must be provided',
     })
-  } else if (hasExpression) {
-    const expr = (event as {expression: unknown}).expression
-    if (typeof expr !== 'string') {
-      errors.push({type: 'invalid_type', message: '`expression` must be a string'})
-    } else {
-      errors.push(...validateScheduledExpression(expr))
-    }
-  } else if (hasExplicitFields) {
-    if (!('minute' in event)) {
-      errors.push({
-        type: 'missing_parameter',
-        message: '`minute` must be provided',
-      })
-    } else if (typeof event.minute !== 'string') {
-      errors.push({type: 'invalid_type', message: '`minute` must be a string'})
-    }
-    if (!('hour' in event)) {
-      errors.push({
-        type: 'missing_parameter',
-        message: '`hour` must be provided',
-      })
-    } else if (typeof event.hour !== 'string') {
-      errors.push({type: 'invalid_type', message: '`hour` must be a string'})
-    }
-    if (!('dayOfWeek' in event)) {
-      errors.push({
-        type: 'missing_parameter',
-        message: '`dayOfWeek` must be provided',
-      })
-    } else if (typeof event.dayOfWeek !== 'string') {
-      errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
-    }
-    if (!('month' in event)) {
-      errors.push({
-        type: 'missing_parameter',
-        message: '`month` must be provided',
-      })
-    } else if (typeof event.month !== 'string') {
-      errors.push({type: 'invalid_type', message: '`month` must be a string'})
-    }
-    if (!('dayOfMonth' in event)) {
-      errors.push({
-        type: 'missing_parameter',
-        message: '`dayOfMonth` must be provided',
-      })
-    } else if (typeof event.dayOfMonth !== 'string') {
-      errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
-    }
+  } else if (typeof event.minute !== 'string') {
+    errors.push({type: 'invalid_type', message: '`minute` must be a string'})
+  }
+  if (!('hour' in event)) {
+    errors.push({
+      type: 'missing_parameter',
+      message: '`hour` must be provided',
+    })
+  } else if (typeof event.hour !== 'string') {
+    errors.push({type: 'invalid_type', message: '`hour` must be a string'})
+  }
+  if (!('dayOfWeek' in event)) {
+    errors.push({
+      type: 'missing_parameter',
+      message: '`dayOfWeek` must be provided',
+    })
+  } else if (typeof event.dayOfWeek !== 'string') {
+    errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+  }
+  if (!('month' in event)) {
+    errors.push({
+      type: 'missing_parameter',
+      message: '`month` must be provided',
+    })
+  } else if (typeof event.month !== 'string') {
+    errors.push({type: 'invalid_type', message: '`month` must be a string'})
+  }
+  if (!('dayOfMonth' in event)) {
+    errors.push({
+      type: 'missing_parameter',
+      message: '`dayOfMonth` must be provided',
+    })
+  } else if (typeof event.dayOfMonth !== 'string') {
+    errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
   }
 
   return errors

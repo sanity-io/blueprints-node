@@ -2,6 +2,7 @@ import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
+  BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
 } from './event.js'
@@ -154,12 +155,16 @@ export type BlueprintMediaLibraryAssetFunctionConfig = Omit<BlueprintMediaLibrar
  * @category Functions Types
  * @interface
  */
-export type BlueprintScheduledFunctionConfig = Omit<BlueprintScheduledFunctionResource, 'type' | 'src'> & {
+export type BlueprintScheduledFunctionConfig = Omit<BlueprintScheduledFunctionResource, 'type' | 'src' | 'event'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`
    */
   src?: string
+  /**
+   * Event configuration specifying when the function is triggered
+   */
+  event: BlueprintScheduledFunctionConfigEvent
 }
 
 /**

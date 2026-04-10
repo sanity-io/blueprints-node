@@ -276,7 +276,7 @@ describe('validateScheduledFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_property',
-        message: 'Cannot specify both `expression` and explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`)',
+        message: 'Cannot specify `expression`. Use `defineScheduledFunction` to convert this to explicit fields',
       })
     })
 
@@ -301,7 +301,7 @@ describe('validateScheduledFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'missing_parameter',
-        message: 'Either `expression` or explicit cron fields (`minute`, `hour`, `dayOfMonth`, `month`, `dayOfWeek`) must be provided',
+        message: '`minute` must be provided',
       })
     })
 
