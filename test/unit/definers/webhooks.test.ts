@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as webhooks from '../../../src/definers/webhooks.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 describe('defineDocumentWebhook', () => {
   afterEach(() => {
@@ -10,13 +11,15 @@ describe('defineDocumentWebhook', () => {
   test('should throw an error if validateDocumentWebhook returns an error', () => {
     const spy = vi.spyOn(index, 'validateDocumentWebhook').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      webhooks.defineDocumentWebhook({
-        name: 'webhook-name',
-        url: 'http://localhost/',
-        on: ['create'],
-        dataset: 'abcdefg',
-        apiVersion: 'vX',
-      }),
+      defineBlueprintForResource(
+        webhooks.defineDocumentWebhook({
+          name: 'webhook-name',
+          url: 'http://localhost/',
+          on: ['create'],
+          dataset: 'abcdefg',
+          apiVersion: 'vX',
+        }),
+      ),
     ).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()

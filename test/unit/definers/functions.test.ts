@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as fns from '../../../src/definers/functions.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   const originalModule = await importOriginal()
@@ -30,7 +31,7 @@ describe('defineFunction', () => {
 
     test('should throw an error if validateFunction returns an error', () => {
       const spy = vi.spyOn(index, 'validateFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      expect(() => fns.defineFunction({name: 'func-name'})).toThrow('this is a test')
+      expect(() => defineBlueprintForResource(fns.defineFunction({name: 'func-name'}))).toThrow('this is a test')
 
       expect(spy).toHaveBeenCalledOnce()
     })
@@ -111,7 +112,9 @@ describe('defineDocumentFunction', () => {
 
     test('should throw an error if validateDocumentFunction returns an error', () => {
       const spy = vi.spyOn(index, 'validateDocumentFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      expect(() => fns.defineDocumentFunction({name: 'test', event: {on: ['publish']}})).toThrow('this is a test')
+      expect(() => defineBlueprintForResource(fns.defineDocumentFunction({name: 'test', event: {on: ['publish']}}))).toThrow(
+        'this is a test',
+      )
 
       expect(spy).toHaveBeenCalledOnce()
     })
@@ -175,7 +178,9 @@ describe('defineMediaLibraryAssetFunction', () => {
     test('should throw an error if validateMediaLibraryAssetFunction returns an error', () => {
       const spy = vi.spyOn(index, 'validateMediaLibraryAssetFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
       expect(() =>
-        fns.defineMediaLibraryAssetFunction({name: 'test', event: {on: ['publish'], resource: {type: 'media-library', id: 'ml1234'}}}),
+        defineBlueprintForResource(
+          fns.defineMediaLibraryAssetFunction({name: 'test', event: {on: ['publish'], resource: {type: 'media-library', id: 'ml1234'}}}),
+        ),
       ).toThrow('this is a test')
 
       expect(spy).toHaveBeenCalledOnce()
@@ -286,7 +291,9 @@ describe('defineScheduledFunction', () => {
     test('should throw an error if validateScheduledFunction returns an error', () => {
       const spy = vi.spyOn(index, 'validateScheduledFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
       expect(() =>
-        fns.defineScheduledFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
+        defineBlueprintForResource(
+          fns.defineScheduledFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
+        ),
       ).toThrow('this is a test')
 
       expect(spy).toHaveBeenCalledOnce()

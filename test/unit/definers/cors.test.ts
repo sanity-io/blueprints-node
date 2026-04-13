@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as cors from '../../../src/definers/cors.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   const originalModule = await importOriginal()
@@ -18,10 +19,12 @@ describe('defineCorsOrigin', () => {
   test('should throw an error if validateCorsOrigin returns an error', () => {
     const spy = vi.spyOn(index, 'validateCorsOrigin').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      cors.defineCorsOrigin({
-        name: 'origin-name',
-        origin: 'http://localhost/',
-      }),
+      defineBlueprintForResource(
+        cors.defineCorsOrigin({
+          name: 'origin-name',
+          origin: 'http://localhost/',
+        }),
+      ),
     ).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()

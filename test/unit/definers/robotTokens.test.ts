@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as robotTokens from '../../../src/definers/robotTokens.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   const originalModule = await importOriginal()
@@ -79,16 +80,18 @@ describe('defineRobotToken', () => {
   test('should throw if validateRobotToken returns an error', () => {
     const spy = vi.spyOn(index, 'validateRobotToken').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      robotTokens.defineRobotToken({
-        name: 'robot-name',
-        memberships: [
-          {
-            resourceType: 'project',
-            resourceId: 'test-project',
-            roleNames: ['test-role'],
-          },
-        ],
-      }),
+      defineBlueprintForResource(
+        robotTokens.defineRobotToken({
+          name: 'robot-name',
+          memberships: [
+            {
+              resourceType: 'project',
+              resourceId: 'test-project',
+              roleNames: ['test-role'],
+            },
+          ],
+        }),
+      ),
     ).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()
