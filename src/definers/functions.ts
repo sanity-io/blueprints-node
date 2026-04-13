@@ -298,8 +298,6 @@ export function defineScheduleFunction(functionConfig: BlueprintScheduledFunctio
  * })
  * ```
  * @public
- * @alpha Deploying Sync Tag Invalidate Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
  * @category Definers
  * @expandType BlueprintSyncTagInvalidateFunctionConfig
  * @param functionConfig The configuration for the sync tag invalidate function
