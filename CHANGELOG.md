@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.2](https://github.com/sanity-io/blueprints-node/compare/v0.15.1...v0.15.2) (2026-04-13)
+
+
+### Bug Fixes
+
+* show sync-tag-invalidate functions in typedocs. ([#94](https://github.com/sanity-io/blueprints-node/issues/94)) ([e250238](https://github.com/sanity-io/blueprints-node/commit/e250238b47af66e59de1920ee8c6eb9c14f362d4))
+
 ## [0.15.1](https://github.com/sanity-io/blueprints-node/compare/v0.15.0...v0.15.1) (2026-04-10)
 
 
