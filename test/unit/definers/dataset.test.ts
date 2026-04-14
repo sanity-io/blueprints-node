@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as datasets from '../../../src/definers/datasets.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   const originalModule = await importOriginal()
@@ -63,10 +64,12 @@ describe('defineDataset', () => {
   test('should throw if validateDataset returns an error', () => {
     const spy = vi.spyOn(index, 'validateDataset').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      datasets.defineDataset({
-        name: 'dataset-name',
-        aclMode: 'public',
-      }),
+      defineBlueprintForResource(
+        datasets.defineDataset({
+          name: 'dataset-name',
+          aclMode: 'public',
+        }),
+      ),
     ).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()

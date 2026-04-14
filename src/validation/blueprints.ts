@@ -1,4 +1,5 @@
 import type {BlueprintError} from '../index.js'
+import {getCollectedErrors, resetCollectedErrors} from '../utils/validation.js'
 
 /**
  * Validates that the given input is a valid Blueprint
@@ -17,6 +18,10 @@ export function validateBlueprint(blueprintConfig: unknown): BlueprintError[] {
 
     if (resources && !Array.isArray(resources)) errors.push({type: 'invalid_format', message: '`resources` must be an array'})
   }
+
+  // add any errors that were collected when definers were called
+  errors.push(...getCollectedErrors())
+  resetCollectedErrors()
 
   return errors
 }

@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as projects from '../../../src/definers/projects.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   const originalModule = await importOriginal()
@@ -57,9 +58,11 @@ describe('defineProject', () => {
   test('should throw if validateProject returns an error', () => {
     const spy = vi.spyOn(index, 'validateProject').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      projects.defineProject({
-        name: 'project-name',
-      }),
+      defineBlueprintForResource(
+        projects.defineProject({
+          name: 'project-name',
+        }),
+      ),
     ).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()
