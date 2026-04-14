@@ -17,11 +17,11 @@ export function validateBlueprint(blueprintConfig: unknown): BlueprintError[] {
     const {resources} = blueprintConfig
 
     if (resources && !Array.isArray(resources)) errors.push({type: 'invalid_format', message: '`resources` must be an array'})
-
-    // add any errors that were collected when definers were called
-    errors.push(...getCollectedErrors())
-    resetCollectedErrors()
   }
+
+  // add any errors that were collected when definers were called
+  errors.push(...getCollectedErrors())
+  resetCollectedErrors()
 
   return errors
 }
