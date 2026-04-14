@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {validateBlueprint} from '../../../src/index.js'
+import {defineCorsOrigin, defineDocumentFunction, validateBlueprint} from '../../../src/index.js'
 
 describe('validateBlueprint', () => {
   test('should return an error if config is falsey', () => {
@@ -23,6 +23,23 @@ describe('validateBlueprint', () => {
     expect(errors).toContainEqual({
       type: 'invalid_format',
       message: '`resources` must be an array',
+    })
+  })
+
+  test('should return errors from other resources validation', () => {
+    const errors = validateBlueprint({
+      resources: [
+        defineCorsOrigin({name: '', origin: ''}),
+        defineDocumentFunction({name: '', event: {resource: {type: 'dataset', id: ''}}}),
+      ],
+    })
+    expect(errors).toContainEqual({
+      type: 'missing_parameter',
+      message: 'CORS Origin name is required',
+    })
+    expect(errors).toContainEqual({
+      type: 'invalid_format',
+      message: '`event.resource.id` must be in the format <projectId>.<datasetName>',
     })
   })
 })

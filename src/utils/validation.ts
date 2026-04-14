@@ -17,10 +17,19 @@ export function runValidation(validator: () => BlueprintError[], options?: {thro
   collectedErrors.push(...errors)
 }
 
+/**
+ * Gets the current set of errors that were returned during validation when resource definers were invoked.
+ * @returns The errors collected during the validation of resources
+ * @internal
+ */
 export function getCollectedErrors(): BlueprintError[] {
   return collectedErrors
 }
 
+/**
+ * Resets the list of collected errors back to an empty list.
+ * @internal
+ */
 export function resetCollectedErrors() {
   collectedErrors.splice(0, collectedErrors.length)
 }
