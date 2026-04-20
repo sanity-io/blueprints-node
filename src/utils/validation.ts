@@ -1,16 +1,37 @@
 import type {BlueprintError} from '../types/errors'
 
+const collectedErrors: BlueprintError[] = []
+
 /**
- * Executes the given validator function and throws a formatted error if any are returned.
+ * Executes the given validator function and throws a formatted error if any are returned and throwError is enabled.
+ * Otherwise collects errors for use later during blueprint validation.
  * @param validator A function that returns a list of validation errors.
  * @internal
  */
-export function runValidation(validator: () => BlueprintError[]) {
+export function runValidation(validator: () => BlueprintError[], options?: {throwError?: boolean}) {
   const errors = validator()
-  if (errors.length > 0) {
+  if (options?.throwError && errors.length > 0) {
     const message = errors.map((err) => err.message).join('\n')
     throw new Error(message)
   }
+  collectedErrors.push(...errors)
+}
+
+/**
+ * Gets the current set of errors that were returned during validation when resource definers were invoked.
+ * @returns The errors collected during the validation of resources
+ * @internal
+ */
+export function getCollectedErrors(): BlueprintError[] {
+  return collectedErrors
+}
+
+/**
+ * Resets the list of collected errors back to an empty list.
+ * @internal
+ */
+export function resetCollectedErrors() {
+  collectedErrors.splice(0, collectedErrors.length)
 }
 
 const REFERENCE_PREFIXES = ['$.resources.', '$.values.', '$.parameters.', '$.params.']

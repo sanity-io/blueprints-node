@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as roles from '../../../src/definers/roles.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 describe('defineRole', () => {
   afterEach(() => {
@@ -10,7 +11,9 @@ describe('defineRole', () => {
   test('should throw an error if validateRole returns an error', () => {
     const spy = vi.spyOn(index, 'validateRole').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>
-      roles.defineRole({name: 'role-name', title: 'Role Name', appliesToRobots: true, appliesToUsers: true, permissions: []}),
+      defineBlueprintForResource(
+        roles.defineRole({name: 'role-name', title: 'Role Name', appliesToRobots: true, appliesToUsers: true, permissions: []}),
+      ),
     ).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()
