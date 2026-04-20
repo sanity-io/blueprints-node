@@ -1,6 +1,5 @@
 /**
  * Valid timezone: includes all IANA timezone database entries plus UTC.
- * The `string & {}` intersection allows any string while preserving autocomplete for known values.
  * @category Functions Types
  * @public
  */
@@ -430,4 +429,3 @@ export type IanaTimezone =
   | 'Pacific/Tongatapu'
   | 'Pacific/Wake'
   | 'Pacific/Wallis'
-  | (string & {})
