@@ -6,6 +6,7 @@ import type {
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
 } from './event.js'
+import type {IanaTimezone} from './timezone.js'
 
 export * from './event.js'
 
@@ -86,7 +87,7 @@ export interface BlueprintMediaLibraryAssetFunctionResource extends BlueprintBas
 export interface BlueprintScheduledFunctionResource extends BlueprintCommonFunctionResource {
   type: 'sanity.function.cron'
   event: BlueprintScheduledFunctionResourceEvent
-  timezone?: string
+  timezone?: IanaTimezone
 }
 
 /**

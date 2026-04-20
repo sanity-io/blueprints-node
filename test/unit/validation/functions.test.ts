@@ -240,21 +240,45 @@ describe('validateMediaLibraryAssetFunction', () => {
 })
 
 describe('validateScheduledFunction', () => {
+  const validEvent = {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}
+
   describe('happy paths', () => {
     test('should accept a valid scheduled function', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: validEvent,
       })
       expect(errors).toHaveLength(0)
     })
-    test('should accept a valid scheduled function with optional timezone', () => {
+
+    test.each([
+      'UTC',
+      'America/New_York',
+      'America/Los_Angeles',
+      'America/Chicago',
+      'America/Denver',
+      'America/Sao_Paulo',
+      'Europe/London',
+      'Europe/Paris',
+      'Europe/Berlin',
+      'Europe/Moscow',
+      'Africa/Cairo',
+      'Africa/Nairobi',
+      'Asia/Tokyo',
+      'Asia/Shanghai',
+      'Asia/Kolkata',
+      'Asia/Dubai',
+      'Asia/Singapore',
+      'Australia/Sydney',
+      'Pacific/Auckland',
+      'Pacific/Honolulu',
+    ])('should accept valid timezone %s', (timezone) => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
-        timezone: 'America/New_York',
+        event: validEvent,
+        timezone,
       })
       expect(errors).toHaveLength(0)
     })
@@ -280,16 +304,37 @@ describe('validateScheduledFunction', () => {
       })
     })
 
-    test('should return an error if timezone is invalid', () => {
+    test.each([
+      'America/Duckberg',
+      'Canada/Letterkenny',
+      'Europe/Atlantis',
+      'Asia/Shangri_La',
+      'Tatooine/Mos_Eisley',
+      'invalid',
+      '',
+    ])('should return an error for invalid timezone %s', (timezone) => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {expression: '* * * * *'},
-        timezone: 'America/Duckberg',
+        event: validEvent,
+        timezone,
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`timezone` must be a valid IANA timezone',
+      })
+    })
+
+    test.each([123, true, null, {}, []])('should return an error if timezone is not a string (%s)', (timezone) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: validEvent,
+        timezone,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: 'Function timezone must be a string',
       })
     })
 
