@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/sanity-io/blueprints-node/compare/v0.15.2...v0.16.0) (2026-04-20)
+
+
+### Features
+
+* Scheduled Function timezone should provide timezone hints ([#97](https://github.com/sanity-io/blueprints-node/issues/97)) ([f66e7dc](https://github.com/sanity-io/blueprints-node/commit/f66e7dc3af38563704959c86d7a8fca901ff72e1))
+
 ## [0.15.2](https://github.com/sanity-io/blueprints-node/compare/v0.15.1...v0.15.2) (2026-04-13)
 
 
