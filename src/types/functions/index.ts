@@ -2,6 +2,8 @@ import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
+  BlueprintQueueFunctionConfigEvent,
+  BlueprintQueueFunctionResourceEvent,
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
@@ -99,6 +101,17 @@ export interface BlueprintSyncTagInvalidateFunctionResource extends BlueprintBas
   event?: BlueprintSyncTagInvalidateFunctionResourceEvent
 }
 
+/**
+ * A function resource triggered by sync tag invalidate events
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.queue'
+  event?: BlueprintQueueFunctionResourceEvent
+}
+
 // --- Function Config Types ---
 
 /**
@@ -182,4 +195,26 @@ export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInva
    * @defaultValue `functions/${name}`
    */
   src?: string
+}
+
+/**
+ * Configuration for defining a queue function.
+ * @public
+ * @alpha Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
+  /**
+   * Queue configuration. Pass `true` or omit to use defaults (concurrency: 1, fifo: true, dlq: true),
+   * or pass an object to override specific settings.
+   * @defaultValue true
+   */
+  queue?: BlueprintQueueFunctionConfigEvent
 }

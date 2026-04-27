@@ -18,6 +18,7 @@ import {
   type BlueprintOutput,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
+  type BlueprintQueueFunctionResource,
   type BlueprintResource,
   type BlueprintRoleConfig,
   type BlueprintRoleResource,
@@ -31,6 +32,7 @@ import {
   defineDocumentWebhook,
   defineMediaLibraryAssetFunction,
   defineProjectRole,
+  defineQueueFunction,
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
@@ -42,6 +44,7 @@ import {
   validateDocumentWebhook,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validateQueueFunction,
   validateResource,
   validateRole,
   validateScheduledFunction,
@@ -107,6 +110,11 @@ const fullyQualifiedSyncTagInvalidateFunctionResourceEvent: BlueprintSyncTagInva
 const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = defineSyncTagInvalidateFunction({
   name: 'yoyoyo',
   event: fullyQualifiedSyncTagInvalidateFunctionResourceEvent,
+})
+
+const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
+  name: 'stuff',
+  queue: true,
 })
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
@@ -218,3 +226,4 @@ validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
+validateQueueFunction(queueFunction)

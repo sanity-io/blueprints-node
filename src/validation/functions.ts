@@ -340,3 +340,52 @@ export function validateSyncTagInvalidateFunction(functionResource: unknown): Bl
 
   return errors
 }
+
+/**
+ * Validates a queue function resource configuration.
+ * @param functionResource The function resource to validate
+ * @alpha
+ * @hidden
+ * @category Functions Types
+ * @returns Array of validation errors, empty if valid
+ */
+
+export function validateQueueFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.queue') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.queue`'})
+  }
+
+  if ('event' in functionResource) {
+    errors.push(...validateQueueFunctionEvent(functionResource.event))
+  }
+
+  errors.push(...validateFunction(functionResource))
+
+  return errors
+}
+
+function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if (!('concurrency' in event) || typeof event.concurrency !== 'number') {
+    errors.push({type: 'invalid_type', message: '`event.concurrency` must be a number'})
+  }
+  if ('concurrency' in event && typeof event.concurrency === 'number' && event.concurrency < 1) {
+    errors.push({type: 'invalid_type', message: '`event.concurrency` must be at least 1'})
+  }
+  if (!('fifo' in event) || typeof event.fifo !== 'boolean') {
+    errors.push({type: 'invalid_type', message: '`event.fifo` must be a boolean'})
+  }
+  if (!('dlq' in event) || typeof event.dlq !== 'boolean') {
+    errors.push({type: 'invalid_type', message: '`event.dlq` must be a boolean'})
+  }
+
+  return errors
+}

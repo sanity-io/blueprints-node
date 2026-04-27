@@ -7,6 +7,7 @@ import {
   defineFunction,
   defineMediaLibraryAssetFunction,
   defineProjectRole,
+  defineQueueFunction,
   defineResource,
   defineRole,
   defineScheduledFunction,
@@ -18,6 +19,7 @@ import {
   validateDocumentWebhook,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validateQueueFunction,
   validateResource,
   validateRole,
   validateSyncTagInvalidateFunction,
@@ -47,6 +49,10 @@ describe('package imports', () => {
 
   it('should import defineSyncTagInvalidateFunction', () => {
     expect(defineSyncTagInvalidateFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import defineQueueFunction', () => {
+    expect(defineQueueFunction).toBeInstanceOf(Function)
   })
 
   it('should import defineDocumentWebhook', () => {
@@ -91,6 +97,10 @@ describe('package imports', () => {
 
   it('should import validateSyncTagInvalidateFunction', () => {
     expect(validateSyncTagInvalidateFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import validateQueueFunction', () => {
+    expect(validateQueueFunction).toBeInstanceOf(Function)
   })
 
   it('should import validateDocumentWebhook', () => {
