@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.1](https://github.com/sanity-io/blueprints-node/compare/v0.17.0...v0.17.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* release after github hiccup ([#101](https://github.com/sanity-io/blueprints-node/issues/101)) ([02013b7](https://github.com/sanity-io/blueprints-node/commit/02013b794237c84c091d1c08aa9f4fe3f7104831))
+
 ## [0.17.0](https://github.com/sanity-io/blueprints-node/compare/v0.16.0...v0.17.0) (2026-04-27)
 
 
