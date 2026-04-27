@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/sanity-io/blueprints-node/compare/v0.16.0...v0.17.0) (2026-04-27)
+
+
+### Features
+
+* add support for queue functions ([#99](https://github.com/sanity-io/blueprints-node/issues/99)) ([d320909](https://github.com/sanity-io/blueprints-node/commit/d320909f285ba68015cb258939ffd324777fef15))
+
 ## [0.16.0](https://github.com/sanity-io/blueprints-node/compare/v0.15.2...v0.16.0) (2026-04-20)
 
 
