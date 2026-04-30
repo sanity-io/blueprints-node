@@ -55,7 +55,7 @@ import {runValidation} from '../utils/validation.js'
 export function defineBlueprint(blueprintConfig: Partial<Blueprint> & Partial<BlueprintsApiConfig>): BlueprintModule {
   const {organizationId, projectId, stackId, blueprintVersion, resources, values, outputs} = blueprintConfig
 
-  runValidation(() => validateBlueprint(blueprintConfig))
+  runValidation(() => validateBlueprint(blueprintConfig), {throwError: true})
 
   function blueprint(): Blueprint {
     return {
