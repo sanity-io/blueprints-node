@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/sanity-io/blueprints-node/compare/v0.17.1...v0.18.0) (2026-04-30)
+
+
+### Features
+
+* Defer validation errors until blueprint is defined ([#96](https://github.com/sanity-io/blueprints-node/issues/96)) ([8358e05](https://github.com/sanity-io/blueprints-node/commit/8358e0586367c0d6dfa4d87edd69377bd3c6eb72))
+
 ## [0.17.1](https://github.com/sanity-io/blueprints-node/compare/v0.17.0...v0.17.1) (2026-04-27)
 
 
