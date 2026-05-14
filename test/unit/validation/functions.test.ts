@@ -252,6 +252,72 @@ describe('validateScheduledFunction', () => {
       expect(errors).toHaveLength(0)
     })
 
+    test.each(['*', '0', '59', '0-30', '*/5', '0-30/5', '0,15,30,45', '5,*/15'])('should accept valid minute expression %s', (minute) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, minute},
+      })
+      expect(errors).toHaveLength(0)
+    })
+
+    test.each(['*', '0', '23', '0-23', '*/2', '0-12/3', '0,6,12,18'])('should accept valid hour expression %s', (hour) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, hour},
+      })
+      expect(errors).toHaveLength(0)
+    })
+
+    test.each(['*', '1', '31', '1-15', '*/2', '1-15/2', '1,15,30'])('should accept valid dayOfMonth expression %s', (dayOfMonth) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, dayOfMonth},
+      })
+      expect(errors).toHaveLength(0)
+    })
+
+    test.each([
+      '*',
+      '1',
+      '12',
+      'JAN',
+      'DEC',
+      'JAN-MAR',
+      'jan-mar',
+      '*/3',
+      '1,6,12',
+      'JAN,JUL',
+    ])('should accept valid month expression %s', (month) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, month},
+      })
+      expect(errors).toHaveLength(0)
+    })
+
+    test.each([
+      '*',
+      '0',
+      '7',
+      'SUN',
+      'SAT',
+      'MON-FRI',
+      'mon-fri',
+      '*/2',
+      '1,3,5',
+    ])('should accept valid dayOfWeek expression %s', (dayOfWeek) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, dayOfWeek},
+      })
+      expect(errors).toHaveLength(0)
+    })
+
     test.each([
       'UTC',
       'America/New_York',
@@ -414,6 +480,130 @@ describe('validateScheduledFunction', () => {
         event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: 1},
       })
       expect(errors).toContainEqual({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+    })
+
+    test.each([
+      '60',
+      '-1',
+      'abc',
+      '*/60',
+      '60-70',
+      '0-60',
+      '0,60',
+      '*/',
+      '5/',
+      ' ',
+      '*  *',
+    ])('should return an error for invalid minute expression %s', (minute) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, minute},
+      })
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          type: 'invalid_value',
+          message: expect.stringMatching(/Invalid minute field:/),
+        }),
+      )
+    })
+
+    test.each([
+      '24',
+      '25',
+      '-1',
+      'abc',
+      '*/0',
+      '*/24',
+      '0-24',
+      '24-25',
+      '0,24',
+    ])('should return an error for invalid hour expression %s', (hour) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, hour},
+      })
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          type: 'invalid_value',
+          message: expect.stringMatching(/Invalid hour field:/),
+        }),
+      )
+    })
+
+    test.each([
+      '0',
+      '32',
+      '-1',
+      'abc',
+      '*/0',
+      '*/32',
+      '0-15',
+      '1-32',
+      '0,15',
+    ])('should return an error for invalid dayOfMonth expression %s', (dayOfMonth) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, dayOfMonth},
+      })
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          type: 'invalid_value',
+          message: expect.stringMatching(/Invalid dayOfMonth field:/),
+        }),
+      )
+    })
+
+    test.each([
+      '0',
+      '13',
+      '-1',
+      'abc',
+      'JANUARY',
+      'XYZ',
+      '*/0',
+      '*/13',
+      '0-6',
+      '1-13',
+      'JAN-XYZ',
+    ])('should return an error for invalid month expression %s', (month) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, month},
+      })
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          type: 'invalid_value',
+          message: expect.stringMatching(/Invalid month field:/),
+        }),
+      )
+    })
+
+    test.each([
+      '8',
+      '9',
+      '-1',
+      'abc',
+      'MONDAY',
+      'XYZ',
+      '*/8',
+      '0-8',
+      'MON-XYZ',
+    ])('should return an error for invalid dayOfWeek expression %s', (dayOfWeek) => {
+      const errors = functions.validateScheduledFunction({
+        name: 'test',
+        type: 'sanity.function.cron',
+        event: {...validEvent, dayOfWeek},
+      })
+      expect(errors).toContainEqual(
+        expect.objectContaining({
+          type: 'invalid_value',
+          message: expect.stringMatching(/Invalid dayOfWeek field:/),
+        }),
+      )
     })
   })
 })
