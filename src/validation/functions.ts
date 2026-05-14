@@ -15,6 +15,16 @@ const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersio
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
 
+const MINUTES = /^(\*(\/([1-5]?\d))?|([0-5]?\d)(-[0-5]?\d)?(\/([1-5]?\d))?)(,(\*(\/([1-5]?\d))?|([0-5]?\d)(-[0-5]?\d)?(\/([1-5]?\d))?))*$/
+const HOURS =
+  /^(\*(\/([1-9]|1\d|2[0-3]))?|([01]?\d|2[0-3])(-([01]?\d|2[0-3]))?(\/([1-9]|1\d|2[0-3]))?)(,(\*(\/([1-9]|1\d|2[0-3]))?|([01]?\d|2[0-3])(-([01]?\d|2[0-3]))?(\/([1-9]|1\d|2[0-3]))?))*$/
+const DAY_OF_MONTH =
+  /^(\*(\/([1-9]|[12]\d|3[01]))?|([1-9]|[12]\d|3[01])(-([1-9]|[12]\d|3[01]))?(\/([1-9]|[12]\d|3[01]))?)(,(\*(\/([1-9]|[12]\d|3[01]))?|([1-9]|[12]\d|3[01])(-([1-9]|[12]\d|3[01]))?(\/([1-9]|[12]\d|3[01]))?))*$/
+const MONTH =
+  /^(\*(\/([1-9]|1[0-2]))?|([1-9]|1[0-2]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(-([1-9]|1[0-2]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(\/([1-9]|1[0-2]))?)(,(\*(\/([1-9]|1[0-2]))?|([1-9]|1[0-2]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(-([1-9]|1[0-2]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(\/([1-9]|1[0-2]))?))*$/i
+const DAY_OF_WEEK =
+  /^(\*(\/([0-7]))?|([0-7]|SUN|MON|TUE|WED|THU|FRI|SAT)(-([0-7]|SUN|MON|TUE|WED|THU|FRI|SAT))?(\/([0-7]))?)(,(\*(\/([0-7]))?|([0-7]|SUN|MON|TUE|WED|THU|FRI|SAT)(-([0-7]|SUN|MON|TUE|WED|THU|FRI|SAT))?(\/([0-7]))?))*$/i
+
 /**
  * Validates a document function resource configuration.
  * Checks that the function has a valid event configuration, correct type, and all required base properties.
@@ -255,6 +265,18 @@ function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
     })
   } else if (typeof event.minute !== 'string') {
     errors.push({type: 'invalid_type', message: '`minute` must be a string'})
+  } else if (!MINUTES.test(event.minute)) {
+    errors.push({
+      type: 'invalid_value',
+      message: `Invalid minute field: "${event.minute}"
+
+The minute field must be:
+- A number from 0 to 59
+- A range like 0-10
+- A step value like */5
+- A list like 0,15,30,45
+`,
+    })
   }
   if (!('hour' in event)) {
     errors.push({
@@ -263,22 +285,18 @@ function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
     })
   } else if (typeof event.hour !== 'string') {
     errors.push({type: 'invalid_type', message: '`hour` must be a string'})
-  }
-  if (!('dayOfWeek' in event)) {
+  } else if (!HOURS.test(event.hour)) {
     errors.push({
-      type: 'missing_parameter',
-      message: '`dayOfWeek` must be provided',
+      type: 'invalid_value',
+      message: `Invalid hour field: "${event.hour}"
+
+The hour field must be:
+- A number from 0 to 23
+- A range like 9-17
+- A step value like */2
+- A list like 0,6,12,18
+`,
     })
-  } else if (typeof event.dayOfWeek !== 'string') {
-    errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
-  }
-  if (!('month' in event)) {
-    errors.push({
-      type: 'missing_parameter',
-      message: '`month` must be provided',
-    })
-  } else if (typeof event.month !== 'string') {
-    errors.push({type: 'invalid_type', message: '`month` must be a string'})
   }
   if (!('dayOfMonth' in event)) {
     errors.push({
@@ -287,6 +305,60 @@ function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
     })
   } else if (typeof event.dayOfMonth !== 'string') {
     errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
+  } else if (!DAY_OF_MONTH.test(event.dayOfMonth)) {
+    errors.push({
+      type: 'invalid_value',
+      message: `Invalid dayOfMonth field: "${event.dayOfMonth}"
+
+The day-of-month field must be:
+- A number from 1 to 31
+- A range like 1-15
+- A step value like */2
+- A list like 1,15,31
+`,
+    })
+  }
+  if (!('month' in event)) {
+    errors.push({
+      type: 'missing_parameter',
+      message: '`month` must be provided',
+    })
+  } else if (typeof event.month !== 'string') {
+    errors.push({type: 'invalid_type', message: '`month` must be a string'})
+  } else if (!MONTH.test(event.month)) {
+    errors.push({
+      type: 'invalid_value',
+      message: `Invalid month field: "${event.month}"
+
+The month field must be:
+- A number from 1 to 12
+- A range like 1-6
+- A step value like */2
+- A list like 1,4,7,10
+- A month name like JAN or OCT-DEC
+`,
+    })
+  }
+  if (!('dayOfWeek' in event)) {
+    errors.push({
+      type: 'missing_parameter',
+      message: '`dayOfWeek` must be provided',
+    })
+  } else if (typeof event.dayOfWeek !== 'string') {
+    errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+  } else if (!DAY_OF_WEEK.test(event.dayOfWeek)) {
+    errors.push({
+      type: 'invalid_value',
+      message: `Invalid dayOfWeek field: "${event.dayOfWeek}"
+
+The day-of-week field must be:
+- A number from 0 to 7
+- Sunday can be specified using 0 or 7
+- A range like MON-FRI
+- A step value like */2
+- A list like MON,WED,FRI
+`,
+    })
   }
 
   return errors
