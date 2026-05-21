@@ -90,6 +90,21 @@ describe('validateFunction', () => {
       const errors = functions.validateFunction({name: 'test', type: 'test', runtime: 'python'})
       expect(errors).toContainEqual({type: 'invalid_value', message: `\`runtime\` must be one of ${index.VALID_RUNTIMES.join(', ')}`})
     })
+
+    test('should return an error if env is not an object', () => {
+      const errors = functions.validateFunction({name: 'test', type: 'test', env: 'string'})
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`env` must be an object'})
+    })
+
+    test('should return an error if env[key] is not a string', () => {
+      const errors = functions.validateFunction({name: 'test', type: 'test', env: {key: 1}})
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`env[key]` must be a string'})
+    })
+
+    test('should return an error if env[key] is empty', () => {
+      const errors = functions.validateFunction({name: 'test', type: 'test', env: {key: ''}})
+      expect(errors).toContainEqual({type: 'invalid_value', message: '`env[key]` must not be empty'})
+    })
   })
 })
 
