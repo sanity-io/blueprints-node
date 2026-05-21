@@ -143,8 +143,6 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
       for (const [key, value] of Object.entries(functionResource.env)) {
         if (typeof value !== 'string') {
           errors.push({type: 'invalid_type', message: `\`env[${key}]\` must be a string`})
-        } else if (value.length === 0) {
-          errors.push({type: 'invalid_value', message: `\`env[${key}]\` must not be empty`})
         }
       }
     }
