@@ -12,6 +12,10 @@ describe('validateFunction', () => {
       const errors = functions.validateFunction({name: 'test-function', type: 'test'})
       expect(errors).toHaveLength(0)
     })
+    test('should accept a function with undefined env', () => {
+      const errors = functions.validateFunction({name: 'test-function', type: 'test', env: undefined})
+      expect(errors).toHaveLength(0)
+    })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
