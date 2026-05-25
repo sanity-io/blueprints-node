@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.1](https://github.com/sanity-io/blueprints-node/compare/v0.19.0...v0.19.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* Allow undefined function env ([#107](https://github.com/sanity-io/blueprints-node/issues/107)) ([db34612](https://github.com/sanity-io/blueprints-node/commit/db3461237c6c5ac6988e7d6332b3df4c9521c2e2))
+
 ## [0.19.0](https://github.com/sanity-io/blueprints-node/compare/v0.18.0...v0.19.0) (2026-05-21)
 
 
