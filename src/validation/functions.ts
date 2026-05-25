@@ -136,7 +136,7 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
     }
   }
 
-  if ('env' in functionResource) {
+  if ('env' in functionResource && typeof functionResource.env !== 'undefined') {
     if (typeof functionResource.env !== 'object' || functionResource.env === null) {
       errors.push({type: 'invalid_type', message: `\`env\` must be an object`})
     } else {
