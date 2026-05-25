@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.19.0](https://github.com/sanity-io/blueprints-node/compare/v0.18.0...v0.19.0) (2026-05-21)
+
+
+### Features
+
+* Add validation for function env ([#106](https://github.com/sanity-io/blueprints-node/issues/106)) ([4e472f9](https://github.com/sanity-io/blueprints-node/commit/4e472f9d414076e0012259c6106949a6bb3cb604))
+
+
+### Bug Fixes
+
+* better cron validation messages ([#104](https://github.com/sanity-io/blueprints-node/issues/104)) ([1e33ed0](https://github.com/sanity-io/blueprints-node/commit/1e33ed03df0596a8edf8d084bd431195fb3f3e2c))
+
 ## [0.18.0](https://github.com/sanity-io/blueprints-node/compare/v0.17.1...v0.18.0) (2026-04-30)
 
 
