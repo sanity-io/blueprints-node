@@ -479,3 +479,27 @@ function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
 
   return errors
 }
+
+/**
+ * Validates a event function resource configuration.
+ * @param functionResource The function resource to validate
+ * @alpha
+ * @hidden
+ * @category Functions Types
+ * @returns Array of validation errors, empty if valid
+ */
+
+export function validateEventFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.event') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.event`'})
+  }
+
+  errors.push(...validateFunction(functionResource))
+
+  return errors
+}
