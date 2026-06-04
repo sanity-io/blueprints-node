@@ -7,6 +7,7 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
+import {isReference} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -185,7 +186,12 @@ function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] 
   if (!resource || typeof resource !== 'object') return [{type: 'invalid_value', message: '`event.resource` must be an object'}]
   if (!('type' in resource) || !resource.type || resource.type !== 'dataset')
     errors.push({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
-  if (!('id' in resource) || !resource.id || typeof resource.id !== 'string' || resource.id.split('.').length !== 2)
+  if (
+    !('id' in resource) ||
+    !resource.id ||
+    typeof resource.id !== 'string' ||
+    !(isReference(resource.id) || resource.id.split('.').length === 2)
+  )
     errors.push({type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>'})
   return errors
 }
