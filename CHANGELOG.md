@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.2](https://github.com/sanity-io/blueprints-node/compare/v0.19.1...v0.19.2) (2026-06-04)
+
+
+### Bug Fixes
+
+* Allow references in event resource id ([#109](https://github.com/sanity-io/blueprints-node/issues/109)) ([bd03ffc](https://github.com/sanity-io/blueprints-node/commit/bd03ffc74db1e2c6b7c99a9b90e99d297bf8f0ac))
+
 ## [0.19.1](https://github.com/sanity-io/blueprints-node/compare/v0.19.0...v0.19.1) (2026-05-25)
 
 
