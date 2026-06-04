@@ -10,6 +10,7 @@ import {
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintDocumentWebhookConfig,
   type BlueprintDocumentWebhookResource,
+  type BlueprintEventFunctionResource,
   // type BlueprintFunctionBaseResourceEvent,
   // type BlueprintFunctionResourceEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
@@ -30,6 +31,7 @@ import {
   defineDataset,
   defineDocumentFunction,
   defineDocumentWebhook,
+  defineEventFunction,
   defineMediaLibraryAssetFunction,
   defineProjectRole,
   defineQueueFunction,
@@ -42,6 +44,7 @@ import {
   validateDataset,
   validateDocumentFunction,
   validateDocumentWebhook,
+  validateEventFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
   validateQueueFunction,
@@ -115,6 +118,10 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
   queue: true,
+})
+
+const eventFunction: BlueprintEventFunctionResource = defineEventFunction({
+  name: 'event-stuff',
 })
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
@@ -227,3 +234,4 @@ validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
 validateQueueFunction(queueFunction)
+validateEventFunction(eventFunction)

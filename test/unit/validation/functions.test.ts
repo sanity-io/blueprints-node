@@ -785,3 +785,24 @@ describe('validateQueueFunction', () => {
     })
   })
 })
+
+describe('validateEventFunction', () => {
+  describe('happy paths', () => {
+    test('should accept a valid event function without any optional properties', () => {
+      const errors = functions.validateEventFunction({
+        name: 'test',
+        type: 'sanity.function.event',
+      })
+      expect(errors).toStrictEqual([])
+    })
+  })
+  describe('sad paths', () => {
+    test('should return an error if the type is not `sanity.function.event`', () => {
+      const errors = functions.validateEventFunction({type: 'invalid'})
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.event`',
+      })
+    })
+  })
+})

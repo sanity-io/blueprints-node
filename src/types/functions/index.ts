@@ -112,6 +112,16 @@ export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionRes
   event?: BlueprintQueueFunctionResourceEvent
 }
 
+/**
+ * A function resource triggered by another function
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface BlueprintEventFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.event'
+}
+
 // --- Function Config Types ---
 
 /**
@@ -217,4 +227,20 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
    * @defaultValue true
    */
   queue?: BlueprintQueueFunctionConfigEvent
+}
+
+/**
+ * Configuration for defining an event function.
+ * @public
+ * @alpha Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 'type' | 'src'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
 }

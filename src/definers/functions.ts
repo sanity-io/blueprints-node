@@ -4,6 +4,8 @@ import {
   type BlueprintDocumentFunctionConfig,
   type BlueprintDocumentFunctionResource,
   type BlueprintDocumentFunctionResourceEvent,
+  type BlueprintEventFunctionConfig,
+  type BlueprintEventFunctionResource,
   type BlueprintFunctionBaseResourceEvent,
   type BlueprintMediaLibraryAssetFunctionConfig,
   type BlueprintMediaLibraryAssetFunctionResource,
@@ -371,6 +373,35 @@ export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig
     ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.queue',
     event: buildQueueFunctionEvent(queue),
+  }
+
+  runValidation(() => validateQueueFunction(functionResource))
+
+  return functionResource
+}
+
+/**
+ * Defines a function that provide event behaviour.
+ *
+ * @remarks
+ * A barebones event function
+ * ```ts
+ * defineEventFunction({
+ *   name: 'send-email',
+ * })
+ * ```
+ * @public
+ * @alpha Deploying Event Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Definers
+ * @expandType BlueprintEventFunctionConfig
+ * @param functionConfig The configuration for the queue function
+ * @returns The validated event function resource
+ */
+export function defineEventFunction(functionConfig: BlueprintEventFunctionConfig): BlueprintEventFunctionResource {
+  const functionResource: BlueprintEventFunctionResource = {
+    ...defineFunction(functionConfig, {skipValidation: true}),
+    type: 'sanity.function.event',
   }
 
   runValidation(() => validateQueueFunction(functionResource))
