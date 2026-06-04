@@ -121,6 +121,20 @@ describe('validateDocumentFunction', () => {
       })
       expect(errors).toHaveLength(0)
     })
+    test('should accept a function with a reference as the resource id', () => {
+      const errors = functions.validateDocumentFunction({
+        name: 'test',
+        type: 'sanity.function.document',
+        event: {
+          filter: '_type == "post"',
+          resource: {
+            type: 'dataset',
+            id: `$.resources.test-dataset.resourceId`,
+          },
+        },
+      })
+      expect(errors).toHaveLength(0)
+    })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
@@ -636,6 +650,14 @@ describe('validateSyncTagInvalidateFunction', () => {
         name: 'test',
         type: 'sanity.function.sync-tag-invalidate',
         event: {resource: {type: 'dataset', id: 'myProj.myDataset'}},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a function with a reference as the resource id', () => {
+      const errors = functions.validateSyncTagInvalidateFunction({
+        name: 'test',
+        type: 'sanity.function.sync-tag-invalidate',
+        event: {resource: {type: 'dataset', id: '$.resources.test-dataset.resourceId'}},
       })
       expect(errors).toStrictEqual([])
     })
