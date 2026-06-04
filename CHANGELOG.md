@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/sanity-io/blueprints-node/compare/v0.19.2...v0.20.0) (2026-06-04)
+
+
+### Features
+
+* add support for event functions ([#111](https://github.com/sanity-io/blueprints-node/issues/111)) ([170d423](https://github.com/sanity-io/blueprints-node/commit/170d423785e4a06b83ca2d8208b7f43334007e02))
+
 ## [0.19.2](https://github.com/sanity-io/blueprints-node/compare/v0.19.1...v0.19.2) (2026-06-04)
 
 
