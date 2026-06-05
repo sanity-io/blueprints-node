@@ -23,6 +23,7 @@ import {
   type BlueprintSyncTagInvalidateFunctionConfig,
   type BlueprintSyncTagInvalidateFunctionResource,
   validateDocumentFunction,
+  validateEventFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
   validateQueueFunction,
@@ -404,7 +405,7 @@ export function defineEventFunction(functionConfig: BlueprintEventFunctionConfig
     type: 'sanity.function.event',
   }
 
-  runValidation(() => validateQueueFunction(functionResource))
+  runValidation(() => validateEventFunction(functionResource))
 
   return functionResource
 }
