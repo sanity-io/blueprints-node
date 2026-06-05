@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.1](https://github.com/sanity-io/blueprints-node/compare/v0.20.0...v0.20.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* copy paste error ([#114](https://github.com/sanity-io/blueprints-node/issues/114)) ([a7c9601](https://github.com/sanity-io/blueprints-node/commit/a7c960164c851c4af0a268d034c0dac092a064a0))
+
 ## [0.20.0](https://github.com/sanity-io/blueprints-node/compare/v0.19.2...v0.20.0) (2026-06-04)
 
 
