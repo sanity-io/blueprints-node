@@ -222,8 +222,13 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
    */
   src?: string
   /**
-   * Queue configuration. Pass `true` or omit to use defaults (concurrency: 1, fifo: true, dlq: true),
-   * or pass an object to override specific settings.
+   * Queue configuration.
+   *
+   * Omit this property or set it to `true` to use the defaults:
+   * concurrency: 1, fifo: true, dlq: true.
+   *
+   * Provide an object to override specific settings.
+   *
    * @defaultValue true
    */
   queue?: BlueprintQueueFunctionConfigEvent
