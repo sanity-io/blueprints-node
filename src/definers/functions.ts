@@ -396,7 +396,7 @@ export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig
  * @hidden
  * @category Definers
  * @expandType BlueprintEventFunctionConfig
- * @param functionConfig The configuration for the queue function
+ * @param functionConfig The configuration for the event function
  * @returns The validated event function resource
  */
 export function defineEventFunction(functionConfig: BlueprintEventFunctionConfig): BlueprintEventFunctionResource {

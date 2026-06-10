@@ -95,13 +95,11 @@ export interface BlueprintQueueFunctionResourceEvent {
   dlq?: boolean
 }
 
-export type BlueprintQueueFunctionBooleanResourceEvent = boolean
-
 /**
  * Union type of all queue function resource event configurations
  * @category Functions Types
  */
-export type BlueprintQueueFunctionConfigEvent = BlueprintQueueFunctionBooleanResourceEvent | BlueprintQueueFunctionResourceEvent
+export type BlueprintQueueFunctionConfigEvent = true | BlueprintQueueFunctionResourceEvent
 
 /**
  * Union type of all function resource event configurations
