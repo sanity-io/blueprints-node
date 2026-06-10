@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.2](https://github.com/sanity-io/blueprints-node/compare/v0.20.1...v0.20.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* better type hinting ([#116](https://github.com/sanity-io/blueprints-node/issues/116)) ([9e802ae](https://github.com/sanity-io/blueprints-node/commit/9e802aefbe6e2f7452057d535ffdcbbd30b9723a))
+
 ## [0.20.1](https://github.com/sanity-io/blueprints-node/compare/v0.20.0...v0.20.1) (2026-06-05)
 
 
