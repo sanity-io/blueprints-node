@@ -36,6 +36,17 @@ export function validateCorsOrigin(resource: unknown): BlueprintError[] {
     }
   }
 
+  if ('allowCredentials' in resource) {
+    if (typeof resource.allowCredentials !== 'boolean') {
+      errors.push({type: 'invalid_type', message: 'CORS Origin allowCredentials must be a boolean'})
+    } else if ('origin' in resource && resource.origin === '*' && resource.allowCredentials === true) {
+      errors.push({
+        type: 'invalid_value',
+        message: 'A blanket wildcard origin "*" cannot allow credentials. Set allowCredentials to false, or use a specific origin.',
+      })
+    }
+  }
+
   if ('project' in resource) {
     if (typeof resource.project !== 'string') {
       errors.push({type: 'invalid_type', message: 'CORS Origin project must be a string'})
