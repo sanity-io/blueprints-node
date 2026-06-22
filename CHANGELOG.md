@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/sanity-io/blueprints-node/compare/v0.20.2...v0.21.0) (2026-06-22)
+
+
+### Features
+
+* **cors:** disallow blanket wildcard origin with credentials ([#118](https://github.com/sanity-io/blueprints-node/issues/118)) ([dc20948](https://github.com/sanity-io/blueprints-node/commit/dc209482e837814e334a3a925e782e24c70f2a54))
+
 ## [0.20.2](https://github.com/sanity-io/blueprints-node/compare/v0.20.1...v0.20.2) (2026-06-10)
 
 
