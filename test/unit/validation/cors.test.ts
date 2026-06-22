@@ -196,6 +196,45 @@ describe('validateCorsOrigin', () => {
     expect(errors, JSON.stringify(errors)).toHaveLength(0)
   })
 
+  test('should return an error if allowCredentials is not a boolean', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost/',
+      allowCredentials: 1,
+      project: 'abcdefg',
+    })
+
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'CORS Origin allowCredentials must be a boolean'})
+  })
+
+  test('should return an error if allowCredentials is true and origin is a wildcard', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: '*',
+      allowCredentials: true,
+      project: 'abcdefg',
+    })
+
+    expect(errors).toContainEqual({
+      type: 'invalid_value',
+      message: 'A blanket wildcard origin "*" cannot allow credentials. Set allowCredentials to false, or use a specific origin.',
+    })
+  })
+
+  test('should accept configuration when allowCredentials is false and origin is a wildcard', () => {
+    const errors = cors.validateCorsOrigin({
+      name: 'origin-name',
+      type: 'sanity.project.cors',
+      origin: 'http://localhost/',
+      allowCredentials: false,
+      project: 'abcdefg',
+    })
+
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
   test('should accept a valid configuration', () => {
     const errors = cors.validateCorsOrigin({
       name: 'origin-name',
