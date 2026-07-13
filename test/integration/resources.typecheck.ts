@@ -27,6 +27,8 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
+  type BlueprintWorkflowFunctionResource,
+  type BlueprintWorkflowFunctionResourceEvent,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -80,6 +82,25 @@ const datasetConfig: BlueprintDatasetConfig = {
   project: 'projectId',
 }
 const datasetResource: BlueprintDatasetResource = defineDataset(datasetConfig)
+
+const _workflowDocumentEvent: BlueprintWorkflowFunctionResourceEvent = {
+  type: 'document',
+  on: ['create'],
+  filter: "_type == 'article'",
+}
+const _workflowSyncTagEvent: BlueprintWorkflowFunctionResourceEvent = {
+  type: 'sync-tag-invalidate',
+  resource: {type: 'dataset', id: 'proj.dataset'},
+}
+const _workflowFunction: BlueprintWorkflowFunctionResource = {
+  type: 'sanity.function.workflow',
+  name: 'my-workflow',
+  src: 'workflows/my-workflow',
+  event: _workflowDocumentEvent,
+  concurrency: 5,
+  debounce: 10,
+  debounceKey: 'document._id',
+}
 
 const _documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
   filter: 'filter',
