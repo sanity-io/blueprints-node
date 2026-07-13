@@ -7,6 +7,7 @@ import type {
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
+  BlueprintWorkflowFunctionResourceEvent,
 } from './event.js'
 import type {IanaTimezone} from './timezone.js'
 
@@ -249,10 +250,6 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
    */
   src?: string
 }
-
-type BlueprintWorkflowFunctionResourceEvent = {
-  type: 'document' | 'sync-tag-invalidate'
-} & BlueprintDocumentFunctionResourceEvent
 
 /**
  * A durable, step-based workflow function.
