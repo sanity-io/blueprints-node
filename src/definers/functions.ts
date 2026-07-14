@@ -22,6 +22,8 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionConfig,
   type BlueprintSyncTagInvalidateFunctionResource,
+  type BlueprintWorkflowFunctionConfig,
+  type BlueprintWorkflowFunctionResource,
   validateDocumentFunction,
   validateEventFunction,
   validateFunction,
@@ -29,6 +31,7 @@ import {
   validateQueueFunction,
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
+  validateWorkflowFunction,
 } from '../index.js'
 import {parseScheduledExpression} from '../utils/schedule-parser.js'
 import {runValidation} from '../utils/validation.js'
@@ -523,4 +526,19 @@ function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): Blue
     ...defaultEvent,
     ...userProvidedEvent,
   } as BlueprintQueueFunctionResourceEvent
+}
+
+export function defineWorkflowFunction(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
+  const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
+  const functionResource: BlueprintWorkflowFunctionResource = {
+    ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
+    type: 'sanity.function.workflow',
+    ...(event && {event}),
+    ...(concurrency && {concurrency}),
+    ...(debounce && {debounce}),
+    ...(debounceKey && {debounceKey}),
+  }
+
+  runValidation(() => validateWorkflowFunction(functionResource))
+  return functionResource
 }

@@ -439,7 +439,6 @@ export function validateSyncTagInvalidateFunction(functionResource: unknown): Bl
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
-
 export function validateQueueFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
@@ -481,7 +480,7 @@ function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
 }
 
 /**
- * Validates a event function resource configuration.
+ * Validates an event function resource configuration.
  * @param functionResource The function resource to validate
  * @alpha
  * @hidden
@@ -497,6 +496,29 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.event') {
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.event`'})
+  }
+
+  errors.push(...validateFunction(functionResource))
+
+  return errors
+}
+
+/**
+ * Validates a workflow function resource configuration.
+ * @param functionResource The function resource to validate
+ * @alpha
+ * @hidden
+ * @category Functions Types
+ * @returns Array of validation errors, empty if valid
+ */
+export function validateWorkflowFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.workflow') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.workflow`'})
   }
 
   errors.push(...validateFunction(functionResource))
