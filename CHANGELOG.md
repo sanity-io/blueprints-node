@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.0](https://github.com/sanity-io/blueprints-node/compare/v0.21.0...v0.22.0) (2026-07-14)
+
+
+### Features
+
+* add workflows types ([#120](https://github.com/sanity-io/blueprints-node/issues/120)) ([1870b1c](https://github.com/sanity-io/blueprints-node/commit/1870b1cc32a0e4fdba97f4c27a9cb82d321e1ba0))
+
 ## [0.21.0](https://github.com/sanity-io/blueprints-node/compare/v0.20.2...v0.21.0) (2026-06-22)
 
 
