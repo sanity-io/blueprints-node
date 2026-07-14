@@ -503,6 +503,22 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
   return errors
 }
 
+export function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if (!('type' in event)) {
+    errors.push({type: 'invalid_value', message: '`event.type` must be provided'})
+  }
+
+  if ('type' in event && event.type !== 'document' && event.type !== 'sync-tag-invalidate') {
+    errors.push({type: 'invalid_value', message: '`event.type` must be either `document` or `sync-tag-invalidate`'})
+  }
+
+  return errors
+}
+
 /**
  * Validates a workflow function resource configuration.
  * @param functionResource The function resource to validate
@@ -519,6 +535,30 @@ export function validateWorkflowFunction(functionResource: unknown): BlueprintEr
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.workflow') {
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.workflow`'})
+  }
+
+  if ('debounceKey' in functionResource && typeof functionResource.debounceKey !== 'string') {
+    errors.push({type: 'invalid_type', message: '`debounceKey` must be a string'})
+  }
+
+  if ('debounceKey' in functionResource && !('debounce' in functionResource)) {
+    errors.push({type: 'invalid_value', message: '`debounceKey` requires a `debounce` to be set'})
+  }
+
+  if ('concurrency' in functionResource && typeof functionResource.concurrency !== 'number') {
+    errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
+  }
+
+  if ('concurrency' in functionResource && typeof functionResource.concurrency === 'number' && functionResource.concurrency < 1) {
+    errors.push({type: 'invalid_value', message: '`concurrency` must be at least 1'})
+  }
+
+  if ('debounce' in functionResource && typeof functionResource.debounce !== 'number') {
+    errors.push({type: 'invalid_type', message: '`debounce` must be a number'})
+  }
+
+  if ('event' in functionResource) {
+    errors.push(...validateWorkflowFunctionEvent(functionResource.event))
   }
 
   errors.push(...validateFunction(functionResource))

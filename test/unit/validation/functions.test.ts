@@ -835,6 +835,7 @@ describe('validateWorkflowFunction', () => {
       const errors = functions.validateWorkflowFunction({
         name: 'test',
         type: 'sanity.function.workflow',
+        event: {type: 'document', filter: "_type == 'article'"},
       })
       expect(errors).toStrictEqual([])
     })
@@ -846,6 +847,84 @@ describe('validateWorkflowFunction', () => {
         type: 'invalid_value',
         message: '`type` must be `sanity.function.workflow`',
       })
+    })
+
+    test('should return an error if the event type is invalid', () => {
+      const errors = functions.validateWorkflowFunction({
+        name: 'test',
+        type: 'sanity.function.workflow',
+        event: {type: 'invalid', filter: "_type == 'article'"},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`event.type` must be either `document` or `sync-tag-invalidate`',
+      })
+    })
+
+    test('should return an error if concurrency is not a number', () => {
+      const errors = functions.validateWorkflowFunction({
+        name: 'test',
+        type: 'sanity.function.workflow',
+        event: {type: 'document', filter: "_type == 'article'"},
+        concurrency: 'invalid',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`concurrency` must be a number',
+      })
+    })
+
+    test('should return an error if concurrency is less than 1', () => {
+      const errors = functions.validateWorkflowFunction({
+        name: 'test',
+        type: 'sanity.function.workflow',
+        event: {type: 'document', filter: "_type == 'article'"},
+        concurrency: 0,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`concurrency` must be at least 1',
+      })
+    })
+  })
+
+  test('should return an error if debounce is not a number', () => {
+    const errors = functions.validateWorkflowFunction({
+      name: 'test',
+      type: 'sanity.function.workflow',
+      event: {type: 'document', filter: "_type == 'article'"},
+      debounce: 'invalid',
+    })
+    expect(errors).toContainEqual({
+      type: 'invalid_type',
+      message: '`debounce` must be a number',
+    })
+  })
+
+  test('should return an error if debounceKey is set and not a string', () => {
+    const errors = functions.validateWorkflowFunction({
+      name: 'test',
+      type: 'sanity.function.workflow',
+      event: {type: 'document', filter: "_type == 'article'"},
+      debounce: 1,
+      debounceKey: 123,
+    })
+    expect(errors).toContainEqual({
+      type: 'invalid_type',
+      message: '`debounceKey` must be a string',
+    })
+  })
+
+  test('should return an error if debounceKey is set but debounce is empty', () => {
+    const errors = functions.validateWorkflowFunction({
+      name: 'test',
+      type: 'sanity.function.workflow',
+      event: {type: 'document', filter: "_type == 'article'"},
+      debounceKey: '_document.id',
+    })
+    expect(errors).toContainEqual({
+      type: 'invalid_value',
+      message: '`debounceKey` requires a `debounce` to be set',
     })
   })
 })
