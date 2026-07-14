@@ -7,6 +7,7 @@ import type {
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
+  BlueprintWorkflowFunctionResourceEvent,
 } from './event.js'
 import type {IanaTimezone} from './timezone.js'
 
@@ -248,4 +249,49 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
    * @defaultValue `functions/${name}`
    */
   src?: string
+}
+
+/**
+ * A durable, step-based workflow function.
+ * @public
+ * @alpha Deploying Workflows via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.workflow'
+  event: BlueprintWorkflowFunctionResourceEvent
+  /**
+   * Max concurrent executions
+   */
+  concurrency?: number
+  /**
+   * Debounce window in minutes
+   */
+  debounce?: number
+  /**
+   * Path used to group debounced events, e.g. 'document._id'
+   */
+  debounceKey?: string
+}
+
+/**
+ * Configuration for defining a workflow function.
+ * @public
+ * @alpha Deploying Workflows via Blueprints is experimental.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export type BlueprintWorkflowFunctionConfig = Omit<BlueprintWorkflowFunctionResource, 'type' | 'src' | 'event'> & {
+  /**
+   * Path to the workflow source code
+   * @defaultValue `workflows/${name}`
+   */
+  src?: string
+  /**
+   * Trigger configuration
+   */
+  event: BlueprintWorkflowFunctionResourceEvent
 }
