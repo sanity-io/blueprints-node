@@ -828,3 +828,24 @@ describe('validateEventFunction', () => {
     })
   })
 })
+
+describe('validateWorkflowFunction', () => {
+  describe('happy paths', () => {
+    test('should accept a valid workflow function without any optional properties', () => {
+      const errors = functions.validateWorkflowFunction({
+        name: 'test',
+        type: 'sanity.function.workflow',
+      })
+      expect(errors).toStrictEqual([])
+    })
+  })
+  describe('sad paths', () => {
+    test('should return an error if the type is not `sanity.function.workflow`', () => {
+      const errors = functions.validateWorkflowFunction({type: 'invalid'})
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`type` must be `sanity.function.workflow`',
+      })
+    })
+  })
+})

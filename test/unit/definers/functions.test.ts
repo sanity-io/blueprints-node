@@ -300,3 +300,62 @@ describe('defineScheduledFunction', () => {
     })
   })
 })
+
+describe('defineWorkflowFunction', () => {
+  describe('happy paths', () => {
+    test('should create a workflow event', () => {
+      const fn = fns.defineWorkflowFunction({
+        name: 'test',
+        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
+      })
+      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+    })
+
+    test('should create a workflow function with optional concurrency', () => {
+      const fn = fns.defineWorkflowFunction({
+        name: 'test',
+        concurrency: 3,
+        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
+      })
+      expect(fn.concurrency).toEqual(3)
+      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+    })
+
+    test('should create a workflow function with optional debounce', () => {
+      const fn = fns.defineWorkflowFunction({
+        name: 'test',
+        debounce: 3,
+        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
+      })
+      expect(fn.debounce).toEqual(3)
+      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+    })
+
+    test('should create a workflow function with optional debounceKey', () => {
+      const fn = fns.defineWorkflowFunction({
+        name: 'test',
+        debounceKey: 'testKey',
+        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
+      })
+      expect(fn.debounceKey).toEqual('testKey')
+      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+    })
+  })
+
+  describe('sad paths', () => {
+    afterEach(() => {
+      vi.resetAllMocks()
+    })
+
+    test('should throw an error if validateWorkflowFunction returns an error', () => {
+      const spy = vi.spyOn(index, 'validateWorkflowFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      expect(() =>
+        defineBlueprintForResource(
+          fns.defineWorkflowFunction({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
+        ),
+      ).toThrow('this is a test')
+
+      expect(spy).toHaveBeenCalledOnce()
+    })
+  })
+})
