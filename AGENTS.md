@@ -3,7 +3,7 @@
 ## Project Overview
 
 TypeScript library providing helper methods and type definitions for Sanity Blueprints.
-ESM-only package. Node.js >=20 required.
+ESM-only package. Node.js >=22 required.
 
 ## Commands
 
@@ -66,11 +66,11 @@ test/
 - Biome auto-organizes imports on save
 
 ### TypeScript
-- **Very strict mode**: All `strict*` flags enabled plus `noImplicit*`, `noUnused*`
+- **Very strict mode**: `strict` (default-on since TS 6) plus `noImplicit*`, `noUnused*`
 - No `@ts-ignore` or `as any` without exhausting proper type solutions
 - Prefer `satisfies` over type assertions for shape validation
 - Use `verbatimModuleSyntax` (explicit `type` imports required)
-- Target: ES2023
+- Target: ES2024
 
 ### Naming Conventions
 - **Functions/variables**: camelCase (`validateResource`, `corsResource`)
@@ -108,6 +108,8 @@ export function defineX(config: XConfig): XResource {
 ### JSDoc / TypeDoc
 
 This project generates documentation with TypeDoc. All public exports must have thorough JSDoc. When creating or modifying definers and types, always update their JSDoc to match these conventions.
+
+> **Temporary workaround**: TypeDoc is deliberately not in `devDependencies`. TypeDoc 0.28.x does not support TypeScript 7 (the native compiler ships no JS API, and npm cannot nest the conflicting `typescript` peer next to our v7), so the `docs:typedoc` script runs it via `npx` with a TypeScript 6 sidecar. Once TypeDoc releases support for TypeScript 7 (tracked in [TypeStrong/typedoc#3098](https://github.com/TypeStrong/typedoc/issues/3098)), move `typedoc` back into `devDependencies` and restore the script to `typedoc --options typedoc.json`.
 
 #### Definer functions
 
@@ -238,9 +240,9 @@ afterEach(() => vi.resetAllMocks())
 
 5. **Tests**: Mirror structure in `test/unit/`
 
-6. **Verify docs**: Run `npx typedoc` and check the generated HTML for correct rendering
+6. **Verify docs**: Run `npm run docs:typedoc` and check the generated HTML for correct rendering
 
 ## CI/CD
 
-PR checks run on Node 20.x, 22.x, 24.x across macOS, Ubuntu, Windows.
+PR checks run on Node 22.x, 24.x, 26.x across macOS, Ubuntu, Windows.
 Full test suite must pass: `npm test` (includes typecheck, unit, integration, lint).

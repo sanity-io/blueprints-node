@@ -3,6 +3,7 @@
   "include": ["src", "test"],
   "exclude": ["test/integration"],
   "compilerOptions": {
+    "rootDir": ".",
     "noEmit": true
   }
 }
