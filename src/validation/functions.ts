@@ -503,7 +503,12 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
   return errors
 }
 
-export function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
+/**
+ * Validates a workflow function event configuration.
+ * @param event The event configuration to validate
+ * @returns Array of validation errors, empty if valid
+ */
+function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
   if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
   if (!('type' in event)) {
     return [{type: 'invalid_value', message: '`event.type` must be provided'}]

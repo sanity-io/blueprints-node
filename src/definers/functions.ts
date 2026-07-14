@@ -546,7 +546,7 @@ function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): Blue
  *
  * @param functionConfig The configuration for the function
  * @category Definers
- * @alpha Deploying Scheduled Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Workflows via Blueprints is experimental. This feature is not available publicly yet.
  * @public
  * @hidden
  * @expandType BlueprintWorkflowFunctionConfig
