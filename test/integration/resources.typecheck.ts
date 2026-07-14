@@ -56,7 +56,7 @@ import {
   validateSyncTagInvalidateFunction,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
-} from '@sanity/blueprints'
+} from '../../dist/src/index.js'
 
 /**
  * These 'tests' create typed objects mimicking how users would import types from this package.
@@ -90,7 +90,7 @@ const _workflowDocumentEvent: BlueprintWorkflowFunctionResourceEvent = {
 }
 const _workflowSyncTagEvent: BlueprintWorkflowFunctionResourceEvent = {
   type: 'sync-tag-invalidate',
-  resource: {type: 'dataset', id: 'proj.dataset'},
+  resource: { type: 'dataset', id: 'proj.dataset' },
 }
 const _workflowFunction: BlueprintWorkflowFunctionResource = {
   type: 'sanity.function.workflow',
@@ -108,9 +108,9 @@ const _documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
   includeDrafts: false,
   on: ['create'],
   projection: '{id}',
-  resource: {type: 'dataset', id: 'production'},
+  resource: { type: 'dataset', id: 'production' },
 }
-const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({name: 'sup'})
+const documentFunctionResource: BlueprintDocumentFunctionResource = defineDocumentFunction({ name: 'sup' })
 
 const _webhookTriggerCreate: WebhookTrigger = 'create'
 const _webhookTriggerUpdate: WebhookTrigger = 'update'
@@ -129,7 +129,7 @@ const scheduledFunctionResource: BlueprintScheduledFunctionResource = defineSche
 })
 const _bareSyncTagInvalidateFunctionResourceEvent: BlueprintSyncTagInvalidateFunctionResourceEvent = {}
 const fullyQualifiedSyncTagInvalidateFunctionResourceEvent: BlueprintSyncTagInvalidateFunctionResourceEvent = {
-  resource: {type: 'dataset', id: 'proj.dataset'},
+  resource: { type: 'dataset', id: 'proj.dataset' },
 }
 const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = defineSyncTagInvalidateFunction({
   name: 'yoyoyo',
@@ -168,7 +168,7 @@ const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
 const documentWebhookResource: BlueprintDocumentWebhookResource = defineDocumentWebhook(documentWebhookConfig)
 
 const mediaLibraryAssetFunctionEvent: BlueprintMediaLibraryFunctionResourceEvent = {
-  resource: {type: 'media-library', id: 'ml1234'},
+  resource: { type: 'media-library', id: 'ml1234' },
   filter: 'filter',
   on: ['create'],
   projection: '{id}',
@@ -178,7 +178,7 @@ const mediaLibraryAssetFunctionResource: BlueprintMediaLibraryAssetFunctionResou
   event: mediaLibraryAssetFunctionEvent,
 })
 
-const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
+const rolePermission: RolePermission = { action: 'read', name: 'sanity-test-read' }
 const roleConfig: BlueprintRoleConfig = {
   name: 'test-role',
   title: 'Test Role',
@@ -190,7 +190,7 @@ const roleConfig: BlueprintRoleConfig = {
 const roleResource: BlueprintRoleResource = defineRole(roleConfig)
 const projectRoleResource: BlueprintProjectRoleResource = defineProjectRole('projectId', roleConfig)
 
-const blueprintResource: BlueprintResource = {name: 'test-resource', type: 'test'}
+const blueprintResource: BlueprintResource = { name: 'test-resource', type: 'test' }
 
 const _blueprintProjectLifecycleAttach: BlueprintProjectResourceLifecycle = {
   deletionPolicy: 'allow',
@@ -220,7 +220,7 @@ const _blueprintProjectLifecycleReference: BlueprintProjectResourceLifecycle = {
   },
 }
 
-const blueprintOutput: BlueprintOutput = {name: 'output', value: 'value'}
+const blueprintOutput: BlueprintOutput = { name: 'output', value: 'value' }
 const blueprint: Blueprint = {
   $schema: 'schema',
   blueprintVersion: '2025-01-01',
@@ -248,7 +248,7 @@ validateCorsOrigin(corsOriginResource)
 validateDataset(datasetResource)
 validateDocumentFunction(documentFunctionResource)
 validateDocumentWebhook(documentWebhookResource)
-validateFunction({name: 'test-function'})
+validateFunction({ name: 'test-function' })
 validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
 validateResource(blueprintResource)
 validateRole(roleResource)

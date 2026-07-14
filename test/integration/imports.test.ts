@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   defineBlueprint,
   defineCorsOrigin,
@@ -25,8 +26,7 @@ import {
   validateResource,
   validateRole,
   validateSyncTagInvalidateFunction,
-} from '@sanity/blueprints'
-import {describe, expect, it} from 'vitest'
+} from '../../dist/src/index.js'
 
 describe('package imports', () => {
   it('should import defineBlueprint', () => {
