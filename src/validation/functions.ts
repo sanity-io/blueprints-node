@@ -505,15 +505,23 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
 
 export function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
   if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+  if (!('type' in event)) {
+    return [{type: 'invalid_value', message: '`event.type` must be provided'}]
+  }
 
   const errors: BlueprintError[] = []
 
-  if (!('type' in event)) {
-    errors.push({type: 'invalid_value', message: '`event.type` must be provided'})
-  }
-
   if ('type' in event && event.type !== 'document' && event.type !== 'sync-tag-invalidate') {
     errors.push({type: 'invalid_value', message: '`event.type` must be either `document` or `sync-tag-invalidate`'})
+  }
+
+  switch (event.type) {
+    case 'document':
+      errors.push(...validateDocumentFunctionEvent(event))
+      break
+    case 'sync-tag-invalidate':
+      errors.push(...validateFunctionEventResourceDataset(event))
+      break
   }
 
   return errors
@@ -559,6 +567,8 @@ export function validateWorkflowFunction(functionResource: unknown): BlueprintEr
 
   if ('event' in functionResource) {
     errors.push(...validateWorkflowFunctionEvent(functionResource.event))
+  } else {
+    errors.push({type: 'missing_parameter', message: '`event` is required for a workflow'})
   }
 
   errors.push(...validateFunction(functionResource))

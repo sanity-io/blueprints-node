@@ -528,15 +528,39 @@ function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): Blue
   } as BlueprintQueueFunctionResourceEvent
 }
 
-export function defineWorkflowFunction(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
+/**
+ * Defines a workflow function resource.
+ *
+ * @remarks
+ *
+ * ```ts
+ * defineWorkflow({
+ *   name: 'daily-cleanup',
+ *   event: {type: 'document', on: ['create'], filter: "_type == 'post'"},
+ *   concurrency: 5,
+ *   debounce: 10,
+ *   debounceKey: 'document._id',
+ * })
+ * ```
+ *
+ *
+ * @param functionConfig The configuration for the function
+ * @category Definers
+ * @alpha Deploying Scheduled Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @public
+ * @hidden
+ * @expandType BlueprintWorkflowFunctionConfig
+ * @returns The validated workflow function resource
+ */
+export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
   const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
   const functionResource: BlueprintWorkflowFunctionResource = {
     ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
     type: 'sanity.function.workflow',
-    ...(event && {event}),
-    ...(concurrency && {concurrency}),
-    ...(debounce && {debounce}),
-    ...(debounceKey && {debounceKey}),
+    event,
+    ...(concurrency !== undefined && {concurrency}),
+    ...(debounce !== undefined && {debounce}),
+    ...(debounceKey !== undefined && {debounceKey}),
   }
 
   runValidation(() => validateWorkflowFunction(functionResource))

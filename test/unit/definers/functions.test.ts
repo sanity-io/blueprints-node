@@ -301,10 +301,10 @@ describe('defineScheduledFunction', () => {
   })
 })
 
-describe('defineWorkflowFunction', () => {
+describe('defineWorkflow', () => {
   describe('happy paths', () => {
     test('should create a workflow event', () => {
-      const fn = fns.defineWorkflowFunction({
+      const fn = fns.defineWorkflow({
         name: 'test',
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
@@ -312,7 +312,7 @@ describe('defineWorkflowFunction', () => {
     })
 
     test('should create a workflow function with optional concurrency', () => {
-      const fn = fns.defineWorkflowFunction({
+      const fn = fns.defineWorkflow({
         name: 'test',
         concurrency: 3,
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
@@ -322,7 +322,7 @@ describe('defineWorkflowFunction', () => {
     })
 
     test('should create a workflow function with optional debounce', () => {
-      const fn = fns.defineWorkflowFunction({
+      const fn = fns.defineWorkflow({
         name: 'test',
         debounce: 3,
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
@@ -332,7 +332,7 @@ describe('defineWorkflowFunction', () => {
     })
 
     test('should create a workflow function with optional debounceKey', () => {
-      const fn = fns.defineWorkflowFunction({
+      const fn = fns.defineWorkflow({
         name: 'test',
         debounceKey: 'testKey',
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
@@ -351,7 +351,7 @@ describe('defineWorkflowFunction', () => {
       const spy = vi.spyOn(index, 'validateWorkflowFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
       expect(() =>
         defineBlueprintForResource(
-          fns.defineWorkflowFunction({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
+          fns.defineWorkflow({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
         ),
       ).toThrow('this is a test')
 
