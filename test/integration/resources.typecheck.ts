@@ -56,7 +56,7 @@ import {
   validateSyncTagInvalidateFunction,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
-} from '../../dist/src/index.js'
+} from '@sanity/blueprints'
 
 /**
  * These 'tests' create typed objects mimicking how users would import types from this package.
