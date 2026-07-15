@@ -1,44 +1,25 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "./dist",
-    "target": "ES2023",
-    "lib": ["ES2023"],
-    "module": "ES2022",
+    "target": "es2024",
+    "types": ["node"],
+    "module": "esnext",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
     "sourceMap": true,
     "declaration": true,
 
-    // Strictest of the strict?
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
-    "alwaysStrict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
+    // strict, esModuleInterop, etc. are on by default as of TS 6
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
-
-    // Strict
-    "checkJs": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended
-    "allowImportingTsExtensions": false,
-    "resolveJsonModule": false,
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "erasableSyntaxOnly": true
+    "noPropertyAccessFromIndexSignature": true
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*.ts"]
+  "include": ["src"]
 }
