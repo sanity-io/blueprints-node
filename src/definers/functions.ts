@@ -357,7 +357,7 @@ export function defineSyncTagInvalidateFunction(
  * @returns The validated queue function resource
  */
 export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig): BlueprintQueueFunctionResource {
-  const {concurrency, fifo, dlq, event} = functionConfig
+  const {concurrency = 1, fifo = true, dlq = true, event} = functionConfig
 
   const functionResource: BlueprintQueueFunctionResource = {
     ...defineFunction(functionConfig, {skipValidation: true}),
@@ -529,7 +529,7 @@ export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig):
   const functionResource: BlueprintWorkflowFunctionResource = {
     ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
     type: 'sanity.function.workflow',
-    event,
+    ...(event !== undefined && {event}),
     ...(concurrency !== undefined && {concurrency}),
     ...(debounce !== undefined && {debounce}),
     ...(debounceKey !== undefined && {debounceKey}),

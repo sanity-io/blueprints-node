@@ -181,7 +181,9 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
 function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] {
   const errors: BlueprintError[] = []
   if (!event || typeof event !== 'object') return [{type: 'invalid_value', message: '`event` must be an object'}]
-  if (!('resource' in event)) return [{type: 'invalid_value', message: '`event.resource` must exist'}]
+  // `resource` is optional for the event types that reach here (document and sync-tag-invalidate),
+  // so there is nothing to validate when it is absent.
+  if (!('resource' in event) || typeof event.resource === 'undefined') return []
   const resource = event.resource
   if (!resource || typeof resource !== 'object') return [{type: 'invalid_value', message: '`event.resource` must be an object'}]
   if (!('type' in resource) || !resource.type || resource.type !== 'dataset')
@@ -454,6 +456,8 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
       errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
     } else if (functionResource.concurrency < 1) {
       errors.push({type: 'invalid_type', message: '`concurrency` must be at least 1'})
+    } else if (functionResource.concurrency > 500) {
+      errors.push({type: 'invalid_value', message: '`concurrency` must be less than 500'})
     }
   }
   if ('fifo' in functionResource && typeof functionResource.fifo !== 'boolean') {
@@ -483,16 +487,6 @@ function validateFunctionEvent(event: unknown): BlueprintError[] {
   if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
   if (!('type' in event)) return [{type: 'missing_parameter', message: '`event.type` is required'}]
 
-  if (
-    'type' in event &&
-    event.type !== 'document' &&
-    event.type !== 'sync-tag-invalidate' &&
-    event.type !== 'media-library' &&
-    event.type !== 'cron'
-  ) {
-    return [{type: 'invalid_value', message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`'}]
-  }
-
   switch (event.type) {
     case 'document':
       return validateDocumentFunctionEvent(event)
@@ -506,7 +500,7 @@ function validateFunctionEvent(event: unknown): BlueprintError[] {
       return [
         {
           type: 'invalid_value',
-          message: '`event.type` must be one of "document", "media-library", "cron", "sync-tag-invalidate"',
+          message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
         },
       ]
   }

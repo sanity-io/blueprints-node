@@ -763,6 +763,14 @@ describe('validateQueueFunction', () => {
       })
       expect(errors).toStrictEqual([])
     })
+    test('should accept a queue function with a sync-tag-invalidate event and no resource', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'sync-tag-invalidate'},
+      })
+      expect(errors).toStrictEqual([])
+    })
   })
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.queue`', () => {
