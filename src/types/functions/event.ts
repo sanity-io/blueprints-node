@@ -118,12 +118,3 @@ export interface BlueprintFunctionResourceEventResourceMediaLibrary {
  * @category Functions Types
  */
 export type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
-
-/**
- * Event configuration for workflows.
- * @category Functions Types
- */
-export type BlueprintWorkflowFunctionResourceEvent =
-  | ({type: 'document'} & BlueprintDocumentFunctionResourceEvent)
-  | ({type: 'sync-tag-invalidate'} & BlueprintSyncTagInvalidateFunctionResourceEvent)
-  | ({type: 'media-library'} & BlueprintMediaLibraryFunctionResourceEvent)

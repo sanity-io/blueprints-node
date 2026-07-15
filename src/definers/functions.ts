@@ -31,8 +31,8 @@ import {
   validateSyncTagInvalidateFunction,
   validateWorkflowFunction,
 } from '../index.js'
-import { parseScheduledExpression } from '../utils/schedule-parser.js'
-import { runValidation } from '../utils/validation.js'
+import {parseScheduledExpression} from '../utils/schedule-parser.js'
+import {runValidation} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -115,7 +115,7 @@ export function defineDocumentFunction(
 export function defineDocumentFunction(
   functionConfig: BlueprintDocumentFunctionConfig & Partial<BlueprintDocumentFunctionResourceEvent>,
 ): BlueprintDocumentFunctionResource {
-  let { name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent } = functionConfig
+  let {name, src, event, timeout, memory, env, robotToken, project, runtime, ...maybeEvent} = functionConfig
 
   // event validation and normalization
   if (event) {
@@ -137,7 +137,7 @@ export function defineDocumentFunction(
   }
 
   const functionResource: BlueprintDocumentFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.document',
     event,
   }
@@ -203,10 +203,10 @@ export function defineDocumentFunction(
 export function defineMediaLibraryAssetFunction(
   functionConfig: BlueprintMediaLibraryAssetFunctionConfig,
 ): BlueprintMediaLibraryAssetFunctionResource {
-  const { event } = functionConfig
+  const {event} = functionConfig
 
   const functionResource: BlueprintMediaLibraryAssetFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.media-library.asset',
     event: buildMediaLibraryFunctionEvent(event),
   }
@@ -256,10 +256,10 @@ export function defineMediaLibraryAssetFunction(
  * @returns The validated scheduled function resource
  */
 export function defineScheduledFunction(functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
-  const { event, timezone } = functionConfig
+  const {event, timezone} = functionConfig
 
   const functionResource: BlueprintScheduledFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true, scopeType: 'organization' }),
+    ...defineFunction(functionConfig, {skipValidation: true, scopeType: 'organization'}),
     type: 'sanity.function.cron',
     event: buildScheduledFunctionEvent(event),
   }
@@ -317,12 +317,12 @@ export function defineScheduleFunction(functionConfig: BlueprintScheduledFunctio
 export function defineSyncTagInvalidateFunction(
   functionConfig: BlueprintSyncTagInvalidateFunctionConfig,
 ): BlueprintSyncTagInvalidateFunctionResource {
-  const { event } = functionConfig
+  const {event} = functionConfig
 
   const functionResource: BlueprintSyncTagInvalidateFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.sync-tag-invalidate',
-    ...(event?.resource ? { event } : {}),
+    ...(event?.resource ? {event} : {}),
   }
 
   runValidation(() => validateSyncTagInvalidateFunction(functionResource))
@@ -359,15 +359,15 @@ export function defineSyncTagInvalidateFunction(
  * @returns The validated queue function resource
  */
 export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig): BlueprintQueueFunctionResource {
-  const { concurrency, fifo, dlq, event } = functionConfig
+  const {concurrency, fifo, dlq, event} = functionConfig
 
   const functionResource: BlueprintQueueFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.queue',
-    ...(concurrency !== undefined && { concurrency }),
-    ...(fifo !== undefined && { fifo }),
-    ...(dlq !== undefined && { dlq }),
-    ...(event !== undefined && { event }),
+    ...(concurrency !== undefined && {concurrency}),
+    ...(fifo !== undefined && {fifo}),
+    ...(dlq !== undefined && {dlq}),
+    ...(event !== undefined && {event}),
   }
 
   runValidation(() => validateQueueFunction(functionResource))
@@ -395,7 +395,7 @@ export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig
  */
 export function defineEventFunction(functionConfig: BlueprintEventFunctionConfig): BlueprintEventFunctionResource {
   const functionResource: BlueprintEventFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.event',
   }
 
@@ -416,9 +416,9 @@ export function defineEventFunction(functionConfig: BlueprintEventFunctionConfig
  */
 export function defineFunction(
   functionConfig: BlueprintBaseFunctionConfig,
-  options?: { skipValidation?: boolean; scopeType?: 'organization' },
+  options?: {skipValidation?: boolean; scopeType?: 'organization'},
 ): BlueprintBaseFunctionResource {
-  const { name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle } = functionConfig
+  const {name, displayName, src, timeout, memory, env, robotToken, project, runtime, lifecycle} = functionConfig
 
   const functionResource: BlueprintBaseFunctionResource = {
     type: 'sanity.function.document',
@@ -499,7 +499,7 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
     throw new Error(`Invalid cron string: expected 5 fields, got ${parts.length}`)
   }
   const [minute, hour, dayOfMonth, month, dayOfWeek] = parts
-  return { minute, hour, dayOfMonth, month, dayOfWeek }
+  return {minute, hour, dayOfMonth, month, dayOfWeek}
 }
 
 /**
@@ -544,14 +544,14 @@ function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): Blue
  * @returns The validated workflow function resource
  */
 export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
-  const { name, event, concurrency, debounce, debounceKey, src } = functionConfig
+  const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
   const functionResource: BlueprintWorkflowFunctionResource = {
-    ...defineFunction({ ...functionConfig, src: src ?? `workflows/${name}` }, { skipValidation: true }),
+    ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
     type: 'sanity.function.workflow',
     event,
-    ...(concurrency !== undefined && { concurrency }),
-    ...(debounce !== undefined && { debounce }),
-    ...(debounceKey !== undefined && { debounceKey }),
+    ...(concurrency !== undefined && {concurrency}),
+    ...(debounce !== undefined && {debounce}),
+    ...(debounceKey !== undefined && {debounceKey}),
   }
 
   runValidation(() => validateWorkflowFunction(functionResource))

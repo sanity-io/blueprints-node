@@ -802,7 +802,7 @@ describe('validateQueueFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`event.type` must be one of "document", "media-library", "cron", "sync-tag-invalidate"',
+        message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
       })
     })
     test('should surface errors from the delegated event validator', () => {
@@ -952,7 +952,7 @@ describe('validateWorkflowFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`',
+        message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
       })
     })
 

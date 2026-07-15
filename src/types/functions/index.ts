@@ -6,7 +6,6 @@ import type {
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
-  BlueprintWorkflowFunctionResourceEvent,
 } from './event.js'
 import type {IanaTimezone} from './timezone.js'
 
@@ -257,7 +256,7 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
  */
 export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.workflow'
-  event?: BlueprintWorkflowFunctionResourceEvent
+  event?: BlueprintFunctionResourceEvent
   /**
    * Concurrent executions
    * Min 1
@@ -291,5 +290,5 @@ export type BlueprintWorkflowFunctionConfig = Omit<BlueprintWorkflowFunctionReso
   /**
    * Trigger configuration
    */
-  event?: BlueprintWorkflowFunctionResourceEvent
+  event?: BlueprintFunctionResourceEvent
 }
