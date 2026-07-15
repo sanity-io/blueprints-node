@@ -261,13 +261,15 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
  */
 export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.workflow'
-  event: BlueprintWorkflowFunctionResourceEvent
+  event?: BlueprintWorkflowFunctionResourceEvent
   /**
-   * Max concurrent executions
+   * Concurrent executions
+   * Min 1
+   * Max 500
    */
   concurrency?: number
   /**
-   * Debounce window in minutes
+   * Debounce window in seconds
    */
   debounce?: number
   /**
@@ -293,5 +295,5 @@ export type BlueprintWorkflowFunctionConfig = Omit<BlueprintWorkflowFunctionReso
   /**
    * Trigger configuration
    */
-  event: BlueprintWorkflowFunctionResourceEvent
+  event?: BlueprintWorkflowFunctionResourceEvent
 }

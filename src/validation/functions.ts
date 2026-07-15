@@ -439,7 +439,6 @@ export function validateSyncTagInvalidateFunction(functionResource: unknown): Bl
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
-
 export function validateQueueFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
@@ -481,7 +480,7 @@ function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
 }
 
 /**
- * Validates a event function resource configuration.
+ * Validates an event function resource configuration.
  * @param functionResource The function resource to validate
  * @alpha
  * @hidden
@@ -497,6 +496,89 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.event') {
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.event`'})
+  }
+
+  errors.push(...validateFunction(functionResource))
+
+  return errors
+}
+
+/**
+ * Validates a workflow function event configuration.
+ * @param event The event configuration to validate
+ * @returns Array of validation errors, empty if valid
+ */
+function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
+  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+  if (!('type' in event)) {
+    return [{type: 'invalid_value', message: '`event.type` must be provided'}]
+  }
+
+  if ('type' in event && event.type !== 'document' && event.type !== 'sync-tag-invalidate' && event.type !== 'media-library') {
+    return [{type: 'invalid_value', message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`'}]
+  }
+
+  const errors: BlueprintError[] = []
+
+  switch (event.type) {
+    case 'document':
+      errors.push(...validateDocumentFunctionEvent(event))
+      break
+    case 'sync-tag-invalidate':
+      errors.push(...validateFunctionEventResourceDataset(event))
+      break
+    case 'media-library':
+      errors.push(...validateMediaLibraryFunctionEvent(event))
+      break
+  }
+
+  return errors
+}
+
+/**
+ * Validates a workflow function resource configuration.
+ * @param functionResource The function resource to validate
+ * @alpha
+ * @hidden
+ * @category Functions Types
+ * @returns Array of validation errors, empty if valid
+ */
+export function validateWorkflowFunction(functionResource: unknown): BlueprintError[] {
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.workflow') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.workflow`'})
+  }
+
+  if ('debounceKey' in functionResource && typeof functionResource.debounceKey !== 'string') {
+    errors.push({type: 'invalid_type', message: '`debounceKey` must be a string'})
+  }
+
+  if ('debounceKey' in functionResource && !('debounce' in functionResource)) {
+    errors.push({type: 'invalid_value', message: '`debounceKey` requires a `debounce` to be set'})
+  }
+
+  if ('concurrency' in functionResource && typeof functionResource.concurrency !== 'number') {
+    errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
+  }
+
+  if ('concurrency' in functionResource && typeof functionResource.concurrency === 'number' && functionResource.concurrency < 1) {
+    errors.push({type: 'invalid_value', message: '`concurrency` must be at least 1'})
+  }
+
+  if ('concurrency' in functionResource && typeof functionResource.concurrency === 'number' && functionResource.concurrency > 500) {
+    errors.push({type: 'invalid_value', message: '`concurrency` must be less than 500'})
+  }
+
+  if ('debounce' in functionResource && typeof functionResource.debounce !== 'number') {
+    errors.push({type: 'invalid_type', message: '`debounce` must be a number'})
+  }
+
+  if ('event' in functionResource) {
+    errors.push(...validateWorkflowFunctionEvent(functionResource.event))
   }
 
   errors.push(...validateFunction(functionResource))

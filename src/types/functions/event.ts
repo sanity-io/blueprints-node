@@ -145,3 +145,4 @@ export type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete'
 export type BlueprintWorkflowFunctionResourceEvent =
   | ({type: 'document'} & BlueprintDocumentFunctionResourceEvent)
   | ({type: 'sync-tag-invalidate'} & BlueprintSyncTagInvalidateFunctionResourceEvent)
+  | ({type: 'media-library'} & BlueprintMediaLibraryFunctionResourceEvent)

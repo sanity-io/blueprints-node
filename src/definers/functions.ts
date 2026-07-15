@@ -22,6 +22,8 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionConfig,
   type BlueprintSyncTagInvalidateFunctionResource,
+  type BlueprintWorkflowFunctionConfig,
+  type BlueprintWorkflowFunctionResource,
   validateDocumentFunction,
   validateEventFunction,
   validateFunction,
@@ -29,6 +31,7 @@ import {
   validateQueueFunction,
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
+  validateWorkflowFunction,
 } from '../index.js'
 import {parseScheduledExpression} from '../utils/schedule-parser.js'
 import {runValidation} from '../utils/validation.js'
@@ -523,4 +526,43 @@ function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): Blue
     ...defaultEvent,
     ...userProvidedEvent,
   } as BlueprintQueueFunctionResourceEvent
+}
+
+/**
+ * Defines a workflow function resource.
+ *
+ * @remarks
+ *
+ * ```ts
+ * defineWorkflow({
+ *   name: 'daily-cleanup',
+ *   event: {type: 'document', on: ['create'], filter: "_type == 'post'"},
+ *   concurrency: 5,
+ *   debounce: 10,
+ *   debounceKey: 'document._id',
+ * })
+ * ```
+ *
+ *
+ * @param functionConfig The configuration for the function
+ * @category Definers
+ * @alpha Deploying Workflows via Blueprints is experimental. This feature is not available publicly yet.
+ * @public
+ * @hidden
+ * @expandType BlueprintWorkflowFunctionConfig
+ * @returns The validated workflow function resource
+ */
+export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
+  const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
+  const functionResource: BlueprintWorkflowFunctionResource = {
+    ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
+    type: 'sanity.function.workflow',
+    event,
+    ...(concurrency !== undefined && {concurrency}),
+    ...(debounce !== undefined && {debounce}),
+    ...(debounceKey !== undefined && {debounceKey}),
+  }
+
+  runValidation(() => validateWorkflowFunction(functionResource))
+  return functionResource
 }
