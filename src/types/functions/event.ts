@@ -84,31 +84,12 @@ export type BlueprintScheduledFunctionConfigEvent =
   | BlueprintScheduledFunctionExpressionResourceEvent
 
 /**
- * Event configuration for queue functions
- * @category Functions Types
- * @alpha
- * @hidden
- */
-export interface BlueprintQueueFunctionResourceEvent {
-  concurrency?: number
-  fifo?: boolean
-  dlq?: boolean
-}
-
-/**
- * Union type of all queue function resource event configurations
- * @category Functions Types
- */
-export type BlueprintQueueFunctionConfigEvent = true | BlueprintQueueFunctionResourceEvent
-
-/**
  * Union type of all function resource event configurations
  * @category Functions Types
  */
 export type BlueprintFunctionResourceEvent =
   | BlueprintDocumentFunctionResourceEvent
   | BlueprintMediaLibraryFunctionResourceEvent
-  | BlueprintQueueFunctionResourceEvent
   | BlueprintScheduledFunctionResourceEvent
   | BlueprintSyncTagInvalidateFunctionResourceEvent
 

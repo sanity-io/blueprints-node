@@ -2,7 +2,6 @@ import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
-  BlueprintQueueFunctionResourceEvent,
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
@@ -109,7 +108,6 @@ export interface BlueprintSyncTagInvalidateFunctionResource extends BlueprintBas
  */
 export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.queue'
-  event?: BlueprintQueueFunctionResourceEvent
 }
 
 /**

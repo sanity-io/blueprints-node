@@ -138,7 +138,6 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
-  queue: true,
 })
 
 const eventFunction: BlueprintEventFunctionResource = defineEventFunction({
