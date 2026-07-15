@@ -44,8 +44,6 @@ type ScheduledFunctionEventKey =
   | keyof BlueprintScheduledFunctionExplicitResourceEvent
   | keyof BlueprintScheduledFunctionExpressionResourceEvent
 const SCHEDULED_EVENT_KEYS = new Set<ScheduledFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
-// type QueueFunctionEventKey = keyof BlueprintQueueFunctionResourceEvent
-// const QUEUE_EVENT_KEYS = new Set<QueueFunctionEventKey>(['concurrency', 'fifo', 'dlq'])
 
 /*
  * FUTURE example (move below @example when ready)
@@ -501,23 +499,6 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
   const [minute, hour, dayOfMonth, month, dayOfWeek] = parts
   return {minute, hour, dayOfMonth, month, dayOfWeek}
 }
-
-/**
- * Builds a queue function event configuration.
- * @param event Queue function event configuration
- * @returns Cleaned queue function event configuration
-function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): BlueprintQueueFunctionResourceEvent {
-  const defaultEvent = { concurrency: 1, fifo: true, dlq: true }
-  if (typeof event === 'boolean') {
-    return defaultEvent
-  }
-  const userProvidedEvent = Object.fromEntries(Object.entries(event).filter(([key]) => QUEUE_EVENT_KEYS.has(key as QueueFunctionEventKey)))
-  return {
-    ...defaultEvent,
-    ...userProvidedEvent,
-  } as BlueprintQueueFunctionResourceEvent
-}
-*/
 
 /**
  * Defines a workflow function resource.
