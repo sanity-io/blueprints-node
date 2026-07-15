@@ -359,7 +359,7 @@ export function defineSyncTagInvalidateFunction(
  * @returns The validated queue function resource
  */
 export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig): BlueprintQueueFunctionResource {
-  const { concurrency, fifo, dlq } = functionConfig
+  const { concurrency, fifo, dlq, event } = functionConfig
 
   const functionResource: BlueprintQueueFunctionResource = {
     ...defineFunction(functionConfig, { skipValidation: true }),
@@ -367,6 +367,7 @@ export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig
     ...(concurrency !== undefined && { concurrency }),
     ...(fifo !== undefined && { fifo }),
     ...(dlq !== undefined && { dlq }),
+    ...(event !== undefined && { event }),
   }
 
   runValidation(() => validateQueueFunction(functionResource))

@@ -731,6 +731,38 @@ describe('validateQueueFunction', () => {
       })
       expect(errors).toStrictEqual([])
     })
+    test('should accept a queue function with a document event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'document', on: ['publish'], filter: "_type == 'post'"},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a media-library event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'media-library', on: ['create'], resource: {type: 'media-library', id: 'my-media-library-id'}},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a cron event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'cron', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a sync-tag-invalidate event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'sync-tag-invalidate', resource: {type: 'dataset', id: 'myProj.myDataset'}},
+      })
+      expect(errors).toStrictEqual([])
+    })
   })
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.queue`', () => {
@@ -738,6 +770,50 @@ describe('validateQueueFunction', () => {
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.queue`',
+      })
+    })
+    test('should return an error if event is not an object', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: 'publish',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`event` must be an object',
+      })
+    })
+    test('should return an error if event.type is missing', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {on: ['publish']},
+      })
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: '`event.type` is required',
+      })
+    })
+    test('should return an error if event.type is unknown', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'nope'},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`event.type` must be one of "document", "media-library", "cron", "sync-tag-invalidate"',
+      })
+    })
+    test('should surface errors from the delegated event validator', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'media-library', on: ['create']},
+      })
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: '`resource` is required for a media library function',
       })
     })
     test('should return an error if concurrency is invalid', () => {

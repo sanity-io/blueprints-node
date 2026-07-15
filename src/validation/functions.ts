@@ -463,33 +463,44 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
     errors.push({type: 'invalid_type', message: '`dlq` must be a boolean'})
   }
 
+  if ('event' in functionResource && typeof functionResource.event !== 'undefined') {
+    errors.push(...validateQueueFunctionEvent(functionResource.event))
+  }
+
   errors.push(...validateFunction(functionResource))
 
   return errors
 }
 
-/*
+/**
+ * Validates a queue function event configuration.
+ * The event is a discriminated union keyed by `type`; validation is delegated to the
+ * matching per-type event validator.
+ * @param event The event configuration to validate
+ * @returns Array of validation errors, empty if valid
+ */
 function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event || typeof event !== 'object') return [{ type: 'invalid_type', message: '`event` must be an object' }]
+  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+  if (!('type' in event)) return [{type: 'missing_parameter', message: '`event.type` is required'}]
 
-  const errors: BlueprintError[] = []
-
-  if (!('concurrency' in event) || typeof event.concurrency !== 'number') {
-    errors.push({ type: 'invalid_type', message: '`event.concurrency` must be a number' })
+  switch (event.type) {
+    case 'document':
+      return validateDocumentFunctionEvent(event)
+    case 'media-library':
+      return validateMediaLibraryFunctionEvent(event)
+    case 'cron':
+      return validateScheduledFunctionEvent(event)
+    case 'sync-tag-invalidate':
+      return validateFunctionEventResourceDataset(event)
+    default:
+      return [
+        {
+          type: 'invalid_value',
+          message: '`event.type` must be one of "document", "media-library", "cron", "sync-tag-invalidate"',
+        },
+      ]
   }
-  if ('concurrency' in event && typeof event.concurrency === 'number' && event.concurrency < 1) {
-    errors.push({ type: 'invalid_type', message: '`event.concurrency` must be at least 1' })
-  }
-  if (!('fifo' in event) || typeof event.fifo !== 'boolean') {
-    errors.push({ type: 'invalid_type', message: '`event.fifo` must be a boolean' })
-  }
-  if (!('dlq' in event) || typeof event.dlq !== 'boolean') {
-    errors.push({ type: 'invalid_type', message: '`event.dlq` must be a boolean' })
-  }
-
-  return errors
 }
-*/
 
 /**
  * Validates an event function resource configuration.

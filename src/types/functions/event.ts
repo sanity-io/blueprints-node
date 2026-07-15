@@ -88,10 +88,10 @@ export type BlueprintScheduledFunctionConfigEvent =
  * @category Functions Types
  */
 export type BlueprintFunctionResourceEvent =
-  | BlueprintDocumentFunctionResourceEvent
-  | BlueprintMediaLibraryFunctionResourceEvent
-  | BlueprintScheduledFunctionResourceEvent
-  | BlueprintSyncTagInvalidateFunctionResourceEvent
+  | ({type: 'document'} & BlueprintDocumentFunctionResourceEvent)
+  | ({type: 'media-library'} & BlueprintMediaLibraryFunctionResourceEvent)
+  | ({type: 'cron'} & BlueprintScheduledFunctionResourceEvent)
+  | ({type: 'sync-tag-invalidate'} & BlueprintSyncTagInvalidateFunctionResourceEvent)
 
 /**
  * Dataset resource for scoping document functions to specific datasets

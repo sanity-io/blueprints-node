@@ -1,7 +1,8 @@
-import {afterEach, describe, expect, test, vi} from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import * as fns from '../../../src/definers/functions.js'
+import type { BlueprintFunctionResourceEvent } from '../../../src/index.js'
 import * as index from '../../../src/index.js'
-import {defineBlueprintForResource} from '../../helpers/index.js'
+import { defineBlueprintForResource } from '../../helpers/index.js'
 
 vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   const originalModule = await importOriginal()
@@ -14,13 +15,13 @@ vi.mock(import('../../../src/index.js'), async (importOriginal) => {
 describe('defineFunction', () => {
   describe('happy paths', () => {
     test('should assign src based on name if not provided', () => {
-      const fn = fns.defineFunction({name: 'test'})
+      const fn = fns.defineFunction({ name: 'test' })
       expect(fn.src).toEqual('functions/test')
     })
 
     test('should ignore invalid properties', () => {
       // @ts-expect-error Intentionally wrong type
-      const fn = fns.defineFunction({name: 'test', invalid: 'invalid'})
+      const fn = fns.defineFunction({ name: 'test', invalid: 'invalid' })
       expect(Object.keys(fn)).not.toContain('invalid')
     })
   })
@@ -30,8 +31,8 @@ describe('defineFunction', () => {
     })
 
     test('should throw an error if validateFunction returns an error', () => {
-      const spy = vi.spyOn(index, 'validateFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      expect(() => defineBlueprintForResource(fns.defineFunction({name: 'func-name'}))).toThrow('this is a test')
+      const spy = vi.spyOn(index, 'validateFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+      expect(() => defineBlueprintForResource(fns.defineFunction({ name: 'func-name' }))).toThrow('this is a test')
 
       expect(spy).toHaveBeenCalledOnce()
     })
@@ -40,27 +41,27 @@ describe('defineFunction', () => {
 describe('defineDocumentFunction', () => {
   describe('happy paths', () => {
     test('should create a default publish event with provided filter', () => {
-      const fn = fns.defineDocumentFunction({name: 'test', event: {filter: '_type == "post"'}})
-      expect(fn.event).toEqual({on: ['publish'], filter: '_type == "post"'})
+      const fn = fns.defineDocumentFunction({ name: 'test', event: { filter: '_type == "post"' } })
+      expect(fn.event).toEqual({ on: ['publish'], filter: '_type == "post"' })
     })
 
     test('should throw an error if event keys are defined using a mix of under the event object as well as at the top level', () => {
       expect(() =>
         fns.defineDocumentFunction({
           name: 'test',
-          event: {on: ['publish']},
+          event: { on: ['publish'] },
           filter: '_type == "post"',
         }),
       ).toThrowError(/`event` properties should be specified under the `event` key/i)
     })
 
     test('should create the event with publish if not provided', () => {
-      const fn = fns.defineDocumentFunction({name: 'test', src: 'test.js'})
-      expect(fn.event).toEqual({on: ['publish']})
+      const fn = fns.defineDocumentFunction({ name: 'test', src: 'test.js' })
+      expect(fn.event).toEqual({ on: ['publish'] })
     })
 
     test('should allow for creating events triggered on create, update and delete', () => {
-      const fn = fns.defineDocumentFunction({name: 'test', src: 'test.js', event: {on: ['create', 'update', 'delete']}})
+      const fn = fns.defineDocumentFunction({ name: 'test', src: 'test.js', event: { on: ['create', 'update', 'delete'] } })
       expect(fn.event.on).toEqual(['create', 'update', 'delete'])
     })
 
@@ -68,7 +69,7 @@ describe('defineDocumentFunction', () => {
       const fn = fns.defineDocumentFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update'], includeAllVersions: true, includeDrafts: true},
+        event: { on: ['update'], includeAllVersions: true, includeDrafts: true },
       })
       expect(fn.event.includeDrafts).toEqual(true)
       expect(fn.event.includeAllVersions).toEqual(true)
@@ -78,7 +79,7 @@ describe('defineDocumentFunction', () => {
       const fn = fns.defineDocumentFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update'], resource: {type: 'dataset', id: 'myProject.myDataset'}},
+        event: { on: ['update'], resource: { type: 'dataset', id: 'myProject.myDataset' } },
       })
       expect(fn.event.resource?.type).toEqual('dataset')
       expect(fn.event.resource?.id).toEqual('myProject.myDataset')
@@ -88,7 +89,7 @@ describe('defineDocumentFunction', () => {
       const fn = fns.defineDocumentFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update'], resource: {type: 'dataset', id: 'myProject.*'}},
+        event: { on: ['update'], resource: { type: 'dataset', id: 'myProject.*' } },
       })
       expect(fn.event.resource?.type).toEqual('dataset')
       expect(fn.event.resource?.id).toEqual('myProject.*')
@@ -98,7 +99,7 @@ describe('defineDocumentFunction', () => {
       const fn = fns.defineDocumentFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update']},
+        event: { on: ['update'] },
         project: 'projectId',
       })
       expect(fn.project).toEqual('projectId')
@@ -111,8 +112,8 @@ describe('defineDocumentFunction', () => {
     })
 
     test('should throw an error if validateDocumentFunction returns an error', () => {
-      const spy = vi.spyOn(index, 'validateDocumentFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      expect(() => defineBlueprintForResource(fns.defineDocumentFunction({name: 'test', event: {on: ['publish']}}))).toThrow(
+      const spy = vi.spyOn(index, 'validateDocumentFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+      expect(() => defineBlueprintForResource(fns.defineDocumentFunction({ name: 'test', event: { on: ['publish'] } }))).toThrow(
         'this is a test',
       )
 
@@ -122,10 +123,10 @@ describe('defineDocumentFunction', () => {
 })
 
 describe('defineMediaLibraryAssetFunction', () => {
-  const resource = {type: 'media-library' as const, id: 'ml12345'}
+  const resource = { type: 'media-library' as const, id: 'ml12345' }
   describe('happy paths', () => {
     test('should create a default publish event with provided filter', () => {
-      const event = {filter: '_type == "post"', resource}
+      const event = { filter: '_type == "post"', resource }
       const fn = fns.defineMediaLibraryAssetFunction({
         name: 'test',
         event,
@@ -135,12 +136,12 @@ describe('defineMediaLibraryAssetFunction', () => {
     })
 
     test('should create the event with publish if not provided', () => {
-      const fn = fns.defineMediaLibraryAssetFunction({name: 'test', src: 'test.js', event: {resource}})
+      const fn = fns.defineMediaLibraryAssetFunction({ name: 'test', src: 'test.js', event: { resource } })
       expect(fn.event.on).toEqual(['publish'])
     })
 
     test('should allow for creating events triggered on create, update and delete', () => {
-      const fn = fns.defineMediaLibraryAssetFunction({name: 'test', src: 'test.js', event: {on: ['create', 'update', 'delete'], resource}})
+      const fn = fns.defineMediaLibraryAssetFunction({ name: 'test', src: 'test.js', event: { on: ['create', 'update', 'delete'], resource } })
       expect(fn.event.on).toEqual(['create', 'update', 'delete'])
     })
 
@@ -148,13 +149,13 @@ describe('defineMediaLibraryAssetFunction', () => {
       let fn = fns.defineMediaLibraryAssetFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update'], includeDrafts: true, resource},
+        event: { on: ['update'], includeDrafts: true, resource },
       })
       expect(fn.event.includeDrafts).toEqual(true)
       fn = fns.defineMediaLibraryAssetFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update'], includeDrafts: false, resource},
+        event: { on: ['update'], includeDrafts: false, resource },
       })
       expect(fn.event.includeDrafts).toEqual(false)
     })
@@ -163,7 +164,7 @@ describe('defineMediaLibraryAssetFunction', () => {
       const fn = fns.defineMediaLibraryAssetFunction({
         name: 'test',
         src: 'test.js',
-        event: {on: ['update'], resource},
+        event: { on: ['update'], resource },
         project: 'projectId',
       })
       expect(fn.project).toEqual('projectId')
@@ -176,10 +177,10 @@ describe('defineMediaLibraryAssetFunction', () => {
     })
 
     test('should throw an error if validateMediaLibraryAssetFunction returns an error', () => {
-      const spy = vi.spyOn(index, 'validateMediaLibraryAssetFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      const spy = vi.spyOn(index, 'validateMediaLibraryAssetFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
       expect(() =>
         defineBlueprintForResource(
-          fns.defineMediaLibraryAssetFunction({name: 'test', event: {on: ['publish'], resource: {type: 'media-library', id: 'ml1234'}}}),
+          fns.defineMediaLibraryAssetFunction({ name: 'test', event: { on: ['publish'], resource: { type: 'media-library', id: 'ml1234' } } }),
         ),
       ).toThrow('this is a test')
 
@@ -191,95 +192,95 @@ describe('defineMediaLibraryAssetFunction', () => {
 describe('defineScheduledFunction', () => {
   describe('happy paths', () => {
     test('should create a scheduled event with explicit cron fields', () => {
-      const event = {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}
+      const event = { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' }
       const fn = fns.defineScheduledFunction({
         name: 'test',
         event,
       })
-      expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+      expect(fn.event).toEqual({ minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' })
     })
 
     test('should normalize expression to explicit cron fields', () => {
-      const event = {expression: '* * * * *'}
+      const event = { expression: '* * * * *' }
       const fn = fns.defineScheduledFunction({
         name: 'test',
         event,
       })
-      expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+      expect(fn.event).toEqual({ minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' })
     })
 
     test('should create a scheduled function with optional timezone', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: '* * * * *'},
+        event: { expression: '* * * * *' },
         timezone: 'America/New_York',
       })
       expect(fn.timezone).toEqual('America/New_York')
-      expect(fn.event).toEqual({minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+      expect(fn.event).toEqual({ minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' })
     })
 
     test('should parse natural language expression to explicit cron fields', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: 'every day at 9am'},
+        event: { expression: 'every day at 9am' },
       })
-      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+      expect(fn.event).toEqual({ minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*' })
     })
 
     test('should normalize cron expression to explicit fields', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: '0 9 * * 1-5'},
+        event: { expression: '0 9 * * 1-5' },
       })
-      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1-5'})
+      expect(fn.event).toEqual({ minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1-5' })
     })
 
     test('should parse weekday natural language', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: 'weekdays at 8am'},
+        event: { expression: 'weekdays at 8am' },
       })
-      expect(fn.event).toEqual({minute: '0', hour: '8', dayOfMonth: '*', month: '*', dayOfWeek: '1-5'})
+      expect(fn.event).toEqual({ minute: '0', hour: '8', dayOfMonth: '*', month: '*', dayOfWeek: '1-5' })
     })
 
     test('should parse specific weekday with time', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: 'fridays at 9am'},
+        event: { expression: 'fridays at 9am' },
       })
-      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '5'})
+      expect(fn.event).toEqual({ minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '5' })
     })
 
     test('should parse time of day period', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: 'fridays in the evening'},
+        event: { expression: 'fridays in the evening' },
       })
-      expect(fn.event).toEqual({minute: '0', hour: '18', dayOfMonth: '*', month: '*', dayOfWeek: '5'})
+      expect(fn.event).toEqual({ minute: '0', hour: '18', dayOfMonth: '*', month: '*', dayOfWeek: '5' })
     })
 
     test('should parse multiple weekdays', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: 'mon, wed, fri at 9am'},
+        event: { expression: 'mon, wed, fri at 9am' },
       })
-      expect(fn.event).toEqual({minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1,3,5'})
+      expect(fn.event).toEqual({ minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1,3,5' })
     })
 
     test('should parse interval schedules', () => {
       const fn = fns.defineScheduledFunction({
         name: 'test',
-        event: {expression: 'every 15 minutes'},
+        event: { expression: 'every 15 minutes' },
       })
-      expect(fn.event).toEqual({minute: '*/15', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+      expect(fn.event).toEqual({ minute: '*/15', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' })
     })
 
     test('deprecated method defineScheduleFunction should work', () => {
       const fn = fns.defineScheduleFunction({
         name: 'test',
-        event: {expression: 'every 15 minutes'},
+        event: { expression: 'every 15 minutes' },
       })
-      expect(fn.event).toEqual({minute: '*/15', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'})
+      expect(fn.event).toEqual({ minute: '*/15', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' })
     })
   })
 
@@ -289,10 +290,10 @@ describe('defineScheduledFunction', () => {
     })
 
     test('should throw an error if validateScheduledFunction returns an error', () => {
-      const spy = vi.spyOn(index, 'validateScheduledFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      const spy = vi.spyOn(index, 'validateScheduledFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
       expect(() =>
         defineBlueprintForResource(
-          fns.defineScheduledFunction({name: 'test', event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}}),
+          fns.defineScheduledFunction({ name: 'test', event: { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' } }),
         ),
       ).toThrow('this is a test')
 
@@ -313,9 +314,9 @@ describe('defineWorkflow', () => {
     test('should create a workflow with an event', () => {
       const fn = fns.defineWorkflow({
         name: 'test',
-        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
+        event: { type: 'document', on: ['create'], filter: "_type == 'article'" },
       })
-      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+      expect(fn.event).toEqual({ type: 'document', on: ['create'], filter: "_type == 'article'" })
     })
 
     test('should create a workflow function with optional concurrency', () => {
@@ -346,22 +347,81 @@ describe('defineWorkflow', () => {
       expect(fn.debounceKey).toEqual('testKey')
       expect(fn.name).toEqual('test')
     })
+
+    describe('sad paths', () => {
+      afterEach(() => {
+        vi.resetAllMocks()
+      })
+
+      test('should throw an error if validateWorkflowFunction returns an error', () => {
+        const spy = vi.spyOn(index, 'validateWorkflowFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+        expect(() =>
+          defineBlueprintForResource(
+            fns.defineWorkflow({ name: 'test', event: { type: 'document', on: ['create'], filter: "_type == 'article'" } }),
+          ),
+        ).toThrow('this is a test')
+
+        expect(spy).toHaveBeenCalledOnce()
+      })
+    })
   })
 
-  describe('sad paths', () => {
-    afterEach(() => {
-      vi.resetAllMocks()
+  describe('defineQueueFunction', () => {
+    describe('happy paths', () => {
+      test('should create a queue function without an event', () => {
+        const fn = fns.defineQueueFunction({ name: 'test' })
+        expect(fn.type).toEqual('sanity.function.queue')
+        expect(fn).not.toHaveProperty('event')
+      })
+
+      test('should pass through a document event', () => {
+        const event: BlueprintFunctionResourceEvent = { type: 'document', on: ['publish'], filter: "_type == 'post'" }
+        const fn = fns.defineQueueFunction({ name: 'test', event })
+        expect(fn.event).toEqual(event)
+      })
+
+      test('should pass through a media-library event', () => {
+        const event: BlueprintFunctionResourceEvent = {
+          type: 'media-library',
+          on: ['create'],
+          resource: { type: 'media-library', id: 'my-media-library-id' },
+        }
+        const fn = fns.defineQueueFunction({ name: 'test', event })
+        expect(fn.event).toEqual(event)
+      })
+
+      test('should pass through a cron event', () => {
+        const event: BlueprintFunctionResourceEvent = { type: 'cron', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' }
+        const fn = fns.defineQueueFunction({ name: 'test', event })
+        expect(fn.event).toEqual(event)
+      })
+
+      test('should pass through a sync-tag-invalidate event', () => {
+        const event: BlueprintFunctionResourceEvent = { type: 'sync-tag-invalidate', resource: { type: 'dataset', id: 'myProj.myDataset' } }
+        const fn = fns.defineQueueFunction({ name: 'test', event })
+        expect(fn.event).toEqual(event)
+      })
+
+      test('should pass through concurrency, fifo and dlq alongside an event', () => {
+        const event: BlueprintFunctionResourceEvent = { type: 'document', on: ['publish'] }
+        const fn = fns.defineQueueFunction({ name: 'test', event, concurrency: 5, fifo: false, dlq: false })
+        expect(fn).toMatchObject({ event, concurrency: 5, fifo: false, dlq: false })
+      })
     })
 
-    test('should throw an error if validateWorkflowFunction returns an error', () => {
-      const spy = vi.spyOn(index, 'validateWorkflowFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      expect(() =>
-        defineBlueprintForResource(
-          fns.defineWorkflow({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
-        ),
-      ).toThrow('this is a test')
+    describe('sad paths', () => {
+      afterEach(() => {
+        vi.resetAllMocks()
+      })
 
-      expect(spy).toHaveBeenCalledOnce()
+      test('should throw an error if validateQueueFunction returns an error', () => {
+        const spy = vi.spyOn(index, 'validateQueueFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+        expect(() => defineBlueprintForResource(fns.defineQueueFunction({ name: 'test', event: { type: 'document', on: ['publish'] } }))).toThrow(
+          'this is a test',
+        )
+
+        expect(spy).toHaveBeenCalledOnce()
+      })
     })
   })
 })
