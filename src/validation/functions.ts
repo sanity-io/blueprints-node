@@ -514,11 +514,11 @@ function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
     return [{type: 'invalid_value', message: '`event.type` must be provided'}]
   }
 
-  const errors: BlueprintError[] = []
-
-  if ('type' in event && event.type !== 'document' && event.type !== 'sync-tag-invalidate') {
-    errors.push({type: 'invalid_value', message: '`event.type` must be either `document` or `sync-tag-invalidate`'})
+  if ('type' in event && event.type !== 'document' && event.type !== 'sync-tag-invalidate' && event.type !== 'media-library') {
+    return [{type: 'invalid_value', message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`'}]
   }
+
+  const errors: BlueprintError[] = []
 
   switch (event.type) {
     case 'document':
@@ -526,6 +526,9 @@ function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
       break
     case 'sync-tag-invalidate':
       errors.push(...validateFunctionEventResourceDataset(event))
+      break
+    case 'media-library':
+      errors.push(...validateMediaLibraryFunctionEvent(event))
       break
   }
 
@@ -566,14 +569,16 @@ export function validateWorkflowFunction(functionResource: unknown): BlueprintEr
     errors.push({type: 'invalid_value', message: '`concurrency` must be at least 1'})
   }
 
+  if ('concurrency' in functionResource && typeof functionResource.concurrency === 'number' && functionResource.concurrency > 500) {
+    errors.push({type: 'invalid_value', message: '`concurrency` must be less than 500'})
+  }
+
   if ('debounce' in functionResource && typeof functionResource.debounce !== 'number') {
     errors.push({type: 'invalid_type', message: '`debounce` must be a number'})
   }
 
   if ('event' in functionResource) {
     errors.push(...validateWorkflowFunctionEvent(functionResource.event))
-  } else {
-    errors.push({type: 'missing_parameter', message: '`event` is required for a workflow'})
   }
 
   errors.push(...validateFunction(functionResource))

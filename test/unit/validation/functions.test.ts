@@ -840,6 +840,7 @@ describe('validateWorkflowFunction', () => {
       expect(errors).toStrictEqual([])
     })
   })
+
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.workflow`', () => {
       const errors = functions.validateWorkflowFunction({type: 'invalid'})
@@ -857,7 +858,7 @@ describe('validateWorkflowFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`event.type` must be either `document` or `sync-tag-invalidate`',
+        message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`',
       })
     })
 
@@ -865,7 +866,6 @@ describe('validateWorkflowFunction', () => {
       const errors = functions.validateWorkflowFunction({
         name: 'test',
         type: 'sanity.function.workflow',
-        event: {type: 'document', filter: "_type == 'article'"},
         concurrency: 'invalid',
       })
       expect(errors).toContainEqual({
@@ -878,12 +878,23 @@ describe('validateWorkflowFunction', () => {
       const errors = functions.validateWorkflowFunction({
         name: 'test',
         type: 'sanity.function.workflow',
-        event: {type: 'document', filter: "_type == 'article'"},
         concurrency: 0,
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`concurrency` must be at least 1',
+      })
+    })
+
+    test('should return an error if concurrency is greater than 500', () => {
+      const errors = functions.validateWorkflowFunction({
+        name: 'test',
+        type: 'sanity.function.workflow',
+        concurrency: 600,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`concurrency` must be less than 500',
       })
     })
 

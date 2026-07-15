@@ -59,18 +59,6 @@ export default defineBlueprint({
         roleNames: ['developer'],
       }],
     }),
-    
-    defineWorkflow({
-      name: 'my-workflow',
-      displayName: 'My Document Workflow',
-      event: {
-        on: ['create', 'update'],
-        filter: "_type == 'post'",
-      },
-      concurrency: 1,
-      debounce: 5,
-      debounceKey: 'document._id',
-    })
   ],
 })
 ```
@@ -86,5 +74,5 @@ export default defineBlueprint({
 | `defineDocumentWebhook` β | Webhook triggered by document changes |
 | `defineRole` β | Custom role with permissions |
 | `defineRobotToken` β | Robot token for automated access |
-| `defineWorkflow` β | Workflow for managing document events |
+
 Each definer validates its input at call time and returns a typed resource object. See the [reference docs](https://reference.sanity.io/_sanity/blueprints) for full configuration details and additional resource types.

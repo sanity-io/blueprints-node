@@ -306,6 +306,13 @@ describe('defineWorkflow', () => {
     test('should create a workflow event', () => {
       const fn = fns.defineWorkflow({
         name: 'test',
+      })
+      expect(fn.name).toEqual('test')
+    })
+
+    test('should create a workflow with an event', () => {
+      const fn = fns.defineWorkflow({
+        name: 'test',
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
       expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
@@ -315,30 +322,29 @@ describe('defineWorkflow', () => {
       const fn = fns.defineWorkflow({
         name: 'test',
         concurrency: 3,
-        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
       expect(fn.concurrency).toEqual(3)
-      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+      expect(fn.name).toEqual('test')
     })
 
     test('should create a workflow function with optional debounce', () => {
       const fn = fns.defineWorkflow({
         name: 'test',
         debounce: 3,
-        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
       expect(fn.debounce).toEqual(3)
-      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+      expect(fn.name).toEqual('test')
     })
 
     test('should create a workflow function with optional debounceKey', () => {
       const fn = fns.defineWorkflow({
         name: 'test',
+        debounce: 1,
         debounceKey: 'testKey',
-        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
+      expect(fn.debounce).toEqual(1)
       expect(fn.debounceKey).toEqual('testKey')
-      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
+      expect(fn.name).toEqual('test')
     })
   })
 
