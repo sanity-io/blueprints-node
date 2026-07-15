@@ -2,7 +2,6 @@ import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
-  BlueprintQueueFunctionConfigEvent,
   BlueprintQueueFunctionResourceEvent,
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
@@ -222,17 +221,10 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
    * @defaultValue `functions/${name}`
    */
   src?: string
-  /**
-   * Queue configuration.
-   *
-   * Omit this property or set it to `true` to use the defaults:
-   * concurrency: 1, fifo: true, dlq: true.
-   *
-   * Provide an object to override specific settings.
-   *
-   * @defaultValue true
-   */
-  queue?: BlueprintQueueFunctionConfigEvent
+
+  concurrency?: number
+  fifo?: boolean
+  dlq?: boolean
 }
 
 /**

@@ -715,7 +715,9 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: true, dlq: true},
+        concurrency: 1,
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toStrictEqual([])
     })
@@ -723,7 +725,9 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 5, fifo: false, dlq: false},
+        concurrency: 5,
+        fifo: false,
+        dlq: false,
       })
       expect(errors).toStrictEqual([])
     })
@@ -736,73 +740,87 @@ describe('validateQueueFunction', () => {
         message: '`type` must be `sanity.function.queue`',
       })
     })
-    test('should return an error if event.concurrency is invalid', () => {
+    test('should return an error if concurrency is invalid', () => {
       let errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {fifo: true, dlq: true},
+        concurrency: {},
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.concurrency` must be a number',
+        message: '`concurrency` must be a number',
       })
       errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 'five', fifo: true, dlq: true},
+        concurrency: 'five',
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.concurrency` must be a number',
+        message: '`concurrency` must be a number',
       })
       errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 0, fifo: true, dlq: true},
+        concurrency: 0,
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.concurrency` must be at least 1',
+        message: '`concurrency` must be at least 1',
       })
     })
-    test('should return an error if event.fifo is invalid', () => {
+    test('should return an error if fifo is invalid', () => {
       let errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, dlq: true},
+        concurrency: 1,
+        dlq: true,
+        fifo: 'true',
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.fifo` must be a boolean',
+        message: '`fifo` must be a boolean',
       })
       errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: 'yes', dlq: true},
+        concurrency: 1,
+        fifo: 'yes',
+        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.fifo` must be a boolean',
+        message: '`fifo` must be a boolean',
       })
     })
-    test('should return an error if event.dlq is invalid', () => {
+    test('should return an error if dlq is invalid', () => {
       let errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: true},
+        concurrency: 1,
+        dlq: 'true',
+        fifo: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.dlq` must be a boolean',
+        message: '`dlq` must be a boolean',
       })
       errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: true, dlq: 'yes'},
+        concurrency: 1,
+        fifo: true,
+        dlq: 'yes',
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.dlq` must be a boolean',
+        message: '`dlq` must be a boolean',
       })
     })
   })

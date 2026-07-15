@@ -449,8 +449,18 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.queue`'})
   }
 
-  if ('event' in functionResource) {
-    errors.push(...validateQueueFunctionEvent(functionResource.event))
+  if ('concurrency' in functionResource) {
+    if (typeof functionResource.concurrency !== 'number') {
+      errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
+    } else if (functionResource.concurrency < 1) {
+      errors.push({type: 'invalid_type', message: '`concurrency` must be at least 1'})
+    }
+  }
+  if ('fifo' in functionResource && typeof functionResource.fifo !== 'boolean') {
+    errors.push({type: 'invalid_type', message: '`fifo` must be a boolean'})
+  }
+  if ('dlq' in functionResource && typeof functionResource.dlq !== 'boolean') {
+    errors.push({type: 'invalid_type', message: '`dlq` must be a boolean'})
   }
 
   errors.push(...validateFunction(functionResource))
@@ -458,26 +468,28 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
   return errors
 }
 
+/*
 function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+  if (!event || typeof event !== 'object') return [{ type: 'invalid_type', message: '`event` must be an object' }]
 
   const errors: BlueprintError[] = []
 
   if (!('concurrency' in event) || typeof event.concurrency !== 'number') {
-    errors.push({type: 'invalid_type', message: '`event.concurrency` must be a number'})
+    errors.push({ type: 'invalid_type', message: '`event.concurrency` must be a number' })
   }
   if ('concurrency' in event && typeof event.concurrency === 'number' && event.concurrency < 1) {
-    errors.push({type: 'invalid_type', message: '`event.concurrency` must be at least 1'})
+    errors.push({ type: 'invalid_type', message: '`event.concurrency` must be at least 1' })
   }
   if (!('fifo' in event) || typeof event.fifo !== 'boolean') {
-    errors.push({type: 'invalid_type', message: '`event.fifo` must be a boolean'})
+    errors.push({ type: 'invalid_type', message: '`event.fifo` must be a boolean' })
   }
   if (!('dlq' in event) || typeof event.dlq !== 'boolean') {
-    errors.push({type: 'invalid_type', message: '`event.dlq` must be a boolean'})
+    errors.push({ type: 'invalid_type', message: '`event.dlq` must be a boolean' })
   }
 
   return errors
 }
+*/
 
 /**
  * Validates an event function resource configuration.
