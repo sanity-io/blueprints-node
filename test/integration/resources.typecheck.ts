@@ -11,8 +11,7 @@ import {
   type BlueprintDocumentWebhookConfig,
   type BlueprintDocumentWebhookResource,
   type BlueprintEventFunctionResource,
-  // type BlueprintFunctionBaseResourceEvent,
-  // type BlueprintFunctionResourceEvent,
+  type BlueprintFunctionResourceEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
@@ -28,7 +27,6 @@ import {
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   type BlueprintWorkflowFunctionResource,
-  type BlueprintWorkflowFunctionResourceEvent,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -83,12 +81,12 @@ const datasetConfig: BlueprintDatasetConfig = {
 }
 const datasetResource: BlueprintDatasetResource = defineDataset(datasetConfig)
 
-const _workflowDocumentEvent: BlueprintWorkflowFunctionResourceEvent = {
+const _workflowDocumentEvent: BlueprintFunctionResourceEvent = {
   type: 'document',
   on: ['create'],
   filter: "_type == 'article'",
 }
-const _workflowSyncTagEvent: BlueprintWorkflowFunctionResourceEvent = {
+const _workflowSyncTagEvent: BlueprintFunctionResourceEvent = {
   type: 'sync-tag-invalidate',
   resource: {type: 'dataset', id: 'proj.dataset'},
 }
@@ -138,7 +136,6 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
-  queue: true,
 })
 
 const eventFunction: BlueprintEventFunctionResource = defineEventFunction({

@@ -181,7 +181,9 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
 function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] {
   const errors: BlueprintError[] = []
   if (!event || typeof event !== 'object') return [{type: 'invalid_value', message: '`event` must be an object'}]
-  if (!('resource' in event)) return [{type: 'invalid_value', message: '`event.resource` must exist'}]
+  // `resource` is optional for the event types that reach here (document and sync-tag-invalidate),
+  // so there is nothing to validate when it is absent.
+  if (!('resource' in event) || typeof event.resource === 'undefined') return []
   const resource = event.resource
   if (!resource || typeof resource !== 'object') return [{type: 'invalid_value', message: '`event.resource` must be an object'}]
   if (!('type' in resource) || !resource.type || resource.type !== 'dataset')
@@ -449,8 +451,24 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
     errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.queue`'})
   }
 
-  if ('event' in functionResource) {
-    errors.push(...validateQueueFunctionEvent(functionResource.event))
+  if ('concurrency' in functionResource) {
+    if (typeof functionResource.concurrency !== 'number') {
+      errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
+    } else if (functionResource.concurrency < 1) {
+      errors.push({type: 'invalid_type', message: '`concurrency` must be at least 1'})
+    } else if (functionResource.concurrency > 500) {
+      errors.push({type: 'invalid_value', message: '`concurrency` must be less than 500'})
+    }
+  }
+  if ('fifo' in functionResource && typeof functionResource.fifo !== 'boolean') {
+    errors.push({type: 'invalid_type', message: '`fifo` must be a boolean'})
+  }
+  if ('dlq' in functionResource && typeof functionResource.dlq !== 'boolean') {
+    errors.push({type: 'invalid_type', message: '`dlq` must be a boolean'})
+  }
+
+  if ('event' in functionResource && typeof functionResource.event !== 'undefined') {
+    errors.push(...validateFunctionEvent(functionResource.event))
   }
 
   errors.push(...validateFunction(functionResource))
@@ -458,25 +476,34 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
   return errors
 }
 
-function validateQueueFunctionEvent(event: unknown): BlueprintError[] {
+/**
+ * Validates a function event configuration.
+ * The event is a discriminated union keyed by `type`; validation is delegated to the
+ * matching per-type event validator.
+ * @param event The event configuration to validate
+ * @returns Array of validation errors, empty if valid
+ */
+function validateFunctionEvent(event: unknown): BlueprintError[] {
   if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+  if (!('type' in event)) return [{type: 'missing_parameter', message: '`event.type` is required'}]
 
-  const errors: BlueprintError[] = []
-
-  if (!('concurrency' in event) || typeof event.concurrency !== 'number') {
-    errors.push({type: 'invalid_type', message: '`event.concurrency` must be a number'})
+  switch (event.type) {
+    case 'document':
+      return validateDocumentFunctionEvent(event)
+    case 'media-library':
+      return validateMediaLibraryFunctionEvent(event)
+    case 'cron':
+      return validateScheduledFunctionEvent(event)
+    case 'sync-tag-invalidate':
+      return validateFunctionEventResourceDataset(event)
+    default:
+      return [
+        {
+          type: 'invalid_value',
+          message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
+        },
+      ]
   }
-  if ('concurrency' in event && typeof event.concurrency === 'number' && event.concurrency < 1) {
-    errors.push({type: 'invalid_type', message: '`event.concurrency` must be at least 1'})
-  }
-  if (!('fifo' in event) || typeof event.fifo !== 'boolean') {
-    errors.push({type: 'invalid_type', message: '`event.fifo` must be a boolean'})
-  }
-  if (!('dlq' in event) || typeof event.dlq !== 'boolean') {
-    errors.push({type: 'invalid_type', message: '`event.dlq` must be a boolean'})
-  }
-
-  return errors
 }
 
 /**
@@ -499,38 +526,6 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
   }
 
   errors.push(...validateFunction(functionResource))
-
-  return errors
-}
-
-/**
- * Validates a workflow function event configuration.
- * @param event The event configuration to validate
- * @returns Array of validation errors, empty if valid
- */
-function validateWorkflowFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
-  if (!('type' in event)) {
-    return [{type: 'invalid_value', message: '`event.type` must be provided'}]
-  }
-
-  if ('type' in event && event.type !== 'document' && event.type !== 'sync-tag-invalidate' && event.type !== 'media-library') {
-    return [{type: 'invalid_value', message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`'}]
-  }
-
-  const errors: BlueprintError[] = []
-
-  switch (event.type) {
-    case 'document':
-      errors.push(...validateDocumentFunctionEvent(event))
-      break
-    case 'sync-tag-invalidate':
-      errors.push(...validateFunctionEventResourceDataset(event))
-      break
-    case 'media-library':
-      errors.push(...validateMediaLibraryFunctionEvent(event))
-      break
-  }
 
   return errors
 }
@@ -578,7 +573,7 @@ export function validateWorkflowFunction(functionResource: unknown): BlueprintEr
   }
 
   if ('event' in functionResource) {
-    errors.push(...validateWorkflowFunctionEvent(functionResource.event))
+    errors.push(...validateFunctionEvent(functionResource.event))
   }
 
   errors.push(...validateFunction(functionResource))

@@ -715,7 +715,9 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: true, dlq: true},
+        concurrency: 1,
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toStrictEqual([])
     })
@@ -723,7 +725,49 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 5, fifo: false, dlq: false},
+        concurrency: 5,
+        fifo: false,
+        dlq: false,
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a document event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'document', on: ['publish'], filter: "_type == 'post'"},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a media-library event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'media-library', on: ['create'], resource: {type: 'media-library', id: 'my-media-library-id'}},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a cron event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'cron', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a sync-tag-invalidate event', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'sync-tag-invalidate', resource: {type: 'dataset', id: 'myProj.myDataset'}},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a sync-tag-invalidate event and no resource', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'sync-tag-invalidate'},
       })
       expect(errors).toStrictEqual([])
     })
@@ -736,73 +780,131 @@ describe('validateQueueFunction', () => {
         message: '`type` must be `sanity.function.queue`',
       })
     })
-    test('should return an error if event.concurrency is invalid', () => {
-      let errors = functions.validateQueueFunction({
+    test('should return an error if event is not an object', () => {
+      const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {fifo: true, dlq: true},
+        event: 'publish',
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.concurrency` must be a number',
-      })
-      errors = functions.validateQueueFunction({
-        name: 'test',
-        type: 'sanity.function.queue',
-        event: {concurrency: 'five', fifo: true, dlq: true},
-      })
-      expect(errors).toContainEqual({
-        type: 'invalid_type',
-        message: '`event.concurrency` must be a number',
-      })
-      errors = functions.validateQueueFunction({
-        name: 'test',
-        type: 'sanity.function.queue',
-        event: {concurrency: 0, fifo: true, dlq: true},
-      })
-      expect(errors).toContainEqual({
-        type: 'invalid_type',
-        message: '`event.concurrency` must be at least 1',
+        message: '`event` must be an object',
       })
     })
-    test('should return an error if event.fifo is invalid', () => {
-      let errors = functions.validateQueueFunction({
+    test('should return an error if event.type is missing', () => {
+      const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, dlq: true},
+        event: {on: ['publish']},
       })
       expect(errors).toContainEqual({
-        type: 'invalid_type',
-        message: '`event.fifo` must be a boolean',
-      })
-      errors = functions.validateQueueFunction({
-        name: 'test',
-        type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: 'yes', dlq: true},
-      })
-      expect(errors).toContainEqual({
-        type: 'invalid_type',
-        message: '`event.fifo` must be a boolean',
+        type: 'missing_parameter',
+        message: '`event.type` is required',
       })
     })
-    test('should return an error if event.dlq is invalid', () => {
+    test('should return an error if event.type is unknown', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'nope'},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
+      })
+    })
+    test('should surface errors from the delegated event validator', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        event: {type: 'media-library', on: ['create']},
+      })
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: '`resource` is required for a media library function',
+      })
+    })
+    test('should return an error if concurrency is invalid', () => {
       let errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: true},
+        concurrency: {},
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.dlq` must be a boolean',
+        message: '`concurrency` must be a number',
       })
       errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {concurrency: 1, fifo: true, dlq: 'yes'},
+        concurrency: 'five',
+        fifo: true,
+        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
-        message: '`event.dlq` must be a boolean',
+        message: '`concurrency` must be a number',
+      })
+      errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        concurrency: 0,
+        fifo: true,
+        dlq: true,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`concurrency` must be at least 1',
+      })
+    })
+    test('should return an error if fifo is invalid', () => {
+      let errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        concurrency: 1,
+        dlq: true,
+        fifo: 'true',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`fifo` must be a boolean',
+      })
+      errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        concurrency: 1,
+        fifo: 'yes',
+        dlq: true,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`fifo` must be a boolean',
+      })
+    })
+    test('should return an error if dlq is invalid', () => {
+      let errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        concurrency: 1,
+        dlq: 'true',
+        fifo: true,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`dlq` must be a boolean',
+      })
+      errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        concurrency: 1,
+        fifo: true,
+        dlq: 'yes',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`dlq` must be a boolean',
       })
     })
   })
@@ -858,7 +960,7 @@ describe('validateWorkflowFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`',
+        message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
       })
     })
 

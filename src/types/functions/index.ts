@@ -1,13 +1,11 @@
 import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
+  BlueprintFunctionResourceEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
-  BlueprintQueueFunctionConfigEvent,
-  BlueprintQueueFunctionResourceEvent,
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
-  BlueprintWorkflowFunctionResourceEvent,
 } from './event.js'
 import type {IanaTimezone} from './timezone.js'
 
@@ -110,7 +108,8 @@ export interface BlueprintSyncTagInvalidateFunctionResource extends BlueprintBas
  */
 export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.queue'
-  event?: BlueprintQueueFunctionResourceEvent
+  /** Optional event configuration that triggers the function */
+  event?: BlueprintFunctionResourceEvent
 }
 
 /**
@@ -222,17 +221,13 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
    * @defaultValue `functions/${name}`
    */
   src?: string
-  /**
-   * Queue configuration.
-   *
-   * Omit this property or set it to `true` to use the defaults:
-   * concurrency: 1, fifo: true, dlq: true.
-   *
-   * Provide an object to override specific settings.
-   *
-   * @defaultValue true
-   */
-  queue?: BlueprintQueueFunctionConfigEvent
+
+  /** Optional event configuration that triggers the queue function */
+  event?: BlueprintFunctionResourceEvent
+
+  concurrency?: number
+  fifo?: boolean
+  dlq?: boolean
 }
 
 /**
@@ -261,7 +256,7 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
  */
 export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.workflow'
-  event?: BlueprintWorkflowFunctionResourceEvent
+  event?: BlueprintFunctionResourceEvent
   /**
    * Concurrent executions
    * Min 1
@@ -295,5 +290,5 @@ export type BlueprintWorkflowFunctionConfig = Omit<BlueprintWorkflowFunctionReso
   /**
    * Trigger configuration
    */
-  event?: BlueprintWorkflowFunctionResourceEvent
+  event?: BlueprintFunctionResourceEvent
 }

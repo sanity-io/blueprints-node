@@ -84,33 +84,14 @@ export type BlueprintScheduledFunctionConfigEvent =
   | BlueprintScheduledFunctionExpressionResourceEvent
 
 /**
- * Event configuration for queue functions
- * @category Functions Types
- * @alpha
- * @hidden
- */
-export interface BlueprintQueueFunctionResourceEvent {
-  concurrency?: number
-  fifo?: boolean
-  dlq?: boolean
-}
-
-/**
- * Union type of all queue function resource event configurations
- * @category Functions Types
- */
-export type BlueprintQueueFunctionConfigEvent = true | BlueprintQueueFunctionResourceEvent
-
-/**
  * Union type of all function resource event configurations
  * @category Functions Types
  */
 export type BlueprintFunctionResourceEvent =
-  | BlueprintDocumentFunctionResourceEvent
-  | BlueprintMediaLibraryFunctionResourceEvent
-  | BlueprintQueueFunctionResourceEvent
-  | BlueprintScheduledFunctionResourceEvent
-  | BlueprintSyncTagInvalidateFunctionResourceEvent
+  | ({type: 'document'} & BlueprintDocumentFunctionResourceEvent)
+  | ({type: 'media-library'} & BlueprintMediaLibraryFunctionResourceEvent)
+  | ({type: 'cron'} & BlueprintScheduledFunctionResourceEvent)
+  | ({type: 'sync-tag-invalidate'} & BlueprintSyncTagInvalidateFunctionResourceEvent)
 
 /**
  * Dataset resource for scoping document functions to specific datasets
@@ -137,12 +118,3 @@ export interface BlueprintFunctionResourceEventResourceMediaLibrary {
  * @category Functions Types
  */
 export type BlueprintFunctionResourceEventName = 'publish' | 'create' | 'delete' | 'update'
-
-/**
- * Event configuration for workflows.
- * @category Functions Types
- */
-export type BlueprintWorkflowFunctionResourceEvent =
-  | ({type: 'document'} & BlueprintDocumentFunctionResourceEvent)
-  | ({type: 'sync-tag-invalidate'} & BlueprintSyncTagInvalidateFunctionResourceEvent)
-  | ({type: 'media-library'} & BlueprintMediaLibraryFunctionResourceEvent)

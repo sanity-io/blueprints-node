@@ -11,9 +11,7 @@ import {
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintQueueFunctionConfig,
-  type BlueprintQueueFunctionConfigEvent,
   type BlueprintQueueFunctionResource,
-  type BlueprintQueueFunctionResourceEvent,
   type BlueprintScheduledFunctionConfig,
   type BlueprintScheduledFunctionConfigEvent,
   type BlueprintScheduledFunctionExplicitResourceEvent,
@@ -46,8 +44,6 @@ type ScheduledFunctionEventKey =
   | keyof BlueprintScheduledFunctionExplicitResourceEvent
   | keyof BlueprintScheduledFunctionExpressionResourceEvent
 const SCHEDULED_EVENT_KEYS = new Set<ScheduledFunctionEventKey>(['minute', 'hour', 'dayOfWeek', 'month', 'dayOfMonth', 'expression'])
-type QueueFunctionEventKey = keyof BlueprintQueueFunctionResourceEvent
-const QUEUE_EVENT_KEYS = new Set<QueueFunctionEventKey>(['concurrency', 'fifo', 'dlq'])
 
 /*
  * FUTURE example (move below @example when ready)
@@ -343,23 +339,13 @@ export function defineSyncTagInvalidateFunction(
  * })
  * ```
  *
- * Using the reasonable defaults of concurrency: 1, fifo: true, and dlq: true
- * ```ts
- * defineQueueFunction({
- *   name: 'bustin-caches',
- *   queue: true,
- * })
- * ```
- *
  * Specifying a concurrency of 5
  * ```ts
  * defineQueueFunction({
  *   name: 'bustin-caches',
- *   queue: {
- *    concurrency: 5,
- *    fifo: true,
- *    dlq: true,
- *  },
+ *   concurrency: 5,
+ *   fifo: true,
+ *   dlq: true,
  * })
  * ```
  * @public
@@ -371,12 +357,15 @@ export function defineSyncTagInvalidateFunction(
  * @returns The validated queue function resource
  */
 export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig): BlueprintQueueFunctionResource {
-  const {queue = true} = functionConfig
+  const {concurrency = 1, fifo = true, dlq = true, event} = functionConfig
 
   const functionResource: BlueprintQueueFunctionResource = {
     ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.queue',
-    event: buildQueueFunctionEvent(queue),
+    ...(concurrency !== undefined && {concurrency}),
+    ...(fifo !== undefined && {fifo}),
+    ...(dlq !== undefined && {dlq}),
+    ...(event !== undefined && {event}),
   }
 
   runValidation(() => validateQueueFunction(functionResource))
@@ -512,23 +501,6 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
 }
 
 /**
- * Builds a queue function event configuration.
- * @param event Queue function event configuration
- * @returns Cleaned queue function event configuration
- */
-function buildQueueFunctionEvent(event: BlueprintQueueFunctionConfigEvent): BlueprintQueueFunctionResourceEvent {
-  const defaultEvent = {concurrency: 1, fifo: true, dlq: true}
-  if (typeof event === 'boolean') {
-    return defaultEvent
-  }
-  const userProvidedEvent = Object.fromEntries(Object.entries(event).filter(([key]) => QUEUE_EVENT_KEYS.has(key as QueueFunctionEventKey)))
-  return {
-    ...defaultEvent,
-    ...userProvidedEvent,
-  } as BlueprintQueueFunctionResourceEvent
-}
-
-/**
  * Defines a workflow function resource.
  *
  * @remarks
@@ -557,7 +529,7 @@ export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig):
   const functionResource: BlueprintWorkflowFunctionResource = {
     ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
     type: 'sanity.function.workflow',
-    event,
+    ...(event !== undefined && {event}),
     ...(concurrency !== undefined && {concurrency}),
     ...(debounce !== undefined && {debounce}),
     ...(debounceKey !== undefined && {debounceKey}),
