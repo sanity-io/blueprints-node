@@ -311,6 +311,13 @@ describe('defineWorkflow', () => {
       expect(fn.name).toEqual('test')
     })
 
+    test('should have the default src path', () => {
+      const fn = fns.defineWorkflow({
+        name: 'test',
+      })
+      expect(fn.src).toEqual('functions/test')
+    })
+
     test('should create a workflow with an event', () => {
       const fn = fns.defineWorkflow({
         name: 'test',
