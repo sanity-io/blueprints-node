@@ -284,7 +284,7 @@ export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunction
 export type BlueprintWorkflowFunctionConfig = Omit<BlueprintWorkflowFunctionResource, 'type' | 'src' | 'event'> & {
   /**
    * Path to the workflow source code
-   * @defaultValue `workflows/${name}`
+   * @defaultValue `functions/${name}`
    */
   src?: string
   /**

@@ -527,7 +527,7 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
 export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
   const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
   const functionResource: BlueprintWorkflowFunctionResource = {
-    ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
+    ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
     type: 'sanity.function.workflow',
     ...(event !== undefined && {event}),
     ...(concurrency !== undefined && {concurrency}),
