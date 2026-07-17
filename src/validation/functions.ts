@@ -531,21 +531,21 @@ export function validateEventFunction(functionResource: unknown): BlueprintError
 }
 
 /**
- * Validates a workflow function resource configuration.
+ * Validates a pipeline function resource configuration.
  * @param functionResource The function resource to validate
  * @alpha
  * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
-export function validateWorkflowFunction(functionResource: unknown): BlueprintError[] {
+export function validatePipelineFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
-  if ('type' in functionResource && functionResource.type !== 'sanity.function.workflow') {
-    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.workflow`'})
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.pipeline') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.pipeline`'})
   }
 
   if ('debounceKey' in functionResource && typeof functionResource.debounceKey !== 'string') {
