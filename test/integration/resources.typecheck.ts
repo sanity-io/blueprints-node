@@ -16,6 +16,7 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
+  type BlueprintPipelineFunctionResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintQueueFunctionResource,
@@ -26,7 +27,6 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
-  type BlueprintWorkflowFunctionResource,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -81,20 +81,20 @@ const datasetConfig: BlueprintDatasetConfig = {
 }
 const datasetResource: BlueprintDatasetResource = defineDataset(datasetConfig)
 
-const _workflowDocumentEvent: BlueprintFunctionResourceEvent = {
+const _pipelineDocumentEvent: BlueprintFunctionResourceEvent = {
   type: 'document',
   on: ['create'],
   filter: "_type == 'article'",
 }
-const _workflowSyncTagEvent: BlueprintFunctionResourceEvent = {
+const _pipelineSyncTagEvent: BlueprintFunctionResourceEvent = {
   type: 'sync-tag-invalidate',
   resource: {type: 'dataset', id: 'proj.dataset'},
 }
-const _workflowFunction: BlueprintWorkflowFunctionResource = {
-  type: 'sanity.function.workflow',
-  name: 'my-workflow',
-  src: 'workflows/my-workflow',
-  event: _workflowDocumentEvent,
+const _pipelineFunction: BlueprintPipelineFunctionResource = {
+  type: 'sanity.function.pipeline',
+  name: 'my-pipeline',
+  src: 'functions/my-pipeline',
+  event: _pipelineDocumentEvent,
   concurrency: 5,
   debounce: 10,
   debounceKey: 'document._id',

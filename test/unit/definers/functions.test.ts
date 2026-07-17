@@ -302,32 +302,32 @@ describe('defineScheduledFunction', () => {
   })
 })
 
-describe('defineWorkflow', () => {
+describe('definePipeline', () => {
   describe('happy paths', () => {
-    test('should create a workflow event', () => {
-      const fn = fns.defineWorkflow({
+    test('should create a pipeline event', () => {
+      const fn = fns.definePipeline({
         name: 'test',
       })
       expect(fn.name).toEqual('test')
     })
 
     test('should have the default src path', () => {
-      const fn = fns.defineWorkflow({
+      const fn = fns.definePipeline({
         name: 'test',
       })
       expect(fn.src).toEqual('functions/test')
     })
 
-    test('should create a workflow with an event', () => {
-      const fn = fns.defineWorkflow({
+    test('should create a pipeline with an event', () => {
+      const fn = fns.definePipeline({
         name: 'test',
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
       expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
     })
 
-    test('should create a workflow function with optional concurrency', () => {
-      const fn = fns.defineWorkflow({
+    test('should create a pipeline function with optional concurrency', () => {
+      const fn = fns.definePipeline({
         name: 'test',
         concurrency: 3,
       })
@@ -335,8 +335,8 @@ describe('defineWorkflow', () => {
       expect(fn.name).toEqual('test')
     })
 
-    test('should create a workflow function with optional debounce', () => {
-      const fn = fns.defineWorkflow({
+    test('should create a pipeline function with optional debounce', () => {
+      const fn = fns.definePipeline({
         name: 'test',
         debounce: 3,
       })
@@ -344,8 +344,8 @@ describe('defineWorkflow', () => {
       expect(fn.name).toEqual('test')
     })
 
-    test('should create a workflow function with optional debounceKey', () => {
-      const fn = fns.defineWorkflow({
+    test('should create a pipeline function with optional debounceKey', () => {
+      const fn = fns.definePipeline({
         name: 'test',
         debounce: 1,
         debounceKey: 'testKey',
@@ -360,11 +360,11 @@ describe('defineWorkflow', () => {
         vi.resetAllMocks()
       })
 
-      test('should throw an error if validateWorkflowFunction returns an error', () => {
-        const spy = vi.spyOn(index, 'validateWorkflowFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      test('should throw an error if validatePipelineFunction returns an error', () => {
+        const spy = vi.spyOn(index, 'validatePipelineFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
         expect(() =>
           defineBlueprintForResource(
-            fns.defineWorkflow({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
+            fns.definePipeline({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
           ),
         ).toThrow('this is a test')
 
