@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.23.0](https://github.com/sanity-io/blueprints-node/compare/v0.22.0...v0.23.0) (2026-07-20)
+
+
+### Features
+
+* add defineWorkflow definer ([#124](https://github.com/sanity-io/blueprints-node/issues/124)) ([3e6754a](https://github.com/sanity-io/blueprints-node/commit/3e6754ace15023fe22f71dd573d1725c0a5c4b34))
+* add Studio resource ([#128](https://github.com/sanity-io/blueprints-node/issues/128)) ([032c88f](https://github.com/sanity-io/blueprints-node/commit/032c88fea54ace1a0b2ece77c8fe23d706b0079e))
+* Add Vite config to studio resource ([#131](https://github.com/sanity-io/blueprints-node/issues/131)) ([482e5b6](https://github.com/sanity-io/blueprints-node/commit/482e5b6379191c7b01beb83581eca3eeab32b707))
+
+
+### Bug Fixes
+
+* Add missing jsdoc for BlueprintStudioConfig ([#130](https://github.com/sanity-io/blueprints-node/issues/130)) ([c17774d](https://github.com/sanity-io/blueprints-node/commit/c17774d39406be39bac813f915eeb11bb05e3434))
+* Hide studio resource for now ([#129](https://github.com/sanity-io/blueprints-node/issues/129)) ([f9ed6ef](https://github.com/sanity-io/blueprints-node/commit/f9ed6efb40a78adb66ffaaaaad5649fbe3baa776))
+* refactor define queue ([#126](https://github.com/sanity-io/blueprints-node/issues/126)) ([d6b1ce2](https://github.com/sanity-io/blueprints-node/commit/d6b1ce29223581fe1e055ea3c752377db1ae3908))
+* update directory and namespace to pipeline ([#127](https://github.com/sanity-io/blueprints-node/issues/127)) ([80e0b42](https://github.com/sanity-io/blueprints-node/commit/80e0b42c9e10ff1eab3d69c32e56ef4b7e917c3c))
+* Use github script to add comment ([#132](https://github.com/sanity-io/blueprints-node/issues/132)) ([0eece4a](https://github.com/sanity-io/blueprints-node/commit/0eece4a56f853c6f03e2f8dcd1048f8bc9135d60))
+
 ## [0.22.0](https://github.com/sanity-io/blueprints-node/compare/v0.21.0...v0.22.0) (2026-07-14)
 
 
