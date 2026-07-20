@@ -1,6 +1,6 @@
 import {validateStudio} from '../index.js'
-import type {BlueprintStudioConfig, BlueprintStudioResource} from '../types/studios'
-import {runValidation} from '../utils/validation'
+import type {BlueprintStudioConfig, BlueprintStudioResource} from '../types/studios.js'
+import {runValidation} from '../utils/validation.js'
 
 /**
  * Defines a studio.

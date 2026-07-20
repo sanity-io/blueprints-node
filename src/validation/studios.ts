@@ -1,5 +1,5 @@
-import type {BlueprintError} from '../types/errors'
-import {validateResource} from './resources'
+import type {BlueprintError} from '../types/errors.js'
+import {validateResource} from './resources.js'
 
 /**
  * Validates that the given resource is a valid Studio.
