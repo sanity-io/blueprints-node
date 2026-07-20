@@ -1,4 +1,14 @@
+import type {ConfigEnv, InlineConfig} from 'vite'
 import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../index.js'
+
+/**
+ * Custom Vite configuration for the Studio so it can be changed and extended.
+ * This type matches the type in @sanity/cli-core and must continue to remain compatible.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export type UserViteConfig = ((config: InlineConfig, env: ConfigEnv) => InlineConfig | Promise<InlineConfig>) | InlineConfig
 
 /**
  * Represents a Studio resource.
@@ -35,6 +45,9 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /** Whether or not to generate source maps. Defaults to false. */
   sourceMap?: boolean
+
+  /** Custom Vite configuration for the Studio so it can be changed and extended. */
+  vite?: UserViteConfig
 
   /**
    * The project ID of the project that contains your Studio.
