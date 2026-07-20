@@ -1,6 +1,6 @@
 {
   "name": "@sanity/blueprints",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "description": "Helper methods and type definitions for Sanity Blueprints",
   "keywords": [
     "sanity",
@@ -56,7 +56,7 @@
     "typescript": "^7.0.2",
     "vitest": "4.1.10"
   },
-  "peerDependencies": { 
+  "peerDependencies": {
     "vite": ">= 8"
   },
   "peerDependenciesMeta": {
