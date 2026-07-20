@@ -254,7 +254,7 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
  * @category Functions Types
  * @interface
  */
-export interface BlueprintPipelineFunctionResource extends BlueprintBaseFunctionResource {
+export interface BlueprintPipelineResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.pipeline'
   event?: BlueprintFunctionResourceEvent
   /**
@@ -281,7 +281,7 @@ export interface BlueprintPipelineFunctionResource extends BlueprintBaseFunction
  * @category Functions Types
  * @interface
  */
-export type BlueprintPipelineFunctionConfig = Omit<BlueprintPipelineFunctionResource, 'type' | 'src' | 'event'> & {
+export type BlueprintPipelineConfig = Omit<BlueprintPipelineResource, 'type' | 'src' | 'event'> & {
   /**
    * Path to the pipeline source code
    * @defaultValue `functions/${name}`

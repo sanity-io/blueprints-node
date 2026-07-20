@@ -16,7 +16,7 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
-  type BlueprintPipelineFunctionResource,
+  type BlueprintPipelineResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintQueueFunctionResource,
@@ -90,7 +90,7 @@ const _pipelineSyncTagEvent: BlueprintFunctionResourceEvent = {
   type: 'sync-tag-invalidate',
   resource: {type: 'dataset', id: 'proj.dataset'},
 }
-const _pipelineFunction: BlueprintPipelineFunctionResource = {
+const _pipelineFunction: BlueprintPipelineResource = {
   type: 'sanity.function.pipeline',
   name: 'my-pipeline',
   src: 'functions/my-pipeline',

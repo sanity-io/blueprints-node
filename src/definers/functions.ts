@@ -10,8 +10,8 @@ import {
   type BlueprintMediaLibraryAssetFunctionConfig,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
-  type BlueprintPipelineFunctionConfig,
-  type BlueprintPipelineFunctionResource,
+  type BlueprintPipelineConfig,
+  type BlueprintPipelineResource,
   type BlueprintQueueFunctionConfig,
   type BlueprintQueueFunctionResource,
   type BlueprintScheduledFunctionConfig,
@@ -521,12 +521,12 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
  * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @public
  * @hidden
- * @expandType BlueprintPipelineFunctionConfig
+ * @expandType BlueprintPipelineConfig
  * @returns The validated pipeline function resource
  */
-export function definePipeline(functionConfig: BlueprintPipelineFunctionConfig): BlueprintPipelineFunctionResource {
+export function definePipeline(functionConfig: BlueprintPipelineConfig): BlueprintPipelineResource {
   const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
-  const functionResource: BlueprintPipelineFunctionResource = {
+  const functionResource: BlueprintPipelineResource = {
     ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
     type: 'sanity.function.pipeline',
     ...(event !== undefined && {event}),
