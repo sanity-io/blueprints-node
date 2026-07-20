@@ -5,6 +5,7 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
  * @see https://www.sanity.io/docs/studio
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
+ * @hidden
  */
 export interface BlueprintStudioResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.studio'
