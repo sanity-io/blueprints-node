@@ -44,4 +44,12 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
   project?: string
 }
 
+/**
+ * Configuration for a Studio resource.
+ * @see https://www.sanity.io/docs/studio
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @interface
+ * @hidden
+ */
 export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type'> {}
