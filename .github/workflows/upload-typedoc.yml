@@ -98,7 +98,7 @@ jobs:
 
             - **File size:** ${{ steps.generate.outputs.file_size }}
             - **Total exports:** ${{ steps.generate.outputs.export_count }}
-            - **Artifact:** `typedoc-${{ github.sha }}`
+            - **Artifact:** \`typedoc-${{ github.sha }}\`
             - **HTML docs preview:** [Download artifact](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.html-artifact.outputs.artifact-id }})
 
             The TypeDoc JSON file has been generated and validated. All documentation scripts completed successfully.`
