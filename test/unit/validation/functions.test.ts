@@ -931,12 +931,12 @@ describe('validateEventFunction', () => {
   })
 })
 
-describe('validateWorkflowFunction', () => {
+describe('validatePipelineFunction', () => {
   describe('happy paths', () => {
-    test('should accept a valid workflow function without any optional properties', () => {
-      const errors = functions.validateWorkflowFunction({
+    test('should accept a valid pipeline function without any optional properties', () => {
+      const errors = functions.validatePipelineFunction({
         name: 'test',
-        type: 'sanity.function.workflow',
+        type: 'sanity.function.pipeline',
         event: {type: 'document', filter: "_type == 'article'"},
       })
       expect(errors).toStrictEqual([])
@@ -944,18 +944,18 @@ describe('validateWorkflowFunction', () => {
   })
 
   describe('sad paths', () => {
-    test('should return an error if the type is not `sanity.function.workflow`', () => {
-      const errors = functions.validateWorkflowFunction({type: 'invalid'})
+    test('should return an error if the type is not `sanity.function.pipeline`', () => {
+      const errors = functions.validatePipelineFunction({type: 'invalid'})
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`type` must be `sanity.function.workflow`',
+        message: '`type` must be `sanity.function.pipeline`',
       })
     })
 
     test('should return an error if the event type is invalid', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
-        type: 'sanity.function.workflow',
+        type: 'sanity.function.pipeline',
         event: {type: 'invalid', filter: "_type == 'article'"},
       })
       expect(errors).toContainEqual({
@@ -965,7 +965,7 @@ describe('validateWorkflowFunction', () => {
     })
 
     test('should return an error if concurrency is not a number', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
         type: 'sanity.function.workflow',
         concurrency: 'invalid',
@@ -977,9 +977,9 @@ describe('validateWorkflowFunction', () => {
     })
 
     test('should return an error if concurrency is less than 1', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
-        type: 'sanity.function.workflow',
+        type: 'sanity.function.pipeline',
         concurrency: 0,
       })
       expect(errors).toContainEqual({
@@ -989,7 +989,7 @@ describe('validateWorkflowFunction', () => {
     })
 
     test('should return an error if concurrency is greater than 500', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
         type: 'sanity.function.workflow',
         concurrency: 600,
@@ -1001,9 +1001,9 @@ describe('validateWorkflowFunction', () => {
     })
 
     test('should return an error if debounce is not a number', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
-        type: 'sanity.function.workflow',
+        type: 'sanity.function.pipeline',
         event: {type: 'document', filter: "_type == 'article'"},
         debounce: 'invalid',
       })
@@ -1014,9 +1014,9 @@ describe('validateWorkflowFunction', () => {
     })
 
     test('should return an error if debounceKey is set and not a string', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
-        type: 'sanity.function.workflow',
+        type: 'sanity.function.pipeline',
         event: {type: 'document', filter: "_type == 'article'"},
         debounce: 1,
         debounceKey: 123,
@@ -1028,9 +1028,9 @@ describe('validateWorkflowFunction', () => {
     })
 
     test('should return an error if debounceKey is set but debounce is empty', () => {
-      const errors = functions.validateWorkflowFunction({
+      const errors = functions.validatePipelineFunction({
         name: 'test',
-        type: 'sanity.function.workflow',
+        type: 'sanity.function.pipeline',
         event: {type: 'document', filter: "_type == 'article'"},
         debounceKey: '_document.id',
       })

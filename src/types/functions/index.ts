@@ -233,7 +233,7 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
 /**
  * Configuration for defining an event function.
  * @public
- * @alpha Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Event Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Functions Types
  * @interface
@@ -247,15 +247,15 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
 }
 
 /**
- * A durable, step-based workflow function.
+ * A durable, step-based pipeline function.
  * @public
- * @alpha Deploying Workflows via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Functions Types
  * @interface
  */
-export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunctionResource {
-  type: 'sanity.function.workflow'
+export interface BlueprintPipelineResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.pipeline'
   event?: BlueprintFunctionResourceEvent
   /**
    * Concurrent executions
@@ -274,17 +274,17 @@ export interface BlueprintWorkflowFunctionResource extends BlueprintBaseFunction
 }
 
 /**
- * Configuration for defining a workflow function.
+ * Configuration for defining a pipeline function.
  * @public
- * @alpha Deploying Workflows via Blueprints is experimental.
+ * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Functions Types
  * @interface
  */
-export type BlueprintWorkflowFunctionConfig = Omit<BlueprintWorkflowFunctionResource, 'type' | 'src' | 'event'> & {
+export type BlueprintPipelineConfig = Omit<BlueprintPipelineResource, 'type' | 'src' | 'event'> & {
   /**
-   * Path to the workflow source code
-   * @defaultValue `workflows/${name}`
+   * Path to the pipeline source code
+   * @defaultValue `functions/${name}`
    */
   src?: string
   /**

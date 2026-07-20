@@ -10,6 +10,8 @@ import {
   type BlueprintMediaLibraryAssetFunctionConfig,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
+  type BlueprintPipelineConfig,
+  type BlueprintPipelineResource,
   type BlueprintQueueFunctionConfig,
   type BlueprintQueueFunctionResource,
   type BlueprintScheduledFunctionConfig,
@@ -20,16 +22,14 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionConfig,
   type BlueprintSyncTagInvalidateFunctionResource,
-  type BlueprintWorkflowFunctionConfig,
-  type BlueprintWorkflowFunctionResource,
   validateDocumentFunction,
   validateEventFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validatePipelineFunction,
   validateQueueFunction,
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
-  validateWorkflowFunction,
 } from '../index.js'
 import {parseScheduledExpression} from '../utils/schedule-parser.js'
 import {runValidation} from '../utils/validation.js'
@@ -501,12 +501,12 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
 }
 
 /**
- * Defines a workflow function resource.
+ * Defines a pipeline function resource.
  *
  * @remarks
  *
  * ```ts
- * defineWorkflow({
+ * definePipeline({
  *   name: 'daily-cleanup',
  *   event: {type: 'document', on: ['create'], filter: "_type == 'post'"},
  *   concurrency: 5,
@@ -518,23 +518,23 @@ function cronStringToExplicitEvent(cron: string): BlueprintScheduledFunctionExpl
  *
  * @param functionConfig The configuration for the function
  * @category Definers
- * @alpha Deploying Workflows via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @public
  * @hidden
- * @expandType BlueprintWorkflowFunctionConfig
- * @returns The validated workflow function resource
+ * @expandType BlueprintPipelineConfig
+ * @returns The validated pipeline function resource
  */
-export function defineWorkflow(functionConfig: BlueprintWorkflowFunctionConfig): BlueprintWorkflowFunctionResource {
+export function definePipeline(functionConfig: BlueprintPipelineConfig): BlueprintPipelineResource {
   const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
-  const functionResource: BlueprintWorkflowFunctionResource = {
-    ...defineFunction({...functionConfig, src: src ?? `workflows/${name}`}, {skipValidation: true}),
-    type: 'sanity.function.workflow',
+  const functionResource: BlueprintPipelineResource = {
+    ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
+    type: 'sanity.function.pipeline',
     ...(event !== undefined && {event}),
     ...(concurrency !== undefined && {concurrency}),
     ...(debounce !== undefined && {debounce}),
     ...(debounceKey !== undefined && {debounceKey}),
   }
 
-  runValidation(() => validateWorkflowFunction(functionResource))
+  runValidation(() => validatePipelineFunction(functionResource))
   return functionResource
 }
