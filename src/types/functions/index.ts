@@ -22,7 +22,7 @@ export const VALID_RUNTIMES = ['node', 'nodejs22.x', 'nodejs24.x'] as const
  */
 export type FunctionRuntimes = (typeof VALID_RUNTIMES)[number]
 
-// --- Main Function Types ---
+// --- Function Resource (Output) Types: `define*Function` method return types ---
 
 /**
  * Base function resource with common properties for all function types
@@ -47,6 +47,44 @@ interface BlueprintCommonFunctionResource extends BlueprintResource {
    * @defaultValue 'nodejs24.x'
    */
   runtime?: FunctionRuntimes
+}
+
+/**
+ * Configuration used for Queue or Workflow function types.
+ * @todo: not implemented
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+interface QueueConfig {
+  /**
+   * Maximum number of concurrent invocations in progress from queue to Function
+   * @todo: not implemented, what is the default anyways?
+   */
+  concurrency?: number
+  /**
+   * Debounce window in seconds
+   * @todo: not implemented - and should this always be provided with debounceKey?
+   */
+  debounce?: number
+  /**
+   * Path used to group debounced events, e.g. 'document._id'
+   * @todo: not implemented - and should this always be provided with debounce window?
+   */
+  debounceKey?: string
+  /**
+   * Whether to place messages that failed processing into a Dead Letter Queue.
+   * @todo: not implemented
+   * @default `false`
+   */
+  dlq?: boolean
+  /**
+   * By default, queues employ at-least once delivery. When set to `true`, employs first-in-first-out ordering and exactly-once delivery.
+   * FIFO queues have a lower transaction-per-second limit.
+   * @todo: not implemented
+   * @default `false`
+   */
+  fifo?: boolean
 }
 
 /**
@@ -122,7 +160,20 @@ export interface BlueprintEventFunctionResource extends BlueprintBaseFunctionRes
   type: 'sanity.function.event'
 }
 
-// --- Function Config Types ---
+/**
+ * A durable, step-based pipeline function.
+ * @public
+ * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @hidden
+ * @category Functions Types
+ * @interface
+ */
+export interface BlueprintPipelineResource extends BlueprintBaseFunctionResource, QueueConfig {
+  type: 'sanity.function.pipeline'
+  event?: BlueprintFunctionResourceEvent
+}
+
+// --- Function Config (Input) Types: : `define*Function` method parameter types ---
 
 /**
  * Configuration for defining a base function.
@@ -215,20 +266,17 @@ export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInva
  * @category Functions Types
  * @interface
  */
-export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event'> & {
-  /**
-   * Path to the function source code
-   * @defaultValue `functions/${name}`
-   */
-  src?: string
+export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event'> &
+  QueueConfig & {
+    /**
+     * Path to the function source code
+     * @defaultValue `functions/${name}`
+     */
+    src?: string
 
-  /** Optional event configuration that triggers the queue function */
-  event?: BlueprintFunctionResourceEvent
-
-  concurrency?: number
-  fifo?: boolean
-  dlq?: boolean
-}
+    /** Optional event configuration that triggers the queue function */
+    event?: BlueprintFunctionResourceEvent
+  }
 
 /**
  * Configuration for defining an event function.
@@ -244,33 +292,6 @@ export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 
    * @defaultValue `functions/${name}`
    */
   src?: string
-}
-
-/**
- * A durable, step-based pipeline function.
- * @public
- * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
- * @category Functions Types
- * @interface
- */
-export interface BlueprintPipelineResource extends BlueprintBaseFunctionResource {
-  type: 'sanity.function.pipeline'
-  event?: BlueprintFunctionResourceEvent
-  /**
-   * Concurrent executions
-   * Min 1
-   * Max 500
-   */
-  concurrency?: number
-  /**
-   * Debounce window in seconds
-   */
-  debounce?: number
-  /**
-   * Path used to group debounced events, e.g. 'document._id'
-   */
-  debounceKey?: string
 }
 
 /**
