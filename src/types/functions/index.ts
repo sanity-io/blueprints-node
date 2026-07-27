@@ -144,7 +144,7 @@ export interface BlueprintSyncTagInvalidateFunctionResource extends BlueprintBas
  * @alpha
  * @hidden
  */
-export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionResource {
+export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionResource, QueueConfig {
   type: 'sanity.function.queue'
   /** Optional event configuration that triggers the function */
   event?: BlueprintFunctionResourceEvent
