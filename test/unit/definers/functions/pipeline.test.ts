@@ -1,7 +1,7 @@
-import { afterEach, describe, expect, test, vi } from 'vitest'
-import { definePipeline } from '../../../../src/definers/functions/pipeline.js'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import {definePipeline} from '../../../../src/definers/functions/pipeline.js'
 import * as index from '../../../../src/index.js'
-import { defineBlueprintForResource } from '../../../helpers/index.js'
+import {defineBlueprintForResource} from '../../../helpers/index.js'
 
 describe('definePipeline', () => {
   describe('happy paths', () => {
@@ -22,9 +22,9 @@ describe('definePipeline', () => {
     test('should create a pipeline with an event', () => {
       const fn = definePipeline({
         name: 'test',
-        event: { type: 'document', on: ['create'], filter: "_type == 'article'" },
+        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
-      expect(fn.event).toEqual({ type: 'document', on: ['create'], filter: "_type == 'article'" })
+      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
     })
 
     test('should create a pipeline function with optional concurrency', () => {
@@ -62,10 +62,10 @@ describe('definePipeline', () => {
       })
 
       test('should throw an error if validatePipelineFunction returns an error', () => {
-        const spy = vi.spyOn(index, 'validatePipelineFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+        const spy = vi.spyOn(index, 'validatePipelineFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
         expect(() =>
           defineBlueprintForResource(
-            definePipeline({ name: 'test', event: { type: 'document', on: ['create'], filter: "_type == 'article'" } }),
+            definePipeline({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
           ),
         ).toThrow('this is a test')
 

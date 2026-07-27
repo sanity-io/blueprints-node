@@ -3,8 +3,8 @@ import {
   type BlueprintSyncTagInvalidateFunctionResource,
   validateSyncTagInvalidateFunction,
 } from '../../index.js'
-import { runValidation } from '../../utils/validation.js'
-import { defineFunction } from './index.js'
+import {runValidation} from '../../utils/validation.js'
+import {defineFunction} from './index.js'
 /**
  * Defines a function that is triggered on a sync tag invalidate event.
  *
@@ -37,12 +37,12 @@ import { defineFunction } from './index.js'
 export function defineSyncTagInvalidateFunction(
   functionConfig: BlueprintSyncTagInvalidateFunctionConfig,
 ): BlueprintSyncTagInvalidateFunctionResource {
-  const { event } = functionConfig
+  const {event} = functionConfig
 
   const functionResource: BlueprintSyncTagInvalidateFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.sync-tag-invalidate',
-    ...(event?.resource ? { event } : {}),
+    ...(event?.resource ? {event} : {}),
   }
 
   runValidation(() => validateSyncTagInvalidateFunction(functionResource))

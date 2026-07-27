@@ -1,6 +1,6 @@
-import { type BlueprintPipelineConfig, type BlueprintPipelineResource, validatePipelineFunction } from '../../index.js'
-import { runValidation } from '../../utils/validation.js'
-import { defineFunction } from './index.js'
+import {type BlueprintPipelineConfig, type BlueprintPipelineResource, validatePipelineFunction} from '../../index.js'
+import {runValidation} from '../../utils/validation.js'
+import {defineFunction} from './index.js'
 
 /**
  * Defines a pipeline function resource.
@@ -27,14 +27,14 @@ import { defineFunction } from './index.js'
  * @returns The validated pipeline function resource
  */
 export function definePipeline(functionConfig: BlueprintPipelineConfig): BlueprintPipelineResource {
-  const { name, event, concurrency, debounce, debounceKey, src } = functionConfig
+  const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
   const functionResource: BlueprintPipelineResource = {
-    ...defineFunction({ ...functionConfig, src: src ?? `functions/${name}` }, { skipValidation: true }),
+    ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
     type: 'sanity.function.pipeline',
-    ...(event !== undefined && { event }),
-    ...(concurrency !== undefined && { concurrency }),
-    ...(debounce !== undefined && { debounce }),
-    ...(debounceKey !== undefined && { debounceKey }),
+    ...(event !== undefined && {event}),
+    ...(concurrency !== undefined && {concurrency}),
+    ...(debounce !== undefined && {debounce}),
+    ...(debounceKey !== undefined && {debounceKey}),
   }
 
   runValidation(() => validatePipelineFunction(functionResource))

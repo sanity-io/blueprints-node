@@ -1,6 +1,6 @@
-import { type BlueprintEventFunctionConfig, type BlueprintEventFunctionResource, validateEventFunction } from '../../index.js'
-import { runValidation } from '../../utils/validation.js'
-import { defineFunction } from './index.js'
+import {type BlueprintEventFunctionConfig, type BlueprintEventFunctionResource, validateEventFunction} from '../../index.js'
+import {runValidation} from '../../utils/validation.js'
+import {defineFunction} from './index.js'
 
 /**
  * Defines a function that provide event behaviour.
@@ -22,7 +22,7 @@ import { defineFunction } from './index.js'
  */
 export function defineEventFunction(functionConfig: BlueprintEventFunctionConfig): BlueprintEventFunctionResource {
   const functionResource: BlueprintEventFunctionResource = {
-    ...defineFunction(functionConfig, { skipValidation: true }),
+    ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.event',
   }
 
