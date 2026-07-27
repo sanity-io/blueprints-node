@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.1](https://github.com/sanity-io/blueprints-node/compare/v0.23.0...v0.23.1) (2026-07-27)
+
+
+### Bug Fixes
+
+* add queue props to output BlueprintQueueFunctionResource type ([#135](https://github.com/sanity-io/blueprints-node/issues/135)) ([d88b1c0](https://github.com/sanity-io/blueprints-node/commit/d88b1c0cb58dbfa42e1b9a0ec300ad772f5f3043))
+
 ## [0.23.0](https://github.com/sanity-io/blueprints-node/compare/v0.22.0...v0.23.0) (2026-07-20)
 
 
