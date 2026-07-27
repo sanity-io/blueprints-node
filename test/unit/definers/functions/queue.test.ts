@@ -12,6 +12,14 @@ describe('defineQueueFunction', () => {
       expect(fn).not.toHaveProperty('event')
     })
 
+    test('should create a queue function and honour queue properties', () => {
+      const queueProps = {concurrency: 420, dlq: true, fifo: true, debounce: 69, debounceKey: 'bouncebouncebouncebounce'}
+      const fn = defineQueueFunction({name: 'test', ...queueProps})
+      expect(fn.type).toEqual('sanity.function.queue')
+      expect(fn).not.toHaveProperty('event')
+      expect(fn).toMatchObject(queueProps)
+    })
+
     test('should pass through a document event', () => {
       const event: BlueprintFunctionResourceEvent = {type: 'document', on: ['publish'], filter: "_type == 'post'"}
       const fn = defineQueueFunction({name: 'test', event})
