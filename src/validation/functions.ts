@@ -515,14 +515,14 @@ function validateFunctionEvent(event: unknown): BlueprintError[] {
  * @returns Array of validation errors, empty if valid
  */
 
-export function validateEventFunction(functionResource: unknown): BlueprintError[] {
+export function validatePubSubFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
-  if ('type' in functionResource && functionResource.type !== 'sanity.function.event') {
-    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.event`'})
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.pubsub') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.pubsub`'})
   }
 
   errors.push(...validateFunction(functionResource))

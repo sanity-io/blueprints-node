@@ -156,8 +156,8 @@ export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionRes
  * @alpha
  * @hidden
  */
-export interface BlueprintEventFunctionResource extends BlueprintBaseFunctionResource {
-  type: 'sanity.function.event'
+export interface BlueprintPubSubFunctionResource extends BlueprintBaseFunctionResource {
+  type: 'sanity.function.pubsub'
 }
 
 /**
@@ -286,7 +286,7 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
  * @category Functions Types
  * @interface
  */
-export type BlueprintEventFunctionConfig = Omit<BlueprintEventFunctionResource, 'type' | 'src'> & {
+export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource, 'type' | 'src'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`

@@ -10,7 +10,6 @@ import {
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintDocumentWebhookConfig,
   type BlueprintDocumentWebhookResource,
-  type BlueprintEventFunctionResource,
   type BlueprintFunctionResourceEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
@@ -19,6 +18,7 @@ import {
   type BlueprintPipelineResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
+  type BlueprintPubSubFunctionResource,
   type BlueprintQueueFunctionResource,
   type BlueprintResource,
   type BlueprintRoleConfig,
@@ -31,9 +31,9 @@ import {
   defineDataset,
   defineDocumentFunction,
   defineDocumentWebhook,
-  defineEventFunction,
   defineMediaLibraryAssetFunction,
   defineProjectRole,
+  definePubSubFunction,
   defineQueueFunction,
   defineRole,
   defineScheduledFunction,
@@ -44,9 +44,9 @@ import {
   validateDataset,
   validateDocumentFunction,
   validateDocumentWebhook,
-  validateEventFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validatePubSubFunction,
   validateQueueFunction,
   validateResource,
   validateRole,
@@ -138,8 +138,8 @@ const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
 })
 
-const eventFunction: BlueprintEventFunctionResource = defineEventFunction({
-  name: 'event-stuff',
+const pubSubFunction: BlueprintPubSubFunctionResource = definePubSubFunction({
+  name: 'pubsub-stuff',
 })
 
 const documentWebhookConfig: BlueprintDocumentWebhookConfig = {
@@ -252,4 +252,4 @@ validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
 validateQueueFunction(queueFunction)
-validateEventFunction(eventFunction)
+validatePubSubFunction(pubSubFunction)

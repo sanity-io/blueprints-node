@@ -910,22 +910,22 @@ describe('validateQueueFunction', () => {
   })
 })
 
-describe('validateEventFunction', () => {
+describe('validatePubSubFunction', () => {
   describe('happy paths', () => {
     test('should accept a valid event function without any optional properties', () => {
-      const errors = functions.validateEventFunction({
+      const errors = functions.validatePubSubFunction({
         name: 'test',
-        type: 'sanity.function.event',
+        type: 'sanity.function.pubsub',
       })
       expect(errors).toStrictEqual([])
     })
   })
   describe('sad paths', () => {
-    test('should return an error if the type is not `sanity.function.event`', () => {
-      const errors = functions.validateEventFunction({type: 'invalid'})
+    test('should return an error if the type is not `sanity.function.pubsub`', () => {
+      const errors = functions.validatePubSubFunction({type: 'invalid'})
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`type` must be `sanity.function.event`',
+        message: '`type` must be `sanity.function.pubsub`',
       })
     })
   })
