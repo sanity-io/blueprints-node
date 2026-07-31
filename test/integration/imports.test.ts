@@ -4,10 +4,10 @@ import {
   defineDataset,
   defineDocumentFunction,
   defineDocumentWebhook,
-  defineEventFunction,
   defineFunction,
   defineMediaLibraryAssetFunction,
   defineProjectRole,
+  definePubSubFunction,
   defineQueueFunction,
   defineResource,
   defineRole,
@@ -18,9 +18,9 @@ import {
   validateDataset,
   validateDocumentFunction,
   validateDocumentWebhook,
-  validateEventFunction,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validatePubSubFunction,
   validateQueueFunction,
   validateResource,
   validateRole,
@@ -57,8 +57,8 @@ describe('package imports', () => {
     expect(defineQueueFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineEventFunction', () => {
-    expect(defineEventFunction).toBeInstanceOf(Function)
+  it('should import definePubSubFunction', () => {
+    expect(definePubSubFunction).toBeInstanceOf(Function)
   })
 
   it('should import defineDocumentWebhook', () => {
@@ -109,8 +109,8 @@ describe('package imports', () => {
     expect(validateQueueFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validateEventFunction', () => {
-    expect(validateEventFunction).toBeInstanceOf(Function)
+  it('should import validatePubSubFunction', () => {
+    expect(validatePubSubFunction).toBeInstanceOf(Function)
   })
 
   it('should import validateDocumentWebhook', () => {
