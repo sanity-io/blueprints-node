@@ -69,6 +69,24 @@ describe('defineProject', () => {
   })
 })
 
+describe('attachProject', () => {
+  test('should attach and retain an existing project without mutable fields', () => {
+    const projectResource = projects.attachProject({
+      name: 'project-name',
+      id: 'abcdefgh',
+    })
+
+    expect(projectResource).toStrictEqual({
+      name: 'project-name',
+      type: 'sanity.project',
+      lifecycle: {
+        deletionPolicy: 'retain',
+        ownershipAction: {type: 'attach', id: 'abcdefgh'},
+      },
+    })
+  })
+})
+
 describe('referenceProject', () => {
   test('should create a reference to a robot token', () => {
     const ref = projects.referenceProject({

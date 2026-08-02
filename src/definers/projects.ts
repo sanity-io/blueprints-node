@@ -1,5 +1,6 @@
 import {
   type BlueprintCrossStackReferenceConfig,
+  type BlueprintProjectAttachConfig,
   type BlueprintProjectConfig,
   type BlueprintProjectResource,
   type BlueprintResource,
@@ -33,6 +34,39 @@ export function defineProject(parameters: BlueprintProjectConfig): BlueprintProj
     ...parameters,
     displayName,
     type: 'sanity.project',
+  }
+
+  runValidation(() => validateProject(projectResource))
+
+  return projectResource
+}
+
+/**
+ * Attaches an existing project to a Blueprint and retains it when the Stack is destroyed.
+ *
+ * @example
+ * ```ts
+ * attachProject({
+ *   name: 'project',
+ *   id: 'abc123',
+ * })
+ * ```
+ * @param config The existing project identity
+ * @public
+ * @beta Attaching Projects via Blueprints is experimental. This feature is subject to breaking changes.
+ * @category Definers
+ * @expandType BlueprintProjectAttachConfig
+ * @returns The attached project resource
+ * @hidden
+ */
+export function attachProject(config: BlueprintProjectAttachConfig): BlueprintProjectResource {
+  const projectResource: BlueprintProjectResource = {
+    name: config.name,
+    type: 'sanity.project',
+    lifecycle: {
+      deletionPolicy: 'retain',
+      ownershipAction: {type: 'attach', id: config.id},
+    },
   }
 
   runValidation(() => validateProject(projectResource))

@@ -1,4 +1,6 @@
 import {
+  attachDataset,
+  attachProject,
   defineBlueprint,
   defineCorsOrigin,
   defineDataset,
@@ -29,6 +31,14 @@ import {
 import {describe, expect, it} from 'vitest'
 
 describe('package imports', () => {
+  it('should import attachProject', () => {
+    expect(attachProject).toBeInstanceOf(Function)
+  })
+
+  it('should import attachDataset', () => {
+    expect(attachDataset).toBeInstanceOf(Function)
+  })
+
   it('should import defineBlueprint', () => {
     expect(defineBlueprint).toBeInstanceOf(Function)
   })

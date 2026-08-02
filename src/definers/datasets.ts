@@ -1,4 +1,4 @@
-import {type BlueprintDatasetConfig, type BlueprintDatasetResource, validateDataset} from '../index.js'
+import {type BlueprintDatasetAttachConfig, type BlueprintDatasetConfig, type BlueprintDatasetResource, validateDataset} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 /*
@@ -39,6 +39,46 @@ export function defineDataset(parameters: BlueprintDatasetConfig): BlueprintData
     ...parameters,
     datasetName,
     type: 'sanity.project.dataset',
+  }
+
+  runValidation(() => validateDataset(datasetResource))
+
+  return datasetResource
+}
+
+/**
+ * Attaches an existing Dataset to a Blueprint and retains it when the Stack is destroyed.
+ *
+ * @example
+ * ```ts
+ * attachDataset({
+ *   name: 'production',
+ *   project: '$.resources.project.id',
+ * })
+ * ```
+ * @param config The existing Dataset identity
+ * @public
+ * @alpha Attaching Datasets via Blueprints is experimental. This feature is subject to breaking changes.
+ * @hidden
+ * @category Definers
+ * @expandType BlueprintDatasetAttachConfig
+ * @returns The attached Dataset resource
+ */
+export function attachDataset(config: BlueprintDatasetAttachConfig): BlueprintDatasetResource {
+  const datasetName = config.id ?? config.name
+  const datasetResource: BlueprintDatasetResource = {
+    name: config.name,
+    type: 'sanity.project.dataset',
+    datasetName,
+    project: config.project,
+    lifecycle: {
+      deletionPolicy: 'retain',
+      ownershipAction: {
+        type: 'attach',
+        id: datasetName,
+        projectId: config.project,
+      },
+    },
   }
 
   runValidation(() => validateDataset(datasetResource))

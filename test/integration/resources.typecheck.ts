@@ -1,9 +1,12 @@
 import {
   type AclMode,
+  attachDataset,
+  attachProject,
   type Blueprint,
   // type BlueprintBaseFunctionResource,
   type BlueprintCorsOriginConfig,
   type BlueprintCorsOriginResource,
+  type BlueprintDatasetAttachConfig,
   type BlueprintDatasetConfig,
   type BlueprintDatasetResource,
   type BlueprintDocumentFunctionResource,
@@ -16,6 +19,8 @@ import {
   type BlueprintModule,
   type BlueprintOutput,
   type BlueprintPipelineResource,
+  type BlueprintProjectAttachConfig,
+  type BlueprintProjectResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintPubSubFunctionResource,
@@ -80,6 +85,14 @@ const datasetConfig: BlueprintDatasetConfig = {
   project: 'projectId',
 }
 const datasetResource: BlueprintDatasetResource = defineDataset(datasetConfig)
+
+const attachedProjectConfig: BlueprintProjectAttachConfig = {name: 'attached-project', id: 'projectId'}
+const attachedProject: BlueprintProjectResource = attachProject(attachedProjectConfig)
+const attachedDatasetConfig: BlueprintDatasetAttachConfig = {
+  name: 'attached-dataset',
+  project: '$.resources.attached-project.id',
+}
+const attachedDataset: BlueprintDatasetResource = attachDataset(attachedDatasetConfig)
 
 const _pipelineDocumentEvent: BlueprintFunctionResourceEvent = {
   type: 'document',
@@ -225,6 +238,8 @@ const blueprint: Blueprint = {
   resources: [
     corsOriginResource,
     datasetResource,
+    attachedProject,
+    attachedDataset,
     documentFunctionResource,
     documentWebhookResource,
     mediaLibraryAssetFunctionResource,
