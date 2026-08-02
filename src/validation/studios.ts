@@ -24,6 +24,30 @@ export function validateStudio(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_type', message: 'Studio src must be a string'})
   }
 
+  if (!('slug' in resource) || !resource.slug) {
+    errors.push({type: 'missing_parameter', message: 'Studio slug is required'})
+  } else if (typeof resource.slug !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio slug must be a string'})
+  }
+
+  if (!('title' in resource) || !resource.title) {
+    errors.push({type: 'missing_parameter', message: 'Studio title is required'})
+  } else if (typeof resource.title !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio title must be a string'})
+  }
+
+  if ('icon' in resource && typeof resource.icon !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio icon must be a string'})
+  }
+
+  if ('visibility' in resource) {
+    if (typeof resource.visibility !== 'string') {
+      errors.push({type: 'invalid_type', message: 'Studio visibility must be a string'})
+    } else if (!['default', 'unlisted', 'disabled'].includes(resource.visibility)) {
+      errors.push({type: 'invalid_value', message: 'Studio visibility must be one of `default`, `unlisted`, or `disabled`'})
+    }
+  }
+
   if (!('autoUpdates' in resource) || !resource.autoUpdates) {
     errors.push({type: 'missing_parameter', message: 'Studio autoUpdates is required'})
   } else if (typeof resource.autoUpdates !== 'object') {

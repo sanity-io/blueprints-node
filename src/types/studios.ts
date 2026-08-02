@@ -10,6 +10,9 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
  */
 export type UserViteConfig = ((config: InlineConfig, env: ConfigEnv) => InlineConfig | Promise<InlineConfig>) | InlineConfig
 
+/** Controls how a Studio appears in the Sanity dashboard. */
+export type StudioApplicationVisibility = 'default' | 'unlisted' | 'disabled'
+
 /**
  * Represents a Studio resource.
  * @see https://www.sanity.io/docs/studio
@@ -22,6 +25,18 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /** The relative location of the studio source code. */
   src: string
+
+  /** Hosted Studio slug. Defaults to the resource name when using {@link defineStudio}. */
+  slug: string
+
+  /** Human-readable Studio title. */
+  title: string
+
+  /** Optional Studio icon. */
+  icon?: string
+
+  /** Dashboard visibility. */
+  visibility?: StudioApplicationVisibility
 
   /**
    * Auto update settings for the studio.
@@ -65,4 +80,16 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
  * @interface
  * @hidden
  */
-export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type'> {}
+export type BlueprintStudioConfig = Omit<BlueprintStudioResource, 'type' | 'slug' | 'autoUpdates'> & {
+  /**
+   * Hosted Studio slug.
+   * @defaultValue The `name` of the resource
+   */
+  slug?: string
+
+  /**
+   * Auto update settings for the Studio.
+   * @defaultValue `{enabled: true}`
+   */
+  autoUpdates?: BlueprintStudioResource['autoUpdates']
+}

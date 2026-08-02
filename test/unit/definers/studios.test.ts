@@ -23,6 +23,7 @@ describe('defineStudio', () => {
         studios.defineStudio({
           name: 'studio-name',
           src: 'studios/my-studio',
+          title: 'My Studio',
           autoUpdates: {
             enabled: true,
           },
@@ -37,18 +38,35 @@ describe('defineStudio', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
-      autoUpdates: {
-        enabled: true,
-      },
+      title: 'My Studio',
     })
 
-    expect(studioResource.type).toStrictEqual('sanity.studio')
+    expect(studioResource).toMatchObject({
+      type: 'sanity.studio',
+      slug: 'studio-name',
+      title: 'My Studio',
+      autoUpdates: {enabled: true},
+    })
+  })
+
+  test('should preserve explicit slug and auto-update settings', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      slug: 'hosted-studio',
+      title: 'My Studio',
+      autoUpdates: {enabled: false},
+    })
+
+    expect(studioResource.slug).toBe('hosted-studio')
+    expect(studioResource.autoUpdates).toStrictEqual({enabled: false})
   })
 
   test('should accept a valid configuration with a lifecycle', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
+      title: 'My Studio',
       autoUpdates: {
         enabled: true,
       },

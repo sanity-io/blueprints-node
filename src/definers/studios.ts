@@ -9,9 +9,7 @@ import {runValidation} from '../utils/validation.js'
  * defineStudio({
  *   name: 'my-studio',
  *   src: 'studios/my-studio',
- *   autoUpdates: {
- *     enabled: true
- *   }
+ *   title: 'My Studio',
  * })
  * ```
  * @param parameters The studio configuration
@@ -25,6 +23,8 @@ import {runValidation} from '../utils/validation.js'
 export function defineStudio(config: BlueprintStudioConfig): BlueprintStudioResource {
   const studioResource: BlueprintStudioResource = {
     ...config,
+    slug: config.slug || config.name,
+    autoUpdates: config.autoUpdates ?? {enabled: true},
     type: 'sanity.studio',
   }
 

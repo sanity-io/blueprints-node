@@ -5,6 +5,8 @@ const validStudio = {
   name: 'my-studio',
   type: 'sanity.studio',
   src: './studio',
+  slug: 'my-studio',
+  title: 'My Studio',
   autoUpdates: {enabled: true},
 }
 
@@ -33,6 +35,41 @@ describe('validateStudio', () => {
   test('should return an error if src is not a string', () => {
     const errors = validateStudio({...validStudio, src: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio src must be a string'})
+  })
+
+  test('should return an error if slug is not provided', () => {
+    const {slug: _slug, ...noSlug} = validStudio
+    const errors = validateStudio(noSlug)
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Studio slug is required'})
+  })
+
+  test('should return an error if slug is not a string', () => {
+    const errors = validateStudio({...validStudio, slug: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio slug must be a string'})
+  })
+
+  test('should return an error if title is not provided', () => {
+    const {title: _title, ...noTitle} = validStudio
+    const errors = validateStudio(noTitle)
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Studio title is required'})
+  })
+
+  test('should return an error if title is not a string', () => {
+    const errors = validateStudio({...validStudio, title: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio title must be a string'})
+  })
+
+  test('should return an error if icon is not a string', () => {
+    const errors = validateStudio({...validStudio, icon: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio icon must be a string'})
+  })
+
+  test('should return an error if visibility is unsupported', () => {
+    const errors = validateStudio({...validStudio, visibility: 'private'})
+    expect(errors).toContainEqual({
+      type: 'invalid_value',
+      message: 'Studio visibility must be one of `default`, `unlisted`, or `disabled`',
+    })
   })
 
   test('should return an error if autoUpdates is not provided', () => {
@@ -95,6 +132,8 @@ describe('validateStudio', () => {
       reactCompiler: false,
       sourceMap: true,
       project: 'abcdefg',
+      icon: 'https://example.com/icon.png',
+      visibility: 'unlisted',
     })
     expect(errors, JSON.stringify(errors)).toHaveLength(0)
   })
