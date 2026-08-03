@@ -47,19 +47,3 @@ export type BlueprintDatasetConfig = Omit<BlueprintDatasetResource, 'type' | 'da
    */
   datasetName?: string
 }
-
-/**
- * Configuration for attaching an existing Dataset.
- * @alpha This feature is subject to breaking changes.
- * @hidden
- * @category Resource Types
- * @interface
- */
-export interface BlueprintDatasetAttachConfig {
-  /** The resource name used within the Blueprint. */
-  name: string
-  /** The project ID or project resource reference containing the Dataset. */
-  project: string
-  /** The existing Dataset name. Defaults to the resource name. */
-  id?: string
-}

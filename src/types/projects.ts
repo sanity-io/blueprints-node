@@ -23,17 +23,3 @@ export interface BlueprintProjectResource extends BlueprintResource<BlueprintRes
  * @hidden
  */
 export type BlueprintProjectConfig = Omit<BlueprintProjectResource, 'type'>
-
-/**
- * Configuration for attaching an existing Sanity Project.
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- * @interface
- * @hidden
- */
-export interface BlueprintProjectAttachConfig {
-  /** The resource name used within the Blueprint. */
-  name: string
-  /** The ID of the existing project. */
-  id: string
-}
