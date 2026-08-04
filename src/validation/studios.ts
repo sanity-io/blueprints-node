@@ -1,4 +1,5 @@
 import type {BlueprintError} from '../types/errors.js'
+import {APPLICATION_VISIBILITIES} from '../types/studios.js'
 import {validateResource} from './resources.js'
 
 /**
@@ -22,6 +23,38 @@ export function validateStudio(resource: unknown): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: 'Studio src is required'})
   } else if (typeof resource.src !== 'string') {
     errors.push({type: 'invalid_type', message: 'Studio src must be a string'})
+  }
+
+  if (!('project' in resource) || !resource.project) {
+    errors.push({type: 'missing_parameter', message: 'Studio project is required'})
+  } else if (typeof resource.project !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio project must be a string'})
+  }
+
+  if (!('slug' in resource) || !resource.slug) {
+    errors.push({type: 'missing_parameter', message: 'Studio slug is required'})
+  } else if (typeof resource.slug !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio slug must be a string'})
+  }
+
+  if (!('title' in resource) || !resource.title) {
+    errors.push({type: 'missing_parameter', message: 'Studio title is required'})
+  } else if (typeof resource.title !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio title must be a string'})
+  }
+
+  if ('icon' in resource) {
+    if (typeof resource.icon !== 'string') {
+      errors.push({type: 'invalid_type', message: 'Studio icon must be a string'})
+    }
+  }
+
+  if (
+    'visibility' in resource &&
+    typeof resource.visibility !== 'undefined' &&
+    !APPLICATION_VISIBILITIES.some((av) => av === resource.visibility)
+  ) {
+    errors.push({type: 'invalid_value', message: 'visibility must be one of `default`, `unlisted`, or `disabled`'})
   }
 
   if (!('autoUpdates' in resource) || !resource.autoUpdates) {
@@ -63,12 +96,6 @@ export function validateStudio(resource: unknown): BlueprintError[] {
   if ('sourceMap' in resource) {
     if (typeof resource.sourceMap !== 'boolean') {
       errors.push({type: 'invalid_type', message: 'Studio sourceMap must be a boolean'})
-    }
-  }
-
-  if ('project' in resource) {
-    if (typeof resource.project !== 'string') {
-      errors.push({type: 'invalid_type', message: 'Studio project must be a string'})
     }
   }
 
