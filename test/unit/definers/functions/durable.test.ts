@@ -1,26 +1,26 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import {definePipeline} from '../../../../src/definers/functions/pipeline.js'
+import {defineDurableFunction} from '../../../../src/definers/functions/durable.js'
 import * as index from '../../../../src/index.js'
 import {defineBlueprintForResource} from '../../../helpers/index.js'
 
-describe('definePipeline', () => {
+describe('defineDurableFunction', () => {
   describe('happy paths', () => {
     test('should create a pipeline event', () => {
-      const fn = definePipeline({
+      const fn = defineDurableFunction({
         name: 'test',
       })
       expect(fn.name).toEqual('test')
     })
 
     test('should have the default src path', () => {
-      const fn = definePipeline({
+      const fn = defineDurableFunction({
         name: 'test',
       })
       expect(fn.src).toEqual('functions/test')
     })
 
     test('should create a pipeline with an event', () => {
-      const fn = definePipeline({
+      const fn = defineDurableFunction({
         name: 'test',
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
@@ -28,7 +28,7 @@ describe('definePipeline', () => {
     })
 
     test('should create a pipeline function with optional concurrency', () => {
-      const fn = definePipeline({
+      const fn = defineDurableFunction({
         name: 'test',
         concurrency: 3,
       })
@@ -37,7 +37,7 @@ describe('definePipeline', () => {
     })
 
     test('should create a pipeline function with optional debounce', () => {
-      const fn = definePipeline({
+      const fn = defineDurableFunction({
         name: 'test',
         debounce: 3,
       })
@@ -46,7 +46,7 @@ describe('definePipeline', () => {
     })
 
     test('should create a pipeline function with optional debounceKey', () => {
-      const fn = definePipeline({
+      const fn = defineDurableFunction({
         name: 'test',
         debounce: 1,
         debounceKey: 'testKey',
@@ -61,11 +61,11 @@ describe('definePipeline', () => {
         vi.resetAllMocks()
       })
 
-      test('should throw an error if validatePipelineFunction returns an error', () => {
-        const spy = vi.spyOn(index, 'validatePipelineFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      test('should throw an error if validateDurableFunction returns an error', () => {
+        const spy = vi.spyOn(index, 'validateDurableFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
         expect(() =>
           defineBlueprintForResource(
-            definePipeline({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
+            defineDurableFunction({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
           ),
         ).toThrow('this is a test')
 

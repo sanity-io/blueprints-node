@@ -747,14 +747,6 @@ describe('validateQueueFunction', () => {
       })
       expect(errors).toStrictEqual([])
     })
-    test('should accept a queue function with a cron event', () => {
-      const errors = functions.validateQueueFunction({
-        name: 'test',
-        type: 'sanity.function.queue',
-        event: {type: 'cron', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
-      })
-      expect(errors).toStrictEqual([])
-    })
     test('should accept a queue function with a sync-tag-invalidate event', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
@@ -810,7 +802,7 @@ describe('validateQueueFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
+        message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`',
       })
     })
     test('should surface errors from the delegated event validator', () => {
@@ -931,12 +923,12 @@ describe('validatePubSubFunction', () => {
   })
 })
 
-describe('validatePipelineFunction', () => {
+describe('validateDurableFunction', () => {
   describe('happy paths', () => {
-    test('should accept a valid pipeline function without any optional properties', () => {
-      const errors = functions.validatePipelineFunction({
+    test('should accept a valid durable function without any optional properties', () => {
+      const errors = functions.validateDurableFunction({
         name: 'test',
-        type: 'sanity.function.pipeline',
+        type: 'sanity.function.durable',
         event: {type: 'document', filter: "_type == 'article'"},
       })
       expect(errors).toStrictEqual([])
@@ -944,28 +936,28 @@ describe('validatePipelineFunction', () => {
   })
 
   describe('sad paths', () => {
-    test('should return an error if the type is not `sanity.function.pipeline`', () => {
-      const errors = functions.validatePipelineFunction({type: 'invalid'})
+    test('should return an error if the type is not `sanity.function.durable`', () => {
+      const errors = functions.validateDurableFunction({type: 'invalid'})
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`type` must be `sanity.function.pipeline`',
+        message: '`type` must be `sanity.function.durable`',
       })
     })
 
     test('should return an error if the event type is invalid', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
-        type: 'sanity.function.pipeline',
+        type: 'sanity.function.durable',
         event: {type: 'invalid', filter: "_type == 'article'"},
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
+        message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`',
       })
     })
 
     test('should return an error if concurrency is not a number', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.workflow',
         concurrency: 'invalid',
@@ -977,9 +969,9 @@ describe('validatePipelineFunction', () => {
     })
 
     test('should return an error if concurrency is less than 1', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
-        type: 'sanity.function.pipeline',
+        type: 'sanity.function.durable',
         concurrency: 0,
       })
       expect(errors).toContainEqual({
@@ -989,7 +981,7 @@ describe('validatePipelineFunction', () => {
     })
 
     test('should return an error if concurrency is greater than 500', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.workflow',
         concurrency: 600,
@@ -1001,9 +993,9 @@ describe('validatePipelineFunction', () => {
     })
 
     test('should return an error if debounce is not a number', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
-        type: 'sanity.function.pipeline',
+        type: 'sanity.function.durable',
         event: {type: 'document', filter: "_type == 'article'"},
         debounce: 'invalid',
       })
@@ -1014,9 +1006,9 @@ describe('validatePipelineFunction', () => {
     })
 
     test('should return an error if debounceKey is set and not a string', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
-        type: 'sanity.function.pipeline',
+        type: 'sanity.function.durable',
         event: {type: 'document', filter: "_type == 'article'"},
         debounce: 1,
         debounceKey: 123,
@@ -1028,9 +1020,9 @@ describe('validatePipelineFunction', () => {
     })
 
     test('should return an error if debounceKey is set but debounce is empty', () => {
-      const errors = functions.validatePipelineFunction({
+      const errors = functions.validateDurableFunction({
         name: 'test',
-        type: 'sanity.function.pipeline',
+        type: 'sanity.function.durable',
         event: {type: 'document', filter: "_type == 'article'"},
         debounceKey: '_document.id',
       })

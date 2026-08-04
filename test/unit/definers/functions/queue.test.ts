@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import {defineQueueFunction} from '../../../../src/definers/functions/queue.js'
-import type {BlueprintFunctionResourceEvent} from '../../../../src/index.js'
+import type {BlueprintFunctionResourceContentLakeEvent} from '../../../../src/index.js'
 import * as index from '../../../../src/index.js'
 import {defineBlueprintForResource} from '../../../helpers/index.js'
 
@@ -21,13 +21,13 @@ describe('defineQueueFunction', () => {
     })
 
     test('should pass through a document event', () => {
-      const event: BlueprintFunctionResourceEvent = {type: 'document', on: ['publish'], filter: "_type == 'post'"}
+      const event: BlueprintFunctionResourceContentLakeEvent = {type: 'document', on: ['publish'], filter: "_type == 'post'"}
       const fn = defineQueueFunction({name: 'test', event})
       expect(fn.event).toEqual(event)
     })
 
     test('should pass through a media-library event', () => {
-      const event: BlueprintFunctionResourceEvent = {
+      const event: BlueprintFunctionResourceContentLakeEvent = {
         type: 'media-library',
         on: ['create'],
         resource: {type: 'media-library', id: 'my-media-library-id'},
@@ -36,20 +36,17 @@ describe('defineQueueFunction', () => {
       expect(fn.event).toEqual(event)
     })
 
-    test('should pass through a cron event', () => {
-      const event: BlueprintFunctionResourceEvent = {type: 'cron', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}
-      const fn = defineQueueFunction({name: 'test', event})
-      expect(fn.event).toEqual(event)
-    })
-
     test('should pass through a sync-tag-invalidate event', () => {
-      const event: BlueprintFunctionResourceEvent = {type: 'sync-tag-invalidate', resource: {type: 'dataset', id: 'myProj.myDataset'}}
+      const event: BlueprintFunctionResourceContentLakeEvent = {
+        type: 'sync-tag-invalidate',
+        resource: {type: 'dataset', id: 'myProj.myDataset'},
+      }
       const fn = defineQueueFunction({name: 'test', event})
       expect(fn.event).toEqual(event)
     })
 
     test('should pass through concurrency, fifo and dlq alongside an event', () => {
-      const event: BlueprintFunctionResourceEvent = {type: 'document', on: ['publish']}
+      const event: BlueprintFunctionResourceContentLakeEvent = {type: 'document', on: ['publish']}
       const fn = defineQueueFunction({name: 'test', event, concurrency: 5, fifo: false, dlq: false})
       expect(fn).toMatchObject({event, concurrency: 5, fifo: false, dlq: false})
     })

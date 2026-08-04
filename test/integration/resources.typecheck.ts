@@ -10,12 +10,12 @@ import {
   type BlueprintDocumentFunctionResourceEvent,
   type BlueprintDocumentWebhookConfig,
   type BlueprintDocumentWebhookResource,
-  type BlueprintFunctionResourceEvent,
+  type BlueprintDurableFunctionResource,
+  type BlueprintFunctionResourceContentLakeEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
-  type BlueprintPipelineResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintPubSubFunctionResource,
@@ -81,20 +81,20 @@ const datasetConfig: BlueprintDatasetConfig = {
 }
 const datasetResource: BlueprintDatasetResource = defineDataset(datasetConfig)
 
-const _pipelineDocumentEvent: BlueprintFunctionResourceEvent = {
+const _durableDocumentEvent: BlueprintFunctionResourceContentLakeEvent = {
   type: 'document',
   on: ['create'],
   filter: "_type == 'article'",
 }
-const _pipelineSyncTagEvent: BlueprintFunctionResourceEvent = {
+const _durableSyncTagEvent: BlueprintFunctionResourceContentLakeEvent = {
   type: 'sync-tag-invalidate',
   resource: {type: 'dataset', id: 'proj.dataset'},
 }
-const _pipelineFunction: BlueprintPipelineResource = {
-  type: 'sanity.function.pipeline',
-  name: 'my-pipeline',
-  src: 'functions/my-pipeline',
-  event: _pipelineDocumentEvent,
+const _durableFunction: BlueprintDurableFunctionResource = {
+  type: 'sanity.function.durable',
+  name: 'my-durable',
+  src: 'functions/my-durable',
+  event: _durableDocumentEvent,
   concurrency: 5,
   debounce: 10,
   debounceKey: 'document._id',

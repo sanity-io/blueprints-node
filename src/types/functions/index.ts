@@ -1,7 +1,7 @@
 import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
-  BlueprintFunctionResourceEvent,
+  BlueprintFunctionResourceContentLakeEvent,
   BlueprintMediaLibraryFunctionResourceEvent,
   BlueprintScheduledFunctionConfigEvent,
   BlueprintScheduledFunctionResourceEvent,
@@ -146,8 +146,8 @@ export interface BlueprintSyncTagInvalidateFunctionResource extends BlueprintBas
  */
 export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionResource, QueueConfig {
   type: 'sanity.function.queue'
-  /** Optional event configuration that triggers the function */
-  event?: BlueprintFunctionResourceEvent
+  /** Optional Content Lake event source that triggers the function */
+  event?: BlueprintFunctionResourceContentLakeEvent
 }
 
 /**
@@ -161,16 +161,14 @@ export interface BlueprintPubSubFunctionResource extends BlueprintBaseFunctionRe
 }
 
 /**
- * A durable, step-based pipeline function.
- * @public
- * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * A durable, step-based function.
+ * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Functions Types
- * @interface
  */
-export interface BlueprintPipelineResource extends BlueprintBaseFunctionResource, QueueConfig {
-  type: 'sanity.function.pipeline'
-  event?: BlueprintFunctionResourceEvent
+export interface BlueprintDurableFunctionResource extends BlueprintBaseFunctionResource, QueueConfig {
+  type: 'sanity.function.durable'
+  event?: BlueprintFunctionResourceContentLakeEvent
 }
 
 // --- Function Config (Input) Types: : `define*Function` method parameter types ---
@@ -275,7 +273,7 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
     src?: string
 
     /** Optional event configuration that triggers the queue function */
-    event?: BlueprintFunctionResourceEvent
+    event?: BlueprintFunctionResourceContentLakeEvent
   }
 
 /**
@@ -295,21 +293,21 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
 }
 
 /**
- * Configuration for defining a pipeline function.
+ * Configuration for defining a durable function.
  * @public
- * @alpha Deploying Pipeline Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Functions Types
  * @interface
  */
-export type BlueprintPipelineConfig = Omit<BlueprintPipelineResource, 'type' | 'src' | 'event'> & {
+export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event'> & {
   /**
-   * Path to the pipeline source code
+   * Path to the function source code
    * @defaultValue `functions/${name}`
    */
   src?: string
   /**
    * Trigger configuration
    */
-  event?: BlueprintFunctionResourceEvent
+  event?: BlueprintFunctionResourceContentLakeEvent
 }

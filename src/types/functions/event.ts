@@ -84,13 +84,12 @@ export type BlueprintScheduledFunctionConfigEvent =
   | BlueprintScheduledFunctionExpressionResourceEvent
 
 /**
- * Union type of all function resource event configurations
+ * Union type of all Content Lake event source configurations
  * @category Functions Types
  */
-export type BlueprintFunctionResourceEvent =
+export type BlueprintFunctionResourceContentLakeEvent =
   | ({type: 'document'} & BlueprintDocumentFunctionResourceEvent)
   | ({type: 'media-library'} & BlueprintMediaLibraryFunctionResourceEvent)
-  | ({type: 'cron'} & BlueprintScheduledFunctionResourceEvent)
   | ({type: 'sync-tag-invalidate'} & BlueprintSyncTagInvalidateFunctionResourceEvent)
 
 /**
