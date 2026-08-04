@@ -11,6 +11,22 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 export type UserViteConfig = ((config: InlineConfig, env: ConfigEnv) => InlineConfig | Promise<InlineConfig>) | InlineConfig
 
 /**
+ * The set of valid application visibilities.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export const APPLICATION_VISIBILITIES = ['default', 'unlisted', 'disabled'] as const
+
+/**
+ * The visibility of the studio in the dashboard.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export type ApplicationVisibility = (typeof APPLICATION_VISIBILITIES)[number]
+
+/**
  * Represents a Studio resource.
  * @see https://www.sanity.io/docs/studio
  * @beta This feature is subject to breaking changes.
@@ -22,6 +38,21 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /** The relative location of the studio source code. */
   src: string
+
+  /** The project ID of the project that contains your Studio. */
+  project: string
+
+  /** The slug to be used in the studio hostname. */
+  slug: string
+
+  /** Title for the studio. */
+  title: string
+
+  /** Icon for the studio in the browser. */
+  icon?: string
+
+  /** Dashboard visibility */
+  visibility?: ApplicationVisibility
 
   /**
    * Auto update settings for the studio.
@@ -48,13 +79,6 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /** Custom Vite configuration for the Studio so it can be changed and extended. */
   vite?: UserViteConfig
-
-  /**
-   * The project ID of the project that contains your Studio.
-   *
-   * The `project` attribute must be defined if your blueprint is scoped to an organization.
-   */
-  project?: string
 }
 
 /**
@@ -65,4 +89,18 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
  * @interface
  * @hidden
  */
-export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type'> {}
+export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type' | 'title' | 'autoUpdates'> {
+  /** Title for the studio. Defaults to the name of the resource. */
+  title?: string
+
+  /**
+   * Auto update settings for the studio.
+   */
+  autoUpdates?: {
+    /** Whether auto updates are enabled for the studio. Defaults to true if autoUpdates is not provided. */
+    enabled: boolean
+
+    /** What "version"/"channel" to use for auto updates */
+    version?: string // 'next', 'stable', 'latest' or a semantic version (e.g., "1.2.3", "2.0.0-beta.1")
+  }
+}

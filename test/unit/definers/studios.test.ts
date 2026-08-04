@@ -23,9 +23,8 @@ describe('defineStudio', () => {
         studios.defineStudio({
           name: 'studio-name',
           src: 'studios/my-studio',
-          autoUpdates: {
-            enabled: true,
-          },
+          project: 'abcd1234',
+          slug: 'my-studio',
         }),
       ),
     ).toThrow(/this is a test/)
@@ -37,18 +36,64 @@ describe('defineStudio', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+      title: 'My Studio',
+      autoUpdates: {
+        enabled: false,
+      },
+    })
+
+    expect(studioResource.type).toStrictEqual('sanity.studio')
+    expect(studioResource.title).toStrictEqual('My Studio')
+    expect(studioResource.autoUpdates.enabled).toStrictEqual(false)
+  })
+
+  test('should default the title to the name', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
       autoUpdates: {
         enabled: true,
       },
     })
 
     expect(studioResource.type).toStrictEqual('sanity.studio')
+    expect(studioResource.title).toStrictEqual('studio-name')
+  })
+
+  test('should default the autoUpdates to enabled with undefined version', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+    })
+
+    expect(studioResource.autoUpdates.enabled).toStrictEqual(true)
+    expect(studioResource.autoUpdates.version).toBeUndefined()
+  })
+
+  test('should default the autoUpdates to enabled with undefined version', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+    })
+
+    expect(studioResource.autoUpdates.enabled).toStrictEqual(true)
+    expect(studioResource.autoUpdates.version).toBeUndefined()
   })
 
   test('should accept a valid configuration with a lifecycle', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
       autoUpdates: {
         enabled: true,
       },
