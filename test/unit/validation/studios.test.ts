@@ -1,10 +1,13 @@
 import {describe, expect, test} from 'vitest'
-import {validateStudio} from '../../../src/index.js'
+import {type BlueprintStudioResource, validateStudio} from '../../../src/index.js'
 
-const validStudio = {
+const validStudio: BlueprintStudioResource = {
   name: 'my-studio',
   type: 'sanity.studio',
   src: './studio',
+  slug: 'my-studio',
+  project: 'abcdefg',
+  title: 'My Studio',
   autoUpdates: {enabled: true},
 }
 
@@ -89,12 +92,13 @@ describe('validateStudio', () => {
   test('should accept a valid configuration', () => {
     const errors = validateStudio({
       ...validStudio,
+      icon: 'icon1234',
+      visibility: 'default',
       autoUpdates: {enabled: true, version: '^3.0.0'},
       basePath: '/studio',
       minify: true,
       reactCompiler: false,
       sourceMap: true,
-      project: 'abcdefg',
     })
     expect(errors, JSON.stringify(errors)).toHaveLength(0)
   })

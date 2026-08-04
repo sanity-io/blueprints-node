@@ -23,6 +23,8 @@ describe('defineStudio', () => {
         studios.defineStudio({
           name: 'studio-name',
           src: 'studios/my-studio',
+          project: 'abcd1234',
+          slug: 'my-studio',
           autoUpdates: {
             enabled: true,
           },
@@ -37,18 +39,39 @@ describe('defineStudio', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+      title: 'My Studio',
       autoUpdates: {
         enabled: true,
       },
     })
 
     expect(studioResource.type).toStrictEqual('sanity.studio')
+    expect(studioResource.title).toStrictEqual('My Studio')
+  })
+
+  test('should default the title to the name', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+      autoUpdates: {
+        enabled: true,
+      },
+    })
+
+    expect(studioResource.type).toStrictEqual('sanity.studio')
+    expect(studioResource.title).toStrictEqual('studio-name')
   })
 
   test('should accept a valid configuration with a lifecycle', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
       autoUpdates: {
         enabled: true,
       },
