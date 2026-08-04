@@ -89,7 +89,18 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
  * @interface
  * @hidden
  */
-export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type' | 'title'> {
+export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type' | 'title' | 'autoUpdates'> {
   /** Title for the studio. Defaults to the name of the resource. */
   title?: string
+
+  /**
+   * Auto update settings for the studio.
+   */
+  autoUpdates?: {
+    /** Whether auto updates are enabled for the studio. Defaults to true if autoUpdates is not provided. */
+    enabled: boolean
+
+    /** What "version"/"channel" to use for auto updates */
+    version?: string // 'next', 'stable', 'latest' or a semantic version (e.g., "1.2.3", "2.0.0-beta.1")
+  }
 }

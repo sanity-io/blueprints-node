@@ -25,6 +25,10 @@ import {runValidation} from '../utils/validation.js'
 export function defineStudio(config: BlueprintStudioConfig): BlueprintStudioResource {
   const studioResource: BlueprintStudioResource = {
     title: config.name,
+    autoUpdates: {
+      enabled: config.autoUpdates?.enabled ?? true,
+      version: config.autoUpdates?.version,
+    },
     ...config,
     type: 'sanity.studio',
   }
