@@ -468,7 +468,7 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
   }
 
   if ('event' in functionResource && typeof functionResource.event !== 'undefined') {
-    errors.push(...validateFunctionEvent(functionResource.event))
+    errors.push(...validateFunctionContentLakeEvent(functionResource.event))
   }
 
   errors.push(...validateFunction(functionResource))
@@ -483,7 +483,7 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
  * @param event The event configuration to validate
  * @returns Array of validation errors, empty if valid
  */
-function validateFunctionEvent(event: unknown): BlueprintError[] {
+function validateFunctionContentLakeEvent(event: unknown): BlueprintError[] {
   if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
   if (!('type' in event)) return [{type: 'missing_parameter', message: '`event.type` is required'}]
 
@@ -492,15 +492,13 @@ function validateFunctionEvent(event: unknown): BlueprintError[] {
       return validateDocumentFunctionEvent(event)
     case 'media-library':
       return validateMediaLibraryFunctionEvent(event)
-    case 'cron':
-      return validateScheduledFunctionEvent(event)
     case 'sync-tag-invalidate':
       return validateFunctionEventResourceDataset(event)
     default:
       return [
         {
           type: 'invalid_value',
-          message: '`event.type` must be either `cron`, `document`, `sync-tag-invalidate`, or `media-library`',
+          message: '`event.type` must be either `document`, `sync-tag-invalidate`, or `media-library`',
         },
       ]
   }
@@ -531,21 +529,21 @@ export function validatePubSubFunction(functionResource: unknown): BlueprintErro
 }
 
 /**
- * Validates a pipeline function resource configuration.
+ * Validates a durable function resource configuration.
  * @param functionResource The function resource to validate
  * @alpha
  * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
-export function validatePipelineFunction(functionResource: unknown): BlueprintError[] {
+export function validateDurableFunction(functionResource: unknown): BlueprintError[] {
   if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
   if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
-  if ('type' in functionResource && functionResource.type !== 'sanity.function.pipeline') {
-    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.pipeline`'})
+  if ('type' in functionResource && functionResource.type !== 'sanity.function.durable') {
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.durable`'})
   }
 
   if ('debounceKey' in functionResource && typeof functionResource.debounceKey !== 'string') {
@@ -573,7 +571,7 @@ export function validatePipelineFunction(functionResource: unknown): BlueprintEr
   }
 
   if ('event' in functionResource) {
-    errors.push(...validateFunctionEvent(functionResource.event))
+    errors.push(...validateFunctionContentLakeEvent(functionResource.event))
   }
 
   errors.push(...validateFunction(functionResource))
