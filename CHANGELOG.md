@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.23.2](https://github.com/sanity-io/blueprints-node/compare/v0.23.1...v0.23.2) (2026-08-05)
+
+
+### Bug Fixes
+
+* align studio type with updated model ([#140](https://github.com/sanity-io/blueprints-node/issues/140)) ([c7dc0e5](https://github.com/sanity-io/blueprints-node/commit/c7dc0e55eb891278ae54145b635cf9132701e434))
+* rename event to pubsub ([#137](https://github.com/sanity-io/blueprints-node/issues/137)) ([a219427](https://github.com/sanity-io/blueprints-node/commit/a2194277b023ea17340112954eb14d550248b3f2))
+* rename pipelines to durables, drop cron event source from queues/durables ([#141](https://github.com/sanity-io/blueprints-node/issues/141)) ([35e8359](https://github.com/sanity-io/blueprints-node/commit/35e8359ad137816cf623b3cd9ca5cfeee771f108))
+
 ## [0.23.1](https://github.com/sanity-io/blueprints-node/compare/v0.23.0...v0.23.1) (2026-07-27)
 
 
