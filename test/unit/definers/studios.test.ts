@@ -119,6 +119,20 @@ describe('defineStudio', () => {
     expect(index.validateStudio(studioResource)).toStrictEqual([])
   })
 
+  test('should not accept a name that is not a valid hostname label as a slug', () => {
+    const studioResource = studios.defineStudio({
+      name: 'My Studio',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+    })
+
+    expect(studioResource.slug).toStrictEqual('My Studio')
+    expect(index.validateStudio(studioResource)).toContainEqual({
+      type: 'invalid_format',
+      message: 'Studio slug must match pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$',
+    })
+  })
+
   test('should accept a valid configuration with a lifecycle', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',

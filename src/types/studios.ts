@@ -39,10 +39,14 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
   /** The relative location of the studio source code. */
   src: string
 
-  /** The project ID of the project that contains your Studio. */
-  project: string
+  /**
+   * The project ID of the project that contains your Studio.
+   *
+   * The `project` attribute must be defined if your blueprint is scoped to an organization.
+   */
+  project?: string
 
-  /** The slug to be used in the studio hostname. */
+  /** The slug to be used in the studio hostname. Must match `^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`. */
   slug: string
 
   /** Title for the studio. */
@@ -90,7 +94,12 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
  * @hidden
  */
 export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type' | 'slug' | 'title' | 'autoUpdates'> {
-  /** The slug to be used in the studio hostname. Defaults to the name of the resource. */
+  /**
+   * The slug to be used in the studio hostname. Must match `^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`.
+   *
+   * Defaults to the name of the resource.
+   * Set `slug` explicitly if the resource name is not a valid hostname.
+   */
   slug?: string
 
   /** Title for the studio. Defaults to the name of the resource. */

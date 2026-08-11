@@ -84,9 +84,37 @@ describe('validateStudio', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio sourceMap must be a boolean'})
   })
 
+  test.each([
+    'My Studio',
+    'my_studio',
+    'My-Studio',
+    '-my-studio',
+    'my-studio-',
+    'café',
+  ])('should return an error if slug is not a valid hostname label: %s', (slug) => {
+    const errors = validateStudio({...validStudio, slug})
+    expect(errors).toContainEqual({type: 'invalid_format', message: 'Studio slug must match pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$'})
+  })
+
+  test.each(['my-studio', 'studio', 's', '2024', 'my-studio-2'])('should accept a valid slug: %s', (slug) => {
+    const errors = validateStudio({...validStudio, slug})
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
+  test('should not check the slug pattern for a reference', () => {
+    const errors = validateStudio({...validStudio, slug: '$.parameters.studioSlug'})
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
+  })
+
   test('should return an error if project is not a string', () => {
     const errors = validateStudio({...validStudio, project: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio project must be a string'})
+  })
+
+  test('should accept a configuration without a project', () => {
+    const {project: _project, ...noProject} = validStudio
+    const errors = validateStudio(noProject)
+    expect(errors, JSON.stringify(errors)).toHaveLength(0)
   })
 
   test('should accept a valid configuration', () => {
