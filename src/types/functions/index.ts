@@ -153,8 +153,6 @@ export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionRes
 /**
  * A function resource triggered by another function
  * @category Functions Types
- * @alpha
- * @hidden
  */
 export interface BlueprintPubSubFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.pubsub'
@@ -223,8 +221,6 @@ export type BlueprintMediaLibraryAssetFunctionConfig = Omit<BlueprintMediaLibrar
 /**
  * Configuration for defining a scheduled function.
  * @public
- * @alpha Deploying Scheduled Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
  * @category Functions Types
  * @interface
  */
@@ -243,8 +239,6 @@ export type BlueprintScheduledFunctionConfig = Omit<BlueprintScheduledFunctionRe
 /**
  * Configuration for defining a sync tag invalidate function.
  * @public
- * @alpha Deploying Sync Tag Invalidate Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
  * @category Functions Types
  * @interface
  */
@@ -279,8 +273,6 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
 /**
  * Configuration for defining an event function.
  * @public
- * @alpha Deploying Event Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
  * @category Functions Types
  * @interface
  */

@@ -229,8 +229,6 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
 /**
  * Validates a scheduled function resource configuration.
  * @param functionResource The function resource to validate
- * @alpha
- * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
  */
@@ -409,7 +407,6 @@ function validateScheduledFunctionTimezone(timezone: unknown): BlueprintError[] 
 /**
  * Validates a sync tag invalidate function resource configuration.
  * @param functionResource The function resource to validate
- * @alpha
  * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
@@ -507,7 +504,6 @@ function validateFunctionContentLakeEvent(event: unknown): BlueprintError[] {
 /**
  * Validates an event function resource configuration.
  * @param functionResource The function resource to validate
- * @alpha
  * @hidden
  * @category Functions Types
  * @returns Array of validation errors, empty if valid

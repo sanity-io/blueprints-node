@@ -13,8 +13,6 @@ import {defineFunction} from './index.js'
  * })
  * ```
  * @public
- * @alpha Deploying PubSub Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
  * @category Definers
  * @expandType BlueprintPubSubFunctionConfig
  * @param functionConfig The configuration for the pubsub function
