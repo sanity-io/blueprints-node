@@ -8,6 +8,7 @@ import {runValidation} from '../utils/validation.js'
  * ```ts
  * defineStudio({
  *   name: 'my-studio',
+ *   project: 'my-project-id',
  *   src: 'studios/my-studio',
  *   autoUpdates: {
  *     enabled: true
@@ -23,13 +24,16 @@ import {runValidation} from '../utils/validation.js'
  * @hidden
  */
 export function defineStudio(config: BlueprintStudioConfig): BlueprintStudioResource {
+  const autoUpdates: BlueprintStudioResource['autoUpdates'] = {enabled: config.autoUpdates?.enabled ?? true}
+  if (config.autoUpdates?.version !== undefined) {
+    autoUpdates.version = config.autoUpdates.version
+  }
+
   const studioResource: BlueprintStudioResource = {
-    title: config.name,
-    autoUpdates: {
-      enabled: config.autoUpdates?.enabled ?? true,
-      version: config.autoUpdates?.version,
-    },
     ...config,
+    slug: config.slug || config.name,
+    title: config.title || config.name,
+    autoUpdates,
     type: 'sanity.studio',
   }
 
