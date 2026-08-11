@@ -228,6 +228,7 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
 
 /**
  * Validates a scheduled function resource configuration.
+ * @hidden
  * @param functionResource The function resource to validate
  * @category Functions Types
  * @returns Array of validation errors, empty if valid
