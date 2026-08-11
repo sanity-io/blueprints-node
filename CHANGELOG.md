@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.3](https://github.com/sanity-io/blueprints-node/compare/v0.23.2...v0.23.3) (2026-08-11)
+
+
+### Bug Fixes
+
+* un-hide pubsub ([#143](https://github.com/sanity-io/blueprints-node/issues/143)) ([93c18ea](https://github.com/sanity-io/blueprints-node/commit/93c18ea1082f67c70691b09cd4c988988c491964))
+
 ## [0.23.2](https://github.com/sanity-io/blueprints-node/compare/v0.23.1...v0.23.2) (2026-08-05)
 
 
