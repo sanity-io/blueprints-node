@@ -1,6 +1,10 @@
 import type {BlueprintError} from '../types/errors.js'
 import {APPLICATION_VISIBILITIES} from '../types/studios.js'
+import {isReference} from '../utils/validation.js'
 import {validateResource} from './resources.js'
+
+/** hostname validity pattern */
+const STUDIO_SLUG_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/
 
 /**
  * Validates that the given resource is a valid Studio.
@@ -25,16 +29,18 @@ export function validateStudio(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_type', message: 'Studio src must be a string'})
   }
 
-  if (!('project' in resource) || !resource.project) {
-    errors.push({type: 'missing_parameter', message: 'Studio project is required'})
-  } else if (typeof resource.project !== 'string') {
-    errors.push({type: 'invalid_type', message: 'Studio project must be a string'})
+  if ('project' in resource) {
+    if (typeof resource.project !== 'string') {
+      errors.push({type: 'invalid_type', message: 'Studio project must be a string'})
+    }
   }
 
   if (!('slug' in resource) || !resource.slug) {
     errors.push({type: 'missing_parameter', message: 'Studio slug is required'})
   } else if (typeof resource.slug !== 'string') {
     errors.push({type: 'invalid_type', message: 'Studio slug must be a string'})
+  } else if (!isReference(resource.slug) && !STUDIO_SLUG_PATTERN.test(resource.slug)) {
+    errors.push({type: 'invalid_format', message: `Studio slug must match pattern: ${STUDIO_SLUG_PATTERN.source}`})
   }
 
   if (!('title' in resource) || !resource.title) {

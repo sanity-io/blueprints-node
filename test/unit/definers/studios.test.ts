@@ -64,19 +64,17 @@ describe('defineStudio', () => {
     expect(studioResource.title).toStrictEqual('studio-name')
   })
 
-  test('should default the autoUpdates to enabled with undefined version', () => {
+  test('should default the slug to the name', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
       project: 'abcd1234',
-      slug: 'my-studio',
     })
 
-    expect(studioResource.autoUpdates.enabled).toStrictEqual(true)
-    expect(studioResource.autoUpdates.version).toBeUndefined()
+    expect(studioResource.slug).toStrictEqual('studio-name')
   })
 
-  test('should default the autoUpdates to enabled with undefined version', () => {
+  test('should default the autoUpdates to enabled and omit the version', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
       src: 'studios/my-studio',
@@ -84,8 +82,55 @@ describe('defineStudio', () => {
       slug: 'my-studio',
     })
 
-    expect(studioResource.autoUpdates.enabled).toStrictEqual(true)
-    expect(studioResource.autoUpdates.version).toBeUndefined()
+    expect(studioResource.autoUpdates).toStrictEqual({enabled: true})
+  })
+
+  test('should omit the version when autoUpdates is provided without one', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+      autoUpdates: {enabled: false},
+    })
+
+    expect(studioResource.autoUpdates).toStrictEqual({enabled: false})
+  })
+
+  test('should keep an explicit autoUpdates version', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+      slug: 'my-studio',
+      autoUpdates: {version: '^4.0.0'},
+    })
+
+    expect(studioResource.autoUpdates).toStrictEqual({enabled: true, version: '^4.0.0'})
+  })
+
+  test('should produce a valid resource from a minimal config', () => {
+    const studioResource = studios.defineStudio({
+      name: 'studio-name',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+    })
+
+    expect(index.validateStudio(studioResource)).toStrictEqual([])
+  })
+
+  test('should not accept a name that is not a valid hostname label as a slug', () => {
+    const studioResource = studios.defineStudio({
+      name: 'My Studio',
+      src: 'studios/my-studio',
+      project: 'abcd1234',
+    })
+
+    expect(studioResource.slug).toStrictEqual('My Studio')
+    expect(index.validateStudio(studioResource)).toContainEqual({
+      type: 'invalid_format',
+      message: 'Studio slug must match pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$',
+    })
   })
 
   test('should accept a valid configuration with a lifecycle', () => {
