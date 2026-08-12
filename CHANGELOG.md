@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.4](https://github.com/sanity-io/blueprints-node/compare/v0.23.3...v0.23.4) (2026-08-12)
+
+
+### Bug Fixes
+
+* **defineStudio:** defaults pass validation ([#142](https://github.com/sanity-io/blueprints-node/issues/142)) ([d3a76c3](https://github.com/sanity-io/blueprints-node/commit/d3a76c3afa4cc1e1e0b4b558373d839c7b0fef4a))
+
 ## [0.23.3](https://github.com/sanity-io/blueprints-node/compare/v0.23.2...v0.23.3) (2026-08-11)
 
 
