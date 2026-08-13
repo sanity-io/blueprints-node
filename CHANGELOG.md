@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.5](https://github.com/sanity-io/blueprints-node/compare/v0.23.4...v0.23.5) (2026-08-13)
+
+
+### Bug Fixes
+
+* dataset visibility ([#146](https://github.com/sanity-io/blueprints-node/issues/146)) ([760e74b](https://github.com/sanity-io/blueprints-node/commit/760e74bac1c9a6efb7c453daebb2592abd668891))
+
 ## [0.23.4](https://github.com/sanity-io/blueprints-node/compare/v0.23.3...v0.23.4) (2026-08-12)
 
 
