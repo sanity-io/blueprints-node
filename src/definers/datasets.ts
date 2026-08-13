@@ -8,7 +8,7 @@ import {runValidation} from '../utils/validation.js'
  * defineDataset({
  *   name: 'staging',
  *   datasetName: 'staging-v2',
- *   aclMode: 'private',
+ *   visibility: 'private',
  *   project: 'my-project-id',
  *   lifecycle: {deletionPolicy: 'protect'},
  * })
@@ -32,12 +32,14 @@ import {runValidation} from '../utils/validation.js'
  * @returns The dataset resource
  */
 export function defineDataset(parameters: BlueprintDatasetConfig): BlueprintDatasetResource {
-  // default dataset name
+  // default dataset name and acl mode
   const datasetName = parameters.datasetName || parameters.name
+  const aclMode = parameters.aclMode || parameters.visibility
 
   const datasetResource: BlueprintDatasetResource = {
     ...parameters,
     datasetName,
+    aclMode,
     type: 'sanity.project.dataset',
   }
 

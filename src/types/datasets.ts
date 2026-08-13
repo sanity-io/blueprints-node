@@ -21,8 +21,13 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
   datasetName: string
   /** The dataset description */
   description?: string
-  /** The ACL mode to set for the new dataset. Defaults to public. */
+  /**
+   * The ACL mode to set for the dataset. Defaults to public.
+   * @hidden
+   */
   aclMode?: AclMode
+  /** The visibility to set for the dataset. Defaults to public. */
+  visibility?: AclMode
 
   /**
    * The project ID of the project that contains your Dataset.
