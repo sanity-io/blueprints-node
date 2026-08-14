@@ -23,11 +23,8 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
   description?: string
   /**
    * The ACL mode to set for the dataset. Defaults to public.
-   * @hidden
    */
-  aclMode?: AclMode
-  /** The visibility to set for the dataset. Defaults to public. */
-  visibility?: AclMode
+  aclMode: AclMode
 
   /**
    * The project ID of the project that contains your Dataset.
@@ -45,10 +42,17 @@ export interface BlueprintDatasetResource extends BlueprintResource<BlueprintPro
  * @category Resource Types
  * @interface
  */
-export type BlueprintDatasetConfig = Omit<BlueprintDatasetResource, 'type' | 'datasetName'> & {
+export type BlueprintDatasetConfig = Omit<BlueprintDatasetResource, 'type' | 'datasetName' | 'aclMode'> & {
   /**
    * The name of the dataset. Must be unique within a project.
    * @defaultValue The `name` of the resource
    */
   datasetName?: string
+  /**
+   * The ACL mode to set for the dataset. Defaults to public.
+   * @hidden
+   */
+  aclMode?: AclMode
+  /** The visibility to set for the dataset. Defaults to public. */
+  visibility?: AclMode
 }
