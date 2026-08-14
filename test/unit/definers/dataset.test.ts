@@ -28,6 +28,15 @@ describe('defineDataset', () => {
     expect(datasetResource.description).toStrictEqual('valid dataset')
   })
 
+  test('should set a default aclMode', () => {
+    const datasetResource = datasets.defineDataset({
+      name: 'dataset-name',
+    })
+
+    expect(datasetResource.type).toStrictEqual('sanity.project.dataset')
+    expect(datasetResource.aclMode).toStrictEqual('public')
+  })
+
   test('should accept visibility and set the aclMode', () => {
     const datasetResource = datasets.defineDataset({
       name: 'dataset-name',
