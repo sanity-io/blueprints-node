@@ -34,7 +34,7 @@ import {runValidation} from '../utils/validation.js'
 export function defineDataset(parameters: BlueprintDatasetConfig): BlueprintDatasetResource {
   // default dataset name and acl mode
   const datasetName = parameters.datasetName || parameters.name
-  const aclMode = parameters.aclMode || parameters.visibility
+  const aclMode = parameters.aclMode || parameters.visibility || 'public'
 
   const datasetResource: BlueprintDatasetResource = {
     ...parameters,
