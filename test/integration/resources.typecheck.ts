@@ -25,6 +25,8 @@ import {
   type BlueprintRoleResource,
   type BlueprintScheduledFunctionResource,
   type BlueprintScheduledFunctionResourceEvent,
+  type BlueprintStudioConfig,
+  type BlueprintStudioResource,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   defineCorsOrigin,
@@ -37,6 +39,7 @@ import {
   defineQueueFunction,
   defineRole,
   defineScheduledFunction,
+  defineStudio,
   defineSyncTagInvalidateFunction,
   type RolePermission,
   validateBlueprint,
@@ -51,6 +54,7 @@ import {
   validateResource,
   validateRole,
   validateScheduledFunction,
+  validateStudio,
   validateSyncTagInvalidateFunction,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
@@ -187,6 +191,26 @@ const roleConfig: BlueprintRoleConfig = {
 const roleResource: BlueprintRoleResource = defineRole(roleConfig)
 const projectRoleResource: BlueprintProjectRoleResource = defineProjectRole('projectId', roleConfig)
 
+const studioConfig: BlueprintStudioConfig = {
+  name: 'test-studio',
+  project: 'projectId',
+  src: './studio/',
+  autoUpdates: {
+    enabled: true,
+    version: 'latest',
+  },
+  basePath: '/path',
+  icon: '/static/icon.svg',
+  minify: true,
+  reactCompiler: true,
+  slug: 'test-studio-slug',
+  sourceMap: true,
+  title: 'Test Studio',
+  visibility: 'default',
+  vite: {},
+}
+const studioResource: BlueprintStudioResource = defineStudio(studioConfig)
+
 const blueprintResource: BlueprintResource = {name: 'test-resource', type: 'test'}
 
 const _blueprintProjectLifecycleAttach: BlueprintProjectResourceLifecycle = {
@@ -250,6 +274,7 @@ validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
 validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
+validateStudio(studioResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
 validateQueueFunction(queueFunction)
 validatePubSubFunction(pubSubFunction)
