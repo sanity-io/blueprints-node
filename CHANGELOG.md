@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.6](https://github.com/sanity-io/blueprints-node/compare/v0.23.5...v0.23.6) (2026-08-14)
+
+
+### Bug Fixes
+
+* restore default for dataset visibility ([#148](https://github.com/sanity-io/blueprints-node/issues/148)) ([06252e8](https://github.com/sanity-io/blueprints-node/commit/06252e84094b40f8676fefaf3dffc8e8a0e4a1b2))
+
 ## [0.23.5](https://github.com/sanity-io/blueprints-node/compare/v0.23.4...v0.23.5) (2026-08-13)
 
 
