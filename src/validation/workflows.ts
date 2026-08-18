@@ -18,9 +18,7 @@ export function validateWorkflows(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'Editorial Workflows resource name must be a non-empty string'})
   }
 
-  if (!('type' in resource)) {
-    errors.push({type: 'missing_parameter', message: 'Editorial Workflows type is required'})
-  } else if (resource.type !== 'sanity.workflow') {
+  if ('type' in resource && resource.type !== 'sanity.workflow') {
     errors.push({type: 'invalid_value', message: 'Editorial Workflows type must be `sanity.workflow`'})
   }
 
@@ -29,7 +27,7 @@ export function validateWorkflows(resource: unknown): BlueprintError[] {
     if (policy === 'allow' || policy === 'replace') {
       errors.push({
         type: 'invalid_value',
-        message: `Editorial Workflows deletion policy \`${policy}\` is not supported; definitions are retain-only through Blueprints`,
+        message: `Editorial Workflows deletion policy \`${policy}\` is not supported; use \`retain\` (the default) or \`protect\``,
       })
     }
   }
@@ -65,6 +63,10 @@ function validateWorkflowDeployment(deployment: unknown): BlueprintError[] {
     errors.push(...validateWorkflowTarget(valueAt(deployment, 'workflowResource')))
   }
 
+  if ('resourceAliases' in deployment) {
+    errors.push(...validateResourceAliases(valueAt(deployment, 'resourceAliases')))
+  }
+
   const definitions = valueAt(deployment, 'definitions')
   if (!('definitions' in deployment)) {
     errors.push({type: 'missing_parameter', message: 'Editorial Workflows definitions array is required'})
@@ -76,6 +78,32 @@ function validateWorkflowDeployment(deployment: unknown): BlueprintError[] {
     errors.push(...validateDefinitions(definitions))
   }
 
+  return errors
+}
+
+function validateResourceAliases(resourceAliases: unknown): BlueprintError[] {
+  if (!Array.isArray(resourceAliases)) {
+    return [{type: 'invalid_type', message: 'Editorial Workflows resource aliases must be an array'}]
+  }
+
+  const errors = resourceAliases.flatMap((binding) => {
+    if (!isRecord(binding)) {
+      return [{type: 'invalid_type', message: 'Editorial Workflows resource alias must be an object'}]
+    }
+
+    const bindingErrors = validateNonEmptyString(binding, 'name', 'resource alias name')
+    if (!('resource' in binding)) {
+      bindingErrors.push({type: 'missing_parameter', message: 'Editorial Workflows resource alias target is required'})
+    } else {
+      bindingErrors.push(...validateWorkflowTarget(valueAt(binding, 'resource')))
+    }
+    return bindingErrors
+  })
+
+  const duplicate = firstDuplicateName(resourceAliases.filter(isNamedDefinition))
+  if (duplicate !== undefined) {
+    errors.push({type: 'invalid_value', message: `Editorial Workflows resource alias name \`${duplicate}\` is duplicated`})
+  }
   return errors
 }
 
@@ -121,7 +149,7 @@ function validateDefinitions(definitions: unknown[]): BlueprintError[] {
   return errors
 }
 
-function firstDuplicateName(definitions: Array<Record<string, unknown> & {name: string}>): string | undefined {
+function firstDuplicateName(definitions: Array<{name: string}>): string | undefined {
   const seen = new Set<string>()
   for (const definition of definitions) {
     if (seen.has(definition.name)) return definition.name
@@ -160,6 +188,8 @@ function firstCycleName(definitions: Array<Record<string, unknown> & {name: stri
 }
 
 function spawnReferenceNames(definition: Record<string, unknown>): string[] {
+  // Mirrors the workflow-engine authoring path without importing its large definition type.
+  // Unknown shapes intentionally contribute no references; tests pin this external-schema coupling.
   return arrayAt(definition, 'stages')
     .filter(isRecord)
     .flatMap((stage) => arrayAt(stage, 'activities'))

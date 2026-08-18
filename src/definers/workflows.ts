@@ -16,7 +16,7 @@ import {runValidation} from '../utils/validation.js'
  *   expectedMinReaderModel: 4,
  *   tag: 'production',
  *   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
- *   definitions: [articleReview],
+ *   definitions: [{name: 'article-review'}],
  * })
  * ```
  *

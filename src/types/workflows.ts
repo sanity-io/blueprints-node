@@ -23,7 +23,7 @@ export interface BlueprintWorkflowResourceBinding {
 }
 
 /**
- * The portion of an Editorial Workflows definition used by Blueprints validation.
+ * The required identifying portion of an Editorial Workflows definition.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
@@ -47,6 +47,15 @@ export interface BlueprintWorkflowDeployment {
 }
 
 /**
+ * The lifecycle policies supported by an Editorial Workflows Blueprint resource.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
+export interface BlueprintWorkflowsLifecycle extends BlueprintResourceLifecycle {
+  deletionPolicy?: 'retain' | 'protect'
+}
+
+/**
  * Options for an Editorial Workflows Blueprint resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
@@ -62,7 +71,7 @@ export interface DefineWorkflowsOptions {
    * The Blueprint lifecycle policy.
    * @defaultValue `{deletionPolicy: 'retain'}`
    */
-  lifecycle?: BlueprintResourceLifecycle
+  lifecycle?: BlueprintWorkflowsLifecycle
 }
 
 /**
@@ -71,7 +80,7 @@ export interface DefineWorkflowsOptions {
  * @category Resource Types
  */
 export interface BlueprintWorkflowsResource<Deployment extends BlueprintWorkflowDeployment = BlueprintWorkflowDeployment>
-  extends BlueprintResource {
+  extends BlueprintResource<BlueprintWorkflowsLifecycle> {
   type: 'sanity.workflow'
   deployment: Deployment
 }

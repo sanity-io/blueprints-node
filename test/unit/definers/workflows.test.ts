@@ -46,7 +46,7 @@ describe('defineWorkflows', () => {
   })
 
   test.each(['allow', 'replace'] as const)('should reject the %s deletion policy', (deletionPolicy) => {
-    expect(() => workflows.defineWorkflows(deployment, {lifecycle: {deletionPolicy}})).toThrow(
+    expect(() => Reflect.apply(workflows.defineWorkflows, undefined, [deployment, {lifecycle: {deletionPolicy}}])).toThrow(
       `Editorial Workflows deletion policy \`${deletionPolicy}\` is not supported`,
     )
   })
