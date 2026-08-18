@@ -13,6 +13,7 @@ import {
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
+  defineWorkflows,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -25,6 +26,7 @@ import {
   validateResource,
   validateRole,
   validateSyncTagInvalidateFunction,
+  validateWorkflows,
 } from '@sanity/blueprints'
 import {describe, expect, it} from 'vitest'
 
@@ -71,6 +73,10 @@ describe('package imports', () => {
 
   it('should import defineMediaLibraryAssetFunction', () => {
     expect(defineMediaLibraryAssetFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import defineWorkflows', () => {
+    expect(defineWorkflows).toBeInstanceOf(Function)
   })
 
   it('should import defineProjectRole', () => {
@@ -123,6 +129,10 @@ describe('package imports', () => {
 
   it('should import validateMediaLibraryAssetFunction', () => {
     expect(validateMediaLibraryAssetFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import validateWorkflows', () => {
+    expect(validateWorkflows).toBeInstanceOf(Function)
   })
 
   it('should import validateRole', () => {

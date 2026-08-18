@@ -27,6 +27,8 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
+  type BlueprintWorkflowDeployment,
+  type BlueprintWorkflowsResource,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -38,6 +40,7 @@ import {
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
+  defineWorkflows,
   type RolePermission,
   validateBlueprint,
   validateCorsOrigin,
@@ -133,6 +136,15 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
   name: 'yoyoyo',
   event: fullyQualifiedSyncTagInvalidateFunctionResourceEvent,
 })
+
+const workflowDeployment: BlueprintWorkflowDeployment = {
+  name: 'production',
+  expectedMinReaderModel: 4,
+  tag: 'production',
+  workflowResource: {type: 'dataset', id: 'projectId.dataset'},
+  definitions: [{name: 'article-review'}],
+}
+const workflowsResource: BlueprintWorkflowsResource = defineWorkflows(workflowDeployment)
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
@@ -230,6 +242,7 @@ const blueprint: Blueprint = {
     mediaLibraryAssetFunctionResource,
     projectRoleResource,
     blueprintResource,
+    workflowsResource,
   ],
   values: {
     key: 'value',
