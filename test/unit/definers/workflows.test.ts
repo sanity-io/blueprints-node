@@ -46,12 +46,17 @@ describe('defineWorkflows', () => {
   })
 
   test.each(['allow', 'replace'] as const)('should reject the %s deletion policy', (deletionPolicy) => {
-    expect(() => Reflect.apply(workflows.defineWorkflows, undefined, [deployment, {lifecycle: {deletionPolicy}}])).toThrow(
-      `Editorial Workflows deletion policy \`${deletionPolicy}\` is not supported`,
-    )
+    expect(() =>
+      workflows.defineWorkflows(deployment, {
+        lifecycle: {
+          // @ts-expect-error Intentionally wrong type
+          deletionPolicy,
+        },
+      }),
+    ).toThrow(`Editorial Workflows deletion policy \`${deletionPolicy}\` is not supported`)
   })
 
-  test('should reject duplicate definition names at manifest evaluation', () => {
+  test('should reject duplicate definition names at define time', () => {
     expect(() =>
       workflows.defineWorkflows({
         ...deployment,
@@ -60,7 +65,7 @@ describe('defineWorkflows', () => {
     ).toThrow('Editorial Workflows definition name `article-review` is duplicated')
   })
 
-  test('should reject an in-set spawn reference cycle at manifest evaluation', () => {
+  test('should reject an in-set spawn reference cycle at define time', () => {
     expect(() =>
       workflows.defineWorkflows({
         ...deployment,

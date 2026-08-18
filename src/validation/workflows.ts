@@ -1,6 +1,4 @@
-import {type BlueprintError, validateResource} from '../index.js'
-
-const WORKFLOW_TARGET_TYPES = ['dataset', 'canvas', 'media-library', 'dashboard']
+import {type BlueprintError, validateResource, WORKFLOW_TARGET_TYPES} from '../index.js'
 
 /**
  * Validates that the given resource is a valid Editorial Workflows resource.
@@ -122,7 +120,7 @@ function validateWorkflowTarget(target: unknown): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: 'Editorial Workflows target resource type is required'})
   } else {
     const targetType = valueAt(target, 'type')
-    if (typeof targetType !== 'string' || !WORKFLOW_TARGET_TYPES.includes(targetType)) {
+    if (typeof targetType !== 'string' || !WORKFLOW_TARGET_TYPES.some((type) => type === targetType)) {
       errors.push({
         type: 'invalid_value',
         message: `Editorial Workflows target resource type must be one of ${WORKFLOW_TARGET_TYPES.join(', ')}`,
@@ -215,6 +213,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function valueAt(value: Record<string, unknown>, key: string): unknown {
+  // A variable key avoids Biome rewriting bracket access to dot access, which TypeScript rejects for index signatures.
   return value[key]
 }
 

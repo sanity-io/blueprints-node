@@ -1,13 +1,20 @@
 import type {BlueprintResource, BlueprintResourceLifecycle} from '../index.js'
 
 /**
+ * Resource types that can store Editorial Workflows data.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
+export const WORKFLOW_TARGET_TYPES = ['dataset', 'canvas', 'media-library', 'dashboard'] as const
+
+/**
  * A resource that can store Editorial Workflows data.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
  */
 export interface BlueprintWorkflowTarget {
-  type: 'dataset' | 'canvas' | 'media-library' | 'dashboard'
+  type: (typeof WORKFLOW_TARGET_TYPES)[number]
   id: string
 }
 
@@ -59,9 +66,8 @@ export interface BlueprintWorkflowsLifecycle extends BlueprintResourceLifecycle 
  * Options for an Editorial Workflows Blueprint resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @interface
  */
-export interface DefineWorkflowsOptions {
+export interface BlueprintWorkflowsOptions {
   /**
    * The Blueprint resource name.
    * @defaultValue `editorial-workflows-<deployment name>`

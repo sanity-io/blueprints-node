@@ -336,6 +336,30 @@ describe('validateWorkflows', () => {
     ).toStrictEqual([])
   })
 
+  test('should ignore malformed spawn-reference internals', () => {
+    expect(
+      validateWorkflows(
+        resourceWithDefinitions([
+          {name: 'invalid-stages', stages: 'invalid'},
+          {name: 'invalid-activities', stages: [{activities: 1}]},
+          {name: 'invalid-actions', stages: [{activities: [{actions: 1}]}]},
+          {
+            name: 'invalid-spawn',
+            stages: [{activities: [{actions: [{spawn: 'invalid'}]}]}],
+          },
+          {
+            name: 'invalid-spawn-definition',
+            stages: [{activities: [{actions: [{spawn: {definition: 'invalid'}}]}]}],
+          },
+          {
+            name: 'invalid-spawn-definition-name',
+            stages: [{activities: [{actions: [{spawn: {definition: {name: 1}}}]}]}],
+          },
+        ]),
+      ),
+    ).toStrictEqual([])
+  })
+
   test('should accept a valid resource', () => {
     expect(validateWorkflows(validResource)).toStrictEqual([])
   })

@@ -28,6 +28,7 @@ import {
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   type BlueprintWorkflowDeployment,
+  type BlueprintWorkflowsOptions,
   type BlueprintWorkflowsResource,
   defineCorsOrigin,
   defineDataset,
@@ -144,7 +145,8 @@ const workflowDeployment: BlueprintWorkflowDeployment = {
   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
   definitions: [{name: 'article-review'}],
 }
-const workflowsResource: BlueprintWorkflowsResource = defineWorkflows(workflowDeployment)
+const workflowsOptions: BlueprintWorkflowsOptions = {lifecycle: {deletionPolicy: 'protect'}}
+const workflowsResource: BlueprintWorkflowsResource = defineWorkflows(workflowDeployment, workflowsOptions)
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',

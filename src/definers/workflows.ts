@@ -1,7 +1,7 @@
 import {
   type BlueprintWorkflowDeployment,
+  type BlueprintWorkflowsOptions,
   type BlueprintWorkflowsResource,
-  type DefineWorkflowsOptions,
   validateWorkflows,
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
@@ -37,7 +37,7 @@ import {runValidation} from '../utils/validation.js'
  */
 export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
   deployment: Deployment,
-  options?: DefineWorkflowsOptions,
+  options?: BlueprintWorkflowsOptions,
 ): BlueprintWorkflowsResource<Deployment> {
   const workflowResource: BlueprintWorkflowsResource<Deployment> = {
     name: options?.name ?? `editorial-workflows-${deployment.name}`,
