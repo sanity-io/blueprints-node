@@ -1,20 +1,32 @@
 import type {BlueprintResource, BlueprintResourceLifecycle} from '../index.js'
 
 /**
- * Resource types that can store Editorial Workflows data.
+ * Resource target types supported by Editorial Workflows.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
 export const WORKFLOW_TARGET_TYPES = ['dataset', 'canvas', 'media-library', 'dashboard'] as const
 
 /**
- * A resource that can store Editorial Workflows data.
+ * A resource target type supported by Editorial Workflows.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
+export type BlueprintWorkflowTargetType = (typeof WORKFLOW_TARGET_TYPES)[number]
+
+/**
+ * A physical resource used by Editorial Workflows.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
  */
 export interface BlueprintWorkflowTarget {
-  type: (typeof WORKFLOW_TARGET_TYPES)[number]
+  /** The kind of resource. */
+  type: BlueprintWorkflowTargetType
+  /**
+   * The target-specific resource ID. Dataset IDs use `<projectId>.<dataset>`;
+   * other target types use their platform resource ID.
+   */
   id: string
 }
 
@@ -25,7 +37,9 @@ export interface BlueprintWorkflowTarget {
  * @expand
  */
 export interface BlueprintWorkflowResourceBinding {
+  /** The logical handle referenced by workflow definitions. */
   name: string
+  /** The physical resource bound to the handle. */
   resource: BlueprintWorkflowTarget
 }
 
@@ -36,6 +50,7 @@ export interface BlueprintWorkflowResourceBinding {
  * @expand
  */
 export interface BlueprintWorkflowDefinition {
+  /** The deployment-unique definition name. */
   name: string
 }
 
@@ -45,11 +60,17 @@ export interface BlueprintWorkflowDefinition {
  * @category Resource Types
  */
 export interface BlueprintWorkflowDeployment {
+  /** The deployment identity. */
   name: string
+  /** The persisted-data reader floor acknowledged by this deployment. */
   expectedMinReaderModel: number
+  /** The environment partition for workflow definitions and instances. */
   tag: string
+  /** The resource that stores engine-owned workflow data. */
   workflowResource: BlueprintWorkflowTarget
+  /** Logical resource handles available to the deployed definitions. */
   resourceAliases?: BlueprintWorkflowResourceBinding[]
+  /** The workflow definitions deployed together. */
   definitions: BlueprintWorkflowDefinition[]
 }
 

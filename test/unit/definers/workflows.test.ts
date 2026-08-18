@@ -45,6 +45,17 @@ describe('defineWorkflows', () => {
     })
   })
 
+  test('should retain the deletion policy when other lifecycle fields are provided', () => {
+    expect(
+      workflows.defineWorkflows(deployment, {
+        lifecycle: {dependsOn: '$.resources.content'},
+      }).lifecycle,
+    ).toStrictEqual({
+      deletionPolicy: 'retain',
+      dependsOn: '$.resources.content',
+    })
+  })
+
   test.each(['allow', 'replace'] as const)('should reject the %s deletion policy', (deletionPolicy) => {
     expect(() =>
       workflows.defineWorkflows(deployment, {

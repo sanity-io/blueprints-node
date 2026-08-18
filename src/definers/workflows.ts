@@ -42,7 +42,10 @@ export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
   const workflowResource: BlueprintWorkflowsResource<Deployment> = {
     name: options?.name ?? `editorial-workflows-${deployment.name}`,
     type: 'sanity.workflow',
-    lifecycle: options?.lifecycle ?? {deletionPolicy: 'retain'},
+    lifecycle: {
+      ...options?.lifecycle,
+      deletionPolicy: options?.lifecycle?.deletionPolicy ?? 'retain',
+    },
     deployment,
   }
 

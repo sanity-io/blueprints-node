@@ -22,6 +22,7 @@ export function validateWorkflows(resource: unknown): BlueprintError[] {
 
   if ('lifecycle' in resource && isRecord(resource.lifecycle)) {
     const policy = valueAt(resource.lifecycle, 'deletionPolicy')
+    // Base resource validation owns the complete policy allowlist; this narrows its accepted set for workflows.
     if (policy === 'allow' || policy === 'replace') {
       errors.push({
         type: 'invalid_value',
@@ -98,7 +99,7 @@ function validateResourceAliases(resourceAliases: unknown): BlueprintError[] {
     return bindingErrors
   })
 
-  const duplicate = firstDuplicateName(resourceAliases.filter(isNamedDefinition))
+  const duplicate = firstDuplicateName(resourceAliases.filter(hasStringName))
   if (duplicate !== undefined) {
     errors.push({type: 'invalid_value', message: `Editorial Workflows resource alias name \`${duplicate}\` is duplicated`})
   }
@@ -135,7 +136,7 @@ function validateDefinitions(definitions: unknown[]): BlueprintError[] {
     if (!isRecord(definition)) return [{type: 'invalid_type', message: 'Editorial Workflows definition must be an object'}]
     return validateNonEmptyString(definition, 'name', 'definition name')
   })
-  const namedDefinitions = definitions.filter(isNamedDefinition)
+  const namedDefinitions = definitions.filter(hasStringName)
   const duplicate = firstDuplicateName(namedDefinitions)
   if (duplicate !== undefined) {
     errors.push({type: 'invalid_value', message: `Editorial Workflows definition name \`${duplicate}\` is duplicated`})
@@ -217,6 +218,6 @@ function valueAt(value: Record<string, unknown>, key: string): unknown {
   return value[key]
 }
 
-function isNamedDefinition(value: unknown): value is Record<string, unknown> & {name: string} {
+function hasStringName(value: unknown): value is Record<string, unknown> & {name: string} {
   return isRecord(value) && typeof valueAt(value, 'name') === 'string'
 }
