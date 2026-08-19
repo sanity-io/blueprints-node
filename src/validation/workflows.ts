@@ -1,7 +1,11 @@
 import {type BlueprintError, validateResource, WORKFLOW_TARGET_TYPES} from '../index.js'
 
 /**
- * Validates that the given resource is a valid Editorial Workflows resource.
+ * Validates the Blueprint manifest envelope for an Editorial Workflows resource.
+ *
+ * This dependency-free validator checks resource metadata, deployment metadata, targets, aliases, and definition identities. It does not validate
+ * complete authored definitions. The registered resource provider must validate the external JSON boundary with the Editorial Workflows engine
+ * before provisioning it.
  * @param resource The Editorial Workflows resource
  * @category Validation
  * @returns A list of validation errors
@@ -27,6 +31,12 @@ export function validateWorkflows(resource: unknown): BlueprintError[] {
       errors.push({
         type: 'invalid_value',
         message: `Editorial Workflows deletion policy \`${policy}\` is not supported; use \`retain\` (the default) or \`protect\``,
+      })
+    }
+    if ('ownershipAction' in resource.lifecycle) {
+      errors.push({
+        type: 'invalid_value',
+        message: 'Editorial Workflows ownership actions are not supported until the resource provider defines stable ownership semantics',
       })
     }
   }
@@ -141,10 +151,6 @@ function validateDefinitions(definitions: unknown[]): BlueprintError[] {
   if (duplicate !== undefined) {
     errors.push({type: 'invalid_value', message: `Editorial Workflows definition name \`${duplicate}\` is duplicated`})
   }
-  const cycle = firstCycleName(namedDefinitions)
-  if (cycle !== undefined) {
-    errors.push({type: 'invalid_value', message: `Editorial Workflows definitions contain a reference cycle involving \`${cycle}\``})
-  }
   return errors
 }
 
@@ -155,58 +161,6 @@ function firstDuplicateName(definitions: Array<{name: string}>): string | undefi
     seen.add(definition.name)
   }
   return undefined
-}
-
-function firstCycleName(definitions: Array<Record<string, unknown> & {name: string}>): string | undefined {
-  const byName = new Map(definitions.map((definition) => [definition.name, definition]))
-  const visited = new Set<string>()
-  const visiting = new Set<string>()
-
-  function visit(name: string): string | undefined {
-    if (visited.has(name)) return undefined
-    if (visiting.has(name)) return name
-    const definition = byName.get(name)
-    if (definition === undefined) return undefined
-
-    visiting.add(name)
-    for (const reference of spawnReferenceNames(definition)) {
-      if (!byName.has(reference)) continue
-      const cycle = visit(reference)
-      if (cycle !== undefined) return cycle
-    }
-    visiting.delete(name)
-    visited.add(name)
-    return undefined
-  }
-
-  for (const name of byName.keys()) {
-    const cycle = visit(name)
-    if (cycle !== undefined) return cycle
-  }
-  return undefined
-}
-
-function spawnReferenceNames(definition: Record<string, unknown>): string[] {
-  // Mirrors the workflow-engine authoring path without importing its large definition type.
-  // Unknown shapes intentionally contribute no references; tests pin this external-schema coupling.
-  return arrayAt(definition, 'stages')
-    .filter(isRecord)
-    .flatMap((stage) => arrayAt(stage, 'activities'))
-    .filter(isRecord)
-    .flatMap((activity) => arrayAt(activity, 'actions'))
-    .filter(isRecord)
-    .flatMap((action) => {
-      const spawn = valueAt(action, 'spawn')
-      if (!isRecord(spawn)) return []
-      const referencedDefinition = valueAt(spawn, 'definition')
-      if (!isRecord(referencedDefinition)) return []
-      const referencedName = valueAt(referencedDefinition, 'name')
-      return typeof referencedName === 'string' ? [referencedName] : []
-    })
-}
-
-function arrayAt(value: Record<string, unknown>, key: string): unknown[] {
-  return Array.isArray(value[key]) ? value[key] : []
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

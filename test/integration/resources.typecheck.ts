@@ -141,16 +141,23 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
 })
 
 const _workflowTargetType: BlueprintWorkflowTargetType = 'dataset'
+const articleReviewDefinition = {
+  name: 'article-review' as const,
+  title: 'Article review' as const,
+  initialStage: 'draft' as const,
+  stages: [{name: 'draft' as const}],
+}
 const workflowDeployment = {
   name: 'production' as const,
   expectedMinReaderModel: 4,
   tag: 'production',
   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
-  definitions: [{name: 'article-review'}],
+  definitions: [articleReviewDefinition],
 } satisfies BlueprintWorkflowDeployment
 const workflowsOptions: BlueprintWorkflowsOptions = {lifecycle: {deletionPolicy: 'protect'}}
 const workflowsResource: BlueprintWorkflowsResource<typeof workflowDeployment> = defineWorkflows(workflowDeployment, workflowsOptions)
 const _workflowDeploymentName: 'production' = workflowsResource.deployment.name
+const _workflowDefinitionTitle: 'Article review' = workflowsResource.deployment.definitions[0].title
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',

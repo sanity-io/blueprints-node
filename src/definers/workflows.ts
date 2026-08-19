@@ -9,6 +9,11 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines an Editorial Workflows deployment as a Blueprint resource.
  *
+ * @remarks
+ * **Not deployable yet:** this function declares and validates a manifest resource, but the Blueprints API has no registered `sanity.workflow`
+ * resource provider. Adding the resource to a real Blueprint may fail the stack operation. Until the provider is installed and registered, deploy
+ * definitions with the workflow CLI (`sanity-workflows deploy`).
+ *
  * @example
  * ```ts
  * defineWorkflows({
@@ -16,7 +21,12 @@ import {runValidation} from '../utils/validation.js'
  *   expectedMinReaderModel: 4,
  *   tag: 'production',
  *   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
- *   definitions: [{name: 'article-review'}],
+ *   definitions: [{
+ *     name: 'article-review',
+ *     title: 'Article review',
+ *     initialStage: 'draft',
+ *     stages: [{name: 'draft'}],
+ *   }],
  * })
  * ```
  *
@@ -30,7 +40,7 @@ import {runValidation} from '../utils/validation.js'
  * @param deployment The Editorial Workflows deployment
  * @param options The Blueprint resource options
  * @public
- * @beta Deploying Editorial Workflows via Blueprints is experimental. This feature is subject to breaking changes.
+ * @beta Declaring Editorial Workflows resources is experimental. This feature is subject to breaking changes.
  * @category Definers
  * @expandType BlueprintWorkflowDeployment
  * @returns The Editorial Workflows resource

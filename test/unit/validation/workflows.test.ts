@@ -1,6 +1,13 @@
 import {describe, expect, test} from 'vitest'
 import {type BlueprintError, type BlueprintWorkflowsResource, validateWorkflows} from '../../../src/index.js'
 
+const articleReviewDefinition = {
+  name: 'article-review',
+  title: 'Article review',
+  initialStage: 'draft',
+  stages: [{name: 'draft'}],
+}
+
 const validResource: BlueprintWorkflowsResource = {
   name: 'editorial-workflows-production',
   type: 'sanity.workflow',
@@ -10,7 +17,7 @@ const validResource: BlueprintWorkflowsResource = {
     expectedMinReaderModel: 4,
     tag: 'production',
     workflowResource: {type: 'dataset', id: 'projectId.dataset'},
-    definitions: [{name: 'article-review'}],
+    definitions: [articleReviewDefinition],
   },
 }
 
@@ -60,6 +67,13 @@ describe('validateWorkflows', () => {
     expect(validateWorkflows({...validResource, lifecycle: {deletionPolicy}})).toContainEqual({
       type: 'invalid_value',
       message: `Editorial Workflows deletion policy \`${deletionPolicy}\` is not supported; use \`retain\` (the default) or \`protect\``,
+    })
+  })
+
+  test('should reject ownership actions until the provider defines their semantics', () => {
+    expect(validateWorkflows({...validResource, lifecycle: {ownershipAction: {type: 'detach'}}})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Editorial Workflows ownership actions are not supported until the resource provider defines stable ownership semantics',
     })
   })
 
@@ -269,95 +283,32 @@ describe('validateWorkflows', () => {
     })
   })
 
-  test('should reject a self-referencing definition', () => {
+  test('should collect all independent deployment errors in order', () => {
     expect(
-      validateWorkflows(
-        resourceWithDefinitions([
-          {
-            name: 'article-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'article-review'}}}]}]}],
-          },
-        ]),
-      ),
-    ).toContainEqual({
-      type: 'invalid_value',
-      message: 'Editorial Workflows definitions contain a reference cycle involving `article-review`',
-    })
-  })
-
-  test('should reject a two-definition reference cycle', () => {
-    expect(
-      validateWorkflows(
-        resourceWithDefinitions([
-          {
-            name: 'article-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'legal-review'}}}]}]}],
-          },
-          {
-            name: 'legal-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'article-review'}}}]}]}],
-          },
-        ]),
-      ),
-    ).toContainEqual({
-      type: 'invalid_value',
-      message: 'Editorial Workflows definitions contain a reference cycle involving `article-review`',
-    })
-  })
-
-  test('should allow a shared-reference DAG', () => {
-    expect(
-      validateWorkflows(
-        resourceWithDefinitions([
-          {
-            name: 'article-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'publish'}}}]}]}],
-          },
-          {
-            name: 'legal-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'publish'}}}]}]}],
-          },
-          {name: 'publish'},
-        ]),
-      ),
-    ).toStrictEqual([])
-  })
-
-  test('should allow references to definitions outside the deployment', () => {
-    expect(
-      validateWorkflows(
-        resourceWithDefinitions([
-          {
-            name: 'article-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'external-review'}}}]}]}],
-          },
-        ]),
-      ),
-    ).toStrictEqual([])
-  })
-
-  test('should ignore malformed spawn-reference internals', () => {
-    expect(
-      validateWorkflows(
-        resourceWithDefinitions([
-          {name: 'invalid-stages', stages: 'invalid'},
-          {name: 'invalid-activities', stages: [{activities: 1}]},
-          {name: 'invalid-actions', stages: [{activities: [{actions: 1}]}]},
-          {
-            name: 'invalid-spawn',
-            stages: [{activities: [{actions: [{spawn: 'invalid'}]}]}],
-          },
-          {
-            name: 'invalid-spawn-definition',
-            stages: [{activities: [{actions: [{spawn: {definition: 'invalid'}}]}]}],
-          },
-          {
-            name: 'invalid-spawn-definition-name',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 1}}}]}]}],
-          },
-        ]),
-      ),
-    ).toStrictEqual([])
+      validateWorkflows({
+        ...validResource,
+        deployment: {
+          name: '',
+          tag: 1,
+          expectedMinReaderModel: 0,
+          workflowResource: {type: 'invalid', id: ''},
+          resourceAliases: 'content',
+          definitions: [{}, {name: ''}],
+        },
+      }),
+    ).toStrictEqual([
+      {type: 'invalid_value', message: 'Editorial Workflows deployment name must be a non-empty string'},
+      {type: 'invalid_type', message: 'Editorial Workflows deployment tag must be a string'},
+      {type: 'invalid_value', message: 'Editorial Workflows expected minimum reader model must be a positive integer'},
+      {type: 'invalid_value', message: 'Editorial Workflows target resource ID must be a non-empty string'},
+      {
+        type: 'invalid_value',
+        message: 'Editorial Workflows target resource type must be one of dataset, canvas, media-library, dashboard',
+      },
+      {type: 'invalid_type', message: 'Editorial Workflows resource aliases must be an array'},
+      {type: 'missing_parameter', message: 'Editorial Workflows definition name is required'},
+      {type: 'invalid_value', message: 'Editorial Workflows definition name must be a non-empty string'},
+    ])
   })
 
   test('should accept a valid resource', () => {

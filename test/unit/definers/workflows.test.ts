@@ -7,7 +7,7 @@ const deployment = {
   expectedMinReaderModel: 4,
   tag: 'production',
   workflowResource: {type: 'dataset' as const, id: 'projectId.dataset'},
-  definitions: [{name: 'article-review'}],
+  definitions: [{name: 'article-review', title: 'Article review', initialStage: 'draft', stages: [{name: 'draft'}]}],
 }
 
 describe('defineWorkflows', () => {
@@ -76,21 +76,14 @@ describe('defineWorkflows', () => {
     ).toThrow('Editorial Workflows definition name `article-review` is duplicated')
   })
 
-  test('should reject an in-set spawn reference cycle at define time', () => {
+  test('should reject ownership actions until the provider defines their semantics', () => {
     expect(() =>
-      workflows.defineWorkflows({
-        ...deployment,
-        definitions: [
-          {
-            name: 'article-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'legal-review'}}}]}]}],
-          },
-          {
-            name: 'legal-review',
-            stages: [{activities: [{actions: [{spawn: {definition: {name: 'article-review'}}}]}]}],
-          },
-        ],
+      workflows.defineWorkflows(deployment, {
+        lifecycle: {
+          // @ts-expect-error Intentionally unsupported until the provider defines ownership semantics
+          ownershipAction: {type: 'detach'},
+        },
       }),
-    ).toThrow('Editorial Workflows definitions contain a reference cycle')
+    ).toThrow('Editorial Workflows ownership actions are not supported')
   })
 })
