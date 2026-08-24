@@ -73,7 +73,7 @@ export default defineBlueprint({
 | `defineDocumentWebhook` β | Webhook triggered by document changes |
 | `defineRole` β | Custom role with permissions |
 | `defineRobotToken` β | Robot token for automated access |
-| `defineWorkflows` β | Declares an Editorial Workflows deployment as one resource |
+| `defineWorkflows` β | Editorial Workflows deployment declared as one resource |
 
 Each definer validates its input at call time and returns a typed resource object. See the [reference docs](https://reference.sanity.io/_sanity/blueprints) for full configuration details and additional resource types.
 

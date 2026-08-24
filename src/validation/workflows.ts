@@ -1,4 +1,6 @@
-import {type BlueprintError, validateResource, WORKFLOW_TARGET_TYPES} from '../index.js'
+import type {BlueprintError} from '../types/errors.js'
+import {WORKFLOW_TARGET_TYPES} from '../types/workflows.js'
+import {validateResource} from './resources.js'
 
 /**
  * Validates the Blueprint manifest envelope for an Editorial Workflows resource.
@@ -7,6 +9,7 @@ import {type BlueprintError, validateResource, WORKFLOW_TARGET_TYPES} from '../i
  * complete authored definitions. The registered resource provider must validate the external JSON boundary with the Editorial Workflows engine
  * before provisioning it.
  * @param resource The Editorial Workflows resource
+ * @beta This feature is subject to breaking changes.
  * @category Validation
  * @returns A list of validation errors
  */
@@ -154,11 +157,11 @@ function validateDefinitions(definitions: unknown[]): BlueprintError[] {
   return errors
 }
 
-function firstDuplicateName(definitions: Array<{name: string}>): string | undefined {
+function firstDuplicateName(items: Array<{name: string}>): string | undefined {
   const seen = new Set<string>()
-  for (const definition of definitions) {
-    if (seen.has(definition.name)) return definition.name
-    seen.add(definition.name)
+  for (const item of items) {
+    if (seen.has(item.name)) return item.name
+    seen.add(item.name)
   }
   return undefined
 }

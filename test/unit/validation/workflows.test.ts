@@ -70,6 +70,13 @@ describe('validateWorkflows', () => {
     })
   })
 
+  test('should require the lifecycle to be an object', () => {
+    expect(validateWorkflows({...validResource, lifecycle: 'retain'})).toContainEqual({
+      type: 'invalid_type',
+      message: '`lifecycle` must be an object',
+    })
+  })
+
   test('should reject ownership actions until the provider defines their semantics', () => {
     expect(validateWorkflows({...validResource, lifecycle: {ownershipAction: {type: 'detach'}}})).toContainEqual({
       type: 'invalid_value',

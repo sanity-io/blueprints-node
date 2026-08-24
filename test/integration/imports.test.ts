@@ -28,122 +28,122 @@ import {
   validateSyncTagInvalidateFunction,
   validateWorkflows,
 } from '@sanity/blueprints'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, test} from 'vitest'
 
 describe('package imports', () => {
-  it('should import defineBlueprint', () => {
+  test('should import defineBlueprint', () => {
     expect(defineBlueprint).toBeInstanceOf(Function)
   })
 
-  it('should import defineCorsOrigin', () => {
+  test('should import defineCorsOrigin', () => {
     expect(defineCorsOrigin).toBeInstanceOf(Function)
   })
 
-  it('should import defineDataset', () => {
+  test('should import defineDataset', () => {
     expect(defineDataset).toBeInstanceOf(Function)
   })
 
-  it('should import defineDocumentFunction', () => {
+  test('should import defineDocumentFunction', () => {
     expect(defineDocumentFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineScheduledFunction', () => {
+  test('should import defineScheduledFunction', () => {
     expect(defineScheduledFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineSyncTagInvalidateFunction', () => {
+  test('should import defineSyncTagInvalidateFunction', () => {
     expect(defineSyncTagInvalidateFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineQueueFunction', () => {
+  test('should import defineQueueFunction', () => {
     expect(defineQueueFunction).toBeInstanceOf(Function)
   })
 
-  it('should import definePubSubFunction', () => {
+  test('should import definePubSubFunction', () => {
     expect(definePubSubFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineDocumentWebhook', () => {
+  test('should import defineDocumentWebhook', () => {
     expect(defineDocumentWebhook).toBeInstanceOf(Function)
   })
 
-  it('should import defineFunction', () => {
+  test('should import defineFunction', () => {
     expect(defineFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineMediaLibraryAssetFunction', () => {
+  test('should import defineMediaLibraryAssetFunction', () => {
     expect(defineMediaLibraryAssetFunction).toBeInstanceOf(Function)
   })
 
-  it('should import defineWorkflows', () => {
+  test('should import defineWorkflows', () => {
     expect(defineWorkflows).toBeInstanceOf(Function)
   })
 
-  it('should import defineProjectRole', () => {
+  test('should import defineProjectRole', () => {
     expect(defineProjectRole).toBeInstanceOf(Function)
   })
 
-  it('should import defineResource', () => {
+  test('should import defineResource', () => {
     expect(defineResource).toBeInstanceOf(Function)
   })
 
-  it('should import defineRole', () => {
+  test('should import defineRole', () => {
     expect(defineRole).toBeInstanceOf(Function)
   })
 
-  it('should import validateBlueprint', () => {
+  test('should import validateBlueprint', () => {
     expect(validateBlueprint).toBeInstanceOf(Function)
   })
 
-  it('should import validateCorsOrigin', () => {
+  test('should import validateCorsOrigin', () => {
     expect(validateCorsOrigin).toBeInstanceOf(Function)
   })
 
-  it('should import validateDataset', () => {
+  test('should import validateDataset', () => {
     expect(validateDataset).toBeInstanceOf(Function)
   })
 
-  it('should import validateDocumentFunction', () => {
+  test('should import validateDocumentFunction', () => {
     expect(validateDocumentFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validateSyncTagInvalidateFunction', () => {
+  test('should import validateSyncTagInvalidateFunction', () => {
     expect(validateSyncTagInvalidateFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validateQueueFunction', () => {
+  test('should import validateQueueFunction', () => {
     expect(validateQueueFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validatePubSubFunction', () => {
+  test('should import validatePubSubFunction', () => {
     expect(validatePubSubFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validateDocumentWebhook', () => {
+  test('should import validateDocumentWebhook', () => {
     expect(validateDocumentWebhook).toBeInstanceOf(Function)
   })
 
-  it('should import validateFunction', () => {
+  test('should import validateFunction', () => {
     expect(validateFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validateMediaLibraryAssetFunction', () => {
+  test('should import validateMediaLibraryAssetFunction', () => {
     expect(validateMediaLibraryAssetFunction).toBeInstanceOf(Function)
   })
 
-  it('should import validateWorkflows', () => {
+  test('should import validateWorkflows', () => {
     expect(validateWorkflows).toBeInstanceOf(Function)
   })
 
-  it('should import validateRole', () => {
+  test('should import validateRole', () => {
     expect(validateRole).toBeInstanceOf(Function)
   })
 
-  it('should import validateResource', () => {
+  test('should import validateResource', () => {
     expect(validateResource).toBeInstanceOf(Function)
   })
 
-  it('should import validateRole', () => {
+  test('should import validateRole', () => {
     expect(validateRole).toBeInstanceOf(Function)
   })
 })

@@ -21,18 +21,21 @@ import {runValidation} from '../utils/validation.js'
  *   expectedMinReaderModel: 4,
  *   tag: 'production',
  *   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
+ *   definitions: [{name: 'article-review'}],
+ * })
+ * ```
+ *
+ * @example Protected resource
+ * ```ts
+ * defineWorkflows({
+ *   ...deployment,
  *   definitions: [{
  *     name: 'article-review',
  *     title: 'Article review',
  *     initialStage: 'draft',
  *     stages: [{name: 'draft'}],
  *   }],
- * })
- * ```
- *
- * @example Protected resource
- * ```ts
- * defineWorkflows(deployment, {
+ * }, {
  *   name: 'editorial-workflows',
  *   lifecycle: {deletionPolicy: 'protect'},
  * })
@@ -59,7 +62,7 @@ export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
     deployment,
   }
 
-  runValidation(() => validateWorkflows(workflowResource), {throwError: true})
+  runValidation(() => validateWorkflows(workflowResource))
 
   return workflowResource
 }

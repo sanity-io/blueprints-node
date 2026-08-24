@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
 import * as workflows from '../../../src/definers/workflows.js'
 import * as index from '../../../src/index.js'
+import {defineBlueprintForResource} from '../../helpers/index.js'
 
 const deployment = {
   name: 'production',
@@ -15,10 +16,10 @@ describe('defineWorkflows', () => {
     vi.resetAllMocks()
   })
 
-  test('should throw an error if validateWorkflows returns an error', () => {
+  test('should surface validation errors when the blueprint is defined', () => {
     const spy = vi.spyOn(index, 'validateWorkflows').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
 
-    expect(() => workflows.defineWorkflows(deployment)).toThrow('this is a test')
+    expect(() => defineBlueprintForResource(workflows.defineWorkflows(deployment))).toThrow('this is a test')
     expect(spy).toHaveBeenCalledOnce()
   })
 
@@ -58,32 +59,38 @@ describe('defineWorkflows', () => {
 
   test.each(['allow', 'replace'] as const)('should reject the %s deletion policy', (deletionPolicy) => {
     expect(() =>
-      workflows.defineWorkflows(deployment, {
-        lifecycle: {
-          // @ts-expect-error Intentionally wrong type
-          deletionPolicy,
-        },
-      }),
+      defineBlueprintForResource(
+        workflows.defineWorkflows(deployment, {
+          lifecycle: {
+            // @ts-expect-error Intentionally wrong type
+            deletionPolicy,
+          },
+        }),
+      ),
     ).toThrow(`Editorial Workflows deletion policy \`${deletionPolicy}\` is not supported`)
   })
 
-  test('should reject duplicate definition names at define time', () => {
+  test('should reject duplicate definition names when the blueprint is defined', () => {
     expect(() =>
-      workflows.defineWorkflows({
-        ...deployment,
-        definitions: [{name: 'article-review'}, {name: 'article-review'}],
-      }),
+      defineBlueprintForResource(
+        workflows.defineWorkflows({
+          ...deployment,
+          definitions: [{name: 'article-review'}, {name: 'article-review'}],
+        }),
+      ),
     ).toThrow('Editorial Workflows definition name `article-review` is duplicated')
   })
 
   test('should reject ownership actions until the provider defines their semantics', () => {
     expect(() =>
-      workflows.defineWorkflows(deployment, {
-        lifecycle: {
-          // @ts-expect-error Intentionally unsupported until the provider defines ownership semantics
-          ownershipAction: {type: 'detach'},
-        },
-      }),
+      defineBlueprintForResource(
+        workflows.defineWorkflows(deployment, {
+          lifecycle: {
+            // @ts-expect-error Intentionally unsupported until the provider defines ownership semantics
+            ownershipAction: {type: 'detach'},
+          },
+        }),
+      ),
     ).toThrow('Editorial Workflows ownership actions are not supported')
   })
 })
