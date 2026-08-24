@@ -228,6 +228,21 @@ describe('validateWorkflows', () => {
     )
   })
 
+  test('should report every distinct duplicate resource alias name', () => {
+    const content = {name: 'content', resource: {type: 'dataset' as const, id: 'projectId.content'}}
+    const media = {name: 'media', resource: {type: 'media-library' as const, id: 'mediaLibraryId'}}
+
+    expect(
+      validateWorkflows({
+        ...validResource,
+        deployment: {...validResource.deployment, resourceAliases: [content, content, media, media]},
+      }),
+    ).toStrictEqual([
+      {type: 'invalid_value', message: 'Editorial Workflows resource alias name `content` is duplicated'},
+      {type: 'invalid_value', message: 'Editorial Workflows resource alias name `media` is duplicated'},
+    ])
+  })
+
   test('should accept valid resource aliases', () => {
     expect(
       validateWorkflows({
