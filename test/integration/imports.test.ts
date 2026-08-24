@@ -25,6 +25,7 @@ import {
   validateQueueFunction,
   validateResource,
   validateRole,
+  validateScheduledFunction,
   validateSyncTagInvalidateFunction,
   validateWorkflows,
 } from '@sanity/blueprints'
@@ -135,8 +136,8 @@ describe('package imports', () => {
     expect(validateWorkflows).toBeInstanceOf(Function)
   })
 
-  test('should import validateRole', () => {
-    expect(validateRole).toBeInstanceOf(Function)
+  test('should import validateScheduledFunction', () => {
+    expect(validateScheduledFunction).toBeInstanceOf(Function)
   })
 
   test('should import validateResource', () => {

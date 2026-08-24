@@ -80,6 +80,10 @@ export interface BlueprintWorkflowDeployment {
  * @category Resource Types
  */
 export interface BlueprintWorkflowsLifecycle extends Omit<BlueprintResourceLifecycle, 'deletionPolicy' | 'ownershipAction'> {
+  /**
+   * The deletion policy for the Blueprint resource.
+   * @defaultValue `'retain'`
+   */
   deletionPolicy?: 'retain' | 'protect'
   /** Ownership actions are unavailable until the resource provider defines stable attach, detach, and reference semantics. */
   ownershipAction?: never

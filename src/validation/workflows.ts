@@ -112,8 +112,7 @@ function validateResourceAliases(resourceAliases: unknown): BlueprintError[] {
     return bindingErrors
   })
 
-  const duplicate = firstDuplicateName(resourceAliases.filter(hasStringName))
-  if (duplicate !== undefined) {
+  for (const duplicate of duplicateNames(resourceAliases.filter(hasStringName))) {
     errors.push({type: 'invalid_value', message: `Editorial Workflows resource alias name \`${duplicate}\` is duplicated`})
   }
   return errors
@@ -150,20 +149,20 @@ function validateDefinitions(definitions: unknown[]): BlueprintError[] {
     return validateNonEmptyString(definition, 'name', 'definition name')
   })
   const namedDefinitions = definitions.filter(hasStringName)
-  const duplicate = firstDuplicateName(namedDefinitions)
-  if (duplicate !== undefined) {
+  for (const duplicate of duplicateNames(namedDefinitions)) {
     errors.push({type: 'invalid_value', message: `Editorial Workflows definition name \`${duplicate}\` is duplicated`})
   }
   return errors
 }
 
-function firstDuplicateName(items: Array<{name: string}>): string | undefined {
+function duplicateNames(items: Array<{name: string}>): string[] {
   const seen = new Set<string>()
+  const duplicates = new Set<string>()
   for (const item of items) {
-    if (seen.has(item.name)) return item.name
+    if (seen.has(item.name)) duplicates.add(item.name)
     seen.add(item.name)
   }
-  return undefined
+  return [...duplicates]
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

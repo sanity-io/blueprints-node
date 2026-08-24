@@ -290,6 +290,17 @@ describe('validateWorkflows', () => {
     })
   })
 
+  test('should report every distinct duplicate definition name', () => {
+    expect(
+      validateWorkflows(
+        resourceWithDefinitions([{name: 'article-review'}, {name: 'article-review'}, {name: 'legal-review'}, {name: 'legal-review'}]),
+      ),
+    ).toStrictEqual([
+      {type: 'invalid_value', message: 'Editorial Workflows definition name `article-review` is duplicated'},
+      {type: 'invalid_value', message: 'Editorial Workflows definition name `legal-review` is duplicated'},
+    ])
+  })
+
   test('should collect all independent deployment errors in order', () => {
     expect(
       validateWorkflows({

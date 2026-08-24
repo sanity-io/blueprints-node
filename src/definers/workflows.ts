@@ -28,7 +28,10 @@ import {runValidation} from '../utils/validation.js'
  * @example Protected resource
  * ```ts
  * defineWorkflows({
- *   ...deployment,
+ *   name: 'production',
+ *   expectedMinReaderModel: 4,
+ *   tag: 'production',
+ *   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
  *   definitions: [{
  *     name: 'article-review',
  *     title: 'Article review',
@@ -52,7 +55,7 @@ export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
   deployment: Deployment,
   options?: BlueprintWorkflowsOptions,
 ): BlueprintWorkflowsResource<Deployment> {
-  const workflowResource: BlueprintWorkflowsResource<Deployment> = {
+  const resource: BlueprintWorkflowsResource<Deployment> = {
     name: options?.name ?? `editorial-workflows-${deployment.name}`,
     type: 'sanity.workflow',
     lifecycle: {
@@ -62,7 +65,7 @@ export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
     deployment,
   }
 
-  runValidation(() => validateWorkflows(workflowResource))
+  runValidation(() => validateWorkflows(resource))
 
-  return workflowResource
+  return resource
 }
