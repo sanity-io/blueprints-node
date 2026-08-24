@@ -235,7 +235,7 @@ describe('validateWorkflows', () => {
     expect(
       validateWorkflows({
         ...validResource,
-        deployment: {...validResource.deployment, resourceAliases: [content, content, media, media]},
+        deployment: {...validResource.deployment, resourceAliases: [content, content, content, media, media]},
       }),
     ).toStrictEqual([
       {type: 'invalid_value', message: 'Editorial Workflows resource alias name `content` is duplicated'},
