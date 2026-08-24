@@ -7,14 +7,14 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from './resou
 export type RobotTokenResourceType = 'organization' | 'project'
 
 /**
- * Defines the robot token's roles within a given resource.
+ * Defines the robot token's roles within a given resource. Membership scope defaults to the robot token's scope.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
  */
 export interface RobotTokenMembership {
-  resourceType: RobotTokenResourceType
-  resourceId: string
+  resourceType?: RobotTokenResourceType
+  resourceId?: string
   roleNames: string[]
 }
 
