@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.0](https://github.com/sanity-io/blueprints-node/compare/v0.23.6...v0.24.0) (2026-08-25)
+
+
+### Features
+
+* make robot token membership scope optional ([#152](https://github.com/sanity-io/blueprints-node/issues/152)) ([b2a0973](https://github.com/sanity-io/blueprints-node/commit/b2a09735b7d4c709be75a976a20bd199c28c26c2))
+
 ## [0.23.6](https://github.com/sanity-io/blueprints-node/compare/v0.23.5...v0.23.6) (2026-08-14)
 
 
