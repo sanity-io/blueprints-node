@@ -73,16 +73,24 @@ export function validateRobotTokenMembership(membership: unknown): BlueprintErro
 
   const errors: BlueprintError[] = []
 
-  if (!('resourceType' in membership)) {
-    errors.push({type: 'missing_parameter', message: 'Membership resource type is required'})
-  } else if (membership.resourceType !== 'organization' && membership.resourceType !== 'project') {
-    errors.push({type: 'invalid_value', message: 'Membership resource type must be `organization` or `project`'})
+  if ('resourceType' in membership) {
+    if (membership.resourceType !== 'organization' && membership.resourceType !== 'project') {
+      errors.push({type: 'invalid_value', message: 'Membership resource type must be `organization` or `project`'})
+    }
+
+    if (!('resourceId' in membership)) {
+      errors.push({type: 'missing_parameter', message: 'Membership resource ID is required when resource type is given'})
+    }
   }
 
-  if (!('resourceId' in membership) || !membership.resourceId) {
-    errors.push({type: 'missing_parameter', message: 'Membership resource ID is required'})
-  } else if (typeof membership.resourceId !== 'string') {
-    errors.push({type: 'invalid_type', message: 'Membership resource ID must be a string'})
+  if ('resourceId' in membership) {
+    if (typeof membership.resourceId !== 'string') {
+      errors.push({type: 'invalid_type', message: 'Membership resource ID must be a string'})
+    }
+
+    if (!('resourceType' in membership)) {
+      errors.push({type: 'missing_parameter', message: 'Membership resource type is required when resource ID is given'})
+    }
   }
 
   if (!('roleNames' in membership)) {
