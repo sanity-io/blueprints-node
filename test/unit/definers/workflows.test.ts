@@ -75,7 +75,7 @@ describe('defineWorkflows', () => {
       defineBlueprintForResource(
         workflows.defineWorkflows({
           ...deployment,
-          definitions: [{name: 'article-review'}, {name: 'article-review'}],
+          definitions: [deployment.definitions[0], deployment.definitions[0]],
         }),
       ),
     ).toThrow('Editorial Workflows definition name `article-review` is duplicated')

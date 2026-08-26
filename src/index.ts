@@ -26,6 +26,7 @@ export * from './definers/roles.js'
 export * from './definers/studios.js'
 export * from './definers/webhooks.js'
 export * from './definers/workflows.js'
+export * from './providers/workflows/index.js'
 
 // TYPES - base types for all resources
 /**

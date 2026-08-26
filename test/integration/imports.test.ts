@@ -28,6 +28,7 @@ import {
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
   validateWorkflows,
+  workflowProvider,
 } from '@sanity/blueprints'
 import {describe, expect, test} from 'vitest'
 
@@ -78,6 +79,10 @@ describe('package imports', () => {
 
   test('should import defineWorkflows', () => {
     expect(defineWorkflows).toBeInstanceOf(Function)
+  })
+
+  test('should import workflowProvider', () => {
+    expect(workflowProvider).toBeInstanceOf(Function)
   })
 
   test('should import defineProjectRole', () => {
