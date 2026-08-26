@@ -24,6 +24,21 @@ describe('validateRobotToken', () => {
     expect(errors).toHaveLength(0)
   })
 
+  test('should accept a valid configuration (default membership scope)', () => {
+    const errors = robotTokens.validateRobotToken({
+      name: 'robot-name',
+      type: 'sanity.access.robot',
+      label: 'Robot label',
+      memberships: [
+        {
+          roleNames: ['test-role'],
+        },
+      ],
+    })
+
+    expect(errors).toHaveLength(0)
+  })
+
   test('should return an error if validateResource returns an error', () => {
     const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     const errors = robotTokens.validateRobotToken({
@@ -115,11 +130,11 @@ describe('validateRobotToken', () => {
     })
   })
 
-  test('should return an error if membership resource type is not provided', () => {
-    const errors = robotTokens.validateRobotToken({memberships: [{}]})
+  test('should return an error if membership resource type is not provided when resource ID is provided', () => {
+    const errors = robotTokens.validateRobotToken({memberships: [{resourceId: 'proj123'}]})
     expect(errors).toContainEqual({
       type: 'missing_parameter',
-      message: 'Membership resource type is required',
+      message: 'Membership resource type is required when resource ID is given',
     })
   })
 
@@ -131,11 +146,11 @@ describe('validateRobotToken', () => {
     })
   })
 
-  test('should return an error if membership resource ID is not provided', () => {
-    const errors = robotTokens.validateRobotToken({memberships: [{}]})
+  test('should return an error if membership resource ID is not provided when resource type is provided', () => {
+    const errors = robotTokens.validateRobotToken({memberships: [{resourceType: 'project'}]})
     expect(errors).toContainEqual({
       type: 'missing_parameter',
-      message: 'Membership resource ID is required',
+      message: 'Membership resource ID is required when resource type is given',
     })
   })
 
