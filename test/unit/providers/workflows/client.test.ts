@@ -1,7 +1,7 @@
 import {ENGINE_API_VERSION} from '@sanity/workflow-engine'
 import {describe, expect, test} from 'vitest'
 
-import {blueprintApiHostFromEnv, blueprintsClientConfig} from '../../../../src/providers/workflows/client.js'
+import {blueprintApiHost, blueprintsClientConfig} from '../../../../src/providers/workflows/client.js'
 import {workflowResource} from './fixtures.js'
 
 describe('blueprintsClientConfig', () => {
@@ -57,19 +57,27 @@ describe('blueprintsClientConfig', () => {
 
     expect(config.apiHost).toBe('https://api.sanity.io')
   })
+
+  test('rejects an unknown context environment before constructing a client config', () => {
+    expect(() =>
+      blueprintsClientConfig(workflowResource(), {
+        environment: 'unknown',
+        token: 'caller-token',
+      } as never),
+    ).toThrow('Unknown Blueprints environment: "unknown"')
+  })
 })
 
-describe('blueprintApiHostFromEnv', () => {
+describe('blueprintApiHost', () => {
   test.each([
     ['production', 'https://api.sanity.io'],
     ['staging', 'https://api.sanity.work'],
     ['test', 'http://api.sanity.local'],
-    [undefined, 'http://api.sanity.local'],
   ])('maps %s to %s', (environment, expected) => {
-    expect(blueprintApiHostFromEnv(environment)).toBe(expected)
+    expect(blueprintApiHost(environment)).toBe(expected)
   })
 
-  test('rejects an unknown environment instead of silently targeting the test API', () => {
-    expect(() => blueprintApiHostFromEnv('unknown')).toThrow('Unknown Blueprints environment: "unknown"')
+  test.each([undefined, 'unknown'])('rejects %s instead of selecting an implicit API', (environment) => {
+    expect(() => blueprintApiHost(environment)).toThrow(`Unknown Blueprints environment: ${JSON.stringify(environment)}`)
   })
 })

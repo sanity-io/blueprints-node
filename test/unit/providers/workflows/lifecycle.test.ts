@@ -10,7 +10,7 @@ import {
   rollbackWorkflowResource,
   workflowResourceExternalId,
 } from '../../../../src/providers/workflows/lifecycle.js'
-import {WORKFLOW_RESOURCE_TYPE} from '../../../../src/providers/workflows/resource.js'
+import {WORKFLOW_RESOURCE_TYPE} from '../../../../src/utils/workflows.js'
 import {testWorkflowResource} from './fixtures.js'
 import {benchDeployment, parkedFlow, spawningParent} from './lifecycle-fixtures.js'
 
@@ -151,7 +151,9 @@ describe('parseWorkflowResource', () => {
   test('rejects an unknown deletion policy', () => {
     const resource = testWorkflowResource(benchDeployment([parkedFlow()]))
 
-    expect(() => parseWorkflowResource({...resource, lifecycle: {deletionPolicy: 'nuke'}})).toThrow('deletionPolicy')
+    expect(() => parseWorkflowResource({...resource, lifecycle: {deletionPolicy: 'nuke'}})).toThrow(
+      "workflow resource: deletionPolicy 'nuke' is not supported — use 'retain' or 'protect'",
+    )
   })
 
   test('rejects a spawn-reference cycle among the resource definitions', () => {

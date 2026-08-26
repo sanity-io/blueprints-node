@@ -1,8 +1,8 @@
-import {env} from 'node:process'
-
 import {errorMessage, type WorkflowClient} from '@sanity/workflow-engine'
 
-import {blueprintApiHostFromEnv, createWorkflowClient, type WorkflowClientFactory, type WorkflowProviderClientContext} from './client.js'
+import {isRecord} from '../../utils/records.js'
+import {WORKFLOW_RESOURCE_TYPE} from '../../utils/workflows.js'
+import {blueprintApiHost, createWorkflowClient, type WorkflowClientFactory, type WorkflowProviderClientContext} from './client.js'
 import {
   destroyWorkflowResource,
   parseWorkflowResource,
@@ -14,7 +14,7 @@ import {
   type WorkflowResourceSnapshot,
   workflowResourceExternalId,
 } from './lifecycle.js'
-import {isRecord, WORKFLOW_RESOURCE_TYPE, type WorkflowsResource} from './resource.js'
+import type {WorkflowsResource} from './resource.js'
 
 type LogMethod = (level: 'info' | 'warn' | 'error', message: string, metadata?: Record<string, unknown>) => unknown | Promise<unknown>
 
@@ -141,7 +141,7 @@ const defaultDependencies: WorkflowProviderDependencies = {
   rollbackResource: rollbackWorkflowResource,
 }
 
-function validateResource(resource: unknown): ValidationResult {
+function validateWorkflowResourceInput(resource: unknown): ValidationResult {
   try {
     parseWorkflowResource(resource)
     return {valid: true, errors: []}
@@ -225,16 +225,25 @@ function rollback({
   receipt,
   externalId,
   dependencies,
+  log,
 }: {
   resource: WorkflowsResource
   client: WorkflowClient
   receipt: WorkflowProvisionReceipt
   externalId: string
   dependencies: WorkflowProviderDependencies
+  log: LogMethod
 }) {
   return async () => {
-    await dependencies.rollbackResource({resource, client, receipt})
-    return {success: true as const, externalId}
+    try {
+      await dependencies.rollbackResource({resource, client, receipt})
+      return {success: true as const, externalId}
+    } catch (error) {
+      return createErrorResponse(error, log, 'Failed to roll back Editorial Workflows deployment', {
+        resourceName: resource.name,
+        externalId,
+      })
+    }
   }
 }
 
@@ -287,6 +296,7 @@ async function provisionAction({resource, context, runtime}: ResourceAction): Re
       receipt: result.receipt,
       externalId: result.externalId,
       dependencies: runtime.dependencies,
+      log: runtime.log,
     }),
   }
 }
@@ -333,7 +343,7 @@ function createProvider(dependencies: WorkflowProviderDependencies, helpers: Pro
   const runtime = {dependencies, log: helpers.log}
   return {
     validate(parameters) {
-      return validateResource(parameters)
+      return validateWorkflowResourceInput(parameters)
     },
     validateUpdate(state) {
       try {
@@ -344,7 +354,7 @@ function createProvider(dependencies: WorkflowProviderDependencies, helpers: Pro
       }
     },
     validateDestroy(state) {
-      const parsed = validateResource(state.current)
+      const parsed = validateWorkflowResourceInput(state.current)
       if (!parsed.valid) return parsed
       return {
         valid: false,
@@ -365,7 +375,7 @@ function createProvider(dependencies: WorkflowProviderDependencies, helpers: Pro
 export function createWorkflowProviderFactory(dependencies: WorkflowProviderDependencies = defaultDependencies): WorkflowProviderFactory {
   const factory: WorkflowProviderFactory = (helpers) => createProvider(dependencies, helpers)
   factory.resourceType = WORKFLOW_RESOURCE_TYPE
-  factory.apiUrl = blueprintApiHostFromEnv(env['BLUEPRINTS_ENV'])
+  factory.apiUrl = blueprintApiHost('production')
   factory.displayName = 'Editorial Workflows deployment'
   factory.displayNamePlural = 'Editorial Workflows deployments'
   factory.lifecycleConfig = {

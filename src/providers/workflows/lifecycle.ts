@@ -12,15 +12,9 @@ import {
   type WorkflowTelemetryLogger,
   workflow,
 } from '@sanity/workflow-engine'
-
-import {
-  assertWorkflowResourceEnvelope,
-  isRecord,
-  parseWorkflowDeployment,
-  parseWorkflowLifecycle,
-  WORKFLOW_RESOURCE_TYPE,
-  type WorkflowsResource,
-} from './resource.js'
+import {isRecord} from '../../utils/records.js'
+import {WORKFLOW_RESOURCE_TYPE} from '../../utils/workflows.js'
+import {assertWorkflowResourceEnvelope, parseWorkflowDeployment, parseWorkflowLifecycle, type WorkflowsResource} from './resource.js'
 
 /**
  * One provider lifecycle call's scope: the resource document as it arrives

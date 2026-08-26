@@ -58,11 +58,11 @@ function updateState(current: WorkflowsResource, desired: WorkflowsResource, ext
 }
 
 function expectSuccess<T extends {success: boolean}>(result: T): asserts result is Extract<T, {success: true}> {
-  expect(result.success).toBe(true)
+  expect(result).toMatchObject({success: true})
 }
 
 function expectFailure<T extends {success: boolean}>(result: T): asserts result is Extract<T, {success: false}> {
-  expect(result.success).toBe(false)
+  expect(result).toMatchObject({success: false})
 }
 
 describe('Editorial Workflows provider factory', () => {
@@ -77,7 +77,7 @@ describe('Editorial Workflows provider factory', () => {
       scope: workflowProvider.scope,
     }).toEqual({
       resourceType: 'sanity.workflow',
-      apiUrl: 'http://api.sanity.local',
+      apiUrl: 'https://api.sanity.io',
       displayName: 'Editorial Workflows deployment',
       displayNamePlural: 'Editorial Workflows deployments',
       lifecycleConfig: {defaultDeletionPolicy: 'retain', preventDetach: false},
@@ -132,6 +132,37 @@ describe('Editorial Workflows provider actions', () => {
     expect(rollbackScope).toEqual({resource: desired, client: CLIENT, receipt: RECEIPT})
   })
 
+  test('returns a structured action failure when rollback fails', async () => {
+    const rollbackError = new Error('rollback failed')
+    const logs: Array<{level: string; message: string; metadata?: Record<string, unknown>}> = []
+    const result = await provider(
+      {
+        rollbackResource: async () => {
+          throw rollbackError
+        },
+      },
+      (level, message, metadata) => {
+        logs.push({level, message, ...(metadata === undefined ? {} : {metadata})})
+      },
+    ).create(createState(resource()), CONTEXT)
+
+    expectSuccess(result)
+    await expect(result.rollback()).resolves.toMatchObject({
+      success: false,
+      error: 'rollback failed',
+      cause: rollbackError,
+    })
+    expect(logs).toContainEqual({
+      level: 'error',
+      message: 'Failed to roll back Editorial Workflows deployment',
+      metadata: {
+        error: 'rollback failed',
+        resourceName: 'workflows-production',
+        externalId: RECEIPT.externalId,
+      },
+    })
+  })
+
   test('rejects a provision receipt from another physical partition', async () => {
     const instance = provider({
       provisionResource: async () => ({...RECEIPT, externalId: 'sanity.workflow:wrong'}),
@@ -166,7 +197,7 @@ describe('Editorial Workflows provider actions', () => {
     expect(result).toMatchObject({error: 'provision failed', cause: provisionError})
   })
 
-  test('reads only the manifest-managed deployed definitions', async () => {
+  test('resolves the read snapshot into the resource', async () => {
     const current = resource()
     const externalId = workflowResourceExternalId(current.deployment)
     const instance = provider({
@@ -178,15 +209,40 @@ describe('Editorial Workflows provider actions', () => {
     expect(result.resource).toEqual({...current, externalId, deployedDefinitions: []})
   })
 
-  test('updates only when the physical deployment partition is unchanged', async () => {
+  test('updates when the physical deployment partition is unchanged', async () => {
+    const current = resource()
+    const desired = {...current, deployment: {...current.deployment, name: 'renamed-logical-deployment'}}
+    const externalId = workflowResourceExternalId(current.deployment)
+    let provisioned: unknown
+    const instance = provider({
+      provisionResource: async ({resource: input}) => {
+        provisioned = input
+        return RECEIPT
+      },
+    })
+
+    const result = await instance.update(updateState(current, desired, externalId), CONTEXT)
+
+    expectSuccess(result)
+    expect(provisioned).toEqual(desired)
+    expect(result.externalId).toBe(externalId)
+  })
+
+  test('rejects updates that change the physical deployment partition', async () => {
     const current = resource()
     const externalId = workflowResourceExternalId(current.deployment)
     const changedPartition = resource({target: {type: 'dataset', id: 'abc123.other'}})
+    const instance = provider()
 
-    expect(provider().validateUpdate(updateState(current, changedPartition, externalId))).toEqual({
+    expect(instance.validateUpdate(updateState(current, changedPartition, externalId))).toEqual({
       valid: false,
       errors: ['workflow resource: workflowResource and tag cannot change during update; create a new Blueprint resource instead'],
     })
+    const result = await instance.update(updateState(current, changedPartition, externalId), CONTEXT)
+    expectFailure(result)
+    expect(result.error).toBe(
+      'workflow resource: workflowResource and tag cannot change during update; create a new Blueprint resource instead',
+    )
   })
 
   test('fails if destroy is dispatched instead of a retain detach', async () => {

@@ -1,12 +1,18 @@
 import type {WorkflowDeploymentInput, WorkflowResource} from '@sanity/workflow-engine'
 import type {BlueprintResource, BlueprintResourceLifecycle} from '../index.js'
+import type {WORKFLOW_RESOURCE_TYPE} from '../utils/workflows.js'
 
 /**
  * Resource target types supported by Editorial Workflows.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
-export const WORKFLOW_TARGET_TYPES = ['dataset', 'canvas', 'media-library', 'dashboard'] as const
+export const WORKFLOW_TARGET_TYPES = [
+  'dataset',
+  'canvas',
+  'media-library',
+  'dashboard',
+] as const satisfies readonly WorkflowResource['type'][]
 
 /**
  * A resource target type supported by Editorial Workflows.
@@ -86,6 +92,6 @@ export interface BlueprintWorkflowsOptions {
  */
 export interface BlueprintWorkflowsResource<Deployment extends BlueprintWorkflowDeployment = BlueprintWorkflowDeployment>
   extends BlueprintResource<BlueprintWorkflowsLifecycle> {
-  type: 'sanity.workflow'
+  type: typeof WORKFLOW_RESOURCE_TYPE
   deployment: Deployment
 }

@@ -5,6 +5,7 @@ import {
   validateWorkflows,
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
+import {WORKFLOW_RESOURCE_TYPE} from '../utils/workflows.js'
 
 /**
  * Defines an Editorial Workflows deployment as a Blueprint resource.
@@ -61,7 +62,7 @@ export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
 ): BlueprintWorkflowsResource<Deployment> {
   const resource: BlueprintWorkflowsResource<Deployment> = {
     name: options?.name ?? `editorial-workflows-${deployment.name}`,
-    type: 'sanity.workflow',
+    type: WORKFLOW_RESOURCE_TYPE,
     lifecycle: {
       ...options?.lifecycle,
       deletionPolicy: options?.lifecycle?.deletionPolicy ?? 'retain',

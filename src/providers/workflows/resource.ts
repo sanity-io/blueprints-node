@@ -14,9 +14,9 @@ import {
 } from '@sanity/workflow-engine'
 import {defineWorkflowConfig} from '@sanity/workflow-engine/define'
 import type {BlueprintResource, BlueprintResourceLifecycle} from '../../types/resources.js'
+import {isRecord} from '../../utils/records.js'
+import {type WORKFLOW_RESOURCE_TYPE, WORKFLOW_UNSUPPORTED_DELETION_POLICIES} from '../../utils/workflows.js'
 import {validateResource} from '../../validation/resources.js'
-
-export const WORKFLOW_RESOURCE_TYPE = 'sanity.workflow'
 
 /**
  * A Workflows deployment declared as a Sanity Blueprints resource.
@@ -34,10 +34,6 @@ export interface WorkflowsResource extends BlueprintResource {
   deployment: AcknowledgedWorkflowDeployment
 }
 
-export function isRecord(input: unknown): input is Record<string, unknown> {
-  return typeof input === 'object' && input !== null
-}
-
 /** Provider input may bypass factory validation, so this boundary rejects lifecycle behavior
  *  the provider cannot implement. */
 export function parseWorkflowLifecycle(input: unknown, caller: string): unknown {
@@ -46,12 +42,15 @@ export function parseWorkflowLifecycle(input: unknown, caller: string): unknown 
     throw new Error(`${caller}: \`lifecycle\` must be an object`)
   }
   const deletionPolicy = input['deletionPolicy']
-  if (deletionPolicy === 'allow' || deletionPolicy === 'replace') {
+  if (WORKFLOW_UNSUPPORTED_DELETION_POLICIES.some((policy) => policy === deletionPolicy)) {
     throw new Error(
       `${caller}: deletionPolicy '${deletionPolicy}' is not supported — ` +
         'Editorial Workflows definitions are retain-only through Blueprints; delete deliberately with ' +
         "the workflow CLI's `definition delete`.",
     )
+  }
+  if (typeof deletionPolicy === 'string' && deletionPolicy !== 'retain' && deletionPolicy !== 'protect') {
+    throw new Error(`${caller}: deletionPolicy '${deletionPolicy}' is not supported — use 'retain' or 'protect'`)
   }
   if (Object.hasOwn(input, 'ownershipAction')) {
     throw new Error(`${caller}: ownershipAction is not supported for Editorial Workflows resources`)

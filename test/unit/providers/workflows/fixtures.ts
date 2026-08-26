@@ -8,7 +8,6 @@ import type {BlueprintWorkflowsOptions} from '../../../../src/types/workflows.js
 
 interface WorkflowResourceOptions {
   target?: WorkflowResource
-  title?: string
 }
 
 export function testWorkflowResource(
@@ -23,10 +22,7 @@ export function testWorkflowResource(
   )
 }
 
-export function workflowResource({
-  target = {type: 'dataset', id: 'abc123.production'},
-  title = 'Article review',
-}: WorkflowResourceOptions = {}): WorkflowsResource {
+export function workflowResource({target = {type: 'dataset', id: 'abc123.production'}}: WorkflowResourceOptions = {}): WorkflowsResource {
   return testWorkflowResource(
     {
       name: 'production',
@@ -36,7 +32,7 @@ export function workflowResource({
       definitions: [
         defineWorkflow({
           name: 'article-review',
-          title,
+          title: 'Article review',
           initialStage: 'draft',
           stages: [{name: 'draft'}],
         }),

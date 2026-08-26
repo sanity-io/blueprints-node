@@ -1,5 +1,7 @@
 import type {BlueprintError} from '../types/errors.js'
 import {WORKFLOW_TARGET_TYPES} from '../types/workflows.js'
+import {isRecord} from '../utils/records.js'
+import {WORKFLOW_RESOURCE_TYPE, WORKFLOW_UNSUPPORTED_DELETION_POLICIES} from '../utils/workflows.js'
 import {validateResource} from './resources.js'
 
 /**
@@ -23,14 +25,14 @@ export function validateWorkflows(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'Editorial Workflows resource name must be a non-empty string'})
   }
 
-  if ('type' in resource && resource.type !== 'sanity.workflow') {
-    errors.push({type: 'invalid_value', message: 'Editorial Workflows type must be `sanity.workflow`'})
+  if ('type' in resource && resource.type !== WORKFLOW_RESOURCE_TYPE) {
+    errors.push({type: 'invalid_value', message: `Editorial Workflows type must be \`${WORKFLOW_RESOURCE_TYPE}\``})
   }
 
   if ('lifecycle' in resource && isRecord(resource.lifecycle)) {
     const policy = valueAt(resource.lifecycle, 'deletionPolicy')
     // Base resource validation owns the complete policy allowlist; this narrows its accepted set for workflows.
-    if (policy === 'allow' || policy === 'replace') {
+    if (WORKFLOW_UNSUPPORTED_DELETION_POLICIES.some((unsupported) => unsupported === policy)) {
       errors.push({
         type: 'invalid_value',
         message: `Editorial Workflows deletion policy \`${policy}\` is not supported; use \`retain\` (the default) or \`protect\``,
@@ -163,10 +165,6 @@ function duplicateNames(items: Array<{name: string}>): string[] {
     seen.add(item.name)
   }
   return [...duplicates]
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
 
 function valueAt(value: Record<string, unknown>, key: string): unknown {

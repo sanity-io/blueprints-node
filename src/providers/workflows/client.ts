@@ -11,13 +11,10 @@ const API_HOSTS: Record<BlueprintsEnvironment, string> = {
   test: 'http://api.sanity.local',
 }
 
-function blueprintApiHost(environment: BlueprintsEnvironment): string {
-  return API_HOSTS[environment]
-}
-
-export function blueprintApiHostFromEnv(environment: string | undefined): string {
-  if (environment === undefined || environment === 'test') return blueprintApiHost('test')
-  if (environment === 'production' || environment === 'staging') return blueprintApiHost(environment)
+export function blueprintApiHost(environment: unknown): string {
+  if (environment === 'production' || environment === 'staging' || environment === 'test') {
+    return API_HOSTS[environment]
+  }
   throw new Error(`Unknown Blueprints environment: ${JSON.stringify(environment)}`)
 }
 
