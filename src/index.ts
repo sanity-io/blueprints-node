@@ -7,6 +7,7 @@
  * @categoryDescription Referencers
  * These functions are used to reference resources in another Blueprint.
  */
+export * from './definers/applications.js'
 export * from './definers/blueprints.js'
 export * from './definers/cors.js'
 export * from './definers/datasets.js'
@@ -18,6 +19,7 @@ export * from './definers/functions/pubsub.js'
 export * from './definers/functions/queue.js'
 export * from './definers/functions/scheduled.js'
 export * from './definers/functions/sync-tag-invalidate.js'
+export * from './definers/media-library-config.js'
 export * from './definers/projects.js'
 export * from './definers/resources.js'
 export * from './definers/robots.js'
@@ -35,11 +37,13 @@ export * from './definers/webhooks.js'
  * @categoryDescription Functions Types
  * Resource types for functions in a Blueprint.
  */
+export * from './types/applications.js'
 export * from './types/blueprints.js'
 export * from './types/cors.js'
 export * from './types/datasets.js'
 export * from './types/errors.js'
 export * from './types/functions/index.js'
+export * from './types/media-library-config.js'
 export * from './types/projects.js'
 export * from './types/resources.js'
 export * from './types/robots.js'
@@ -53,10 +57,12 @@ export * from './types/webhooks.js'
  * @categoryDescription Validation
  * These functions are used to validate resources in a Blueprint.
  */
+export * from './validation/applications.js'
 export * from './validation/blueprints.js'
 export * from './validation/cors.js'
 export * from './validation/datasets.js'
 export * from './validation/functions.js'
+export * from './validation/media-library-config.js'
 export * from './validation/projects.js'
 export * from './validation/resources.js'
 export * from './validation/robots.js'
