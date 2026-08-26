@@ -27,7 +27,6 @@ export * from './definers/studios.js'
 export * from './definers/webhooks.js'
 export * from './definers/workflows.js'
 
-// PROVIDERS - resource lifecycle implementations registered by the Blueprints API
 /**
  * @categoryDescription Providers
  * These providers execute resource lifecycle actions for the Blueprints API.
