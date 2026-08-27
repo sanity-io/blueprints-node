@@ -1,4 +1,4 @@
-import type {BlueprintProjectResourceLifecycle, BlueprintResource} from './resources'
+import type {BlueprintProjectResourceLifecycle, BlueprintResource} from './resources.js'
 
 /**
  * Resource types that robot tokens can be attached to.
