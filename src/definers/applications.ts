@@ -172,17 +172,16 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * Defines an application.
  *
  * @remarks
- * Views and web workers are authored in a single `resources` array. Views are
- * discriminated by `surface` (`window`, `panel`, `asset-source`, `tile`) and
- * transformed to the emitted view `type` the backend expects; they are
- * collected into `views`. Web workers are collected into `webWorkers`. The
- * resource `name` defaults to the `slug`.
+ * Views are authored in `views` and web workers in `webWorkers`, mirroring the
+ * emitted resource. Views are discriminated by `surface` (`window`, `panel`,
+ * `asset-source`, `tile`) and transformed to the emitted view `type` the
+ * backend expects. The `slug` defaults to the resource `name`.
  *
  * ```ts
  * defineApplication({
+ *   name: 'design-retro',
  *   title: 'Design Retro',
- *   slug: 'design-retro',
- *   resources: [
+ *   views: [
  *     defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'}),
  *   ],
  * })
@@ -191,11 +190,12 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * @example With views and web workers
  * ```ts
  * defineApplication({
+ *   name: 'design-retro',
  *   title: 'Design Retro',
  *   slug: 'design-retro',
  *   icon: './src/icons/app-icon.svg',
  *   visibility: 'unlisted',
- *   resources: [
+ *   views: [
  *     defineWindowView({
  *       name: 'main',
  *       title: 'Design Retro',
@@ -205,6 +205,8 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  *     definePanelView({name: 'side', title: 'Favorites', src: './src/panels/main.tsx'}),
  *     defineAssetSourceView({name: 'image-picker', title: 'Image Picker', src: './src/asset-sources/image-picker.tsx'}),
  *     defineTileView({name: 'jump-back-in', title: 'Main Tile', src: './src/tiles/jump-back-in.tsx', size: 'banner'}),
+ *   ],
+ *   webWorkers: [
  *     defineWebWorker({name: 'background-refresh', title: 'Background Worker', src: './src/workers/background-refresh.ts'}),
  *   ],
  * })
@@ -218,32 +220,15 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * @hidden
  */
 export function defineApplication(config: BlueprintApplicationConfig): BlueprintApplicationResource {
-  const {resources, name, ...rest} = config
+  const {views, webWorkers, slug, ...rest} = config
 
-  const viewConfigs: BlueprintApplicationViewConfig[] = []
-  const webWorkers: BlueprintWebWorker[] = []
-  for (const child of resources ?? []) {
-    if ('surface' in child) {
-      viewConfigs.push(child)
-    } else {
-      webWorkers.push(child)
-    }
-  }
+  const applicationResource: BlueprintApplicationResource = {...rest, type: 'sanity.application', slug: slug ?? rest.name}
+  if (views && views.length > 0) applicationResource.views = views.map(viewConfigToResource)
+  if (webWorkers && webWorkers.length > 0) applicationResource.webWorkers = webWorkers
 
-  const base = {...rest, type: 'sanity.application' as const, name: name ?? rest.slug}
-
-  // Validate the authored (surface-discriminated) shape before transforming.
-  runValidation(() =>
-    validateApplication({
-      ...base,
-      ...(viewConfigs.length > 0 ? {views: viewConfigs} : {}),
-      ...(webWorkers.length > 0 ? {webWorkers} : {}),
-    }),
-  )
-
-  const applicationResource: BlueprintApplicationResource = {...base}
-  if (viewConfigs.length > 0) applicationResource.views = viewConfigs.map(viewConfigToResource)
-  if (webWorkers.length > 0) applicationResource.webWorkers = webWorkers
+  // Validate the authored (surface-discriminated) views, which the resource
+  // stores transformed to their emitted `type`; everything else is validated as-is.
+  runValidation(() => validateApplication(views && views.length > 0 ? {...applicationResource, views} : applicationResource))
 
   return applicationResource
 }

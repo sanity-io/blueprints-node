@@ -1,4 +1,4 @@
-import {APPLICATION_TILE_SIZES, APPLICATION_VIEW_SURFACES} from '../types/applications.js'
+import {APPLICATION_DOCK_GROUPS, APPLICATION_TILE_SIZES, APPLICATION_VIEW_SURFACES} from '../types/applications.js'
 import type {BlueprintError} from '../types/errors.js'
 import {APPLICATION_VISIBILITIES} from '../types/studios.js'
 import {isReference} from '../utils/validation.js'
@@ -23,7 +23,7 @@ function validateViewBase(view: object, label: string): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: `${label} name is required`})
   } else if (typeof view.name !== 'string') {
     errors.push({type: 'invalid_type', message: `${label} name must be a string`})
-  } else if (!VIEW_NAME_PATTERN.test(view.name)) {
+  } else if (!isReference(view.name) && !VIEW_NAME_PATTERN.test(view.name)) {
     errors.push({type: 'invalid_format', message: `${label} name must match pattern: ${VIEW_NAME_PATTERN.source}`})
   }
 
@@ -56,8 +56,13 @@ function validateDockField(view: object, label: string): BlueprintError[] {
   }
 
   const errors: BlueprintError[] = []
-  if ('group' in view.dock && typeof view.dock.group !== 'string') {
-    errors.push({type: 'invalid_type', message: `${label} dock.group must be a string`})
+  if ('group' in view.dock) {
+    const group = view.dock.group
+    if (typeof group !== 'string') {
+      errors.push({type: 'invalid_type', message: `${label} dock.group must be a string`})
+    } else if (!APPLICATION_DOCK_GROUPS.some((g) => g === group)) {
+      errors.push({type: 'invalid_value', message: `${label} dock.group must be one of ${APPLICATION_DOCK_GROUPS.join(', ')}`})
+    }
   }
   if ('order' in view.dock && typeof view.dock.order !== 'number') {
     errors.push({type: 'invalid_type', message: `${label} dock.order must be a number`})

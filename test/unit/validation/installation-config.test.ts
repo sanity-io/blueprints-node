@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'vitest'
-import {type BlueprintMediaLibraryConfigResource, validateMediaLibraryConfig} from '../../../src/index.js'
+import {type BlueprintMediaLibraryConfigResource, validateInstallationConfig, validateMediaLibraryConfig} from '../../../src/index.js'
 
 const validConfig: BlueprintMediaLibraryConfigResource = {
   type: 'sanity.installation.config',
@@ -45,5 +45,23 @@ describe('validateMediaLibraryConfig', () => {
       type: 'invalid_type',
       message: 'Media Library config src must be a string',
     })
+  })
+})
+
+describe('validateInstallationConfig', () => {
+  test('should accept any appType string', () => {
+    expect(validateInstallationConfig({...validConfig, appType: 'canvas'})).toStrictEqual([])
+  })
+
+  test('should return an error if appType is not provided', () => {
+    const {appType: _appType, ...noAppType} = validConfig
+    expect(validateInstallationConfig(noAppType)).toContainEqual({
+      type: 'missing_parameter',
+      message: 'Installation config appType is required',
+    })
+  })
+
+  test('should use the generic label in error messages', () => {
+    expect(validateInstallationConfig(undefined)).toContainEqual({type: 'invalid_value', message: 'Installation config must be provided'})
   })
 })

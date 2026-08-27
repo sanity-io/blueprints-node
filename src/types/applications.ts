@@ -37,6 +37,22 @@ export const APPLICATION_VIEW_SURFACES = ['window', 'panel', 'asset-source', 'ti
 export type ApplicationViewSurface = (typeof APPLICATION_VIEW_SURFACES)[number]
 
 /**
+ * The set of dock groups a window or panel view can be placed into.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export const APPLICATION_DOCK_GROUPS = ['system', 'applications', 'user'] as const
+
+/**
+ * The dock group a window or panel view is placed into.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export type ApplicationDockGroup = (typeof APPLICATION_DOCK_GROUPS)[number]
+
+/**
  * Dock placement for a window view.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
@@ -46,20 +62,26 @@ export type ApplicationViewSurface = (typeof APPLICATION_VIEW_SURFACES)[number]
 export interface BlueprintApplicationDock {
   /**
    * The dock group the window or panel view is placed into.
+   *
+   * @defaultValue `applications` — the API places the view in the applications dock group when omitted.
    */
-  group?: 'system' | 'applications' | 'user'
+  group?: ApplicationDockGroup
 
-  /** Sort position within the group, ascending. */
+  /**
+   * Sort position within the group, ascending.
+   *
+   * @defaultValue Omitted — ordering falls back to the dashboard application's built-in settings.
+   */
   order?: number
 }
 
 /**
- * Fields shared by every view an application exposes.
+ * Fields shared by every view and web worker an application exposes.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @hidden
  */
-export interface BlueprintApplicationViewBase {
+export interface BlueprintApplicationChildBase {
   /** Unique within the application. Must match `^[a-zA-Z0-9_-]+$`. */
   name: string
 
@@ -76,10 +98,14 @@ export interface BlueprintApplicationViewBase {
  * @category Resource Types
  * @hidden
  */
-export interface BlueprintWindowView extends BlueprintApplicationViewBase {
+export interface BlueprintWindowView extends BlueprintApplicationChildBase {
   type: 'app'
 
-  /** Dock placement for the window view. */
+  /**
+   * Dock placement for the window view.
+   *
+   * @defaultValue Omitted — the dashboard applies its default placement (the `applications` group with built-in ordering).
+   */
   dock?: BlueprintApplicationDock
 }
 
@@ -89,10 +115,14 @@ export interface BlueprintWindowView extends BlueprintApplicationViewBase {
  * @category Resource Types
  * @hidden
  */
-export interface BlueprintPanelView extends BlueprintApplicationViewBase {
+export interface BlueprintPanelView extends BlueprintApplicationChildBase {
   type: 'panel'
 
-  /** Dock placement for the panel view. */
+  /**
+   * Dock placement for the panel view.
+   *
+   * @defaultValue Omitted — the dashboard applies its default placement (the `applications` group with built-in ordering).
+   */
   dock?: BlueprintApplicationDock
 }
 
@@ -102,7 +132,7 @@ export interface BlueprintPanelView extends BlueprintApplicationViewBase {
  * @category Resource Types
  * @hidden
  */
-export interface BlueprintAssetSourceView extends BlueprintApplicationViewBase {
+export interface BlueprintAssetSourceView extends BlueprintApplicationChildBase {
   type: 'asset_source'
 }
 
@@ -112,13 +142,17 @@ export interface BlueprintAssetSourceView extends BlueprintApplicationViewBase {
  * @category Resource Types
  * @hidden
  */
-export interface BlueprintTileView extends BlueprintApplicationViewBase {
+export interface BlueprintTileView extends BlueprintApplicationChildBase {
   type: 'tile'
 
   /** The footprint family the dashboard lays the tile out by. */
   size: ApplicationTileSize
 
-  /** Sort position within its layout track, ascending. */
+  /**
+   * Sort position within its layout track, ascending.
+   *
+   * @defaultValue Omitted — ordering falls back to the dashboard application's built-in settings.
+   */
   order?: number
 }
 
@@ -128,7 +162,7 @@ export interface BlueprintTileView extends BlueprintApplicationViewBase {
  * @category Resource Types
  * @hidden
  */
-export interface BlueprintWebWorker extends BlueprintApplicationViewBase {
+export interface BlueprintWebWorker extends BlueprintApplicationChildBase {
   type: 'worker'
 }
 
@@ -142,7 +176,7 @@ export interface BlueprintWebWorker extends BlueprintApplicationViewBase {
 export type BlueprintApplicationView = BlueprintWindowView | BlueprintPanelView | BlueprintAssetSourceView | BlueprintTileView
 
 /**
- * A union of everything an application declares in its `resources` array.
+ * A union of everything an application declares — its views and web workers.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @hidden
@@ -272,39 +306,25 @@ export type BlueprintApplicationViewConfig =
   | BlueprintTileViewConfig
 
 /**
- * A union of everything an application can declare in its `resources` array.
- *
- * @remarks
- * Views are discriminated by `surface`; web workers by `type: 'worker'`.
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- * @hidden
- */
-export type BlueprintApplicationChildConfig = BlueprintApplicationViewConfig | BlueprintWebWorker
-
-/**
  * Configuration for an Application resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
  * @hidden
  */
-export type BlueprintApplicationConfig = Omit<BlueprintApplicationResource, 'type' | 'name' | 'slug' | 'views' | 'webWorkers'> & {
+export type BlueprintApplicationConfig = Omit<BlueprintApplicationResource, 'type' | 'slug' | 'views'> & {
   /**
-   * The name of the resource. Unique within the blueprint.
+   * The slug to be used in the application hostname. Must match `^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`.
    *
-   * Defaults to the `slug`.
+   * Defaults to the resource `name`.
    */
-  name?: string
-
-  /** The slug to be used in the application hostname. Must match `^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`. */
-  slug: string
+  slug?: string
 
   /**
-   * The views and web workers the application declares.
+   * The window, panel, asset source, and tile views the application exposes.
    *
-   * Window, panel, asset source, and tile views are collected into `views`;
-   * web workers are collected into `webWorkers`.
+   * Authored as surface-discriminated view configs and transformed to the
+   * emitted view `type` the backend expects.
    */
-  resources?: BlueprintApplicationChildConfig[]
+  views?: BlueprintApplicationViewConfig[]
 }

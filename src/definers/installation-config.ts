@@ -6,12 +6,12 @@ import {runValidation} from '../utils/validation.js'
  *
  * @remarks
  * The Media Library is a Sanity-owned singleton, so this resource carries no
- * application identity of its own — only the config `src`. The `name` defaults
- * to `media-library`, and the provider resolves the organization's media
- * library installation id at deploy time.
+ * application identity of its own — only the config `src`. The provider
+ * resolves the organization's media library installation id at deploy time.
  *
  * ```ts
  * defineMediaLibraryConfig({
+ *   name: 'media-library',
  *   src: './media-library.config.ts',
  * })
  * ```
@@ -24,16 +24,11 @@ import {runValidation} from '../utils/validation.js'
  * @hidden
  */
 export function defineMediaLibraryConfig(config: BlueprintMediaLibraryConfigConfig): BlueprintMediaLibraryConfigResource {
-  const {name, ...rest} = config
-
-  // ponytail: media-library is the only singleton config today. Extract a
-  // generic defineInstallationConfig when a second installation type appears.
-  const resource: BlueprintMediaLibraryConfigResource = {
-    ...rest,
+  const resource = {
+    ...config,
     type: 'sanity.installation.config',
     appType: 'media-library',
-    name: name ?? 'media-library',
-  }
+  } satisfies BlueprintMediaLibraryConfigResource
 
   runValidation(() => validateMediaLibraryConfig(resource))
 

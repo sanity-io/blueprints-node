@@ -183,10 +183,21 @@ describe('validateWindowView', () => {
     })
   })
 
+  test('should accept a reference as the name', () => {
+    expect(validateWindowView({...validWindowView, name: '$.resources.my-view'})).toStrictEqual([])
+  })
+
   test('should return an error if dock is not an object', () => {
     expect(validateWindowView({...validWindowView, dock: 'nope'})).toContainEqual({
       type: 'invalid_type',
       message: 'Window view dock must be an object',
+    })
+  })
+
+  test('should return an error if dock.group is not an allowed value', () => {
+    expect(validateWindowView({...validWindowView, dock: {group: 'nope'}})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Window view dock.group must be one of system, applications, user',
     })
   })
 

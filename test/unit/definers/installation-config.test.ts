@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as mediaLibraryConfig from '../../../src/definers/media-library-config.js'
+import * as mediaLibraryConfig from '../../../src/definers/installation-config.js'
 import * as index from '../../../src/index.js'
 import {defineBlueprintForResource} from '../../helpers/index.js'
 
@@ -21,6 +21,7 @@ describe('defineMediaLibraryConfig', () => {
     expect(() =>
       defineBlueprintForResource(
         mediaLibraryConfig.defineMediaLibraryConfig({
+          name: 'media-library',
           src: './media-library.config.ts',
         }),
       ),
@@ -31,6 +32,7 @@ describe('defineMediaLibraryConfig', () => {
 
   test('should accept a valid configuration and set the type and appType', () => {
     const resource = mediaLibraryConfig.defineMediaLibraryConfig({
+      name: 'media-library',
       src: './media-library.config.ts',
     })
 
@@ -39,15 +41,7 @@ describe('defineMediaLibraryConfig', () => {
     expect(resource.src).toStrictEqual('./media-library.config.ts')
   })
 
-  test('should default the name to media-library', () => {
-    const resource = mediaLibraryConfig.defineMediaLibraryConfig({
-      src: './media-library.config.ts',
-    })
-
-    expect(resource.name).toStrictEqual('media-library')
-  })
-
-  test('should keep an explicit name', () => {
+  test('should keep the provided name', () => {
     const resource = mediaLibraryConfig.defineMediaLibraryConfig({
       name: 'my-media-library',
       src: './media-library.config.ts',
@@ -58,6 +52,7 @@ describe('defineMediaLibraryConfig', () => {
 
   test('should produce a valid resource from a minimal config', () => {
     const resource = mediaLibraryConfig.defineMediaLibraryConfig({
+      name: 'media-library',
       src: './media-library.config.ts',
     })
 

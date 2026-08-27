@@ -194,13 +194,13 @@ const applicationConfig: BlueprintApplicationConfig = {
   title: 'Design Retro',
   icon: './src/icons/app-icon.svg',
   visibility: 'unlisted',
-  resources: [
+  views: [
     defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx', dock: {group: 'applications', order: 10}}),
     definePanelView({name: 'side', title: 'Favorites', src: './src/panels/main.tsx'}),
     defineAssetSourceView({name: 'image-picker', title: 'Image Picker', src: './src/asset-sources/image-picker.tsx'}),
     defineTileView({name: 'jump-back-in', title: 'Main Tile', src: './src/tiles/jump-back-in.tsx', size: 'banner'}),
-    defineWebWorker({name: 'background-refresh', title: 'Background Worker', src: './src/workers/background-refresh.ts'}),
   ],
+  webWorkers: [defineWebWorker({name: 'background-refresh', title: 'Background Worker', src: './src/workers/background-refresh.ts'})],
 }
 const applicationResource: BlueprintApplicationResource = defineApplication(applicationConfig)
 

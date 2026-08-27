@@ -21,7 +21,7 @@ describe('defineApplication', () => {
     expect(() =>
       defineBlueprintForResource(
         applications.defineApplication({
-          slug: 'design-retro',
+          name: 'design-retro',
           title: 'Design Retro',
         }),
       ),
@@ -32,7 +32,7 @@ describe('defineApplication', () => {
 
   test('should accept a valid configuration and set the type', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
     })
 
@@ -40,34 +40,36 @@ describe('defineApplication', () => {
     expect(applicationResource.title).toStrictEqual('Design Retro')
   })
 
-  test('should default the name to the slug', () => {
+  test('should default the slug to the name', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
     })
 
-    expect(applicationResource.name).toStrictEqual('design-retro')
+    expect(applicationResource.slug).toStrictEqual('design-retro')
   })
 
-  test('should keep an explicit name', () => {
+  test('should keep an explicit slug', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro-app',
       slug: 'design-retro',
       title: 'Design Retro',
     })
 
-    expect(applicationResource.name).toStrictEqual('design-retro-app')
+    expect(applicationResource.slug).toStrictEqual('design-retro')
   })
 
-  test('should partition resources into views and webWorkers', () => {
+  test('should collect views and webWorkers', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
-      resources: [
+      views: [
         applications.defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'}),
         applications.definePanelView({name: 'side', title: 'Favorites', src: './src/panels/main.tsx'}),
         applications.defineAssetSourceView({name: 'image-picker', title: 'Image Picker', src: './src/asset-sources/image-picker.tsx'}),
         applications.defineTileView({name: 'jump-back-in', title: 'Main Tile', src: './src/tiles/jump-back-in.tsx', size: 'banner'}),
+      ],
+      webWorkers: [
         applications.defineWebWorker({name: 'background-refresh', title: 'Background Worker', src: './src/workers/background-refresh.ts'}),
       ],
     })
@@ -79,11 +81,11 @@ describe('defineApplication', () => {
     expect(applicationResource.webWorkers?.[0]?.name).toStrictEqual('background-refresh')
   })
 
-  test('should accept raw surface-discriminated view configs in resources', () => {
+  test('should accept raw surface-discriminated view configs', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
-      resources: [
+      views: [
         {type: 'view', surface: 'window', name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'},
         {type: 'view', surface: 'tile', name: 'jump-back-in', title: 'Main Tile', src: './src/tiles/jump-back-in.tsx', size: 'banner'},
       ],
@@ -95,9 +97,9 @@ describe('defineApplication', () => {
 
   test('should allow multiple window views', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
-      resources: [
+      views: [
         applications.defineWindowView({name: 'main', title: 'Main', src: './src/windows/main.tsx'}),
         applications.defineWindowView({name: 'secondary', title: 'Secondary', src: './src/windows/secondary.tsx'}),
       ],
@@ -106,9 +108,9 @@ describe('defineApplication', () => {
     expect(applicationResource.views?.filter((view) => view.type === 'app')).toHaveLength(2)
   })
 
-  test('should omit views and webWorkers when no resources are provided', () => {
+  test('should omit views and webWorkers when none are provided', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
     })
 
@@ -118,7 +120,7 @@ describe('defineApplication', () => {
 
   test('should produce a valid resource from a minimal config', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
     })
 
@@ -127,7 +129,7 @@ describe('defineApplication', () => {
 
   test('should accept a valid configuration with a lifecycle', () => {
     const applicationResource = applications.defineApplication({
-      slug: 'design-retro',
+      name: 'design-retro',
       title: 'Design Retro',
       lifecycle: {
         deletionPolicy: 'allow',
