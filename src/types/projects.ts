@@ -1,4 +1,4 @@
-import type {BlueprintResource, BlueprintResourceLifecycle} from './resources'
+import type {BlueprintResource, BlueprintResourceLifecycle} from './resources.js'
 
 /**
  * Reporesents a Sanity Project.
