@@ -79,12 +79,18 @@ Each definer validates its input at call time and returns a typed resource objec
 
 `defineWorkflows` delegates Editorial Workflows validation and resource construction to `@sanity/workflow-blueprint`. The Blueprints API installs that package directly to register its `workflowProvider`; `@sanity/blueprints` remains the author-facing manifest package and does not duplicate or re-export the provider.
 
-### Select one Editorial Workflows tag
+### Select an Editorial Workflows tag in the Blueprint module
 
-A Blueprint module may contain deployments for several environments, but each
-plan or deploy should emit exactly one Editorial Workflows tag group. Require
-`SANITY_WORKFLOW_TAG` while evaluating `sanity.blueprint.ts`, select matching
-deployments, and pass each selected deployment to `defineWorkflows`:
+An Editorial Workflows tag is a runtime namespace, not a Blueprints Stack
+alias. Multiple tags can coexist in the same dataset, and the Workflows runtime
+uses the tag to select the definitions in one `(workflowResource, tag)`
+partition. A Stack separately owns and reconciles the complete set of Blueprint
+resources emitted by a module.
+
+Blueprints does not add a Workflows-specific CLI flag or interpret environment
+variables for this resource. If one module contains deployments for several
+tags, the module can define its own input convention. For example, it can read
+`SANITY_WORKFLOW_TAG`, validate it, and emit one selected tag group:
 
 ```ts
 import {defineBlueprint, defineWorkflows} from '@sanity/blueprints'
@@ -108,15 +114,23 @@ export default defineBlueprint({
 })
 ```
 
-Pair that local selector with the intended remote Stack:
+Pair that user-defined module input with the intended remote Stack:
 
 ```sh
 SANITY_WORKFLOW_TAG=production sanity blueprints deploy --stack production
 ```
 
-The tag and Stack names do not have to match. `SANITY_WORKFLOW_TAG` selects the
-Workflows resources emitted by the module; `--stack` independently selects the
-remote Stack that receives the complete Blueprint.
+Given the same source and `SANITY_WORKFLOW_TAG`, the module emits the same
+manifest on every evaluation. `--stack` independently selects which remote
+Stack owns that complete desired resource set. A repeated deploy to the same
+Stack is therefore a no-op when the definitions have not changed.
+
+The tag and Stack names do not have to match, and Blueprints does not infer one
+from the other. Teams should keep their chosen Stack-to-tag mapping explicit in
+their deployment command or CI configuration. Blueprints always reconciles the
+complete resource set emitted by the module; use
+`sanity workflows deploy --only <name>` when intentionally deploying just one
+definition through the direct Editorial Workflows CLI.
 
 > [!WARNING]
 > The Blueprints API must register `workflowProvider` from `@sanity/workflow-blueprint` before `blueprints deploy` can deploy `sanity.workflow` resources. Until that server rollout is complete, deploying this resource may fail the stack operation; use `sanity workflows deploy` instead.

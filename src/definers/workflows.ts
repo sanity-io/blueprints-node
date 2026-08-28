@@ -9,10 +9,11 @@ import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions, BlueprintWo
  * The Blueprints API must register that package's `workflowProvider` before
  * `blueprints deploy` can deploy this resource.
  *
- * A Blueprint module that contains several Editorial Workflows deployments
- * should require `SANITY_WORKFLOW_TAG` and pass only deployments with that tag
- * to this function. The tag selects the Workflows resources emitted by the
- * module; `--stack` independently selects the remote Blueprint Stack.
+ * A Blueprint module that contains several Editorial Workflows tags can define
+ * its own input convention and pass only the selected deployments to this
+ * function. Blueprints does not interpret the tag or infer it from `--stack`:
+ * the tag selects a Workflows runtime partition, while the Stack owns the
+ * complete desired resource set emitted by the module.
  *
  * @example
  * ```ts
