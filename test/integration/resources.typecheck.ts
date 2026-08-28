@@ -163,7 +163,7 @@ const workflowDeployment = {
   name: 'production' as const,
   expectedMinReaderModel: 4,
   tag: 'production',
-  workflowResource: {type: 'dataset', id: 'projectId.dataset'},
+  workflowResource: workflowTarget,
   definitions: [articleReviewDefinition],
 } satisfies BlueprintWorkflowDeployment
 const _workflowsLifecycle: BlueprintWorkflowsLifecycle = {deletionPolicy: 'protect'}

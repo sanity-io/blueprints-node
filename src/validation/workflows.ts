@@ -1,4 +1,5 @@
 import {parseWorkflowResource} from '@sanity/workflow-blueprint'
+import {errorMessage} from '@sanity/workflow-engine'
 import type {BlueprintError} from '../types/errors.js'
 
 /**
@@ -17,7 +18,7 @@ export function validateWorkflows(resource: unknown): BlueprintError[] {
     return [
       {
         type: 'invalid_value',
-        message: error instanceof Error ? error.message : 'Editorial Workflows resource is invalid',
+        message: errorMessage(error),
       },
     ]
   }

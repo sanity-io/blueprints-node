@@ -104,7 +104,7 @@ if (selectedDeployments.length === 0) {
 }
 
 export default defineBlueprint({
-  resources: selectedDeployments.map(defineWorkflows),
+  resources: selectedDeployments.map((deployment) => defineWorkflows(deployment)),
 })
 ```
 
