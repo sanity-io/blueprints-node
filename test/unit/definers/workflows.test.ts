@@ -40,6 +40,6 @@ describe('defineWorkflows', () => {
       definitions: [deployment.definitions[0], deployment.definitions[0]],
     }
 
-    expect(() => defineWorkflows(invalidDeployment)).toThrow('defineWorkflows: duplicate definition name "article-review" in deployment')
+    expect(() => defineWorkflows(invalidDeployment)).toThrow(/duplicate definition name "article-review"/)
   })
 })

@@ -74,6 +74,7 @@
     "fsevents@2.3.3": true
   },
   "dependencies": {
-    "@sanity/workflow-blueprint": "^0.31.0"
+    "@sanity/workflow-blueprint": "^0.31.0",
+    "@sanity/workflow-engine": "^0.31.0"
   }
 }

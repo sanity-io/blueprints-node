@@ -1,5 +1,5 @@
-import {defineWorkflows as defineWorkflowResource, type WorkflowsResource} from '@sanity/workflow-blueprint'
-import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions} from '../types/workflows.js'
+import {defineWorkflows as defineWorkflowResource} from '@sanity/workflow-blueprint'
+import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions, BlueprintWorkflowsResource} from '../types/workflows.js'
 
 /**
  * Defines an Editorial Workflows deployment as a Blueprint resource.
@@ -8,6 +8,11 @@ import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions} from '../ty
  * The implementation and validation live in `@sanity/workflow-blueprint`.
  * The Blueprints API must register that package's `workflowProvider` before
  * `blueprints deploy` can deploy this resource.
+ *
+ * A Blueprint module that contains several Editorial Workflows deployments
+ * should require `SANITY_WORKFLOW_TAG` and pass only deployments with that tag
+ * to this function. The tag selects the Workflows resources emitted by the
+ * module; `--stack` independently selects the remote Blueprint Stack.
  *
  * @example
  * ```ts
@@ -51,6 +56,6 @@ import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions} from '../ty
  * @expandType BlueprintWorkflowDeployment
  * @returns The Editorial Workflows resource
  */
-export function defineWorkflows(deployment: BlueprintWorkflowDeployment, options?: BlueprintWorkflowsOptions): WorkflowsResource {
+export function defineWorkflows(deployment: BlueprintWorkflowDeployment, options?: BlueprintWorkflowsOptions): BlueprintWorkflowsResource {
   return defineWorkflowResource(deployment, options)
 }

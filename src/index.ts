@@ -66,6 +66,7 @@ export * from './validation/robotTokens.js'
 export * from './validation/roles.js'
 export * from './validation/studios.js'
 export * from './validation/webhooks.js'
+export * from './validation/workflows.js'
 
 // Public BLUEPRINTS INTERNALS - published bucket of misc Blueprint types
 /**

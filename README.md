@@ -79,5 +79,44 @@ Each definer validates its input at call time and returns a typed resource objec
 
 `defineWorkflows` delegates Editorial Workflows validation and resource construction to `@sanity/workflow-blueprint`. The Blueprints API installs that package directly to register its `workflowProvider`; `@sanity/blueprints` remains the author-facing manifest package and does not duplicate or re-export the provider.
 
+### Select one Editorial Workflows tag
+
+A Blueprint module may contain deployments for several environments, but each
+plan or deploy should emit exactly one Editorial Workflows tag group. Require
+`SANITY_WORKFLOW_TAG` while evaluating `sanity.blueprint.ts`, select matching
+deployments, and pass each selected deployment to `defineWorkflows`:
+
+```ts
+import {defineBlueprint, defineWorkflows} from '@sanity/blueprints'
+import {productionWorkflows, stagingWorkflows} from './workflows'
+
+const workflowTag = process.env.SANITY_WORKFLOW_TAG
+
+if (!workflowTag) {
+  throw new Error('Set SANITY_WORKFLOW_TAG to the Editorial Workflows tag to deploy')
+}
+
+const deployments = [stagingWorkflows, productionWorkflows]
+const selectedDeployments = deployments.filter(({tag}) => tag === workflowTag)
+
+if (selectedDeployments.length === 0) {
+  throw new Error(`No Editorial Workflows deployments use tag "${workflowTag}"`)
+}
+
+export default defineBlueprint({
+  resources: selectedDeployments.map(defineWorkflows),
+})
+```
+
+Pair that local selector with the intended remote Stack:
+
+```sh
+SANITY_WORKFLOW_TAG=production sanity blueprints deploy --stack production
+```
+
+The tag and Stack names do not have to match. `SANITY_WORKFLOW_TAG` selects the
+Workflows resources emitted by the module; `--stack` independently selects the
+remote Stack that receives the complete Blueprint.
+
 > [!WARNING]
 > The Blueprints API must register `workflowProvider` from `@sanity/workflow-blueprint` before `blueprints deploy` can deploy `sanity.workflow` resources. Until that server rollout is complete, deploying this resource may fail the stack operation; use `sanity workflows deploy` instead.
