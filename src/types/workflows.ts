@@ -1,25 +1,11 @@
-import type {WorkflowDeploymentInput, WorkflowResource} from '@sanity/workflow-engine'
-import type {BlueprintResource, BlueprintResourceLifecycle} from '../index.js'
-import type {WORKFLOW_RESOURCE_TYPE} from '../utils/workflows.js'
+import type {DefineWorkflowsOptions, defineWorkflows, WorkflowsResource, WorkflowsResourceLifecycle} from '@sanity/workflow-blueprint'
 
 /**
- * Resource target types supported by Editorial Workflows.
+ * An Editorial Workflows deployment accepted by {@link defineWorkflows}.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
-export const WORKFLOW_TARGET_TYPES = [
-  'dataset',
-  'canvas',
-  'media-library',
-  'dashboard',
-] as const satisfies readonly WorkflowResource['type'][]
-
-/**
- * A resource target type supported by Editorial Workflows.
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- */
-export type BlueprintWorkflowTargetType = (typeof WORKFLOW_TARGET_TYPES)[number]
+export type BlueprintWorkflowDeployment = Parameters<typeof defineWorkflows>[0]
 
 /**
  * A physical resource used by Editorial Workflows.
@@ -27,7 +13,14 @@ export type BlueprintWorkflowTargetType = (typeof WORKFLOW_TARGET_TYPES)[number]
  * @category Resource Types
  * @expand
  */
-export type BlueprintWorkflowTarget = WorkflowResource
+export type BlueprintWorkflowTarget = BlueprintWorkflowDeployment['workflowResource']
+
+/**
+ * A resource target type supported by Editorial Workflows.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
+export type BlueprintWorkflowTargetType = BlueprintWorkflowTarget['type']
 
 /**
  * A logical resource handle used by an Editorial Workflows definition.
@@ -35,7 +28,7 @@ export type BlueprintWorkflowTarget = WorkflowResource
  * @category Resource Types
  * @expand
  */
-export type BlueprintWorkflowResourceBinding = NonNullable<WorkflowDeploymentInput['resourceAliases']>[number]
+export type BlueprintWorkflowResourceBinding = NonNullable<BlueprintWorkflowDeployment['resourceAliases']>[number]
 
 /**
  * An authored Editorial Workflows definition.
@@ -43,55 +36,25 @@ export type BlueprintWorkflowResourceBinding = NonNullable<WorkflowDeploymentInp
  * @category Resource Types
  * @expand
  */
-export type BlueprintWorkflowDefinition = WorkflowDeploymentInput['definitions'][number]
-
-/**
- * An Editorial Workflows deployment carried by a Blueprint resource.
- * @beta This feature is subject to breaking changes.
- * @category Resource Types
- */
-export type BlueprintWorkflowDeployment = WorkflowDeploymentInput
+export type BlueprintWorkflowDefinition = BlueprintWorkflowDeployment['definitions'][number]
 
 /**
  * The lifecycle policies supported by an Editorial Workflows Blueprint resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
-export interface BlueprintWorkflowsLifecycle extends Omit<BlueprintResourceLifecycle, 'deletionPolicy' | 'ownershipAction'> {
-  /**
-   * The deletion policy for the Blueprint resource.
-   * @defaultValue `'retain'`
-   */
-  deletionPolicy?: 'retain' | 'protect'
-  /** Ownership actions are unavailable until the resource provider defines stable attach, detach, and reference semantics. */
-  ownershipAction?: never
-}
+export type BlueprintWorkflowsLifecycle = WorkflowsResourceLifecycle
 
 /**
  * Options for an Editorial Workflows Blueprint resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
-export interface BlueprintWorkflowsOptions {
-  /**
-   * The Blueprint resource name.
-   * @defaultValue `editorial-workflows-<deployment name>`
-   */
-  name?: string
-  /**
-   * The Blueprint lifecycle policy.
-   * @defaultValue `{deletionPolicy: 'retain'}`
-   */
-  lifecycle?: BlueprintWorkflowsLifecycle
-}
+export type BlueprintWorkflowsOptions = DefineWorkflowsOptions
 
 /**
  * An Editorial Workflows deployment declared as a Blueprint resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
-export interface BlueprintWorkflowsResource<Deployment extends BlueprintWorkflowDeployment = BlueprintWorkflowDeployment>
-  extends BlueprintResource<BlueprintWorkflowsLifecycle> {
-  type: typeof WORKFLOW_RESOURCE_TYPE
-  deployment: Deployment
-}
+export type BlueprintWorkflowsResource = WorkflowsResource

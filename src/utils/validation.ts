@@ -1,4 +1,4 @@
-import type {BlueprintError} from '../types/errors'
+import type {BlueprintError} from '../types/errors.js'
 
 const collectedErrors: BlueprintError[] = []
 

@@ -57,7 +57,6 @@ import {
   validateRole,
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
-  validateWorkflows,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
 } from '@sanity/blueprints'
@@ -155,9 +154,9 @@ const workflowDeployment = {
   definitions: [articleReviewDefinition],
 } satisfies BlueprintWorkflowDeployment
 const workflowsOptions: BlueprintWorkflowsOptions = {lifecycle: {deletionPolicy: 'protect'}}
-const workflowsResource: BlueprintWorkflowsResource<typeof workflowDeployment> = defineWorkflows(workflowDeployment, workflowsOptions)
-const _workflowDeploymentName: 'production' = workflowsResource.deployment.name
-const _workflowDefinitionTitle: 'Article review' = workflowsResource.deployment.definitions[0].title
+const workflowsResource: BlueprintWorkflowsResource = defineWorkflows(workflowDeployment, workflowsOptions)
+const _workflowDeploymentName: string = workflowsResource.deployment.name
+const _workflowDefinitionTitle: string = workflowsResource.deployment.definitions[0].title
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
@@ -277,6 +276,5 @@ validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
-validateWorkflows(workflowsResource)
 validateQueueFunction(queueFunction)
 validatePubSubFunction(pubSubFunction)

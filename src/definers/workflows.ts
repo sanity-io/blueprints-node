@@ -1,18 +1,13 @@
-import {
-  type BlueprintWorkflowDeployment,
-  type BlueprintWorkflowsOptions,
-  type BlueprintWorkflowsResource,
-  validateWorkflows,
-} from '../index.js'
-import {runValidation} from '../utils/validation.js'
-import {WORKFLOW_RESOURCE_TYPE} from '../utils/workflows.js'
+import {defineWorkflows as defineWorkflowResource, type WorkflowsResource} from '@sanity/workflow-blueprint'
+import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions} from '../types/workflows.js'
 
 /**
  * Defines an Editorial Workflows deployment as a Blueprint resource.
  *
  * @remarks
- * **Not deployable yet:** `@sanity/blueprints` includes the matching provider, but the Blueprints API must register it before `blueprints deploy`
- * can deploy this resource. Until that server rollout is complete, deploy definitions with the workflow CLI (`sanity-workflows deploy`).
+ * The implementation and validation live in `@sanity/workflow-blueprint`.
+ * The Blueprints API must register that package's `workflowProvider` before
+ * `blueprints deploy` can deploy this resource.
  *
  * @example
  * ```ts
@@ -56,21 +51,6 @@ import {WORKFLOW_RESOURCE_TYPE} from '../utils/workflows.js'
  * @expandType BlueprintWorkflowDeployment
  * @returns The Editorial Workflows resource
  */
-export function defineWorkflows<Deployment extends BlueprintWorkflowDeployment>(
-  deployment: Deployment,
-  options?: BlueprintWorkflowsOptions,
-): BlueprintWorkflowsResource<Deployment> {
-  const resource: BlueprintWorkflowsResource<Deployment> = {
-    name: options?.name ?? `editorial-workflows-${deployment.name}`,
-    type: WORKFLOW_RESOURCE_TYPE,
-    lifecycle: {
-      ...options?.lifecycle,
-      deletionPolicy: options?.lifecycle?.deletionPolicy ?? 'retain',
-    },
-    deployment,
-  }
-
-  runValidation(() => validateWorkflows(resource))
-
-  return resource
+export function defineWorkflows(deployment: BlueprintWorkflowDeployment, options?: BlueprintWorkflowsOptions): WorkflowsResource {
+  return defineWorkflowResource(deployment, options)
 }

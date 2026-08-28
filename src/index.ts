@@ -27,12 +27,6 @@ export * from './definers/studios.js'
 export * from './definers/webhooks.js'
 export * from './definers/workflows.js'
 
-/**
- * @categoryDescription Providers
- * These providers execute resource lifecycle actions for the Blueprints API.
- */
-export * from './providers/workflows/index.js'
-
 // TYPES - base types for all resources
 /**
  * @categoryDescription Resource Types
@@ -72,7 +66,6 @@ export * from './validation/robotTokens.js'
 export * from './validation/roles.js'
 export * from './validation/studios.js'
 export * from './validation/webhooks.js'
-export * from './validation/workflows.js'
 
 // Public BLUEPRINTS INTERNALS - published bucket of misc Blueprint types
 /**

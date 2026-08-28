@@ -77,7 +77,7 @@ export default defineBlueprint({
 
 Each definer validates its input at call time and returns a typed resource object. See the [reference docs](https://reference.sanity.io/_sanity/blueprints) for full configuration details and additional resource types.
 
-Editorial Workflows support has two parts in this package. `defineWorkflows` creates the `sanity.workflow` manifest resource, and `workflowProvider` implements the Blueprints provider that validates and deploys that resource through the public Sanity client and Editorial Workflows APIs using the deployer's token. Keeping both in `@sanity/blueprints` gives the manifest constructor and its server execution contract one public, versioned owner; it does not add an Editorial Workflows runtime to the Blueprints server.
+`defineWorkflows` delegates Editorial Workflows validation and resource construction to `@sanity/workflow-blueprint`. The Blueprints API installs that package directly to register its `workflowProvider`; `@sanity/blueprints` remains the author-facing manifest package and does not duplicate or re-export the provider.
 
 > [!WARNING]
-> The Blueprints API must register the exported `workflowProvider` before `blueprints deploy` can deploy `sanity.workflow` resources. Until that server rollout is complete, deploying this resource may fail the stack operation; use the workflow CLI (`sanity-workflows deploy`) instead.
+> The Blueprints API must register `workflowProvider` from `@sanity/workflow-blueprint` before `blueprints deploy` can deploy `sanity.workflow` resources. Until that server rollout is complete, deploying this resource may fail the stack operation; use `sanity workflows deploy` instead.

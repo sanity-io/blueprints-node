@@ -44,7 +44,6 @@ src/
   types/                # Type definitions (interfaces, type aliases)
   validation/           # Validation functions (return BlueprintError[])
   definers/             # Builder functions (defineX pattern)
-  providers/            # Resource lifecycle implementations registered by the Blueprints API
   utils/                # Internal utilities
 test/
   unit/                 # Unit tests (mirrors src/ structure)
@@ -236,17 +235,12 @@ afterEach(() => vi.resetAllMocks())
    - Add `@expandType BlueprintNewResourceConfig` to inline the parameter type in docs
    - Match visibility tags (`@public`/`@beta`/`@alpha`) with the Config type
 
-4. **Provider** (`src/providers/newresource/`, when this package owns the provider):
-   - Implement the external JSON boundary and lifecycle actions
-   - Export one provider factory value for the Blueprints API to register
-   - Test the provider contract and every supported action
+4. **Exports** (`src/index.ts`):
+   - Add exports for all three files
 
-5. **Exports** (`src/index.ts`):
-   - Export the types, validation, definer, and provider when present
+5. **Tests**: Mirror structure in `test/unit/`
 
-6. **Tests**: Mirror structure in `test/unit/`
-
-7. **Verify docs**: Run `npm run docs:typedoc` and check the generated HTML for correct rendering
+6. **Verify docs**: Run `npm run docs:typedoc` and check the generated HTML for correct rendering
 
 ## CI/CD
 
