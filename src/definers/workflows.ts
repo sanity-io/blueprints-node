@@ -9,18 +9,16 @@ import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions, BlueprintWo
  * The Blueprints API must register that package's `workflowProvider` before
  * `blueprints deploy` can deploy this resource.
  *
- * A Blueprint module that contains several Editorial Workflows tags can define
- * its own input convention and pass only the selected deployments to this
- * function. Blueprints does not interpret the tag or infer it from `--stack`:
- * the tag selects a Workflows runtime partition, while the Stack owns the
- * complete desired resource set emitted by the module.
+ * The tag is persisted on definitions and instances and scopes Workflows engine
+ * reads and operations within the target resource. It is not inferred from a
+ * Blueprint Stack, which separately owns the complete emitted manifest.
  *
  * @example
  * ```ts
  * defineWorkflows({
- *   name: 'production',
+ *   name: 'newsroom',
  *   expectedMinReaderModel: 4,
- *   tag: 'production',
+ *   tag: 'newsroom',
  *   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
  *   definitions: [{
  *     name: 'article-review',
@@ -34,9 +32,9 @@ import type {BlueprintWorkflowDeployment, BlueprintWorkflowsOptions, BlueprintWo
  * @example Protected resource
  * ```ts
  * defineWorkflows({
- *   name: 'production',
+ *   name: 'newsroom',
  *   expectedMinReaderModel: 4,
- *   tag: 'production',
+ *   tag: 'newsroom',
  *   workflowResource: {type: 'dataset', id: 'projectId.dataset'},
  *   definitions: [{
  *     name: 'article-review',

@@ -79,56 +79,45 @@ Each definer validates its input at call time and returns a typed resource objec
 
 `defineWorkflows` delegates Editorial Workflows validation and resource construction to `@sanity/workflow-blueprint`. The Blueprints API installs that package directly to register its `workflowProvider`; `@sanity/blueprints` remains the author-facing manifest package and does not duplicate or re-export the provider.
 
-### Select an Editorial Workflows tag in the Blueprint module
+### Declare an Editorial Workflows runtime partition
 
-An Editorial Workflows tag is a runtime namespace, not a Blueprints Stack
-alias. Multiple tags can coexist in the same dataset, and the Workflows runtime
-uses the tag to select the definitions in one `(workflowResource, tag)`
-partition. A Stack separately owns and reconciles the complete set of Blueprint
-resources emitted by a module.
+An Editorial Workflows tag is part of the persisted runtime model, not a
+deployment-environment flag or a Blueprints Stack alias. Definition IDs include
+it, instances carry it, and engine reads and operations are scoped by it. With
+`workflowResource`, the tag lets independent workflow groups share one dataset
+and reuse definition names while engine operations remain in the selected
+partition. It is logical runtime scoping, not a Content Lake authorization
+boundary.
 
-Blueprints does not add a Workflows-specific CLI flag or interpret environment
-variables for this resource. If one module contains deployments for several
-tags, the module can define its own input convention. For example, it can read
-`SANITY_WORKFLOW_TAG`, validate it, and emit one selected tag group:
+Declare that partition explicitly in the Workflows deployment passed to
+`defineWorkflows`:
 
 ```ts
 import {defineBlueprint, defineWorkflows} from '@sanity/blueprints'
-import {productionWorkflows, stagingWorkflows} from './workflows'
-
-const workflowTag = process.env.SANITY_WORKFLOW_TAG
-
-if (!workflowTag) {
-  throw new Error('Set SANITY_WORKFLOW_TAG to the Editorial Workflows tag to deploy')
-}
-
-const deployments = [stagingWorkflows, productionWorkflows]
-const selectedDeployments = deployments.filter(({tag}) => tag === workflowTag)
-
-if (selectedDeployments.length === 0) {
-  throw new Error(`No Editorial Workflows deployments use tag "${workflowTag}"`)
-}
+import {newsroomWorkflows} from './workflows'
 
 export default defineBlueprint({
-  resources: selectedDeployments.map((deployment) => defineWorkflows(deployment)),
+  resources: [defineWorkflows(newsroomWorkflows)],
 })
 ```
 
-Pair that user-defined module input with the intended remote Stack:
+Each call emits one `sanity.workflow` resource targeting exactly one
+`(workflowResource, tag)` partition. The provider uses that pair as its external
+identity, preventing two Stacks from owning the same partition.
+
+A Stack is the separate Blueprints ownership and reconciliation boundary for
+the complete manifest. It is not persisted on workflow definitions or instances,
+and the Workflows runtime does not receive it. Select the remote Stack only when
+planning or deploying the already-declared manifest:
 
 ```sh
-SANITY_WORKFLOW_TAG=production sanity blueprints deploy --stack production
+sanity blueprints deploy --stack editorial-platform
 ```
 
-Given the same source and `SANITY_WORKFLOW_TAG`, the module emits the same
-manifest on every evaluation. `--stack` independently selects which remote
-Stack owns that complete desired resource set. A repeated deploy to the same
-Stack is therefore a no-op when the definitions have not changed.
-
-The tag and Stack names do not have to match, and Blueprints does not infer one
-from the other. Teams should keep their chosen Stack-to-tag mapping explicit in
-their deployment command or CI configuration. Blueprints always reconciles the
-complete resource set emitted by the module; use
+The Stack name does not select, rewrite, or infer a Workflows tag. A Stack may
+intentionally contain several `sanity.workflow` resources for different tags;
+in that case it owns every explicit partition in the manifest. Blueprints always
+reconciles that complete resource set. Use
 `sanity workflows deploy --only <name>` when intentionally deploying just one
 definition through the direct Editorial Workflows CLI.
 
