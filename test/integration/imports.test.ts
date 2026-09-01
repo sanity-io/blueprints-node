@@ -1,4 +1,6 @@
 import {
+  defineApplication,
+  defineAssetSourceView,
   defineBlueprint,
   defineCorsOrigin,
   defineDataset,
@@ -6,6 +8,8 @@ import {
   defineDocumentWebhook,
   defineFunction,
   defineMediaLibraryAssetFunction,
+  defineMediaLibraryConfig,
+  definePanelView,
   defineProjectRole,
   definePubSubFunction,
   defineQueueFunction,
@@ -13,6 +17,10 @@ import {
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
+  defineTileView,
+  defineWebWorker,
+  defineWindowView,
+  validateApplication,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -20,6 +28,7 @@ import {
   validateDocumentWebhook,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validateMediaLibraryConfig,
   validatePubSubFunction,
   validateQueueFunction,
   validateResource,
@@ -31,6 +40,42 @@ import {describe, expect, it} from 'vitest'
 describe('package imports', () => {
   it('should import defineBlueprint', () => {
     expect(defineBlueprint).toBeInstanceOf(Function)
+  })
+
+  it('should import defineApplication', () => {
+    expect(defineApplication).toBeInstanceOf(Function)
+  })
+
+  it('should import defineWindowView', () => {
+    expect(defineWindowView).toBeInstanceOf(Function)
+  })
+
+  it('should import definePanelView', () => {
+    expect(definePanelView).toBeInstanceOf(Function)
+  })
+
+  it('should import defineAssetSourceView', () => {
+    expect(defineAssetSourceView).toBeInstanceOf(Function)
+  })
+
+  it('should import defineTileView', () => {
+    expect(defineTileView).toBeInstanceOf(Function)
+  })
+
+  it('should import defineWebWorker', () => {
+    expect(defineWebWorker).toBeInstanceOf(Function)
+  })
+
+  it('should import defineMediaLibraryConfig', () => {
+    expect(defineMediaLibraryConfig).toBeInstanceOf(Function)
+  })
+
+  it('should import validateApplication', () => {
+    expect(validateApplication).toBeInstanceOf(Function)
+  })
+
+  it('should import validateMediaLibraryConfig', () => {
+    expect(validateMediaLibraryConfig).toBeInstanceOf(Function)
   })
 
   it('should import defineCorsOrigin', () => {

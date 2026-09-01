@@ -1,6 +1,8 @@
 import {
   type AclMode,
   type Blueprint,
+  type BlueprintApplicationConfig,
+  type BlueprintApplicationResource,
   // type BlueprintBaseFunctionResource,
   type BlueprintCorsOriginConfig,
   type BlueprintCorsOriginResource,
@@ -13,6 +15,8 @@ import {
   type BlueprintDurableFunctionResource,
   type BlueprintFunctionResourceContentLakeEvent,
   type BlueprintMediaLibraryAssetFunctionResource,
+  type BlueprintMediaLibraryConfigConfig,
+  type BlueprintMediaLibraryConfigResource,
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
@@ -27,18 +31,26 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
+  defineApplication,
+  defineAssetSourceView,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
   defineDocumentWebhook,
   defineMediaLibraryAssetFunction,
+  defineMediaLibraryConfig,
+  definePanelView,
   defineProjectRole,
   definePubSubFunction,
   defineQueueFunction,
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
+  defineTileView,
+  defineWebWorker,
+  defineWindowView,
   type RolePermission,
+  validateApplication,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -46,6 +58,7 @@ import {
   validateDocumentWebhook,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validateMediaLibraryConfig,
   validatePubSubFunction,
   validateQueueFunction,
   validateResource,
@@ -175,6 +188,28 @@ const mediaLibraryAssetFunctionResource: BlueprintMediaLibraryAssetFunctionResou
   event: mediaLibraryAssetFunctionEvent,
 })
 
+const applicationConfig: BlueprintApplicationConfig = {
+  name: 'design-retro-app',
+  slug: 'design-retro',
+  title: 'Design Retro',
+  icon: './src/icons/app-icon.svg',
+  visibility: 'unlisted',
+  views: [
+    defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx', dock: {group: 'applications', order: 10}}),
+    definePanelView({name: 'side', title: 'Favorites', src: './src/panels/main.tsx'}),
+    defineAssetSourceView({name: 'image-picker', title: 'Image Picker', src: './src/asset-sources/image-picker.tsx'}),
+    defineTileView({name: 'jump-back-in', title: 'Main Tile', src: './src/tiles/jump-back-in.tsx', size: 'banner'}),
+  ],
+  webWorkers: [defineWebWorker({name: 'background-refresh', title: 'Background Worker', src: './src/workers/background-refresh.ts'})],
+}
+const applicationResource: BlueprintApplicationResource = defineApplication(applicationConfig)
+
+const mediaLibraryConfigConfig: BlueprintMediaLibraryConfigConfig = {
+  name: 'media-library',
+  src: './media-library.config.ts',
+}
+const mediaLibraryConfigResource: BlueprintMediaLibraryConfigResource = defineMediaLibraryConfig(mediaLibraryConfigConfig)
+
 const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
 const roleConfig: BlueprintRoleConfig = {
   name: 'test-role',
@@ -223,11 +258,13 @@ const blueprint: Blueprint = {
   blueprintVersion: '2025-01-01',
   outputs: [blueprintOutput],
   resources: [
+    applicationResource,
     corsOriginResource,
     datasetResource,
     documentFunctionResource,
     documentWebhookResource,
     mediaLibraryAssetFunctionResource,
+    mediaLibraryConfigResource,
     projectRoleResource,
     blueprintResource,
   ],
@@ -241,6 +278,8 @@ blueprintModule.projectId = 'projectId'
 blueprintModule.stackId = 'stackId'
 
 validateBlueprint(blueprintModule)
+validateApplication(applicationResource)
+validateMediaLibraryConfig(mediaLibraryConfigResource)
 validateCorsOrigin(corsOriginResource)
 validateDataset(datasetResource)
 validateDocumentFunction(documentFunctionResource)
