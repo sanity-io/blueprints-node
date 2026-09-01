@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.0](https://github.com/sanity-io/blueprints-node/compare/v0.24.0...v0.25.0) (2026-09-01)
+
+
+### Features
+
+* add define* blueprint nodes for applications and singleton config ([#154](https://github.com/sanity-io/blueprints-node/issues/154)) ([b88bd8b](https://github.com/sanity-io/blueprints-node/commit/b88bd8bd832de67c9ab88231a07d176fabd380fe))
+
 ## [0.24.0](https://github.com/sanity-io/blueprints-node/compare/v0.23.6...v0.24.0) (2026-08-25)
 
 
