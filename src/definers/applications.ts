@@ -67,7 +67,7 @@ function viewConfigToResource(view: BlueprintApplicationViewConfig): BlueprintAp
  */
 export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surface' | 'type'>): BlueprintWindowViewConfig {
   const view: BlueprintWindowViewConfig = {...config, surface: 'window', type: 'view'}
-  runValidation(() => validateWindowView(view))
+  runValidation(() => validateWindowView(viewConfigToResource(view)))
   return view
 }
 
@@ -91,7 +91,7 @@ export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surfac
  */
 export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface' | 'type'>): BlueprintPanelViewConfig {
   const view: BlueprintPanelViewConfig = {...config, surface: 'panel', type: 'view'}
-  runValidation(() => validatePanelView(view))
+  runValidation(() => validatePanelView(viewConfigToResource(view)))
   return view
 }
 
@@ -115,7 +115,7 @@ export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface'
  */
 export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfig, 'surface' | 'type'>): BlueprintAssetSourceViewConfig {
   const view: BlueprintAssetSourceViewConfig = {...config, surface: 'asset-source', type: 'view'}
-  runValidation(() => validateAssetSourceView(view))
+  runValidation(() => validateAssetSourceView(viewConfigToResource(view)))
   return view
 }
 
@@ -140,7 +140,7 @@ export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfi
  */
 export function defineTileView(config: Omit<BlueprintTileViewConfig, 'surface' | 'type'>): BlueprintTileViewConfig {
   const view: BlueprintTileViewConfig = {...config, surface: 'tile', type: 'view'}
-  runValidation(() => validateTileView(view))
+  runValidation(() => validateTileView(viewConfigToResource(view)))
   return view
 }
 
@@ -226,9 +226,7 @@ export function defineApplication(config: BlueprintApplicationConfig): Blueprint
   if (views && views.length > 0) applicationResource.views = views.map(viewConfigToResource)
   if (webWorkers && webWorkers.length > 0) applicationResource.webWorkers = webWorkers
 
-  // Validate the authored (surface-discriminated) views, which the resource
-  // stores transformed to their emitted `type`; everything else is validated as-is.
-  runValidation(() => validateApplication(views && views.length > 0 ? {...applicationResource, views} : applicationResource))
+  runValidation(() => validateApplication(applicationResource))
 
   return applicationResource
 }

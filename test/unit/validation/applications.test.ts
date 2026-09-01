@@ -1,10 +1,10 @@
 import {describe, expect, test} from 'vitest'
 import {
-  type BlueprintAssetSourceViewConfig,
-  type BlueprintPanelViewConfig,
-  type BlueprintTileViewConfig,
+  type BlueprintAssetSourceView,
+  type BlueprintPanelView,
+  type BlueprintTileView,
   type BlueprintWebWorker,
-  type BlueprintWindowViewConfig,
+  type BlueprintWindowView,
   validateApplication,
   validateAssetSourceView,
   validatePanelView,
@@ -13,33 +13,29 @@ import {
   validateWindowView,
 } from '../../../src/index.js'
 
-const validWindowView: BlueprintWindowViewConfig = {
-  type: 'view',
-  surface: 'window',
+const validWindowView: BlueprintWindowView = {
+  type: 'app',
   name: 'main',
   title: 'Design Retro',
   src: './src/windows/main.tsx',
 }
 
-const validPanelView: BlueprintPanelViewConfig = {
-  type: 'view',
-  surface: 'panel',
+const validPanelView: BlueprintPanelView = {
+  type: 'panel',
   name: 'side',
   title: 'Favorites',
   src: './src/panels/main.tsx',
 }
 
-const validAssetSourceView: BlueprintAssetSourceViewConfig = {
-  type: 'view',
-  surface: 'asset-source',
+const validAssetSourceView: BlueprintAssetSourceView = {
+  type: 'asset_source',
   name: 'image-picker',
   title: 'Image Picker',
   src: './src/asset-sources/image-picker.tsx',
 }
 
-const validTileView: BlueprintTileViewConfig = {
-  type: 'view',
-  surface: 'tile',
+const validTileView: BlueprintTileView = {
+  type: 'tile',
   name: 'jump-back-in',
   title: 'Main Tile',
   src: './src/tiles/jump-back-in.tsx',
@@ -152,10 +148,10 @@ describe('validateApplication', () => {
     })
   })
 
-  test('should return an error for an unknown view surface', () => {
-    expect(validateApplication({...validApplication, views: [{surface: 'nope', name: 'x', title: 'x', src: 'x'}]})).toContainEqual({
+  test('should return an error for an unknown view type', () => {
+    expect(validateApplication({...validApplication, views: [{type: 'nope', name: 'x', title: 'x', src: 'x'}]})).toContainEqual({
       type: 'invalid_value',
-      message: 'Application view surface must be one of window, panel, asset-source, tile',
+      message: 'Application view type must be one of app, panel, asset_source, tile',
     })
   })
 })
@@ -169,10 +165,10 @@ describe('validateWindowView', () => {
     expect(validateWindowView({...validWindowView, dock: {group: 'applications', order: 10}})).toStrictEqual([])
   })
 
-  test('should return an error if surface is not window', () => {
-    expect(validateWindowView({...validWindowView, surface: 'panel'})).toContainEqual({
+  test('should return an error if type is not app', () => {
+    expect(validateWindowView({...validWindowView, type: 'panel'})).toContainEqual({
       type: 'invalid_value',
-      message: 'Window view surface must be `window`',
+      message: 'Window view type must be `app`',
     })
   })
 
@@ -225,10 +221,10 @@ describe('validateAssetSourceView', () => {
     expect(validateAssetSourceView(validAssetSourceView)).toStrictEqual([])
   })
 
-  test('should return an error if surface is wrong', () => {
-    expect(validateAssetSourceView({...validAssetSourceView, surface: 'panel'})).toContainEqual({
+  test('should return an error if type is wrong', () => {
+    expect(validateAssetSourceView({...validAssetSourceView, type: 'panel'})).toContainEqual({
       type: 'invalid_value',
-      message: 'Asset source view surface must be `asset-source`',
+      message: 'Asset source view type must be `asset_source`',
     })
   })
 })
