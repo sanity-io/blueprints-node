@@ -1,4 +1,4 @@
-import {APPLICATION_DOCK_GROUPS, APPLICATION_TILE_SIZES, APPLICATION_VIEW_SURFACES} from '../types/applications.js'
+import {APPLICATION_DOCK_GROUPS, APPLICATION_TILE_SIZES} from '../types/applications.js'
 import type {BlueprintError} from '../types/errors.js'
 import {APPLICATION_VISIBILITIES} from '../types/studios.js'
 import {isReference} from '../utils/validation.js'
@@ -105,8 +105,8 @@ export function validateWindowView(resource: unknown): BlueprintError[] {
 
   const errors: BlueprintError[] = validateViewBase(resource, 'Window view')
 
-  if ('surface' in resource && resource.surface !== 'window') {
-    errors.push({type: 'invalid_value', message: 'Window view surface must be `window`'})
+  if ('type' in resource && resource.type !== 'app') {
+    errors.push({type: 'invalid_value', message: 'Window view type must be `app`'})
   }
 
   errors.push(...validateDockField(resource, 'Window view'))
@@ -127,8 +127,8 @@ export function validatePanelView(resource: unknown): BlueprintError[] {
 
   const errors: BlueprintError[] = validateViewBase(resource, 'Panel view')
 
-  if ('surface' in resource && resource.surface !== 'panel') {
-    errors.push({type: 'invalid_value', message: 'Panel view surface must be `panel`'})
+  if ('type' in resource && resource.type !== 'panel') {
+    errors.push({type: 'invalid_value', message: 'Panel view type must be `panel`'})
   }
 
   return errors
@@ -147,8 +147,8 @@ export function validateAssetSourceView(resource: unknown): BlueprintError[] {
 
   const errors: BlueprintError[] = validateViewBase(resource, 'Asset source view')
 
-  if ('surface' in resource && resource.surface !== 'asset-source') {
-    errors.push({type: 'invalid_value', message: 'Asset source view surface must be `asset-source`'})
+  if ('type' in resource && resource.type !== 'asset_source') {
+    errors.push({type: 'invalid_value', message: 'Asset source view type must be `asset_source`'})
   }
 
   return errors
@@ -167,8 +167,8 @@ export function validateTileView(resource: unknown): BlueprintError[] {
 
   const errors: BlueprintError[] = validateViewBase(resource, 'Tile view')
 
-  if ('surface' in resource && resource.surface !== 'tile') {
-    errors.push({type: 'invalid_value', message: 'Tile view surface must be `tile`'})
+  if ('type' in resource && resource.type !== 'tile') {
+    errors.push({type: 'invalid_value', message: 'Tile view type must be `tile`'})
   }
 
   errors.push(...validateTileFields(resource, 'Tile view'))
@@ -197,26 +197,26 @@ export function validateWebWorker(resource: unknown): BlueprintError[] {
 }
 
 /**
- * Validates a single application view config by its `surface` discriminator.
- * @param view The view config
+ * Validates a single emitted application view by its `type` discriminator.
+ * @param view The emitted view
  * @returns A list of validation errors
  */
 function validateApplicationView(view: unknown): BlueprintError[] {
-  if (!view || typeof view !== 'object' || !('surface' in view)) {
-    return [{type: 'invalid_value', message: 'Application view must be an object with a `surface`'}]
+  if (!view || typeof view !== 'object' || !('type' in view)) {
+    return [{type: 'invalid_value', message: 'Application view must be an object with a `type`'}]
   }
 
-  switch (view.surface) {
-    case 'window':
+  switch (view.type) {
+    case 'app':
       return validateWindowView(view)
     case 'panel':
       return validatePanelView(view)
-    case 'asset-source':
+    case 'asset_source':
       return validateAssetSourceView(view)
     case 'tile':
       return validateTileView(view)
     default:
-      return [{type: 'invalid_value', message: `Application view surface must be one of ${APPLICATION_VIEW_SURFACES.join(', ')}`}]
+      return [{type: 'invalid_value', message: 'Application view type must be one of app, panel, asset_source, tile'}]
   }
 }
 
