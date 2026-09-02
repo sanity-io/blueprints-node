@@ -1,4 +1,6 @@
 import {
+  defineApplication,
+  defineAssetSourceView,
   defineBlueprint,
   defineCorsOrigin,
   defineDataset,
@@ -6,6 +8,8 @@ import {
   defineDocumentWebhook,
   defineFunction,
   defineMediaLibraryAssetFunction,
+  defineMediaLibraryConfig,
+  definePanelView,
   defineProjectRole,
   definePubSubFunction,
   defineQueueFunction,
@@ -13,7 +17,11 @@ import {
   defineRole,
   defineScheduledFunction,
   defineSyncTagInvalidateFunction,
+  defineTileView,
+  defineWebWorker,
+  defineWindowView,
   defineWorkflows,
+  validateApplication,
   validateBlueprint,
   validateCorsOrigin,
   validateDataset,
@@ -21,6 +29,7 @@ import {
   validateDocumentWebhook,
   validateFunction,
   validateMediaLibraryAssetFunction,
+  validateMediaLibraryConfig,
   validatePubSubFunction,
   validateQueueFunction,
   validateResource,
@@ -34,6 +43,42 @@ import {describe, expect, test} from 'vitest'
 describe('package imports', () => {
   test('should import defineBlueprint', () => {
     expect(defineBlueprint).toBeInstanceOf(Function)
+  })
+
+  test('should import defineApplication', () => {
+    expect(defineApplication).toBeInstanceOf(Function)
+  })
+
+  test('should import defineWindowView', () => {
+    expect(defineWindowView).toBeInstanceOf(Function)
+  })
+
+  test('should import definePanelView', () => {
+    expect(definePanelView).toBeInstanceOf(Function)
+  })
+
+  test('should import defineAssetSourceView', () => {
+    expect(defineAssetSourceView).toBeInstanceOf(Function)
+  })
+
+  test('should import defineTileView', () => {
+    expect(defineTileView).toBeInstanceOf(Function)
+  })
+
+  test('should import defineWebWorker', () => {
+    expect(defineWebWorker).toBeInstanceOf(Function)
+  })
+
+  test('should import defineMediaLibraryConfig', () => {
+    expect(defineMediaLibraryConfig).toBeInstanceOf(Function)
+  })
+
+  test('should import validateApplication', () => {
+    expect(validateApplication).toBeInstanceOf(Function)
+  })
+
+  test('should import validateMediaLibraryConfig', () => {
+    expect(validateMediaLibraryConfig).toBeInstanceOf(Function)
   })
 
   test('should import defineCorsOrigin', () => {
