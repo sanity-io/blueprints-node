@@ -31,6 +31,14 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
+  type BlueprintWorkflowDefinition,
+  type BlueprintWorkflowDeployment,
+  type BlueprintWorkflowResourceBinding,
+  type BlueprintWorkflowsLifecycle,
+  type BlueprintWorkflowsOptions,
+  type BlueprintWorkflowsResource,
+  type BlueprintWorkflowTarget,
+  type BlueprintWorkflowTargetType,
   defineApplication,
   defineAssetSourceView,
   defineCorsOrigin,
@@ -49,6 +57,7 @@ import {
   defineTileView,
   defineWebWorker,
   defineWindowView,
+  defineWorkflows,
   type RolePermission,
   validateApplication,
   validateBlueprint,
@@ -65,6 +74,7 @@ import {
   validateRole,
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
+  validateWorkflows,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
 } from '@sanity/blueprints'
@@ -146,6 +156,34 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
   name: 'yoyoyo',
   event: fullyQualifiedSyncTagInvalidateFunctionResourceEvent,
 })
+
+const _workflowTargetType: BlueprintWorkflowTargetType = 'dataset'
+const workflowTarget: BlueprintWorkflowTarget = {
+  type: 'dataset',
+  id: 'projectId.dataset',
+}
+const articleReviewDefinition = {
+  name: 'article-review' as const,
+  title: 'Article review' as const,
+  initialStage: 'draft' as const,
+  stages: [{name: 'draft' as const}],
+} satisfies BlueprintWorkflowDefinition
+const _workflowResourceBinding: BlueprintWorkflowResourceBinding = {
+  name: 'content',
+  resource: workflowTarget,
+}
+const workflowDeployment = {
+  name: 'production' as const,
+  expectedMinReaderModel: 4,
+  tag: 'production',
+  workflowResource: workflowTarget,
+  definitions: [articleReviewDefinition],
+} satisfies BlueprintWorkflowDeployment
+const _workflowsLifecycle: BlueprintWorkflowsLifecycle = {deletionPolicy: 'protect'}
+const workflowsOptions: BlueprintWorkflowsOptions = {lifecycle: _workflowsLifecycle}
+const workflowsResource: BlueprintWorkflowsResource = defineWorkflows(workflowDeployment, workflowsOptions)
+const _workflowDeploymentName: string = workflowsResource.deployment.name
+const _workflowDefinitionTitle: string = workflowsResource.deployment.definitions[0].title
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
@@ -267,6 +305,7 @@ const blueprint: Blueprint = {
     mediaLibraryConfigResource,
     projectRoleResource,
     blueprintResource,
+    workflowsResource,
   ],
   values: {
     key: 'value',
@@ -292,3 +331,4 @@ validateScheduledFunction(scheduledFunctionResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
 validateQueueFunction(queueFunction)
 validatePubSubFunction(pubSubFunction)
+validateWorkflows(workflowsResource)
