@@ -31,6 +31,8 @@ import {
   type BlueprintScheduledFunctionResourceEvent,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
+  type BlueprintWorkflowDeployment,
+  type BlueprintWorkflowsResource,
   defineApplication,
   defineAssetSourceView,
   defineCorsOrigin,
@@ -49,6 +51,7 @@ import {
   defineTileView,
   defineWebWorker,
   defineWindowView,
+  defineWorkflows,
   type RolePermission,
   validateApplication,
   validateBlueprint,
@@ -65,6 +68,7 @@ import {
   validateRole,
   validateScheduledFunction,
   validateSyncTagInvalidateFunction,
+  validateWorkflows,
   // type BlueprintsApiConfig,
   type WebhookTrigger,
 } from '@sanity/blueprints'
@@ -146,6 +150,15 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
   name: 'yoyoyo',
   event: fullyQualifiedSyncTagInvalidateFunctionResourceEvent,
 })
+
+const workflowDeployment: BlueprintWorkflowDeployment = {
+  name: 'production',
+  tag: 'production',
+  expectedMinReaderModel: 4,
+  workflowResource: {type: 'dataset', id: 'projectId.dataset'},
+  definitions: [{name: 'article-review'}],
+}
+const workflowsResource: BlueprintWorkflowsResource = defineWorkflows(workflowDeployment, {lifecycle: {deletionPolicy: 'protect'}})
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
@@ -267,6 +280,7 @@ const blueprint: Blueprint = {
     mediaLibraryConfigResource,
     projectRoleResource,
     blueprintResource,
+    workflowsResource,
   ],
   values: {
     key: 'value',
@@ -292,3 +306,4 @@ validateScheduledFunction(scheduledFunctionResource)
 validateSyncTagInvalidateFunction(syncTagInvalidateFunction)
 validateQueueFunction(queueFunction)
 validatePubSubFunction(pubSubFunction)
+validateWorkflows(workflowsResource)

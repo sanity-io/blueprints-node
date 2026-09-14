@@ -27,6 +27,7 @@ export * from './definers/robotTokens.js'
 export * from './definers/roles.js'
 export * from './definers/studios.js'
 export * from './definers/webhooks.js'
+export * from './definers/workflows.js'
 
 // TYPES - base types for all resources
 /**
@@ -51,6 +52,7 @@ export * from './types/robotTokens.js'
 export * from './types/roles.js'
 export * from './types/studios.js'
 export * from './types/webhooks.js'
+export * from './types/workflows.js'
 
 // VALIDATION - validation for all resources
 /**
@@ -70,6 +72,7 @@ export * from './validation/robotTokens.js'
 export * from './validation/roles.js'
 export * from './validation/studios.js'
 export * from './validation/webhooks.js'
+export * from './validation/workflows.js'
 
 // Public BLUEPRINTS INTERNALS - published bucket of misc Blueprint types
 /**

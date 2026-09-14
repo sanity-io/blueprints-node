@@ -23,7 +23,6 @@ import {
   defineDocumentWebhook,
   defineRobotToken,
   defineRole,
-  defineWorkflow,
 } from '@sanity/blueprints'
 
 export default defineBlueprint({
