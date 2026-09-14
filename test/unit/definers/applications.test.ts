@@ -11,6 +11,9 @@ vi.mock(import('../../../src/index.js'), async (importOriginal) => {
   }
 })
 
+// An application must declare at least one view; used where the test only cares about other fields.
+const minimalView = applications.defineWindowView({name: 'main', title: 'Main', src: './src/windows/main.tsx'})
+
 describe('defineApplication', () => {
   afterEach(() => {
     vi.resetAllMocks()
@@ -34,6 +37,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      views: [minimalView],
     })
 
     expect(applicationResource.type).toStrictEqual('sanity.application')
@@ -44,6 +48,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      views: [minimalView],
     })
 
     expect(applicationResource.slug).toStrictEqual('design-retro')
@@ -54,6 +59,7 @@ describe('defineApplication', () => {
       name: 'design-retro-app',
       slug: 'design-retro',
       title: 'Design Retro',
+      views: [minimalView],
     })
 
     expect(applicationResource.slug).toStrictEqual('design-retro')
@@ -95,26 +101,28 @@ describe('defineApplication', () => {
     expect(applicationResource.views?.every((view) => !('surface' in view))).toBe(true)
   })
 
-  test('should allow multiple window views', () => {
-    const applicationResource = applications.defineApplication({
-      name: 'design-retro',
-      title: 'Design Retro',
-      views: [
-        applications.defineWindowView({name: 'main', title: 'Main', src: './src/windows/main.tsx'}),
-        applications.defineWindowView({name: 'secondary', title: 'Secondary', src: './src/windows/secondary.tsx'}),
-      ],
-    })
-
-    expect(applicationResource.views?.filter((view) => view.type === 'app')).toHaveLength(2)
+  test('should throw if more than one window view is declared', () => {
+    expect(() =>
+      defineBlueprintForResource(
+        applications.defineApplication({
+          name: 'design-retro',
+          title: 'Design Retro',
+          views: [
+            applications.defineWindowView({name: 'main', title: 'Main', src: './src/windows/main.tsx'}),
+            applications.defineWindowView({name: 'secondary', title: 'Secondary', src: './src/windows/secondary.tsx'}),
+          ],
+        }),
+      ),
+    ).toThrow('Application views may include at most one window view')
   })
 
-  test('should omit views and webWorkers when none are provided', () => {
+  test('should omit webWorkers when none are provided', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      views: [minimalView],
     })
 
-    expect(applicationResource.views).toBeUndefined()
     expect(applicationResource.webWorkers).toBeUndefined()
   })
 
@@ -122,6 +130,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      views: [minimalView],
     })
 
     expect(index.validateApplication(applicationResource)).toStrictEqual([])
@@ -131,6 +140,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      views: [minimalView],
       lifecycle: {
         deletionPolicy: 'allow',
       },
