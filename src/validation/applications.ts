@@ -263,13 +263,23 @@ export function validateApplication(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'visibility must be one of `default`, `unlisted`, or `disabled`'})
   }
 
-  if ('views' in resource && typeof resource.views !== 'undefined') {
-    if (!Array.isArray(resource.views)) {
-      errors.push({type: 'invalid_type', message: 'Application views must be an array'})
-    } else {
-      for (const view of resource.views) {
-        errors.push(...validateApplicationView(view))
-      }
+  if (!('views' in resource) || typeof resource.views === 'undefined') {
+    errors.push({type: 'missing_parameter', message: 'Application must declare at least one view'})
+  } else if (!Array.isArray(resource.views)) {
+    errors.push({type: 'invalid_type', message: 'Application views must be an array'})
+  } else if (resource.views.length === 0) {
+    errors.push({type: 'invalid_value', message: 'Application must declare at least one view'})
+  } else {
+    for (const view of resource.views) {
+      errors.push(...validateApplicationView(view))
+    }
+
+    // The surface does not matter, but the dashboard resolves a single
+    // navigable window (federated as `App`) per application, so a second
+    // window view would collide.
+    const windowCount = resource.views.filter((view) => view && typeof view === 'object' && view.type === 'app').length
+    if (windowCount > 1) {
+      errors.push({type: 'invalid_value', message: 'Application views may include at most one window view'})
     }
   }
 

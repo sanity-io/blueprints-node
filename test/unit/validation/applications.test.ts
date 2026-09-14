@@ -127,6 +127,22 @@ describe('validateApplication', () => {
     })
   })
 
+  test('should return an error if no views are declared', () => {
+    const {views: _views, ...noViews} = validApplication
+    expect(validateApplication(noViews)).toContainEqual({type: 'missing_parameter', message: 'Application must declare at least one view'})
+  })
+
+  test('should return an error if views is empty', () => {
+    expect(validateApplication({...validApplication, views: []})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Application must declare at least one view',
+    })
+  })
+
+  test('should accept an application with a single non-window view', () => {
+    expect(validateApplication({...validApplication, views: [validPanelView]})).toStrictEqual([])
+  })
+
   test('should return an error if webWorkers is not an array', () => {
     expect(validateApplication({...validApplication, webWorkers: 'nope'})).toContainEqual({
       type: 'invalid_type',
@@ -146,6 +162,17 @@ describe('validateApplication', () => {
       type: 'missing_parameter',
       message: 'Web worker name is required',
     })
+  })
+
+  test('should return an error if more than one window view is declared', () => {
+    expect(validateApplication({...validApplication, views: [validWindowView, {...validWindowView, name: 'secondary'}]})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Application views may include at most one window view',
+    })
+  })
+
+  test('should accept a single window view alongside other views', () => {
+    expect(validateApplication({...validApplication, views: [validWindowView, validPanelView, validTileView]})).toEqual([])
   })
 
   test('should return an error for an unknown view type', () => {

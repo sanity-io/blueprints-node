@@ -39,6 +39,7 @@ function viewConfigToResource(view: BlueprintApplicationViewConfig): BlueprintAp
 
 /**
  * Defines a window view — the navigable, full-page view of an application.
+ * An application may declare at most one window view.
  *
  * ```ts
  * defineWindowView({
@@ -175,7 +176,9 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * Views are authored in `views` and web workers in `webWorkers`, mirroring the
  * emitted resource. Views are discriminated by `surface` (`window`, `panel`,
  * `asset-source`, `tile`) and transformed to the emitted view `type` the
- * backend expects. The `slug` defaults to the resource `name`.
+ * backend expects. An application must declare at least one view of any
+ * surface, and at most one `window` view. The `slug` defaults to the resource
+ * `name`.
  *
  * ```ts
  * defineApplication({
