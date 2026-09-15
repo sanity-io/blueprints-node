@@ -4,7 +4,7 @@ import {type BlueprintStudioResource, validateStudio} from '../../../src/index.j
 const validStudio: BlueprintStudioResource = {
   name: 'my-studio',
   type: 'sanity.studio',
-  src: './studio',
+  root: './studio',
   slug: 'my-studio',
   project: 'abcdefg',
   title: 'My Studio',
@@ -27,15 +27,15 @@ describe('validateStudio', () => {
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Studio type must be `sanity.studio`'})
   })
 
-  test('should return an error if src is not provided', () => {
-    const {src: _src, ...noSrc} = validStudio
-    const errors = validateStudio(noSrc)
-    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Studio src is required'})
+  test('should return an error if root is not provided', () => {
+    const {root: _root, ...noRoot} = validStudio
+    const errors = validateStudio(noRoot)
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Studio root is required'})
   })
 
-  test('should return an error if src is not a string', () => {
-    const errors = validateStudio({...validStudio, src: 1})
-    expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio src must be a string'})
+  test('should return an error if root is not a string', () => {
+    const errors = validateStudio({...validStudio, root: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio root must be a string'})
   })
 
   test('should return an error if autoUpdates is not provided', () => {

@@ -23,10 +23,10 @@ export function validateStudio(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'Studio type must be `sanity.studio`'})
   }
 
-  if (!('src' in resource) || !resource.src) {
-    errors.push({type: 'missing_parameter', message: 'Studio src is required'})
-  } else if (typeof resource.src !== 'string') {
-    errors.push({type: 'invalid_type', message: 'Studio src must be a string'})
+  if (!('root' in resource) || !resource.root) {
+    errors.push({type: 'missing_parameter', message: 'Studio root is required'})
+  } else if (typeof resource.root !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Studio root must be a string'})
   }
 
   if ('project' in resource) {
