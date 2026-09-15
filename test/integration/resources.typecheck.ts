@@ -192,6 +192,7 @@ const applicationConfig: BlueprintApplicationConfig = {
   name: 'design-retro-app',
   slug: 'design-retro',
   title: 'Design Retro',
+  root: './apps/design-retro',
   icon: './src/icons/app-icon.svg',
   visibility: 'unlisted',
   views: [

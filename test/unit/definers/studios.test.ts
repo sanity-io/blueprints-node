@@ -22,7 +22,7 @@ describe('defineStudio', () => {
       defineBlueprintForResource(
         studios.defineStudio({
           name: 'studio-name',
-          src: 'studios/my-studio',
+          root: 'studios/my-studio',
           project: 'abcd1234',
           slug: 'my-studio',
         }),
@@ -35,7 +35,7 @@ describe('defineStudio', () => {
   test('should accept a valid configuration and set the type', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
       slug: 'my-studio',
       title: 'My Studio',
@@ -52,7 +52,7 @@ describe('defineStudio', () => {
   test('should default the title to the name', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
       slug: 'my-studio',
       autoUpdates: {
@@ -67,7 +67,7 @@ describe('defineStudio', () => {
   test('should default the slug to the name', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
     })
 
@@ -77,7 +77,7 @@ describe('defineStudio', () => {
   test('should default the autoUpdates to enabled and omit the version', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
       slug: 'my-studio',
     })
@@ -88,7 +88,7 @@ describe('defineStudio', () => {
   test('should omit the version when autoUpdates is provided without one', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
       slug: 'my-studio',
       autoUpdates: {enabled: false},
@@ -100,7 +100,7 @@ describe('defineStudio', () => {
   test('should keep an explicit autoUpdates version', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
       slug: 'my-studio',
       autoUpdates: {version: '^4.0.0'},
@@ -112,7 +112,7 @@ describe('defineStudio', () => {
   test('should produce a valid resource from a minimal config', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
     })
 
@@ -122,7 +122,7 @@ describe('defineStudio', () => {
   test('should not accept a name that is not a valid hostname label as a slug', () => {
     const studioResource = studios.defineStudio({
       name: 'My Studio',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
     })
 
@@ -136,7 +136,7 @@ describe('defineStudio', () => {
   test('should accept a valid configuration with a lifecycle', () => {
     const studioResource = studios.defineStudio({
       name: 'studio-name',
-      src: 'studios/my-studio',
+      root: 'studios/my-studio',
       project: 'abcd1234',
       slug: 'my-studio',
       autoUpdates: {

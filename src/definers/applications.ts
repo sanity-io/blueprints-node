@@ -177,13 +177,14 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * emitted resource. Views are discriminated by `surface` (`window`, `panel`,
  * `asset-source`, `tile`) and transformed to the emitted view `type` the
  * backend expects. An application must declare at least one view of any
- * surface, and at most one `window` view. The `slug` defaults to the resource
- * `name`.
+ * surface, and at most one `window` view. Every view and web worker `src` is
+ * resolved relative to `root`. The `slug` defaults to the resource `name`.
  *
  * ```ts
  * defineApplication({
  *   name: 'design-retro',
  *   title: 'Design Retro',
+ *   root: './apps/design-retro',
  *   views: [
  *     defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'}),
  *   ],
@@ -195,6 +196,7 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * defineApplication({
  *   name: 'design-retro',
  *   title: 'Design Retro',
+ *   root: './apps/design-retro',
  *   slug: 'design-retro',
  *   icon: './src/icons/app-icon.svg',
  *   visibility: 'unlisted',
