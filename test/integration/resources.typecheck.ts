@@ -207,7 +207,8 @@ const applicationResource: BlueprintApplicationResource = defineApplication(appl
 
 const mediaLibraryConfigConfig: BlueprintMediaLibraryConfigConfig = {
   name: 'media-library',
-  src: './media-library.config.ts',
+  root: './media-library',
+  fields: [{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}],
 }
 const mediaLibraryConfigResource: BlueprintMediaLibraryConfigResource = defineMediaLibraryConfig(mediaLibraryConfigConfig)
 

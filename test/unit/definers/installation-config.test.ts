@@ -22,7 +22,8 @@ describe('defineMediaLibraryConfig', () => {
       defineBlueprintForResource(
         mediaLibraryConfig.defineMediaLibraryConfig({
           name: 'media-library',
-          src: './media-library.config.ts',
+          root: './media-library',
+          fields: [{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}],
         }),
       ),
     ).toThrow(/this is a test/)
@@ -33,18 +34,21 @@ describe('defineMediaLibraryConfig', () => {
   test('should accept a valid configuration and set the type and appType', () => {
     const resource = mediaLibraryConfig.defineMediaLibraryConfig({
       name: 'media-library',
-      src: './media-library.config.ts',
+      root: './media-library',
+      fields: [{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}],
     })
 
     expect(resource.type).toStrictEqual('sanity.installation.config')
     expect(resource.appType).toStrictEqual('media-library')
-    expect(resource.src).toStrictEqual('./media-library.config.ts')
+    expect(resource.root).toStrictEqual('./media-library')
+    expect(resource.fields).toStrictEqual([{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}])
   })
 
   test('should keep the provided name', () => {
     const resource = mediaLibraryConfig.defineMediaLibraryConfig({
       name: 'my-media-library',
-      src: './media-library.config.ts',
+      root: './media-library',
+      fields: [{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}],
     })
 
     expect(resource.name).toStrictEqual('my-media-library')
@@ -53,7 +57,8 @@ describe('defineMediaLibraryConfig', () => {
   test('should produce a valid resource from a minimal config', () => {
     const resource = mediaLibraryConfig.defineMediaLibraryConfig({
       name: 'media-library',
-      src: './media-library.config.ts',
+      root: './media-library',
+      fields: [{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}],
     })
 
     expect(index.validateMediaLibraryConfig(resource)).toStrictEqual([])
