@@ -119,6 +119,24 @@ describe('validateApplication', () => {
     })
   })
 
+  test('should return an error if root is an absolute path', () => {
+    expect(validateApplication({...validApplication, root: '/apps/design-retro'})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Application root must be a relative path within the blueprint directory',
+    })
+  })
+
+  test('should return an error if root escapes the blueprint directory', () => {
+    expect(validateApplication({...validApplication, root: '../design-retro'})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Application root must be a relative path within the blueprint directory',
+    })
+  })
+
+  test('should accept a root that is a reference', () => {
+    expect(validateApplication({...validApplication, root: '$.values.appRoot'})).toStrictEqual([])
+  })
+
   test('should return an error if icon is not a string', () => {
     expect(validateApplication({...validApplication, icon: 1})).toContainEqual({
       type: 'invalid_type',

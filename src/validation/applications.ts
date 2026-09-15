@@ -17,9 +17,11 @@ const ABSOLUTE_PATH_PATTERN = /^(?:[/\\]|[a-zA-Z]:[/\\])/
  * Whether a path stays within the directory it is resolved against, i.e. it is
  * relative and never climbs above its starting point.
  * @param path The path to check
+ * @hidden
+ * @category Validation
  * @returns true when the path is relative and does not escape its root
  */
-function isContainedRelativePath(path: string): boolean {
+export function isContainedRelativePath(path: string): boolean {
   if (ABSOLUTE_PATH_PATTERN.test(path)) return false
 
   let depth = 0
@@ -278,6 +280,8 @@ export function validateApplication(resource: unknown): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: 'Application root is required'})
   } else if (typeof resource.root !== 'string') {
     errors.push({type: 'invalid_type', message: 'Application root must be a string'})
+  } else if (!isReference(resource.root) && !isContainedRelativePath(resource.root)) {
+    errors.push({type: 'invalid_value', message: 'Application root must be a relative path within the blueprint directory'})
   }
 
   if ('icon' in resource && typeof resource.icon !== 'string') {
