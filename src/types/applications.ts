@@ -88,7 +88,7 @@ export interface BlueprintApplicationChildBase {
   /** Human-readable title for the view. */
   title: string
 
-  /** The relative location of the view source code. */
+  /** The location of the view source code, relative to the application `root`. */
   src: string
 }
 
@@ -197,6 +197,13 @@ export interface BlueprintApplicationResource extends BlueprintResource {
 
   /** User-facing title for the application. */
   title: string
+
+  /**
+   * The application root directory, relative to the blueprint file. Contains the
+   * application's `package.json`; every view and web worker `src` is resolved
+   * relative to it.
+   */
+  root: string
 
   /** Icon for the application (path to an SVG). */
   icon?: string

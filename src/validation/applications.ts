@@ -10,6 +10,27 @@ const APPLICATION_SLUG_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/
 /** view/worker name pattern */
 const VIEW_NAME_PATTERN = /^[a-zA-Z0-9_-]+$/
 
+/** absolute path: POSIX `/…`, Windows `C:\…`/`C:/…`, or UNC `\\…` */
+const ABSOLUTE_PATH_PATTERN = /^(?:[/\\]|[a-zA-Z]:[/\\])/
+
+/**
+ * Whether a path stays within the directory it is resolved against, i.e. it is
+ * relative and never climbs above its starting point.
+ * @param path The path to check
+ * @returns true when the path is relative and does not escape its root
+ */
+function isContainedRelativePath(path: string): boolean {
+  if (ABSOLUTE_PATH_PATTERN.test(path)) return false
+
+  let depth = 0
+  for (const segment of path.split(/[/\\]/)) {
+    if (segment === '..') depth--
+    else if (segment !== '' && segment !== '.') depth++
+    if (depth < 0) return false
+  }
+  return true
+}
+
 /**
  * Validates the fields shared by every application view and web worker.
  * @param view The view or web worker
@@ -37,6 +58,8 @@ function validateViewBase(view: object, label: string): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: `${label} src is required`})
   } else if (typeof view.src !== 'string') {
     errors.push({type: 'invalid_type', message: `${label} src must be a string`})
+  } else if (!isReference(view.src) && !isContainedRelativePath(view.src)) {
+    errors.push({type: 'invalid_value', message: `${label} src must be a relative path within the application root`})
   }
 
   return errors
@@ -249,6 +272,12 @@ export function validateApplication(resource: unknown): BlueprintError[] {
     errors.push({type: 'missing_parameter', message: 'Application title is required'})
   } else if (typeof resource.title !== 'string') {
     errors.push({type: 'invalid_type', message: 'Application title must be a string'})
+  }
+
+  if (!('root' in resource) || !resource.root) {
+    errors.push({type: 'missing_parameter', message: 'Application root is required'})
+  } else if (typeof resource.root !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Application root must be a string'})
   }
 
   if ('icon' in resource && typeof resource.icon !== 'string') {
