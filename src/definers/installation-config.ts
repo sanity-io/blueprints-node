@@ -6,13 +6,15 @@ import {runValidation} from '../utils/validation.js'
  *
  * @remarks
  * The Media Library is a Sanity-owned singleton, so this resource carries no
- * application identity of its own — only the config `src`. The provider
- * resolves the organization's media library installation id at deploy time.
+ * application identity of its own — only the config `root` and its `fields`.
+ * The provider resolves the organization's media library installation id at
+ * deploy time.
  *
  * ```ts
  * defineMediaLibraryConfig({
  *   name: 'media-library',
- *   src: './media-library.config.ts',
+ *   root: './media-library',
+ *   fields: [{name: 'brand', title: 'Brand', src: './src/fields/brand.tsx'}],
  * })
  * ```
  * @param config The Media Library configuration
