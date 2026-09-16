@@ -17,8 +17,31 @@ export interface BlueprintInstallationConfigResourceBase extends BlueprintResour
   /** The installation this config targets. Discriminates the config shape. */
   appType: string
 
-  /** The relative location of the config module. */
+  /**
+   * The config build directory, relative to the blueprint file. Contains the
+   * config's `package.json`; every field `src` is resolved relative to it.
+   */
+  root: string
+}
+
+/**
+ * One custom field a Media Library configuration exposes.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export interface BlueprintMediaLibraryField {
+  /** Unique within the Media Library config. */
+  name: string
+
+  /** Human-readable title for the field. */
+  title: string
+
+  /** The location of the field source code, relative to `root`. */
   src: string
+
+  /** Readable outside the owning organization. */
+  public?: boolean
 }
 
 /**
@@ -26,9 +49,9 @@ export interface BlueprintInstallationConfigResourceBase extends BlueprintResour
  *
  * @remarks
  * The Media Library is a Sanity-owned singleton, so this resource carries no
- * application identity of its own — it only names the target `appType` and the
- * config `src`. The provider resolves the organization's media library
- * installation id at deploy time.
+ * application identity of its own — it only names the target `appType`, the
+ * config `root`, and its `fields`. The provider resolves the organization's
+ * media library installation id at deploy time.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @hidden
@@ -36,6 +59,9 @@ export interface BlueprintInstallationConfigResourceBase extends BlueprintResour
 export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallationConfigResourceBase {
   /** The target installation this config applies to. Set by the definer. */
   appType: 'media-library'
+
+  /** The custom fields the Media Library config exposes. */
+  fields: BlueprintMediaLibraryField[]
 }
 
 /**
