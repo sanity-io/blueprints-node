@@ -36,8 +36,8 @@ export type ApplicationVisibility = (typeof APPLICATION_VISIBILITIES)[number]
 export interface BlueprintStudioResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.studio'
 
-  /** The relative location of the studio source code. */
-  src: string
+  /** The relative location of the studio directory. */
+  root: string
 
   /**
    * The project ID of the project that contains your Studio.

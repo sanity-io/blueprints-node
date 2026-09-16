@@ -54,6 +54,7 @@ const validApplication = {
   name: 'design-retro',
   slug: 'design-retro',
   title: 'Design Retro',
+  root: './apps/design-retro',
   views: [validWindowView, validPanelView, validAssetSourceView, validTileView],
   webWorkers: [validWebWorker],
 }
@@ -104,6 +105,36 @@ describe('validateApplication', () => {
   test('should return an error if title is not provided', () => {
     const {title: _title, ...noTitle} = validApplication
     expect(validateApplication(noTitle)).toContainEqual({type: 'missing_parameter', message: 'Application title is required'})
+  })
+
+  test('should return an error if root is not provided', () => {
+    const {root: _root, ...noRoot} = validApplication
+    expect(validateApplication(noRoot)).toContainEqual({type: 'missing_parameter', message: 'Application root is required'})
+  })
+
+  test('should return an error if root is not a string', () => {
+    expect(validateApplication({...validApplication, root: 1})).toContainEqual({
+      type: 'invalid_type',
+      message: 'Application root must be a string',
+    })
+  })
+
+  test('should return an error if root is an absolute path', () => {
+    expect(validateApplication({...validApplication, root: '/apps/design-retro'})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Application root must be a relative path within the blueprint directory',
+    })
+  })
+
+  test('should return an error if root escapes the blueprint directory', () => {
+    expect(validateApplication({...validApplication, root: '../design-retro'})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Application root must be a relative path within the blueprint directory',
+    })
+  })
+
+  test('should accept a root that is a reference', () => {
+    expect(validateApplication({...validApplication, root: '$.values.appRoot'})).toStrictEqual([])
   })
 
   test('should return an error if icon is not a string', () => {
@@ -208,6 +239,27 @@ describe('validateWindowView', () => {
 
   test('should accept a reference as the name', () => {
     expect(validateWindowView({...validWindowView, name: '$.resources.my-view'})).toStrictEqual([])
+  })
+
+  test.each(['src/windows/main.tsx', './src/windows/main.tsx', 'a/./b/../main.tsx', 'src\\windows\\main.tsx'])(
+    'should accept a src within the application root: %s',
+    (src) => {
+      expect(validateWindowView({...validWindowView, src})).toStrictEqual([])
+    },
+  )
+
+  test.each(['/abs/main.tsx', 'C:\\apps\\main.tsx', 'C:/apps/main.tsx', '\\\\server\\main.tsx', '../main.tsx', 'a/../../main.tsx'])(
+    'should return an error if src is outside the application root: %s',
+    (src) => {
+      expect(validateWindowView({...validWindowView, src})).toContainEqual({
+        type: 'invalid_value',
+        message: 'Window view src must be a relative path within the application root',
+      })
+    },
+  )
+
+  test('should accept a reference as the src', () => {
+    expect(validateWindowView({...validWindowView, src: '$.resources.my-entry'})).toStrictEqual([])
   })
 
   test('should return an error if dock is not an object', () => {

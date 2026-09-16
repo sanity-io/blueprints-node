@@ -26,6 +26,7 @@ describe('defineApplication', () => {
         applications.defineApplication({
           name: 'design-retro',
           title: 'Design Retro',
+          root: '.',
         }),
       ),
     ).toThrow(/this is a test/)
@@ -37,6 +38,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [minimalView],
     })
 
@@ -48,6 +50,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [minimalView],
     })
 
@@ -59,6 +62,7 @@ describe('defineApplication', () => {
       name: 'design-retro-app',
       slug: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [minimalView],
     })
 
@@ -69,6 +73,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [
         applications.defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'}),
         applications.definePanelView({name: 'side', title: 'Favorites', src: './src/panels/main.tsx'}),
@@ -91,6 +96,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [
         {type: 'view', surface: 'window', name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'},
         {type: 'view', surface: 'tile', name: 'jump-back-in', title: 'Main Tile', src: './src/tiles/jump-back-in.tsx', size: 'banner'},
@@ -107,6 +113,7 @@ describe('defineApplication', () => {
         applications.defineApplication({
           name: 'design-retro',
           title: 'Design Retro',
+          root: '.',
           views: [
             applications.defineWindowView({name: 'main', title: 'Main', src: './src/windows/main.tsx'}),
             applications.defineWindowView({name: 'secondary', title: 'Secondary', src: './src/windows/secondary.tsx'}),
@@ -120,6 +127,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [minimalView],
     })
 
@@ -130,6 +138,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [minimalView],
     })
 
@@ -140,6 +149,7 @@ describe('defineApplication', () => {
     const applicationResource = applications.defineApplication({
       name: 'design-retro',
       title: 'Design Retro',
+      root: '.',
       views: [minimalView],
       lifecycle: {
         deletionPolicy: 'allow',

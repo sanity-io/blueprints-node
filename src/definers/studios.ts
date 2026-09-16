@@ -9,7 +9,7 @@ import {runValidation} from '../utils/validation.js'
  * defineStudio({
  *   name: 'my-studio',
  *   project: 'my-project-id',
- *   src: 'studios/my-studio',
+ *   root: 'studios/my-studio',
  *   autoUpdates: {
  *     enabled: true
  *   }
