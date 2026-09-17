@@ -27,11 +27,12 @@ import {defineFunction} from './index.js'
  * @returns The validated durable function resource
  */
 export function defineDurableFunction(functionConfig: BlueprintDurableConfig): BlueprintDurableFunctionResource {
-  const {name, event, concurrency, debounce, debounceKey, src} = functionConfig
+  const {name, event, concurrency, debounce, debounceKey, src, durableTimeout} = functionConfig
   const functionResource: BlueprintDurableFunctionResource = {
     ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
     type: 'sanity.function.durable',
     ...(event !== undefined && {event}),
+    ...(durableTimeout !== undefined && {durableTimeout}),
     ...(concurrency !== undefined && {concurrency}),
     ...(debounce !== undefined && {debounce}),
     ...(debounceKey !== undefined && {debounceKey}),

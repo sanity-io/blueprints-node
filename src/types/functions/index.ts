@@ -284,7 +284,7 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
   src?: string
 }
 
-/**
+/**f
  * Configuration for defining a durable function.
  * @public
  * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
@@ -302,4 +302,9 @@ export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'typ
    * Trigger configuration
    */
   event?: BlueprintFunctionResourceContentLakeEvent
+  /**
+   * Total durable execution timeout in seconds.
+   * Default is 24 hours (86400 seconds)
+   */
+  durableTimeout?: number
 }
