@@ -284,7 +284,7 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
   src?: string
 }
 
-/**f
+/**
  * Configuration for defining a durable function.
  * @public
  * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
