@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.0](https://github.com/sanity-io/blueprints-node/compare/v0.24.0...v1.0.0) (2026-09-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* add application root and contain view sources within it ([#160](https://github.com/sanity-io/blueprints-node/issues/160))
+
+### Features
+
+* add application root and contain view sources within it ([#160](https://github.com/sanity-io/blueprints-node/issues/160)) ([97493bc](https://github.com/sanity-io/blueprints-node/commit/97493bcdf68a3bfa4cc94d47d764eb6c9983bac1))
+* add define* blueprint nodes for applications and singleton config ([#154](https://github.com/sanity-io/blueprints-node/issues/154)) ([b88bd8b](https://github.com/sanity-io/blueprints-node/commit/b88bd8bd832de67c9ab88231a07d176fabd380fe))
+* declare media library config root and fields ([#161](https://github.com/sanity-io/blueprints-node/issues/161)) ([0c8f2e5](https://github.com/sanity-io/blueprints-node/commit/0c8f2e5e33b3f0db7446323afa095e019e6141bb))
+
+
+### Bug Fixes
+
+* allow at most one window view per application ([#159](https://github.com/sanity-io/blueprints-node/issues/159)) ([a437a73](https://github.com/sanity-io/blueprints-node/commit/a437a73a1320b4a7c77b23016ab7d49cbb64b965))
+
 ## [0.24.0](https://github.com/sanity-io/blueprints-node/compare/v0.23.6...v0.24.0) (2026-08-25)
 
 
