@@ -5,7 +5,7 @@ import {defineBlueprintForResource} from '../../../helpers/index.js'
 
 describe('defineDurableFunction', () => {
   describe('happy paths', () => {
-    test('should create a pipeline event', () => {
+    test('should create a durable event', () => {
       const fn = defineDurableFunction({
         name: 'test',
       })
@@ -19,7 +19,7 @@ describe('defineDurableFunction', () => {
       expect(fn.src).toEqual('functions/test')
     })
 
-    test('should create a pipeline with an event', () => {
+    test('should create a durable function with an event', () => {
       const fn = defineDurableFunction({
         name: 'test',
         event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
@@ -27,7 +27,7 @@ describe('defineDurableFunction', () => {
       expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
     })
 
-    test('should create a pipeline function with optional concurrency', () => {
+    test('should create a durable function with optional concurrency', () => {
       const fn = defineDurableFunction({
         name: 'test',
         concurrency: 3,
@@ -36,7 +36,7 @@ describe('defineDurableFunction', () => {
       expect(fn.name).toEqual('test')
     })
 
-    test('should create a pipeline function with optional debounce', () => {
+    test('should create a durable function with optional debounce', () => {
       const fn = defineDurableFunction({
         name: 'test',
         debounce: 3,
@@ -45,7 +45,7 @@ describe('defineDurableFunction', () => {
       expect(fn.name).toEqual('test')
     })
 
-    test('should create a pipeline function with optional debounceKey', () => {
+    test('should create a durable function with optional debounceKey', () => {
       const fn = defineDurableFunction({
         name: 'test',
         debounce: 1,
