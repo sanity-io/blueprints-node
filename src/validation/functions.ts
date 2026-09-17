@@ -567,6 +567,19 @@ export function validateDurableFunction(functionResource: unknown): BlueprintErr
     errors.push({type: 'invalid_type', message: '`debounce` must be a number'})
   }
 
+  if ('durableTimeout' in functionResource && typeof functionResource.durableTimeout !== 'number') {
+    errors.push({type: 'invalid_type', message: '`durableTimeout` must be a number'})
+  }
+
+  if ('durableTimeout' in functionResource && typeof functionResource.durableTimeout === 'number') {
+    if (functionResource.durableTimeout < 60) {
+      errors.push({type: 'invalid_value', message: '`durableTimeout` must be at least 60 seconds'})
+    }
+    if (functionResource.durableTimeout > 31_536_000) {
+      errors.push({type: 'invalid_value', message: '`durableTimeout` must be at most a year in seconds (31,536,000)'})
+    }
+  }
+
   if ('event' in functionResource) {
     errors.push(...validateFunctionContentLakeEvent(functionResource.event))
   }

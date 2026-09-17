@@ -23,7 +23,7 @@ import {defineFunction} from './index.js'
  * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @public
  * @hidden
- * @expandType BlueprintPipelineConfig
+ * @expandType BlueprintDurableConfig
  * @returns The validated durable function resource
  */
 export function defineDurableFunction(functionConfig: BlueprintDurableConfig): BlueprintDurableFunctionResource {

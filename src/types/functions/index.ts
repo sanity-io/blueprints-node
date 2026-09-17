@@ -304,7 +304,7 @@ export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'typ
   event?: BlueprintFunctionResourceContentLakeEvent
   /**
    * Total durable execution timeout in seconds.
-   * Default is 24 hours (86400 seconds)
+   * @defaultValue 86_400
    */
   durableTimeout?: number
 }

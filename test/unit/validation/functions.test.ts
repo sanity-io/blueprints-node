@@ -972,5 +972,41 @@ describe('validateDurableFunction', () => {
         message: '`debounceKey` requires a `debounce` to be set',
       })
     })
+
+    test('should return an error if durableTimeout is not a number', () => {
+      const errors = functions.validateDurableFunction({
+        name: 'test',
+        type: 'sanity.function.durable',
+        durableTimeout: 'invalid',
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`durableTimeout` must be a number',
+      })
+    })
+
+    test('should return an error if durableTimeout is less than 60 seconds', () => {
+      const errors = functions.validateDurableFunction({
+        name: 'test',
+        type: 'sanity.function.durable',
+        durableTimeout: 59,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`durableTimeout` must be at least 60 seconds',
+      })
+    })
+
+    test('should return an error if durableTimeout is greater than a year', () => {
+      const errors = functions.validateDurableFunction({
+        name: 'test',
+        type: 'sanity.function.durable',
+        durableTimeout: 31_536_001,
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`durableTimeout` must be at most a year in seconds (31,536,000)',
+      })
+    })
   })
 })
