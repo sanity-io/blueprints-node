@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.26.1](https://github.com/sanity-io/blueprints-node/compare/v0.26.0...v0.26.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* **durable definer:** add the `durableTimeout` property  ([#164](https://github.com/sanity-io/blueprints-node/issues/164)) ([e5815b2](https://github.com/sanity-io/blueprints-node/commit/e5815b2e86d3bd306d9ef9866ca45804e7c5a6e1))
+* remove extra letter from doc block ([#170](https://github.com/sanity-io/blueprints-node/issues/170)) ([304c904](https://github.com/sanity-io/blueprints-node/commit/304c9044f6710c007c5857d8edfd0aec00f3e3c9))
+
 ## [0.26.0](https://github.com/sanity-io/blueprints-node/compare/v0.24.0...v0.26.0) (2026-09-17)
 
 
