@@ -20,6 +20,7 @@ import {
   defineTileView,
   defineWebWorker,
   defineWindowView,
+  defineWorkflows,
   validateApplication,
   validateBlueprint,
   validateCorsOrigin,
@@ -34,6 +35,7 @@ import {
   validateResource,
   validateRole,
   validateSyncTagInvalidateFunction,
+  validateWorkflows,
 } from '@sanity/blueprints'
 import {describe, expect, it} from 'vitest'
 
@@ -118,6 +120,10 @@ describe('package imports', () => {
     expect(defineMediaLibraryAssetFunction).toBeInstanceOf(Function)
   })
 
+  it('should import defineWorkflows', () => {
+    expect(defineWorkflows).toBeInstanceOf(Function)
+  })
+
   it('should import defineProjectRole', () => {
     expect(defineProjectRole).toBeInstanceOf(Function)
   })
@@ -180,5 +186,9 @@ describe('package imports', () => {
 
   it('should import validateRole', () => {
     expect(validateRole).toBeInstanceOf(Function)
+  })
+
+  it('should import validateWorkflows', () => {
+    expect(validateWorkflows).toBeInstanceOf(Function)
   })
 })
