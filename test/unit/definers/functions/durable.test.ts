@@ -55,6 +55,13 @@ describe('defineDurableFunction', () => {
       expect(fn.debounceKey).toEqual('testKey')
       expect(fn.name).toEqual('test')
     })
+    test('should parse durableTimeout in seconds', () => {
+      const fn = defineDurableFunction({
+        name: 'test',
+        durableTimeout: '1 hour',
+      })
+      expect(fn.durableTimeout).toBe(3_600)
+    })
 
     describe('sad paths', () => {
       afterEach(() => {

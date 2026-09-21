@@ -167,6 +167,10 @@ export interface BlueprintPubSubFunctionResource extends BlueprintBaseFunctionRe
 export interface BlueprintDurableFunctionResource extends BlueprintBaseFunctionResource, QueueConfig {
   type: 'sanity.function.durable'
   event?: BlueprintFunctionResourceContentLakeEvent
+  /**
+   * Total durable execution timeout in seconds.
+   */
+  durableTimeout?: number
 }
 
 // --- Function Config (Input) Types: : `define*Function` method parameter types ---
@@ -292,7 +296,7 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
  * @category Functions Types
  * @interface
  */
-export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event'> & {
+export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event' | 'durableTimeout'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`
@@ -304,7 +308,7 @@ export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'typ
   event?: BlueprintFunctionResourceContentLakeEvent
   /**
    * Total durable execution timeout in seconds.
-   * @defaultValue 86_400
+   * @defaultValue 86_400 (24 hours)
    */
-  durableTimeout?: number
+  durableTimeout?: string | number
 }

@@ -1005,7 +1005,7 @@ describe('validateDurableFunction', () => {
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`durableTimeout` must be at most a year in seconds (31,536,000)',
+        message: '`durableTimeout` must be at most a year',
       })
     })
   })
