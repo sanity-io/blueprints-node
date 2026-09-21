@@ -62,6 +62,9 @@ export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallati
 
   /** The custom fields the Media Library config exposes. */
   fields: BlueprintMediaLibraryField[]
+
+  /** The local version of `sanity` at deployment. Populated during deployment. */
+  version?: string
 }
 
 /**
