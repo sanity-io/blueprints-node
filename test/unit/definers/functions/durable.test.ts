@@ -62,6 +62,13 @@ describe('defineDurableFunction', () => {
       })
       expect(fn.durableTimeout).toBe(3_600)
     })
+    test('should parse durableTimeout in seconds', () => {
+      const fn = defineDurableFunction({
+        name: 'test',
+        durableTimeout: 60,
+      })
+      expect(fn.durableTimeout).toBe(60)
+    })
 
     describe('sad paths', () => {
       afterEach(() => {
