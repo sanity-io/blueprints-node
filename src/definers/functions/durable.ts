@@ -1,4 +1,5 @@
 import {type BlueprintDurableConfig, type BlueprintDurableFunctionResource, validateDurableFunction} from '../../index.js'
+import {parseDuration} from '../../utils/parse-duration.js'
 import {runValidation} from '../../utils/validation.js'
 import {defineFunction} from './index.js'
 
@@ -32,7 +33,7 @@ export function defineDurableFunction(functionConfig: BlueprintDurableConfig): B
     ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
     type: 'sanity.function.durable',
     ...(event !== undefined && {event}),
-    ...(durableTimeout !== undefined && {durableTimeout}),
+    ...(durableTimeout !== undefined && {durableTimeout: parseDuration(durableTimeout, 's')}),
     ...(concurrency !== undefined && {concurrency}),
     ...(debounce !== undefined && {debounce}),
     ...(debounceKey !== undefined && {debounceKey}),

@@ -576,7 +576,7 @@ export function validateDurableFunction(functionResource: unknown): BlueprintErr
       errors.push({type: 'invalid_value', message: '`durableTimeout` must be at least 60 seconds'})
     }
     if (functionResource.durableTimeout > 31_536_000) {
-      errors.push({type: 'invalid_value', message: '`durableTimeout` must be at most a year in seconds (31,536,000)'})
+      errors.push({type: 'invalid_value', message: '`durableTimeout` must be at most a year'})
     }
   }
 
