@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.27.0](https://github.com/sanity-io/blueprints-node/compare/v0.26.1...v0.27.0) (2026-09-21)
+
+
+### Features
+
+* **durables:** parse duration for better dx for users ([#172](https://github.com/sanity-io/blueprints-node/issues/172)) ([dfc03a7](https://github.com/sanity-io/blueprints-node/commit/dfc03a7472ed287847205af53dee3de65cff1c26))
+
+
+### Bug Fixes
+
+* add missing version prop to media library config ([#173](https://github.com/sanity-io/blueprints-node/issues/173)) ([e67f8c1](https://github.com/sanity-io/blueprints-node/commit/e67f8c153b78d95dbc20dd7f7d75ae4a2b16eb0e))
+
 ## [0.26.1](https://github.com/sanity-io/blueprints-node/compare/v0.26.0...v0.26.1) (2026-09-17)
 
 
