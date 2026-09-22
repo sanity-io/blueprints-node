@@ -7,7 +7,8 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
-import { isReference } from '../utils/validation.js'
+import {createDebounceObject} from '../utils/debounce.js'
+import {isReference} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
 const BASE_EVENT_KEYS = new Set<BaseFunctionEventKey>(['on', 'filter', 'projection', 'includeDrafts'])
@@ -34,8 +35,8 @@ const DAY_OF_WEEK =
  * @returns Array of validation errors, empty if valid
  */
 export function validateDocumentFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = validateFunction(functionResource)
 
@@ -56,7 +57,7 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.document') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.document`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.document`'})
   }
 
   return errors
@@ -70,19 +71,19 @@ export function validateDocumentFunction(functionResource: unknown): BlueprintEr
  * @returns Array of validation errors, empty if valid
  */
 export function validateMediaLibraryAssetFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = validateFunction(functionResource)
 
   if ('event' in functionResource) {
     errors.push(...validateMediaLibraryFunctionEvent(functionResource.event))
   } else {
-    errors.push({ type: 'missing_parameter', message: '`event` is required for a media library function' })
+    errors.push({type: 'missing_parameter', message: '`event` is required for a media library function'})
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.media-library.asset') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.media-library.asset`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.media-library.asset`'})
   }
 
   return errors
@@ -96,54 +97,54 @@ export function validateMediaLibraryAssetFunction(functionResource: unknown): Bl
  * @returns Array of validation errors, empty if valid
  */
 export function validateFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = validateResource(functionResource)
 
   if (!('name' in functionResource)) {
-    errors.push({ type: 'missing_parameter', message: '`name` is required' })
+    errors.push({type: 'missing_parameter', message: '`name` is required'})
   } else if (typeof functionResource.name !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`name` must be a string' })
+    errors.push({type: 'invalid_type', message: '`name` must be a string'})
   }
 
   if (!('type' in functionResource)) {
-    errors.push({ type: 'missing_parameter', message: '`type` is required' })
+    errors.push({type: 'missing_parameter', message: '`type` is required'})
   } else if (typeof functionResource.type !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`type` must be a string' })
+    errors.push({type: 'invalid_type', message: '`type` must be a string'})
   }
 
   // type validation
   if ('memory' in functionResource) {
     if (typeof functionResource.memory !== 'number' && typeof functionResource.memory !== 'undefined') {
-      errors.push({ type: 'invalid_type', message: '`memory` must be a number' })
+      errors.push({type: 'invalid_type', message: '`memory` must be a number'})
     }
   }
   if ('timeout' in functionResource) {
     if (typeof functionResource.timeout !== 'number' && typeof functionResource.timeout !== 'undefined') {
-      errors.push({ type: 'invalid_type', message: '`timeout` must be a number' })
+      errors.push({type: 'invalid_type', message: '`timeout` must be a number'})
     }
   }
 
   if ('robotToken' in functionResource) {
     if (typeof functionResource.robotToken !== 'string' && typeof functionResource.robotToken !== 'undefined') {
-      errors.push({ type: 'invalid_type', message: '`robotToken` must be a string' })
+      errors.push({type: 'invalid_type', message: '`robotToken` must be a string'})
     }
   }
 
   if ('runtime' in functionResource) {
     if (typeof functionResource.runtime !== 'undefined' && !VALID_RUNTIMES.includes(functionResource.runtime as FunctionRuntimes)) {
-      errors.push({ type: 'invalid_value', message: `\`runtime\` must be one of ${VALID_RUNTIMES.join(', ')}` })
+      errors.push({type: 'invalid_value', message: `\`runtime\` must be one of ${VALID_RUNTIMES.join(', ')}`})
     }
   }
 
   if ('env' in functionResource && typeof functionResource.env !== 'undefined') {
     if (typeof functionResource.env !== 'object' || functionResource.env === null) {
-      errors.push({ type: 'invalid_type', message: `\`env\` must be an object` })
+      errors.push({type: 'invalid_type', message: `\`env\` must be an object`})
     } else {
       for (const [key, value] of Object.entries(functionResource.env)) {
         if (typeof value !== 'string') {
-          errors.push({ type: 'invalid_type', message: `\`env[${key}]\` must be a string` })
+          errors.push({type: 'invalid_type', message: `\`env[${key}]\` must be a string`})
         }
       }
     }
@@ -159,8 +160,8 @@ export function validateFunction(functionResource: unknown): BlueprintError[] {
  * @returns Array of validation errors, empty if valid
  */
 function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event) return [{ type: 'invalid_value', message: 'Function event must be provided' }]
-  if (typeof event !== 'object') return [{ type: 'invalid_type', message: 'Function event must be an object' }]
+  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
+  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
 
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => DOCUMENT_EVENT_KEYS.has(key as DocumentFunctionEventKey)),
@@ -171,7 +172,7 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
     on: cleanEvent.on || ['publish'],
     ...cleanEvent,
   }
-  if (!Array.isArray(fullEvent.on)) errors.push({ type: 'invalid_type', message: '`event.on` must be an array' })
+  if (!Array.isArray(fullEvent.on)) errors.push({type: 'invalid_type', message: '`event.on` must be an array'})
   if (fullEvent.resource) {
     errors.push(...validateFunctionEventResourceDataset(fullEvent))
   }
@@ -180,21 +181,21 @@ function validateDocumentFunctionEvent(event: unknown): BlueprintError[] {
 
 function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] {
   const errors: BlueprintError[] = []
-  if (!event || typeof event !== 'object') return [{ type: 'invalid_value', message: '`event` must be an object' }]
+  if (!event || typeof event !== 'object') return [{type: 'invalid_value', message: '`event` must be an object'}]
   // `resource` is optional for the event types that reach here (document and sync-tag-invalidate),
   // so there is nothing to validate when it is absent.
   if (!('resource' in event) || typeof event.resource === 'undefined') return []
   const resource = event.resource
-  if (!resource || typeof resource !== 'object') return [{ type: 'invalid_value', message: '`event.resource` must be an object' }]
+  if (!resource || typeof resource !== 'object') return [{type: 'invalid_value', message: '`event.resource` must be an object'}]
   if (!('type' in resource) || !resource.type || resource.type !== 'dataset')
-    errors.push({ type: 'invalid_value', message: '`event.resource.type` must be "dataset"' })
+    errors.push({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
   if (
     !('id' in resource) ||
     !resource.id ||
     typeof resource.id !== 'string' ||
     !(isReference(resource.id) || resource.id.split('.').length === 2)
   )
-    errors.push({ type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>' })
+    errors.push({type: 'invalid_format', message: '`event.resource.id` must be in the format <projectId>.<datasetName>'})
   return errors
 }
 /**
@@ -204,8 +205,8 @@ function validateFunctionEventResourceDataset(event: unknown): BlueprintError[] 
  * @returns Array of validation errors, empty if valid
  */
 function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event) return [{ type: 'invalid_value', message: 'Function event must be provided' }]
-  if (typeof event !== 'object') return [{ type: 'invalid_type', message: 'Function event must be an object' }]
+  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
+  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
 
   const cleanEvent = Object.fromEntries(
     Object.entries(event).filter(([key]) => MEDIA_LIBRARY_EVENT_KEYS.has(key as MediaLibraryFunctionEventKey)),
@@ -216,12 +217,12 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
     on: cleanEvent.on || ['publish'],
     ...cleanEvent,
   }
-  if (!Array.isArray(fullEvent.on)) errors.push({ type: 'invalid_type', message: '`event.on` must be an array' })
+  if (!Array.isArray(fullEvent.on)) errors.push({type: 'invalid_type', message: '`event.on` must be an array'})
   if (fullEvent.resource) {
     if (!fullEvent.resource.type || fullEvent.resource.type !== 'media-library')
-      errors.push({ type: 'invalid_value', message: '`event.resource.type` must be "media-library"' })
+      errors.push({type: 'invalid_value', message: '`event.resource.type` must be "media-library"'})
   } else {
-    errors.push({ type: 'missing_parameter', message: '`resource` is required for a media library function' })
+    errors.push({type: 'missing_parameter', message: '`resource` is required for a media library function'})
   }
   return errors
 }
@@ -234,19 +235,19 @@ function validateMediaLibraryFunctionEvent(event: unknown): BlueprintError[] {
  * @returns Array of validation errors, empty if valid
  */
 export function validateScheduledFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if ('event' in functionResource) {
     errors.push(...validateScheduledFunctionEvent(functionResource.event))
   } else {
-    errors.push({ type: 'missing_parameter', message: '`event` is required for a scheduled function' })
+    errors.push({type: 'missing_parameter', message: '`event` is required for a scheduled function'})
   }
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.cron') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.cron`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.cron`'})
   }
 
   if ('timezone' in functionResource) {
@@ -264,8 +265,8 @@ export function validateScheduledFunction(functionResource: unknown): BlueprintE
  * @returns Array of validation errors, empty if valid
  */
 function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
-  if (!event) return [{ type: 'invalid_value', message: 'Function event must be provided' }]
-  if (typeof event !== 'object') return [{ type: 'invalid_type', message: 'Function event must be an object' }]
+  if (!event) return [{type: 'invalid_value', message: 'Function event must be provided'}]
+  if (typeof event !== 'object') return [{type: 'invalid_type', message: 'Function event must be an object'}]
 
   const errors: BlueprintError[] = []
 
@@ -283,7 +284,7 @@ function validateScheduledFunctionEvent(event: unknown): BlueprintError[] {
       message: '`minute` must be provided',
     })
   } else if (typeof event.minute !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`minute` must be a string' })
+    errors.push({type: 'invalid_type', message: '`minute` must be a string'})
   } else if (!MINUTES.test(event.minute)) {
     errors.push({
       type: 'invalid_value',
@@ -303,7 +304,7 @@ The minute field must be:
       message: '`hour` must be provided',
     })
   } else if (typeof event.hour !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`hour` must be a string' })
+    errors.push({type: 'invalid_type', message: '`hour` must be a string'})
   } else if (!HOURS.test(event.hour)) {
     errors.push({
       type: 'invalid_value',
@@ -323,7 +324,7 @@ The hour field must be:
       message: '`dayOfMonth` must be provided',
     })
   } else if (typeof event.dayOfMonth !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`dayOfMonth` must be a string' })
+    errors.push({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
   } else if (!DAY_OF_MONTH.test(event.dayOfMonth)) {
     errors.push({
       type: 'invalid_value',
@@ -343,7 +344,7 @@ The day-of-month field must be:
       message: '`month` must be provided',
     })
   } else if (typeof event.month !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`month` must be a string' })
+    errors.push({type: 'invalid_type', message: '`month` must be a string'})
   } else if (!MONTH.test(event.month)) {
     errors.push({
       type: 'invalid_value',
@@ -364,7 +365,7 @@ The month field must be:
       message: '`dayOfWeek` must be provided',
     })
   } else if (typeof event.dayOfWeek !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`dayOfWeek` must be a string' })
+    errors.push({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
   } else if (!DAY_OF_WEEK.test(event.dayOfWeek)) {
     errors.push({
       type: 'invalid_value',
@@ -389,12 +390,12 @@ The day-of-week field must be:
  * @returns Array of validation errors, empty if valid
  */
 function validateScheduledFunctionTimezone(timezone: unknown): BlueprintError[] {
-  if (typeof timezone !== 'string') return [{ type: 'invalid_type', message: 'Function timezone must be a string' }]
+  if (typeof timezone !== 'string') return [{type: 'invalid_type', message: 'Function timezone must be a string'}]
 
   const errors: BlueprintError[] = []
 
   try {
-    Intl.DateTimeFormat(undefined, { timeZone: timezone })
+    Intl.DateTimeFormat(undefined, {timeZone: timezone})
   } catch {
     errors.push({
       type: 'invalid_value',
@@ -413,13 +414,13 @@ function validateScheduledFunctionTimezone(timezone: unknown): BlueprintError[] 
  * @returns Array of validation errors, empty if valid
  */
 export function validateSyncTagInvalidateFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.sync-tag-invalidate') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.sync-tag-invalidate`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.sync-tag-invalidate`'})
   }
 
   if ('event' in functionResource) {
@@ -440,29 +441,29 @@ export function validateSyncTagInvalidateFunction(functionResource: unknown): Bl
  * @returns Array of validation errors, empty if valid
  */
 export function validateQueueFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.queue') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.queue`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.queue`'})
   }
 
   if ('concurrency' in functionResource) {
     if (typeof functionResource.concurrency !== 'number') {
-      errors.push({ type: 'invalid_type', message: '`concurrency` must be a number' })
+      errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
     } else if (functionResource.concurrency < 1) {
-      errors.push({ type: 'invalid_type', message: '`concurrency` must be at least 1' })
+      errors.push({type: 'invalid_type', message: '`concurrency` must be at least 1'})
     } else if (functionResource.concurrency > 500) {
-      errors.push({ type: 'invalid_value', message: '`concurrency` must be less than 500' })
+      errors.push({type: 'invalid_value', message: '`concurrency` must be less than 500'})
     }
   }
   if ('fifo' in functionResource && typeof functionResource.fifo !== 'boolean') {
-    errors.push({ type: 'invalid_type', message: '`fifo` must be a boolean' })
+    errors.push({type: 'invalid_type', message: '`fifo` must be a boolean'})
   }
   if ('dlq' in functionResource && typeof functionResource.dlq !== 'boolean') {
-    errors.push({ type: 'invalid_type', message: '`dlq` must be a boolean' })
+    errors.push({type: 'invalid_type', message: '`dlq` must be a boolean'})
   }
 
   if ('event' in functionResource && typeof functionResource.event !== 'undefined') {
@@ -486,8 +487,8 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
  * @returns Array of validation errors, empty if valid
  */
 function validateFunctionContentLakeEvent(event: unknown): BlueprintError[] {
-  if (!event || typeof event !== 'object') return [{ type: 'invalid_type', message: '`event` must be an object' }]
-  if (!('type' in event)) return [{ type: 'missing_parameter', message: '`event.type` is required' }]
+  if (!event || typeof event !== 'object') return [{type: 'invalid_type', message: '`event` must be an object'}]
+  if (!('type' in event)) return [{type: 'missing_parameter', message: '`event.type` is required'}]
 
   switch (event.type) {
     case 'document':
@@ -515,13 +516,13 @@ function validateFunctionContentLakeEvent(event: unknown): BlueprintError[] {
  */
 
 export function validatePubSubFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.pubsub') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.pubsub`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.pubsub`'})
   }
 
   errors.push(...validateFunction(functionResource))
@@ -538,37 +539,37 @@ export function validatePubSubFunction(functionResource: unknown): BlueprintErro
  * @returns Array of validation errors, empty if valid
  */
 export function validateDurableFunction(functionResource: unknown): BlueprintError[] {
-  if (!functionResource) return [{ type: 'invalid_value', message: 'Function config must be provided' }]
-  if (typeof functionResource !== 'object') return [{ type: 'invalid_type', message: 'Function config must be an object' }]
+  if (!functionResource) return [{type: 'invalid_value', message: 'Function config must be provided'}]
+  if (typeof functionResource !== 'object') return [{type: 'invalid_type', message: 'Function config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if ('type' in functionResource && functionResource.type !== 'sanity.function.durable') {
-    errors.push({ type: 'invalid_value', message: '`type` must be `sanity.function.durable`' })
+    errors.push({type: 'invalid_value', message: '`type` must be `sanity.function.durable`'})
   }
 
   if ('concurrency' in functionResource && typeof functionResource.concurrency !== 'number') {
-    errors.push({ type: 'invalid_type', message: '`concurrency` must be a number' })
+    errors.push({type: 'invalid_type', message: '`concurrency` must be a number'})
   }
 
   if ('concurrency' in functionResource && typeof functionResource.concurrency === 'number' && functionResource.concurrency < 1) {
-    errors.push({ type: 'invalid_value', message: '`concurrency` must be at least 1' })
+    errors.push({type: 'invalid_value', message: '`concurrency` must be at least 1'})
   }
 
   if ('concurrency' in functionResource && typeof functionResource.concurrency === 'number' && functionResource.concurrency > 500) {
-    errors.push({ type: 'invalid_value', message: '`concurrency` must be less than 500' })
+    errors.push({type: 'invalid_value', message: '`concurrency` must be less than 500'})
   }
 
   if ('durableTimeout' in functionResource && typeof functionResource.durableTimeout !== 'number') {
-    errors.push({ type: 'invalid_type', message: '`durableTimeout` must be a number' })
+    errors.push({type: 'invalid_type', message: '`durableTimeout` must be a number'})
   }
 
   if ('durableTimeout' in functionResource && typeof functionResource.durableTimeout === 'number') {
     if (functionResource.durableTimeout < 60) {
-      errors.push({ type: 'invalid_value', message: '`durableTimeout` must be at least 60 seconds' })
+      errors.push({type: 'invalid_value', message: '`durableTimeout` must be at least 60 seconds'})
     }
     if (functionResource.durableTimeout > 31_536_000) {
-      errors.push({ type: 'invalid_value', message: '`durableTimeout` must be at most a year' })
+      errors.push({type: 'invalid_value', message: '`durableTimeout` must be at most a year'})
     }
   }
 
@@ -594,33 +595,45 @@ export function validateDurableFunction(functionResource: unknown): BlueprintErr
  * @returns Array of validation errors, empty if valid
  */
 export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
-  if (!debounce) return [{ type: 'invalid_value', message: 'Debounce config must be provided' }]
-  if (typeof debounce !== 'object') return [{ type: 'invalid_type', message: 'Debounce config must be an object' }]
+  if (debounce === undefined || debounce === null) {
+    return [{type: 'invalid_value', message: 'Debounce config must be provided'}]
+  }
+
+  // A bare duration is shorthand for `{window: <duration>}`
+  if (typeof debounce === 'string' || typeof debounce === 'number') {
+    try {
+      return validateDebounceConfig(createDebounceObject(debounce))
+    } catch {
+      return [{type: 'invalid_value', message: '`debounce` must be a valid duration'}]
+    }
+  }
+
+  if (typeof debounce !== 'object') return [{type: 'invalid_type', message: 'Debounce config must be an object'}]
 
   const errors: BlueprintError[] = []
 
   if (!('window' in debounce)) {
-    errors.push({ type: 'missing_parameter', message: '`window` must be provided' })
+    errors.push({type: 'missing_parameter', message: '`window` must be provided'})
   }
 
   if ('window' in debounce) {
     if (typeof debounce.window !== 'number') {
-      errors.push({ type: 'invalid_type', message: '`window` must be a number' })
+      errors.push({type: 'invalid_type', message: '`window` must be a number'})
     } else if (debounce.window < 1 || debounce.window > 1800) {
-      errors.push({ type: 'invalid_value', message: '`window` must be between 1 second to 1 day' })
+      errors.push({type: 'invalid_value', message: '`window` must be between 1 second to 1 day'})
     }
   }
 
   if ('maxWindow' in debounce) {
     if (typeof debounce.maxWindow !== 'number') {
-      errors.push({ type: 'invalid_type', message: '`maxWindow` must be a number' })
+      errors.push({type: 'invalid_type', message: '`maxWindow` must be a number'})
     } else if (debounce.maxWindow < 1 || debounce.maxWindow > 86400) {
-      errors.push({ type: 'invalid_value', message: '`maxWindow` must be between 1 second to 1 day' })
+      errors.push({type: 'invalid_value', message: '`maxWindow` must be between 1 second to 1 day'})
     }
   }
 
   if ('key' in debounce && typeof debounce.key !== 'string') {
-    errors.push({ type: 'invalid_type', message: '`key` must be a string' })
+    errors.push({type: 'invalid_type', message: '`key` must be a string'})
   }
 
   return errors

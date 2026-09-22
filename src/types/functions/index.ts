@@ -1,4 +1,4 @@
-import type { BlueprintResource } from '../../index.js'
+import type {BlueprintResource} from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintFunctionResourceContentLakeEvent,
@@ -7,7 +7,7 @@ import type {
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
 } from './event.js'
-import type { IanaTimezone } from './timezone.js'
+import type {IanaTimezone} from './timezone.js'
 
 export * from './event.js'
 
