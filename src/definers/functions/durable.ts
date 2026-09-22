@@ -1,7 +1,8 @@
-import {type BlueprintDurableConfig, type BlueprintDurableFunctionResource, validateDurableFunction} from '../../index.js'
-import {parseDuration} from '../../utils/parse-duration.js'
-import {runValidation} from '../../utils/validation.js'
-import {defineFunction} from './index.js'
+import { type BlueprintDurableConfig, type BlueprintDurableFunctionResource, validateDurableFunction } from '../../index.js'
+import { createDebounceObject } from '../../utils/debounce.js'
+import { parseDuration } from '../../utils/parse-duration.js'
+import { runValidation } from '../../utils/validation.js'
+import { defineFunction } from './index.js'
 
 /**
  * Defines a durable function resource.
@@ -28,15 +29,14 @@ import {defineFunction} from './index.js'
  * @returns The validated durable function resource
  */
 export function defineDurableFunction(functionConfig: BlueprintDurableConfig): BlueprintDurableFunctionResource {
-  const {name, event, concurrency, debounce, debounceKey, src, durableTimeout} = functionConfig
+  const { name, event, concurrency, debounce, src, durableTimeout } = functionConfig
   const functionResource: BlueprintDurableFunctionResource = {
-    ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
+    ...defineFunction({ ...functionConfig, src: src ?? `functions/${name}` }, { skipValidation: true }),
     type: 'sanity.function.durable',
-    ...(event !== undefined && {event}),
-    ...(durableTimeout !== undefined && {durableTimeout: parseDuration(durableTimeout, 's')}),
-    ...(concurrency !== undefined && {concurrency}),
-    ...(debounce !== undefined && {debounce}),
-    ...(debounceKey !== undefined && {debounceKey}),
+    ...(event !== undefined && { event }),
+    ...(durableTimeout !== undefined && { durableTimeout: parseDuration(durableTimeout, 's') }),
+    ...(concurrency !== undefined && { concurrency }),
+    ...(debounce !== undefined && { debounce: createDebounceObject(debounce) }),
   }
 
   runValidation(() => validateDurableFunction(functionResource))

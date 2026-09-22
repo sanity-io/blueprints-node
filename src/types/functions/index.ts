@@ -1,4 +1,4 @@
-import type {BlueprintResource} from '../../index.js'
+import type { BlueprintResource } from '../../index.js'
 import type {
   BlueprintDocumentFunctionResourceEvent,
   BlueprintFunctionResourceContentLakeEvent,
@@ -7,7 +7,7 @@ import type {
   BlueprintScheduledFunctionResourceEvent,
   BlueprintSyncTagInvalidateFunctionResourceEvent,
 } from './event.js'
-import type {IanaTimezone} from './timezone.js'
+import type { IanaTimezone } from './timezone.js'
 
 export * from './event.js'
 
@@ -66,12 +66,7 @@ interface QueueConfig {
    * Debounce window in seconds
    * @todo: not implemented - and should this always be provided with debounceKey?
    */
-  debounce?: number
-  /**
-   * Path used to group debounced events, e.g. 'document._id'
-   * @todo: not implemented - and should this always be provided with debounce window?
-   */
-  debounceKey?: string
+  debounce?: string | number | QueueDebounceConfig
   /**
    * Whether to place messages that failed processing into a Dead Letter Queue.
    * @todo: not implemented
@@ -85,6 +80,27 @@ interface QueueConfig {
    * @default `false`
    */
   fifo?: boolean
+}
+
+/**
+ * Configuration used when debouncing Queue or Workflow function types.
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface QueueDebounceConfig {
+  /**
+   * Debounce window in seconds
+   */
+  window: number
+  /**
+   * Maximum time to extend a debounce window from the first event
+   */
+  maxWindow?: number
+  /**
+   * Dotted path into {event, context} used to debounce events
+   */
+  key?: string
 }
 
 /**
