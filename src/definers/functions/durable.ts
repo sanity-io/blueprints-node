@@ -15,7 +15,6 @@ import {defineFunction} from './index.js'
  *   event: {type: 'document', on: ['create'], filter: "_type == 'post'"},
  *   concurrency: 5,
  *   debounce: 10,
- *   debounceKey: 'document._id',
  * })
  * ```
  *

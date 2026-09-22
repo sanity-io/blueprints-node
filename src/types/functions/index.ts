@@ -64,7 +64,6 @@ interface QueueConfig {
   concurrency?: number
   /**
    * Debounce window in seconds
-   * @todo: not implemented - and should this always be provided with debounceKey?
    */
   debounce?: string | number | QueueDebounceConfig
   /**

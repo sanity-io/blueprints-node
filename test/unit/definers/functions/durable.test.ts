@@ -45,7 +45,7 @@ describe('defineDurableFunction', () => {
       expect(fn.name).toEqual('test')
     })
 
-    test('should create a durable function with optional debounceKey', () => {
+    test('should create a durable function with optional debounce key', () => {
       const fn = defineDurableFunction({
         name: 'test',
         debounce: {window: 1, key: 'testKey'},

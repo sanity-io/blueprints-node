@@ -110,7 +110,6 @@ const _durableFunction: BlueprintDurableFunctionResource = {
   event: _durableDocumentEvent,
   concurrency: 5,
   debounce: 10,
-  debounceKey: 'document._id',
 }
 
 const _documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
