@@ -1,7 +1,8 @@
-import {afterEach, describe, expect, test, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest'
 import {defineQueueFunction} from '../../../../src/definers/functions/queue.js'
 import type {BlueprintFunctionResourceContentLakeEvent} from '../../../../src/index.js'
 import * as index from '../../../../src/index.js'
+import {resetCollectedErrors} from '../../../../src/utils/validation.js'
 import {defineBlueprintForResource} from '../../../helpers/index.js'
 
 const baseQueueProps = {concurrency: 420, dlq: true, fifo: true}
@@ -14,7 +15,7 @@ describe('defineQueueFunction', () => {
       expect(fn).not.toHaveProperty('event')
     })
 
-    test('should create a queue function and honour queue properties', () => {
+    test('should create a queue function and honour queue properties with a numeric debounce', () => {
       const queueProps = {...baseQueueProps, debounce: 69}
       const fn = defineQueueFunction({name: 'test', ...queueProps})
       expect(fn.type).toEqual('sanity.function.queue')
@@ -22,7 +23,7 @@ describe('defineQueueFunction', () => {
       expect(fn).toMatchObject({...baseQueueProps, debounce: {window: 69}})
     })
 
-    test('should create a queue function and honour queue properties', () => {
+    test('should create a queue function and honour queue properties with a debounce duration string', () => {
       const queueProps = {...baseQueueProps, debounce: '69s'}
       const fn = defineQueueFunction({name: 'test', ...queueProps})
       expect(fn.type).toEqual('sanity.function.queue')
@@ -30,7 +31,7 @@ describe('defineQueueFunction', () => {
       expect(fn).toMatchObject({...baseQueueProps, debounce: {window: 69}})
     })
 
-    test('should create a queue function and honour queue properties', () => {
+    test('should create a queue function and honour queue properties with a debounce config', () => {
       const queueProps = {...baseQueueProps, debounce: {window: 69, key: 'event.data._id'}}
       const fn = defineQueueFunction({name: 'test', ...queueProps})
       expect(fn.type).toEqual('sanity.function.queue')
@@ -67,6 +68,29 @@ describe('defineQueueFunction', () => {
       const event: BlueprintFunctionResourceContentLakeEvent = {type: 'document', on: ['publish']}
       const fn = defineQueueFunction({name: 'test', event, concurrency: 5, fifo: false, dlq: false})
       expect(fn).toMatchObject({event, concurrency: 5, fifo: false, dlq: false})
+    })
+  })
+
+  describe('debounce validation', () => {
+    beforeEach(() => {
+      resetCollectedErrors()
+    })
+
+    test('should not report an error for a valid debounce config', () => {
+      expect(() =>
+        defineBlueprintForResource(defineQueueFunction({name: 'test', debounce: {window: 30, maxWindow: 300, key: 'event.data._id'}})),
+      ).not.toThrow()
+    })
+
+    test('should report an error for an invalid debounce key', () => {
+      expect(() =>
+        // @ts-expect-error -- `key` must be a string, which is what we are asserting on
+        defineBlueprintForResource(defineQueueFunction({name: 'test', debounce: {window: 30, key: 123}})),
+      ).toThrow('`key` must be a string')
+    })
+
+    test('should throw if the debounce duration cannot be parsed', () => {
+      expect(() => defineQueueFunction({name: 'test', debounce: 'invalid'})).toThrow('Invalid duration: invalid')
     })
   })
 

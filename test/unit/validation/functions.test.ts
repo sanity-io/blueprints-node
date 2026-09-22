@@ -704,8 +704,44 @@ describe('validateQueueFunction', () => {
       })
       expect(errors).toStrictEqual([])
     })
+    test('should accept a queue function with a debounce config', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        debounce: {window: 30, maxWindow: 300, key: 'event.data._id'},
+      })
+      expect(errors).toStrictEqual([])
+    })
+    test('should accept a queue function with a bare debounce duration', () => {
+      expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', debounce: 30})).toStrictEqual([])
+      expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', debounce: '30s'})).toStrictEqual([])
+    })
   })
   describe('sad paths', () => {
+    test('should validate the debounce config of a queue function', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        debounce: {window: 1, key: 123},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_type',
+        message: '`key` must be a string',
+      })
+    })
+
+    test('should return an error if a queue function debounce window is missing', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        debounce: {key: 'event.data._id'},
+      })
+      expect(errors).toContainEqual({
+        type: 'missing_parameter',
+        message: '`window` must be provided',
+      })
+    })
+
     test('should return an error if the type is not `sanity.function.queue`', () => {
       const errors = functions.validateQueueFunction({type: 'invalid'})
       expect(errors).toContainEqual({
@@ -1029,6 +1065,113 @@ describe('validateDurableFunction', () => {
         type: 'invalid_value',
         message: '`durableTimeout` must be at most a year',
       })
+    })
+  })
+})
+
+describe('validateDebounceConfig', () => {
+  describe('happy paths', () => {
+    test('should accept a config with only a window', () => {
+      expect(functions.validateDebounceConfig({window: 30})).toStrictEqual([])
+    })
+
+    test('should accept a fully specified config', () => {
+      expect(functions.validateDebounceConfig({window: 30, maxWindow: 300, key: 'event.data._id'})).toStrictEqual([])
+    })
+
+    test('should accept a window at either end of its range', () => {
+      expect(functions.validateDebounceConfig({window: 1})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({window: 1800})).toStrictEqual([])
+    })
+
+    test('should accept a maxWindow at either end of its range', () => {
+      expect(functions.validateDebounceConfig({window: 1, maxWindow: 1})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({window: 1, maxWindow: 86_400})).toStrictEqual([])
+    })
+
+    test('should accept a bare number as a window in seconds', () => {
+      expect(functions.validateDebounceConfig(30)).toStrictEqual([])
+    })
+
+    test('should accept a bare duration string as a window', () => {
+      expect(functions.validateDebounceConfig('30s')).toStrictEqual([])
+      expect(functions.validateDebounceConfig('5 minutes')).toStrictEqual([])
+    })
+  })
+
+  describe('sad paths', () => {
+    test('should return an error if the config is undefined or null', () => {
+      const expected = {type: 'invalid_value', message: 'Debounce config must be provided'}
+      expect(functions.validateDebounceConfig(undefined)).toContainEqual(expected)
+      expect(functions.validateDebounceConfig(null)).toContainEqual(expected)
+    })
+
+    test('should return an error if the config is neither a duration nor an object', () => {
+      expect(functions.validateDebounceConfig(true)).toContainEqual({
+        type: 'invalid_type',
+        message: 'Debounce config must be an object',
+      })
+    })
+
+    test('should return an error if a bare duration cannot be parsed', () => {
+      const expected = {type: 'invalid_value', message: '`debounce` must be a valid duration'}
+      expect(functions.validateDebounceConfig('invalid')).toContainEqual(expected)
+      expect(functions.validateDebounceConfig('')).toContainEqual(expected)
+      expect(functions.validateDebounceConfig(Number.POSITIVE_INFINITY)).toContainEqual(expected)
+    })
+
+    test('should return an error if a bare duration is out of range', () => {
+      const expected = {type: 'invalid_value', message: '`window` must be between 1 second to 1 day'}
+      expect(functions.validateDebounceConfig(0)).toContainEqual(expected)
+      expect(functions.validateDebounceConfig('2 hours')).toContainEqual(expected)
+    })
+
+    test('should return an error if window is not provided', () => {
+      expect(functions.validateDebounceConfig({key: 'event.data._id'})).toContainEqual({
+        type: 'missing_parameter',
+        message: '`window` must be provided',
+      })
+    })
+
+    test('should return an error if window is not a number', () => {
+      expect(functions.validateDebounceConfig({window: '30'})).toContainEqual({
+        type: 'invalid_type',
+        message: '`window` must be a number',
+      })
+    })
+
+    test('should return an error if window is out of range', () => {
+      const expected = {type: 'invalid_value', message: '`window` must be between 1 second to 1 day'}
+      expect(functions.validateDebounceConfig({window: 0})).toContainEqual(expected)
+      expect(functions.validateDebounceConfig({window: 1801})).toContainEqual(expected)
+    })
+
+    test('should return an error if maxWindow is not a number', () => {
+      expect(functions.validateDebounceConfig({window: 1, maxWindow: '300'})).toContainEqual({
+        type: 'invalid_type',
+        message: '`maxWindow` must be a number',
+      })
+    })
+
+    test('should return an error if maxWindow is out of range', () => {
+      const expected = {type: 'invalid_value', message: '`maxWindow` must be between 1 second to 1 day'}
+      expect(functions.validateDebounceConfig({window: 1, maxWindow: 0})).toContainEqual(expected)
+      expect(functions.validateDebounceConfig({window: 1, maxWindow: 86_401})).toContainEqual(expected)
+    })
+
+    test('should return an error if key is not a string', () => {
+      expect(functions.validateDebounceConfig({window: 1, key: 123})).toContainEqual({
+        type: 'invalid_type',
+        message: '`key` must be a string',
+      })
+    })
+
+    test('should report every problem in a config at once', () => {
+      expect(functions.validateDebounceConfig({window: 0, maxWindow: 'nope', key: 123})).toStrictEqual([
+        {type: 'invalid_value', message: '`window` must be between 1 second to 1 day'},
+        {type: 'invalid_type', message: '`maxWindow` must be a number'},
+        {type: 'invalid_type', message: '`key` must be a string'},
+      ])
     })
   })
 })
