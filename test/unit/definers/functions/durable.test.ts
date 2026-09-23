@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { defineDurableFunction } from '../../../../src/definers/functions/durable.js'
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest'
+import {defineDurableFunction} from '../../../../src/definers/functions/durable.js'
 import * as index from '../../../../src/index.js'
-import { resetCollectedErrors } from '../../../../src/utils/validation.js'
-import { defineBlueprintForResource } from '../../../helpers/index.js'
+import {resetCollectedErrors} from '../../../../src/utils/validation.js'
+import {defineBlueprintForResource} from '../../../helpers/index.js'
 
 describe('defineDurableFunction', () => {
   describe('happy paths', () => {
@@ -23,9 +23,9 @@ describe('defineDurableFunction', () => {
     test('should create a durable function with an event', () => {
       const fn = defineDurableFunction({
         name: 'test',
-        event: { type: 'document', on: ['create'], filter: "_type == 'article'" },
+        event: {type: 'document', on: ['create'], filter: "_type == 'article'"},
       })
-      expect(fn.event).toEqual({ type: 'document', on: ['create'], filter: "_type == 'article'" })
+      expect(fn.event).toEqual({type: 'document', on: ['create'], filter: "_type == 'article'"})
     })
 
     test('should create a durable function with optional concurrency', () => {
@@ -42,16 +42,16 @@ describe('defineDurableFunction', () => {
         name: 'test',
         debounce: 3,
       })
-      expect(fn.debounce).toEqual({ window: 3 })
+      expect(fn.debounce).toEqual({window: 3})
       expect(fn.name).toEqual('test')
     })
 
     test('should create a durable function with optional debounce key', () => {
       const fn = defineDurableFunction({
         name: 'test',
-        debounce: { window: 1, key: 'testKey' },
+        debounce: {window: 1, key: 'testKey'},
       })
-      expect(fn.debounce).toEqual({ window: 1, key: 'testKey' })
+      expect(fn.debounce).toEqual({window: 1, key: 'testKey'})
       expect(fn.name).toEqual('test')
     })
 
@@ -60,11 +60,11 @@ describe('defineDurableFunction', () => {
         name: 'test',
         debounce: '5 minutes',
       })
-      expect(fn.debounce).toEqual({ window: 300 })
+      expect(fn.debounce).toEqual({window: 300})
     })
 
     test('should throw if the debounce duration cannot be parsed', () => {
-      expect(() => defineDurableFunction({ name: 'test', debounce: 'invalid' })).toThrow('Invalid duration: invalid')
+      expect(() => defineDurableFunction({name: 'test', debounce: 'invalid'})).toThrow('Invalid duration: invalid')
     })
     test('should parse durableTimeout in seconds', () => {
       const fn = defineDurableFunction({
@@ -88,19 +88,19 @@ describe('defineDurableFunction', () => {
 
       test('should not report an error for a valid debounce config', () => {
         expect(() =>
-          defineBlueprintForResource(defineDurableFunction({ name: 'test', debounce: { window: 30, maxWindow: 300, key: 'event.data._id' } })),
+          defineBlueprintForResource(defineDurableFunction({name: 'test', debounce: {window: 30, maxWindow: 300, key: 'event.data._id'}})),
         ).not.toThrow()
       })
 
       test('should report an error for an invalid debounce key', () => {
         expect(() =>
           // @ts-expect-error -- `key` must be a string, which is what we are asserting on
-          defineBlueprintForResource(defineDurableFunction({ name: 'test', debounce: { window: 30, key: 123 } })),
+          defineBlueprintForResource(defineDurableFunction({name: 'test', debounce: {window: 30, key: 123}})),
         ).toThrow('`key` must be a string')
       })
 
       test('should report an error for an out of range debounce window', () => {
-        expect(() => defineBlueprintForResource(defineDurableFunction({ name: 'test', debounce: { window: 1801 } }))).toThrow(
+        expect(() => defineBlueprintForResource(defineDurableFunction({name: 'test', debounce: {window: 1801}}))).toThrow(
           '`window` must be between 1 second to 30 minutes',
         )
       })
@@ -112,10 +112,10 @@ describe('defineDurableFunction', () => {
       })
 
       test('should throw an error if validateDurableFunction returns an error', () => {
-        const spy = vi.spyOn(index, 'validateDurableFunction').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+        const spy = vi.spyOn(index, 'validateDurableFunction').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
         expect(() =>
           defineBlueprintForResource(
-            defineDurableFunction({ name: 'test', event: { type: 'document', on: ['create'], filter: "_type == 'article'" } }),
+            defineDurableFunction({name: 'test', event: {type: 'document', on: ['create'], filter: "_type == 'article'"}}),
           ),
         ).toThrow('this is a test')
 
