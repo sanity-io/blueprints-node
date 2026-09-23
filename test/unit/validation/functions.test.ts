@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, test, vi} from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 import * as index from '../../../src/index.js'
 import * as functions from '../../../src/validation/functions.js'
 
@@ -9,20 +9,20 @@ describe('validateFunction', () => {
 
   describe('happy paths', () => {
     test('should accept a valid function', () => {
-      const errors = functions.validateFunction({name: 'test-function', type: 'test'})
+      const errors = functions.validateFunction({ name: 'test-function', type: 'test' })
       expect(errors).toHaveLength(0)
     })
     test('should accept a function with undefined env', () => {
-      const errors = functions.validateFunction({name: 'test-function', type: 'test', env: undefined})
+      const errors = functions.validateFunction({ name: 'test-function', type: 'test', env: undefined })
       expect(errors).toHaveLength(0)
     })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
-      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-      const errors = functions.validateFunction({name: 'test-function', type: 'test'})
+      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
+      const errors = functions.validateFunction({ name: 'test-function', type: 'test' })
 
-      expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+      expect(errors).toContainEqual({ type: 'test', message: 'this is a test' })
       expect(spy).toHaveBeenCalledOnce()
     })
 
@@ -44,19 +44,19 @@ describe('validateFunction', () => {
 
     test('should return an error if name is not provided', () => {
       const errors = functions.validateFunction({})
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`name` is required' })
     })
 
     test('should return an error if name is not a string', () => {
-      const errors = functions.validateFunction({name: 1})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`name` must be a string'})
+      const errors = functions.validateFunction({ name: 1 })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`name` must be a string' })
     })
     test('should validate the name when higher-level functions are called', () => {
       const docFnErrors = functions.validateDocumentFunction({})
-      expect(docFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(docFnErrors).toContainEqual({ type: 'missing_parameter', message: '`name` is required' })
 
       const mlFnErrors = functions.validateMediaLibraryAssetFunction({})
-      expect(mlFnErrors).toContainEqual({type: 'missing_parameter', message: '`name` is required'})
+      expect(mlFnErrors).toContainEqual({ type: 'missing_parameter', message: '`name` is required' })
     })
 
     test('should return an error if the type is not provided', () => {
@@ -68,7 +68,7 @@ describe('validateFunction', () => {
     })
 
     test('should return an error if the type is not a string', () => {
-      const errors = functions.validateFunction({type: 1})
+      const errors = functions.validateFunction({ type: 1 })
       expect(errors).toContainEqual({
         type: 'invalid_type',
         message: '`type` must be a string',
@@ -76,33 +76,33 @@ describe('validateFunction', () => {
     })
 
     test('should return an error if memory is not a number', () => {
-      const errors = functions.validateFunction({name: 'test', memory: '1'})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`memory` must be a number'})
+      const errors = functions.validateFunction({ name: 'test', memory: '1' })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`memory` must be a number' })
     })
 
     test('should return an error if timeout is not a number', () => {
-      const errors = functions.validateFunction({name: 'test', timeout: '1'})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`timeout` must be a number'})
+      const errors = functions.validateFunction({ name: 'test', timeout: '1' })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`timeout` must be a number' })
     })
 
     test('should return an error if robotToken is not a string', () => {
-      const errors = functions.validateFunction({name: 'test', robotToken: 123})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`robotToken` must be a string'})
+      const errors = functions.validateFunction({ name: 'test', robotToken: 123 })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`robotToken` must be a string' })
     })
 
     test('should return an error if runtime is not a valid runtime', () => {
-      const errors = functions.validateFunction({name: 'test', type: 'test', runtime: 'python'})
-      expect(errors).toContainEqual({type: 'invalid_value', message: `\`runtime\` must be one of ${index.VALID_RUNTIMES.join(', ')}`})
+      const errors = functions.validateFunction({ name: 'test', type: 'test', runtime: 'python' })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: `\`runtime\` must be one of ${index.VALID_RUNTIMES.join(', ')}` })
     })
 
     test('should return an error if env is not an object', () => {
-      const errors = functions.validateFunction({name: 'test', type: 'test', env: 'string'})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`env` must be an object'})
+      const errors = functions.validateFunction({ name: 'test', type: 'test', env: 'string' })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`env` must be an object' })
     })
 
     test('should return an error if env[key] is not a string', () => {
-      const errors = functions.validateFunction({name: 'test', type: 'test', env: {key: 1}})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`env[key]` must be a string'})
+      const errors = functions.validateFunction({ name: 'test', type: 'test', env: { key: 1 } })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`env[key]` must be a string' })
     })
   })
 })
@@ -117,7 +117,7 @@ describe('validateDocumentFunction', () => {
       const errors = functions.validateDocumentFunction({
         name: 'test',
         type: 'sanity.function.document',
-        event: {filter: '_type == "post"'},
+        event: { filter: '_type == "post"' },
       })
       expect(errors).toHaveLength(0)
     })
@@ -138,21 +138,21 @@ describe('validateDocumentFunction', () => {
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
-      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
       const errors = functions.validateDocumentFunction({
         name: 'test',
         type: 'sanity.function.document',
-        event: {filter: '_type == "post"'},
+        event: { filter: '_type == "post"' },
       })
 
-      expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+      expect(errors).toContainEqual({ type: 'test', message: 'this is a test' })
       expect(spy).toHaveBeenCalledOnce()
     })
 
     test('should return an error if event keys are defined using a mix of under the event object as well as at the top level', () => {
       const errors = functions.validateDocumentFunction({
         name: 'test',
-        event: {on: ['publish']},
+        event: { on: ['publish'] },
         filter: '_type == "post"',
       })
       expect(errors).toContainEqual({
@@ -163,7 +163,7 @@ describe('validateDocumentFunction', () => {
     })
 
     test('should return an error if the type is not `sanity.function.document`', () => {
-      const errors = functions.validateDocumentFunction({type: 'invalid'})
+      const errors = functions.validateDocumentFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.document`',
@@ -171,22 +171,22 @@ describe('validateDocumentFunction', () => {
     })
 
     test('should return an error if event.on is not an array', () => {
-      const errors = functions.validateDocumentFunction({name: 'test', event: {on: 'publish'}})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`event.on` must be an array'})
+      const errors = functions.validateDocumentFunction({ name: 'test', event: { on: 'publish' } })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`event.on` must be an array' })
     })
 
     test('should return an error if event.resource.type is empty or not dataset', () => {
-      let errors = functions.validateDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'a', id: 'myProject.*'}}})
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
+      let errors = functions.validateDocumentFunction({ name: 'test', event: { on: ['update'], resource: { type: 'a', id: 'myProject.*' } } })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "dataset"' })
 
-      errors = functions.validateDocumentFunction({name: 'test', event: {on: ['update'], resource: {id: 'myProject.*'}}})
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "dataset"'})
+      errors = functions.validateDocumentFunction({ name: 'test', event: { on: ['update'], resource: { id: 'myProject.*' } } })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "dataset"' })
     })
 
     test('should return an error if event.resource.id is invalid', () => {
       let errors = functions.validateDocumentFunction({
         name: 'test',
-        event: {on: ['update'], resource: {type: 'dataset', id: 'notEnoughPeriods'}},
+        event: { on: ['update'], resource: { type: 'dataset', id: 'notEnoughPeriods' } },
       })
       expect(errors).toContainEqual({
         type: 'invalid_format',
@@ -195,14 +195,14 @@ describe('validateDocumentFunction', () => {
 
       errors = functions.validateDocumentFunction({
         name: 'test',
-        event: {on: ['update'], resource: {type: 'dataset', id: 'too.many.periods'}},
+        event: { on: ['update'], resource: { type: 'dataset', id: 'too.many.periods' } },
       })
       expect(errors).toContainEqual({
         type: 'invalid_format',
         message: '`event.resource.id` must be in the format <projectId>.<datasetName>',
       })
 
-      errors = functions.validateDocumentFunction({name: 'test', event: {on: ['update'], resource: {type: 'dataset'}}})
+      errors = functions.validateDocumentFunction({ name: 'test', event: { on: ['update'], resource: { type: 'dataset' } } })
       expect(errors).toContainEqual({
         type: 'invalid_format',
         message: '`event.resource.id` must be in the format <projectId>.<datasetName>',
@@ -212,7 +212,7 @@ describe('validateDocumentFunction', () => {
 })
 
 describe('validateMediaLibraryAssetFunction', () => {
-  const resource = {type: 'media-library' as const, id: 'ml12345'}
+  const resource = { type: 'media-library' as const, id: 'ml12345' }
 
   afterEach(() => {
     vi.resetAllMocks()
@@ -223,26 +223,26 @@ describe('validateMediaLibraryAssetFunction', () => {
       const errors = functions.validateMediaLibraryAssetFunction({
         name: 'test',
         type: 'sanity.function.media-library.asset',
-        event: {filter: '_type == "post"', resource},
+        event: { filter: '_type == "post"', resource },
       })
       expect(errors).toHaveLength(0)
     })
   })
   describe('sad paths', () => {
     test('should return an error if validateResource returns an error', () => {
-      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
+      const spy = vi.spyOn(index, 'validateResource').mockImplementation(() => [{ type: 'test', message: 'this is a test' }])
       const errors = functions.validateMediaLibraryAssetFunction({
         name: 'test',
         type: 'sanity.function.media-library.asset',
-        event: {filter: '_type == "post"', resource},
+        event: { filter: '_type == "post"', resource },
       })
 
-      expect(errors).toContainEqual({type: 'test', message: 'this is a test'})
+      expect(errors).toContainEqual({ type: 'test', message: 'this is a test' })
       expect(spy).toHaveBeenCalledOnce()
     })
 
     test('should return an error if the type is not `sanity.function.document`', () => {
-      const errors = functions.validateMediaLibraryAssetFunction({type: 'invalid'})
+      const errors = functions.validateMediaLibraryAssetFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.media-library.asset`',
@@ -250,25 +250,25 @@ describe('validateMediaLibraryAssetFunction', () => {
     })
 
     test('should return an error if event.on is not an array', () => {
-      const errors = functions.validateMediaLibraryAssetFunction({name: 'test', event: {on: 'publish'}})
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`event.on` must be an array'})
+      const errors = functions.validateMediaLibraryAssetFunction({ name: 'test', event: { on: 'publish' } })
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`event.on` must be an array' })
     })
 
     test('should return an error if event.resource.type is empty or not media-library', () => {
       let errors = functions.validateMediaLibraryAssetFunction({
         name: 'test',
-        event: {on: ['update'], resource: {type: 'a', id: 'ml12345'}},
+        event: { on: ['update'], resource: { type: 'a', id: 'ml12345' } },
       })
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "media-library"'})
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "media-library"' })
 
-      errors = functions.validateMediaLibraryAssetFunction({name: 'test', event: {on: ['update'], resource: {id: 'ml12345'}}})
-      expect(errors).toContainEqual({type: 'invalid_value', message: '`event.resource.type` must be "media-library"'})
+      errors = functions.validateMediaLibraryAssetFunction({ name: 'test', event: { on: ['update'], resource: { id: 'ml12345' } } })
+      expect(errors).toContainEqual({ type: 'invalid_value', message: '`event.resource.type` must be "media-library"' })
     })
   })
 })
 
 describe('validateScheduledFunction', () => {
-  const validEvent = {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'}
+  const validEvent = { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' }
 
   describe('happy paths', () => {
     test('should accept a valid scheduled function', () => {
@@ -284,7 +284,7 @@ describe('validateScheduledFunction', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {...validEvent, minute},
+        event: { ...validEvent, minute },
       })
       expect(errors).toHaveLength(0)
     })
@@ -293,7 +293,7 @@ describe('validateScheduledFunction', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {...validEvent, hour},
+        event: { ...validEvent, hour },
       })
       expect(errors).toHaveLength(0)
     })
@@ -302,7 +302,7 @@ describe('validateScheduledFunction', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {...validEvent, dayOfMonth},
+        event: { ...validEvent, dayOfMonth },
       })
       expect(errors).toHaveLength(0)
     })
@@ -313,7 +313,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, month},
+          event: { ...validEvent, month },
         })
         expect(errors).toHaveLength(0)
       },
@@ -325,7 +325,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, dayOfWeek},
+          event: { ...validEvent, dayOfWeek },
         })
         expect(errors).toHaveLength(0)
       },
@@ -364,7 +364,7 @@ describe('validateScheduledFunction', () => {
   })
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.cron`', () => {
-      const errors = functions.validateScheduledFunction({type: 'invalid'})
+      const errors = functions.validateScheduledFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.cron`',
@@ -375,7 +375,7 @@ describe('validateScheduledFunction', () => {
       const errors = functions.validateScheduledFunction({
         name: 'test',
         type: 'sanity.function.cron',
-        event: {expression: '* * * * *', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: { expression: '* * * * *', minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
       })
       expect(errors).toContainEqual({
         type: 'invalid_property',
@@ -425,69 +425,69 @@ describe('validateScheduledFunction', () => {
     })
 
     test('should return an error if event is missing properties', () => {
-      const func = {name: 'test', type: 'sanity.function.cron'}
+      const func = { name: 'test', type: 'sanity.function.cron' }
       let errors = functions.validateScheduledFunction({
         ...func,
-        event: {hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: { hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`minute` must be provided'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`minute` must be provided' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {minute: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: { minute: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`hour` must be provided'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`hour` must be provided' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {hour: '*', minute: '*', month: '*', dayOfWeek: '*'},
+        event: { hour: '*', minute: '*', month: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`dayOfMonth` must be provided'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`dayOfMonth` must be provided' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {hour: '*', minute: '*', dayOfMonth: '*', dayOfWeek: '*'},
+        event: { hour: '*', minute: '*', dayOfMonth: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`month` must be provided'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`month` must be provided' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {hour: '*', minute: '*', dayOfMonth: '*', month: '*'},
+        event: { hour: '*', minute: '*', dayOfMonth: '*', month: '*' },
       })
-      expect(errors).toContainEqual({type: 'missing_parameter', message: '`dayOfWeek` must be provided'})
+      expect(errors).toContainEqual({ type: 'missing_parameter', message: '`dayOfWeek` must be provided' })
     })
 
     test('should return an error if event are not string properties', () => {
-      const func = {name: 'test', type: 'sanity.function.cron'}
+      const func = { name: 'test', type: 'sanity.function.cron' }
       let errors = functions.validateScheduledFunction({
         ...func,
-        event: {minute: 1, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: { minute: 1, hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`minute` must be a string'})
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`minute` must be a string' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {minute: '*', hour: 1, dayOfMonth: '*', month: '*', dayOfWeek: '*'},
+        event: { minute: '*', hour: 1, dayOfMonth: '*', month: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`hour` must be a string'})
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`hour` must be a string' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {minute: '*', hour: '*', dayOfMonth: 1, month: '*', dayOfWeek: '*'},
+        event: { minute: '*', hour: '*', dayOfMonth: 1, month: '*', dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`dayOfMonth` must be a string'})
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`dayOfMonth` must be a string' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {minute: '*', hour: '*', dayOfMonth: '*', month: 1, dayOfWeek: '*'},
+        event: { minute: '*', hour: '*', dayOfMonth: '*', month: 1, dayOfWeek: '*' },
       })
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`month` must be a string'})
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`month` must be a string' })
 
       errors = functions.validateScheduledFunction({
         ...func,
-        event: {minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: 1},
+        event: { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: 1 },
       })
-      expect(errors).toContainEqual({type: 'invalid_type', message: '`dayOfWeek` must be a string'})
+      expect(errors).toContainEqual({ type: 'invalid_type', message: '`dayOfWeek` must be a string' })
     })
 
     test.each(['60', '-1', 'abc', '*/60', '60-70', '0-60', '0,60', '*/', '5/', ' ', '*  *'])(
@@ -496,7 +496,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, minute},
+          event: { ...validEvent, minute },
         })
         expect(errors).toContainEqual(
           expect.objectContaining({
@@ -513,7 +513,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, hour},
+          event: { ...validEvent, hour },
         })
         expect(errors).toContainEqual(
           expect.objectContaining({
@@ -530,7 +530,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, dayOfMonth},
+          event: { ...validEvent, dayOfMonth },
         })
         expect(errors).toContainEqual(
           expect.objectContaining({
@@ -547,7 +547,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, month},
+          event: { ...validEvent, month },
         })
         expect(errors).toContainEqual(
           expect.objectContaining({
@@ -564,7 +564,7 @@ describe('validateScheduledFunction', () => {
         const errors = functions.validateScheduledFunction({
           name: 'test',
           type: 'sanity.function.cron',
-          event: {...validEvent, dayOfWeek},
+          event: { ...validEvent, dayOfWeek },
         })
         expect(errors).toContainEqual(
           expect.objectContaining({
@@ -590,7 +590,7 @@ describe('validateSyncTagInvalidateFunction', () => {
       const errors = functions.validateSyncTagInvalidateFunction({
         name: 'test',
         type: 'sanity.function.sync-tag-invalidate',
-        event: {resource: {type: 'dataset', id: 'myProj.myDataset'}},
+        event: { resource: { type: 'dataset', id: 'myProj.myDataset' } },
       })
       expect(errors).toStrictEqual([])
     })
@@ -598,14 +598,14 @@ describe('validateSyncTagInvalidateFunction', () => {
       const errors = functions.validateSyncTagInvalidateFunction({
         name: 'test',
         type: 'sanity.function.sync-tag-invalidate',
-        event: {resource: {type: 'dataset', id: '$.resources.test-dataset.resourceId'}},
+        event: { resource: { type: 'dataset', id: '$.resources.test-dataset.resourceId' } },
       })
       expect(errors).toStrictEqual([])
     })
   })
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.sync-tag-invalidate`', () => {
-      const errors = functions.validateSyncTagInvalidateFunction({type: 'invalid'})
+      const errors = functions.validateSyncTagInvalidateFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.sync-tag-invalidate`',
@@ -615,7 +615,7 @@ describe('validateSyncTagInvalidateFunction', () => {
       let errors = functions.validateSyncTagInvalidateFunction({
         name: 'test',
         type: 'sanity.function.sync-tag-invalidate',
-        event: {resource: true},
+        event: { resource: true },
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
@@ -624,7 +624,7 @@ describe('validateSyncTagInvalidateFunction', () => {
       errors = functions.validateSyncTagInvalidateFunction({
         name: 'test',
         type: 'sanity.function.sync-tag-invalidate',
-        event: {resource: {id: 'proj.dataset'}},
+        event: { resource: { id: 'proj.dataset' } },
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
@@ -633,7 +633,7 @@ describe('validateSyncTagInvalidateFunction', () => {
       errors = functions.validateSyncTagInvalidateFunction({
         name: 'test',
         type: 'sanity.function.sync-tag-invalidate',
-        event: {resource: {type: 'dataset'}},
+        event: { resource: { type: 'dataset' } },
       })
       expect(errors).toContainEqual({
         type: 'invalid_format',
@@ -676,7 +676,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {type: 'document', on: ['publish'], filter: "_type == 'post'"},
+        event: { type: 'document', on: ['publish'], filter: "_type == 'post'" },
       })
       expect(errors).toStrictEqual([])
     })
@@ -684,7 +684,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {type: 'media-library', on: ['create'], resource: {type: 'media-library', id: 'my-media-library-id'}},
+        event: { type: 'media-library', on: ['create'], resource: { type: 'media-library', id: 'my-media-library-id' } },
       })
       expect(errors).toStrictEqual([])
     })
@@ -692,7 +692,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {type: 'sync-tag-invalidate', resource: {type: 'dataset', id: 'myProj.myDataset'}},
+        event: { type: 'sync-tag-invalidate', resource: { type: 'dataset', id: 'myProj.myDataset' } },
       })
       expect(errors).toStrictEqual([])
     })
@@ -700,7 +700,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {type: 'sync-tag-invalidate'},
+        event: { type: 'sync-tag-invalidate' },
       })
       expect(errors).toStrictEqual([])
     })
@@ -708,13 +708,13 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        debounce: {window: 30, maxWindow: 300, key: 'event.data._id'},
+        debounce: { window: 30, maxWindow: 300, key: 'event.data._id' },
       })
       expect(errors).toStrictEqual([])
     })
     test('should accept a queue function with a bare debounce duration', () => {
-      expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', debounce: 30})).toStrictEqual([])
-      expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', debounce: '30s'})).toStrictEqual([])
+      expect(functions.validateQueueFunction({ name: 'test', type: 'sanity.function.queue', debounce: 30 })).toStrictEqual([])
+      expect(functions.validateQueueFunction({ name: 'test', type: 'sanity.function.queue', debounce: '30s' })).toStrictEqual([])
     })
   })
   describe('sad paths', () => {
@@ -722,7 +722,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        debounce: {window: 1, key: 123},
+        debounce: { window: 1, key: 123 },
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
@@ -734,7 +734,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        debounce: {key: 'event.data._id'},
+        debounce: { key: 'event.data._id' },
       })
       expect(errors).toContainEqual({
         type: 'missing_parameter',
@@ -743,7 +743,7 @@ describe('validateQueueFunction', () => {
     })
 
     test('should return an error if the type is not `sanity.function.queue`', () => {
-      const errors = functions.validateQueueFunction({type: 'invalid'})
+      const errors = functions.validateQueueFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.queue`',
@@ -764,7 +764,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {on: ['publish']},
+        event: { on: ['publish'] },
       })
       expect(errors).toContainEqual({
         type: 'missing_parameter',
@@ -775,7 +775,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {type: 'nope'},
+        event: { type: 'nope' },
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
@@ -786,7 +786,7 @@ describe('validateQueueFunction', () => {
       const errors = functions.validateQueueFunction({
         name: 'test',
         type: 'sanity.function.queue',
-        event: {type: 'media-library', on: ['create']},
+        event: { type: 'media-library', on: ['create'] },
       })
       expect(errors).toContainEqual({
         type: 'missing_parameter',
@@ -891,7 +891,7 @@ describe('validatePubSubFunction', () => {
   })
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.pubsub`', () => {
-      const errors = functions.validatePubSubFunction({type: 'invalid'})
+      const errors = functions.validatePubSubFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.pubsub`',
@@ -906,7 +906,7 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'document', filter: "_type == 'article'"},
+        event: { type: 'document', filter: "_type == 'article'" },
       })
       expect(errors).toStrictEqual([])
     })
@@ -914,7 +914,7 @@ describe('validateDurableFunction', () => {
 
   describe('sad paths', () => {
     test('should return an error if the type is not `sanity.function.durable`', () => {
-      const errors = functions.validateDurableFunction({type: 'invalid'})
+      const errors = functions.validateDurableFunction({ type: 'invalid' })
       expect(errors).toContainEqual({
         type: 'invalid_value',
         message: '`type` must be `sanity.function.durable`',
@@ -925,7 +925,7 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'invalid', filter: "_type == 'article'"},
+        event: { type: 'invalid', filter: "_type == 'article'" },
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
@@ -973,7 +973,7 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'document', filter: "_type == 'article'"},
+        event: { type: 'document', filter: "_type == 'article'" },
         debounce: 'invalid',
       })
       expect(errors).toContainEqual({
@@ -986,7 +986,7 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'document', filter: "_type == 'article'"},
+        event: { type: 'document', filter: "_type == 'article'" },
         debounce: '30s',
       })
       expect(errors).toEqual([])
@@ -996,12 +996,12 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'document', filter: "_type == 'article'"},
+        event: { type: 'document', filter: "_type == 'article'" },
         debounce: '2 hours',
       })
       expect(errors).toContainEqual({
         type: 'invalid_value',
-        message: '`window` must be between 1 second to 1 day',
+        message: '`window` must be between 1 second to 30 minutes',
       })
     })
 
@@ -1009,8 +1009,8 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'document', filter: "_type == 'article'"},
-        debounce: {window: 1, key: 123},
+        event: { type: 'document', filter: "_type == 'article'" },
+        debounce: { window: 1, key: 123 },
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
@@ -1022,8 +1022,8 @@ describe('validateDurableFunction', () => {
       const errors = functions.validateDurableFunction({
         name: 'test',
         type: 'sanity.function.durable',
-        event: {type: 'document', filter: "_type == 'article'"},
-        debounce: {key: 'event.data._id'},
+        event: { type: 'document', filter: "_type == 'article'" },
+        debounce: { key: 'event.data._id' },
       })
       expect(errors).toContainEqual({
         type: 'missing_parameter',
@@ -1072,21 +1072,21 @@ describe('validateDurableFunction', () => {
 describe('validateDebounceConfig', () => {
   describe('happy paths', () => {
     test('should accept a config with only a window', () => {
-      expect(functions.validateDebounceConfig({window: 30})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({ window: 30 })).toStrictEqual([])
     })
 
     test('should accept a fully specified config', () => {
-      expect(functions.validateDebounceConfig({window: 30, maxWindow: 300, key: 'event.data._id'})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({ window: 30, maxWindow: 300, key: 'event.data._id' })).toStrictEqual([])
     })
 
     test('should accept a window at either end of its range', () => {
-      expect(functions.validateDebounceConfig({window: 1})).toStrictEqual([])
-      expect(functions.validateDebounceConfig({window: 1800})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({ window: 1 })).toStrictEqual([])
+      expect(functions.validateDebounceConfig({ window: 1800 })).toStrictEqual([])
     })
 
     test('should accept a maxWindow at either end of its range', () => {
-      expect(functions.validateDebounceConfig({window: 1, maxWindow: 1})).toStrictEqual([])
-      expect(functions.validateDebounceConfig({window: 1, maxWindow: 86_400})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({ window: 1, maxWindow: 1 })).toStrictEqual([])
+      expect(functions.validateDebounceConfig({ window: 1, maxWindow: 86_400 })).toStrictEqual([])
     })
 
     test('should accept a bare number as a window in seconds', () => {
@@ -1101,7 +1101,7 @@ describe('validateDebounceConfig', () => {
 
   describe('sad paths', () => {
     test('should return an error if the config is undefined or null', () => {
-      const expected = {type: 'invalid_value', message: 'Debounce config must be provided'}
+      const expected = { type: 'invalid_value', message: 'Debounce config must be provided' }
       expect(functions.validateDebounceConfig(undefined)).toContainEqual(expected)
       expect(functions.validateDebounceConfig(null)).toContainEqual(expected)
     })
@@ -1114,63 +1114,63 @@ describe('validateDebounceConfig', () => {
     })
 
     test('should return an error if a bare duration cannot be parsed', () => {
-      const expected = {type: 'invalid_value', message: '`debounce` must be a valid duration'}
+      const expected = { type: 'invalid_value', message: '`debounce` must be a valid duration' }
       expect(functions.validateDebounceConfig('invalid')).toContainEqual(expected)
       expect(functions.validateDebounceConfig('')).toContainEqual(expected)
       expect(functions.validateDebounceConfig(Number.POSITIVE_INFINITY)).toContainEqual(expected)
     })
 
     test('should return an error if a bare duration is out of range', () => {
-      const expected = {type: 'invalid_value', message: '`window` must be between 1 second to 1 day'}
+      const expected = { type: 'invalid_value', message: '`window` must be between 1 second to 30 minutes' }
       expect(functions.validateDebounceConfig(0)).toContainEqual(expected)
       expect(functions.validateDebounceConfig('2 hours')).toContainEqual(expected)
     })
 
     test('should return an error if window is not provided', () => {
-      expect(functions.validateDebounceConfig({key: 'event.data._id'})).toContainEqual({
+      expect(functions.validateDebounceConfig({ key: 'event.data._id' })).toContainEqual({
         type: 'missing_parameter',
         message: '`window` must be provided',
       })
     })
 
     test('should return an error if window is not a number', () => {
-      expect(functions.validateDebounceConfig({window: '30'})).toContainEqual({
+      expect(functions.validateDebounceConfig({ window: '30' })).toContainEqual({
         type: 'invalid_type',
         message: '`window` must be a number',
       })
     })
 
     test('should return an error if window is out of range', () => {
-      const expected = {type: 'invalid_value', message: '`window` must be between 1 second to 1 day'}
-      expect(functions.validateDebounceConfig({window: 0})).toContainEqual(expected)
-      expect(functions.validateDebounceConfig({window: 1801})).toContainEqual(expected)
+      const expected = { type: 'invalid_value', message: '`window` must be between 1 second to 30 minutes' }
+      expect(functions.validateDebounceConfig({ window: 0 })).toContainEqual(expected)
+      expect(functions.validateDebounceConfig({ window: 1801 })).toContainEqual(expected)
     })
 
     test('should return an error if maxWindow is not a number', () => {
-      expect(functions.validateDebounceConfig({window: 1, maxWindow: '300'})).toContainEqual({
+      expect(functions.validateDebounceConfig({ window: 1, maxWindow: '300' })).toContainEqual({
         type: 'invalid_type',
         message: '`maxWindow` must be a number',
       })
     })
 
     test('should return an error if maxWindow is out of range', () => {
-      const expected = {type: 'invalid_value', message: '`maxWindow` must be between 1 second to 1 day'}
-      expect(functions.validateDebounceConfig({window: 1, maxWindow: 0})).toContainEqual(expected)
-      expect(functions.validateDebounceConfig({window: 1, maxWindow: 86_401})).toContainEqual(expected)
+      const expected = { type: 'invalid_value', message: '`maxWindow` must be between 1 second to 1 day' }
+      expect(functions.validateDebounceConfig({ window: 1, maxWindow: 0 })).toContainEqual(expected)
+      expect(functions.validateDebounceConfig({ window: 1, maxWindow: 86_401 })).toContainEqual(expected)
     })
 
     test('should return an error if key is not a string', () => {
-      expect(functions.validateDebounceConfig({window: 1, key: 123})).toContainEqual({
+      expect(functions.validateDebounceConfig({ window: 1, key: 123 })).toContainEqual({
         type: 'invalid_type',
         message: '`key` must be a string',
       })
     })
 
     test('should report every problem in a config at once', () => {
-      expect(functions.validateDebounceConfig({window: 0, maxWindow: 'nope', key: 123})).toStrictEqual([
-        {type: 'invalid_value', message: '`window` must be between 1 second to 1 day'},
-        {type: 'invalid_type', message: '`maxWindow` must be a number'},
-        {type: 'invalid_type', message: '`key` must be a string'},
+      expect(functions.validateDebounceConfig({ window: 0, maxWindow: 'nope', key: 123 })).toStrictEqual([
+        { type: 'invalid_value', message: '`window` must be between 1 second to 30 minutes' },
+        { type: 'invalid_type', message: '`maxWindow` must be a number' },
+        { type: 'invalid_type', message: '`key` must be a string' },
       ])
     })
   })
