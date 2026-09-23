@@ -620,7 +620,7 @@ export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
     if (typeof debounce.window !== 'number') {
       errors.push({type: 'invalid_type', message: '`window` must be a number'})
     } else if (debounce.window < 1 || debounce.window > 1800) {
-      errors.push({type: 'invalid_value', message: '`window` must be between 1 second to 1 day'})
+      errors.push({type: 'invalid_value', message: '`window` must be between 1 second to 30 minutes'})
     }
   }
 
