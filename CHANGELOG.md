@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.1](https://github.com/sanity-io/blueprints-node/compare/v0.27.0...v0.27.1) (2026-09-24)
+
+
+### Bug Fixes
+
+* Add debounce config to queue and durable ([#176](https://github.com/sanity-io/blueprints-node/issues/176)) ([5868056](https://github.com/sanity-io/blueprints-node/commit/5868056a32759fc2a5a87bce058b3740f865d90f))
+
 ## [0.27.0](https://github.com/sanity-io/blueprints-node/compare/v0.26.1...v0.27.0) (2026-09-21)
 
 
