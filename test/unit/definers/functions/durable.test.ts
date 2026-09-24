@@ -63,6 +63,14 @@ describe('defineDurableFunction', () => {
       expect(fn.debounce).toEqual({window: 300})
     })
 
+    test('should parse window and maxWindow durations inside a debounce config', () => {
+      const fn = defineDurableFunction({
+        name: 'test',
+        debounce: {window: '5 minutes', maxWindow: '1 hour', key: 'event.data._id'},
+      })
+      expect(fn.debounce).toEqual({window: 300, maxWindow: 3_600, key: 'event.data._id'})
+    })
+
     test('should throw if the debounce duration cannot be parsed', () => {
       expect(() => defineDurableFunction({name: 'test', debounce: 'invalid'})).toThrow('Invalid duration: invalid')
     })
@@ -99,10 +107,24 @@ describe('defineDurableFunction', () => {
         ).toThrow('`key` must be a string')
       })
 
-      test('should report an error for an out of range debounce window', () => {
-        expect(() => defineBlueprintForResource(defineDurableFunction({name: 'test', debounce: {window: 1801}}))).toThrow(
-          '`window` must be between 1 second to 30 minutes',
+      test('should report an error for a maxWindow that is not greater than the window', () => {
+        expect(() => defineBlueprintForResource(defineDurableFunction({name: 'test', debounce: {window: 300, maxWindow: 60}}))).toThrow(
+          '`maxWindow` must be greater than `window`',
         )
+      })
+
+      test('should report an error for a maxWindow duration that is not greater than the window', () => {
+        expect(() =>
+          defineBlueprintForResource(defineDurableFunction({name: 'test', debounce: {window: '5 minutes', maxWindow: '30s'}})),
+        ).toThrow('`maxWindow` must be greater than `window`')
+      })
+
+      test('should throw when a debounce config has no window to parse', () => {
+        // `window` is required on the way in, so the definer cannot defer this to validation
+        expect(() =>
+          // @ts-expect-error -- `window` is required, which is what we are asserting on
+          defineDurableFunction({name: 'test', debounce: {maxWindow: 300}}),
+        ).toThrow('Invalid debounce config: `window` must be provided')
       })
     })
 

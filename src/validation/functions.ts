@@ -7,7 +7,7 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
-import {createDebounceObject} from '../utils/debounce.js'
+import {resolveDebounceDuration} from '../utils/debounce.js'
 import {isReference} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
@@ -601,35 +601,51 @@ export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
 
   // A bare duration is shorthand for `{window: <duration>}`
   if (typeof debounce === 'string' || typeof debounce === 'number') {
-    try {
-      return validateDebounceConfig(createDebounceObject(debounce))
-    } catch {
-      return [{type: 'invalid_value', message: '`debounce` must be a valid duration'}]
-    }
+    const resolved = resolveDebounceDuration('debounce', debounce)
+    return resolved.seconds === undefined ? resolved.errors : validateDebounceConfig({window: resolved.seconds})
   }
 
   if (typeof debounce !== 'object') return [{type: 'invalid_type', message: 'Debounce config must be an object'}]
 
   const errors: BlueprintError[] = []
 
+  // each window is only kept when it is individually valid, so the comparison below doesn't pile onto an existing error
+  let window: number | undefined
+  let maxWindow: number | undefined
+
   if (!('window' in debounce)) {
     errors.push({type: 'missing_parameter', message: '`window` must be provided'})
   }
 
   if ('window' in debounce) {
-    if (typeof debounce.window !== 'number') {
-      errors.push({type: 'invalid_type', message: '`window` must be a number'})
-    } else if (debounce.window < 1 || debounce.window > 1800) {
-      errors.push({type: 'invalid_value', message: '`window` must be between 1 second to 30 minutes'})
+    const resolved = resolveDebounceDuration('window', debounce.window)
+    errors.push(...resolved.errors)
+
+    if (resolved.seconds !== undefined) {
+      if (resolved.seconds < 1) {
+        errors.push({type: 'invalid_value', message: '`window` must be greater than 1 second'})
+      } else {
+        window = resolved.seconds
+      }
     }
   }
 
   if ('maxWindow' in debounce) {
-    if (typeof debounce.maxWindow !== 'number') {
-      errors.push({type: 'invalid_type', message: '`maxWindow` must be a number'})
-    } else if (debounce.maxWindow < 1 || debounce.maxWindow > 86400) {
-      errors.push({type: 'invalid_value', message: '`maxWindow` must be between 1 second to 1 day'})
+    const resolved = resolveDebounceDuration('maxWindow', debounce.maxWindow)
+    errors.push(...resolved.errors)
+
+    if (resolved.seconds !== undefined) {
+      if (resolved.seconds < 1) {
+        errors.push({type: 'invalid_value', message: '`maxWindow` must be greater than 1 second'})
+      } else {
+        maxWindow = resolved.seconds
+      }
     }
+  }
+
+  // `maxWindow` caps how far `window` can be extended from the first event, so it has to leave room to extend
+  if (window !== undefined && maxWindow !== undefined && maxWindow <= window) {
+    errors.push({type: 'invalid_value', message: '`maxWindow` must be greater than `window`'})
   }
 
   if ('key' in debounce && typeof debounce.key !== 'string') {

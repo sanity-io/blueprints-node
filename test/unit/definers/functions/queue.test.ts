@@ -39,6 +39,11 @@ describe('defineQueueFunction', () => {
       expect(fn).toMatchObject({...baseQueueProps, debounce: {window: 69, key: 'event.data._id'}})
     })
 
+    test('should parse window and maxWindow durations inside a debounce config', () => {
+      const fn = defineQueueFunction({name: 'test', debounce: {window: '69s', maxWindow: '1 hour'}})
+      expect(fn.debounce).toEqual({window: 69, maxWindow: 3_600})
+    })
+
     test('should pass through a document event', () => {
       const event: BlueprintFunctionResourceContentLakeEvent = {type: 'document', on: ['publish'], filter: "_type == 'post'"}
       const fn = defineQueueFunction({name: 'test', event})
