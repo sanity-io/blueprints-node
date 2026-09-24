@@ -63,15 +63,10 @@ interface QueueConfig {
    */
   concurrency?: number
   /**
-   * Debounce window in seconds
-   * @todo: not implemented - and should this always be provided with debounceKey?
+   * Debounce configuration, with any durations already resolved to seconds.
+   * Definers accept the wider {@link DebounceInput} and parse it into this shape.
    */
-  debounce?: number
-  /**
-   * Path used to group debounced events, e.g. 'document._id'
-   * @todo: not implemented - and should this always be provided with debounce window?
-   */
-  debounceKey?: string
+  debounce?: DebounceConfig
   /**
    * Whether to place messages that failed processing into a Dead Letter Queue.
    * @todo: not implemented
@@ -86,6 +81,56 @@ interface QueueConfig {
    */
   fifo?: boolean
 }
+
+/**
+ * Configuration used when debouncing Queue or Workflow function types.
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface DebounceConfig {
+  /**
+   * Debounce window in seconds
+   */
+  window: number
+  /**
+   * Maximum time in seconds to extend a debounce window from the first event
+   */
+  maxWindow?: number
+  /**
+   * Dotted path into {event, context} used to debounce events
+   */
+  key?: string
+}
+
+/**
+ * Debounce configuration as accepted by a function definer, before durations are parsed.
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface DebounceConfigInput extends Omit<DebounceConfig, 'window' | 'maxWindow'> {
+  /**
+   * Debounce window
+   * A number is read as  seconds, a string is parsed as a duration, e.g. `'5 minutes'`.
+   */
+  window: string | number
+  /**
+   * Maximum time to extend a debounce window from the first event.
+   * Must be greater than `window`.
+   * A number is read as seconds, a string is parsed as a duration, e.g. `'1 hour'`.
+   */
+  maxWindow?: string | number
+}
+
+/**
+ * Debounce configuration accepted by a function definer, either as a bare duration
+ * used as the window, or as a full config.
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export type DebounceInput = string | number | DebounceConfigInput
 
 /**
  * Base function resource with common properties for all function types that can belong to projects.
@@ -262,17 +307,19 @@ export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInva
  * @category Functions Types
  * @interface
  */
-export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event'> &
-  QueueConfig & {
-    /**
-     * Path to the function source code
-     * @defaultValue `functions/${name}`
-     */
-    src?: string
+export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event' | 'debounce'> & {
+  /**
+   * Path to the function source code
+   * @defaultValue `functions/${name}`
+   */
+  src?: string
 
-    /** Optional event configuration that triggers the queue function */
-    event?: BlueprintFunctionResourceContentLakeEvent
-  }
+  /** Optional event configuration that triggers the queue function */
+  event?: BlueprintFunctionResourceContentLakeEvent
+
+  /** Optional debounce configuration, as a duration or a full config */
+  debounce?: DebounceInput
+}
 
 /**
  * Configuration for defining an event function.
@@ -296,7 +343,7 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
  * @category Functions Types
  * @interface
  */
-export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event' | 'durableTimeout'> & {
+export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event' | 'durableTimeout' | 'debounce'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`
@@ -311,4 +358,8 @@ export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'typ
    * @defaultValue 86_400 (24 hours)
    */
   durableTimeout?: string | number
+  /**
+   * Optional debounce configuration, as a duration or a full config
+   */
+  debounce?: DebounceInput
 }

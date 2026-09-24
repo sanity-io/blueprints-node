@@ -109,8 +109,7 @@ const _durableFunction: BlueprintDurableFunctionResource = {
   src: 'functions/my-durable',
   event: _durableDocumentEvent,
   concurrency: 5,
-  debounce: 10,
-  debounceKey: 'document._id',
+  debounce: {window: 10},
 }
 
 const _documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
@@ -149,6 +148,18 @@ const syncTagInvalidateFunction: BlueprintSyncTagInvalidateFunctionResource = de
 
 const queueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
   name: 'stuff',
+})
+
+// a definer accepts durations for `debounce` and returns a resource holding the parsed config
+const debouncedQueueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
+  name: 'debounced-stuff',
+  debounce: {window: '30s', maxWindow: '1 hour', key: 'event.data._id'},
+})
+const _debounceWindowIsSeconds: number | undefined = debouncedQueueFunction.debounce?.window
+
+const _bareDebounceQueueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
+  name: 'bare-debounced-stuff',
+  debounce: '69s',
 })
 
 const pubSubFunction: BlueprintPubSubFunctionResource = definePubSubFunction({

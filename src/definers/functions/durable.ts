@@ -1,4 +1,5 @@
 import {type BlueprintDurableConfig, type BlueprintDurableFunctionResource, validateDurableFunction} from '../../index.js'
+import {createDebounceObject} from '../../utils/debounce.js'
 import {parseDuration} from '../../utils/parse-duration.js'
 import {runValidation} from '../../utils/validation.js'
 import {defineFunction} from './index.js'
@@ -14,7 +15,6 @@ import {defineFunction} from './index.js'
  *   event: {type: 'document', on: ['create'], filter: "_type == 'post'"},
  *   concurrency: 5,
  *   debounce: 10,
- *   debounceKey: 'document._id',
  * })
  * ```
  *
@@ -28,15 +28,14 @@ import {defineFunction} from './index.js'
  * @returns The validated durable function resource
  */
 export function defineDurableFunction(functionConfig: BlueprintDurableConfig): BlueprintDurableFunctionResource {
-  const {name, event, concurrency, debounce, debounceKey, src, durableTimeout} = functionConfig
+  const {name, event, concurrency, debounce, src, durableTimeout} = functionConfig
   const functionResource: BlueprintDurableFunctionResource = {
     ...defineFunction({...functionConfig, src: src ?? `functions/${name}`}, {skipValidation: true}),
     type: 'sanity.function.durable',
     ...(event !== undefined && {event}),
     ...(durableTimeout !== undefined && {durableTimeout: parseDuration(durableTimeout, 's')}),
     ...(concurrency !== undefined && {concurrency}),
-    ...(debounce !== undefined && {debounce}),
-    ...(debounceKey !== undefined && {debounceKey}),
+    ...(debounce !== undefined && {debounce: createDebounceObject(debounce)}),
   }
 
   runValidation(() => validateDurableFunction(functionResource))

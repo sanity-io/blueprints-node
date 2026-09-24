@@ -1,4 +1,5 @@
 import {type BlueprintQueueFunctionConfig, type BlueprintQueueFunctionResource, validateQueueFunction} from '../../index.js'
+import {createDebounceObject} from '../../utils/debounce.js'
 import {runValidation} from '../../utils/validation.js'
 import {defineFunction} from './index.js'
 /**
@@ -30,14 +31,13 @@ import {defineFunction} from './index.js'
  * @returns The validated queue function resource
  */
 export function defineQueueFunction(functionConfig: BlueprintQueueFunctionConfig): BlueprintQueueFunctionResource {
-  const {concurrency = 1, fifo = true, dlq = true, debounce, debounceKey, event} = functionConfig
+  const {concurrency = 1, fifo = true, dlq = true, debounce, event} = functionConfig
 
   const functionResource: BlueprintQueueFunctionResource = {
     ...defineFunction(functionConfig, {skipValidation: true}),
     type: 'sanity.function.queue',
     ...(concurrency !== undefined && {concurrency}),
-    ...(debounce !== undefined && {debounce}),
-    ...(debounceKey !== undefined && {debounceKey}),
+    ...(debounce !== undefined && {debounce: createDebounceObject(debounce)}),
     ...(dlq !== undefined && {dlq}),
     ...(event !== undefined && {event}),
     ...(fifo !== undefined && {fifo}),
