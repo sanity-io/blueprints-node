@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.28.0](https://github.com/sanity-io/blueprints-node/compare/v0.27.0...v0.28.0) (2026-09-29)
+
+
+### Features
+
+* **resolve:** export read util functions ([#178](https://github.com/sanity-io/blueprints-node/issues/178)) ([cf94c2d](https://github.com/sanity-io/blueprints-node/commit/cf94c2d727f12d7a4bff2e367fa40d433249d986))
+
+
+### Bug Fixes
+
+* Add debounce config to queue and durable ([#176](https://github.com/sanity-io/blueprints-node/issues/176)) ([5868056](https://github.com/sanity-io/blueprints-node/commit/5868056a32759fc2a5a87bce058b3740f865d90f))
+
 ## [0.27.0](https://github.com/sanity-io/blueprints-node/compare/v0.26.1...v0.27.0) (2026-09-21)
 
 
