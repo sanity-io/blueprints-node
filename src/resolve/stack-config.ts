@@ -23,6 +23,8 @@ const ID_KEYS: (keyof BlueprintsApiConfig)[] = ['organizationId', 'projectId', '
  * @param dir The blueprint directory. Defaults to the current working directory.
  * @returns The ids in the file and its path, or `undefined` when the file does not exist
  * @throws When the file exists and is not valid JSON
+ * @internal
+ * @private
  * @category Resolve
  */
 export function readStackConfigFile(dir: string = cwd()): StackConfigFile | undefined {
@@ -42,6 +44,8 @@ export function readStackConfigFile(dir: string = cwd()): StackConfigFile | unde
 /**
  * Read the Stack ids from `SANITY_ORGANIZATION_ID`, `SANITY_PROJECT_ID`, and `SANITY_BLUEPRINT_STACK_ID`
  * @param env The environment to read. Defaults to `process.env`.
+ * @internal
+ * @private
  * @category Resolve
  */
 export function stackIdsFromEnv(env: NodeJS.ProcessEnv = processEnv): StackIds {
@@ -63,6 +67,8 @@ export function stackIdsFromEnv(env: NodeJS.ProcessEnv = processEnv): StackIds {
  * config.stackId // 'ST-abc123'
  * config.sources.stackId // 'config'
  * ```
+ * @internal
+ * @private
  * @category Resolve
  */
 export function resolveStackConfig(sources: StackIdSources = {}): StackConfig {

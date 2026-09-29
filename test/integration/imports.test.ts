@@ -35,7 +35,7 @@ import {
   validateRole,
   validateSyncTagInvalidateFunction,
 } from '@sanity/blueprints'
-import {findBlueprintFile, readBlueprint, readStack, readStackConfigFile, resolveStackConfig} from '@sanity/blueprints/resolve'
+import {readBlueprint, readStack} from '@sanity/blueprints/resolve'
 import {describe, expect, it} from 'vitest'
 
 describe('package imports', () => {
@@ -184,7 +184,7 @@ describe('package imports', () => {
   })
 
   it('should import the @sanity/blueprints/resolve entry point', () => {
-    for (const fn of [findBlueprintFile, readBlueprint, readStack, readStackConfigFile, resolveStackConfig]) {
+    for (const fn of [readBlueprint, readStack]) {
       expect(fn).toBeInstanceOf(Function)
     }
   })

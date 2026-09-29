@@ -13,7 +13,21 @@
  * @categoryDescription Resolve
  * These functions read a blueprint from disk, resolve the Stack it deploys to, and read that Stack from the Blueprints API.
  */
-export * from './load.js'
-export * from './stack.js'
-export * from './stack-config.js'
+export {
+  BLUEPRINT_FILE_NAMES,
+  findBlueprintFile,
+  loadBlueprintFile,
+  readBlueprint,
+} from './load.js'
+export {
+  DEFAULT_BLUEPRINTS_API_VERSION,
+  readStack,
+} from './stack.js'
+export {
+  readStackConfigFile,
+  resolveStackConfig,
+  STACK_CONFIG_DIR,
+  STACK_CONFIG_FILE,
+  stackIdsFromEnv,
+} from './stack-config.js'
 export * from './types.js'

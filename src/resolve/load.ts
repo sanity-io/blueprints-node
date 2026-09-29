@@ -12,6 +12,8 @@ const BASE_NAMES = EXTENSIONS.map((ext) => `blueprint${ext}`)
 
 /**
  * The file names {@link findBlueprintFile} looks for, in order
+ * @internal
+ * @private
  * @category Resolve
  */
 export const BLUEPRINT_FILE_NAMES = [...BASE_NAMES, ...BASE_NAMES.map((name) => `sanity.${name}`)]
@@ -23,6 +25,8 @@ export const BLUEPRINT_FILE_NAMES = [...BASE_NAMES, ...BASE_NAMES.map((name) => 
  *
  * @param path A blueprint file or directory. Defaults to the current working directory.
  * @returns The absolute path of the file, or `undefined` when none is found
+ * @internal
+ * @private
  * @category Resolve
  */
 export function findBlueprintFile(path: string = cwd()): string | undefined {
@@ -50,6 +54,8 @@ export function findBlueprintFile(path: string = cwd()): string | undefined {
  *
  * @param path The blueprint file
  * @throws When the file cannot be loaded or does not produce a blueprint object
+ * @internal
+ * @private
  * @category Resolve
  */
 export async function loadBlueprintFile(path: string, options: LoadBlueprintFileOptions = {}): Promise<LoadedBlueprintFile> {
