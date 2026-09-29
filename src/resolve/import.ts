@@ -4,7 +4,10 @@ import type {BlueprintLoader} from './types.js'
 
 type CreateJiti = (id: string) => {import(id: string, options: {default: true}): Promise<unknown>}
 
-// Node throws these while loading a file, before running any of it, so a retry with jiti runs nothing twice
+/*
+ * Error strings thrown by Node when importing a .ts file.
+ * Indicators to attempt again with jiti.
+ */
 const RETRY_WITH_JITI = new Set([
   'ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX',
   'ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING',

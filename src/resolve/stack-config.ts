@@ -6,12 +6,16 @@ import type {ConfigSource, StackConfig, StackConfigFile, StackIdSources, StackId
 
 /**
  * The directory next to the blueprint file that holds the Stack config
+ * @internal
+ * @private
  * @category Resolve
  */
 export const STACK_CONFIG_DIR = '.sanity'
 
 /**
  * The file in {@link STACK_CONFIG_DIR} that holds the Stack ids
+ * @internal
+ * @private
  * @category Resolve
  */
 export const STACK_CONFIG_FILE = 'blueprint.config.json'

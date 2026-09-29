@@ -25,6 +25,8 @@ export type StackIds = Partial<BlueprintsApiConfig>
 
 /**
  * The ids from each source, in the order {@link resolveStackConfig} checks them
+ * @internal
+ * @private
  * @category Resolve
  */
 export interface StackIdSources {
@@ -49,6 +51,8 @@ export interface StackConfig extends StackIds {
 
 /**
  * The ids in `.sanity/blueprint.config.json`, and the path of that file
+ * @internal
+ * @private
  * @category Resolve
  */
 export interface StackConfigFile extends StackIds {
@@ -62,6 +66,7 @@ export interface StackConfigFile extends StackIds {
 export type BlueprintLoader = (path: string) => Promise<unknown>
 
 /**
+ * Options for loading a blueprint file
  * @category Resolve
  */
 export interface LoadBlueprintFileOptions {
@@ -81,6 +86,7 @@ export interface LoadedBlueprintFile {
 }
 
 /**
+ * Options for {@link readBlueprint}
  * @category Resolve
  */
 export interface ReadBlueprintOptions extends LoadBlueprintFileOptions {
@@ -158,6 +164,7 @@ export interface StackInfo extends BlueprintInfo {
 }
 
 /**
+ * Options for {@link readStack}
  * @category Resolve
  */
 export interface ReadStackOptions extends ReadBlueprintOptions {
