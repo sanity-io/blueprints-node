@@ -26,6 +26,12 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./resolve": {
+      "source": "./src/resolve/index.ts",
+      "types": "./dist/resolve/index.d.ts",
+      "import": "./dist/resolve/index.js",
+      "default": "./dist/resolve/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "dist/index.js",
@@ -56,10 +62,14 @@
     "vitest": "5.0.1"
   },
   "peerDependencies": {
-    "vite": ">= 8"
+    "vite": ">= 8",
+    "jiti": "^2"
   },
   "peerDependenciesMeta": {
     "vite": {
+      "optional": true
+    },
+    "jiti": {
       "optional": true
     }
   },

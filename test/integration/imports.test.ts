@@ -35,6 +35,7 @@ import {
   validateRole,
   validateSyncTagInvalidateFunction,
 } from '@sanity/blueprints'
+import {readBlueprint, readStack} from '@sanity/blueprints/resolve'
 import {describe, expect, it} from 'vitest'
 
 describe('package imports', () => {
@@ -180,5 +181,11 @@ describe('package imports', () => {
 
   it('should import validateRole', () => {
     expect(validateRole).toBeInstanceOf(Function)
+  })
+
+  it('should import the @sanity/blueprints/resolve entry point', () => {
+    for (const fn of [readBlueprint, readStack]) {
+      expect(fn).toBeInstanceOf(Function)
+    }
   })
 })

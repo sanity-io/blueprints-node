@@ -76,3 +76,25 @@ export default defineBlueprint({
 | `defineRobotToken` β | Robot token for automated access |
 
 Each definer validates its input at call time and returns a typed resource object. See the [reference docs](https://reference.sanity.io/_sanity/blueprints) for full configuration details and additional resource types.
+
+## Reading a blueprint and its Stack
+
+The Sanity CLI handles this for you. For scripts and tools, `@sanity/blueprints/resolve` reads a local blueprint and its deployed Stack.
+
+```ts
+import {readBlueprint, readStack} from '@sanity/blueprints/resolve'
+
+const blueprint = await readBlueprint()
+
+blueprint.path // '/path/to/project/sanity.blueprint.ts'
+blueprint.resourcesByName['production-dataset']?.type // 'sanity.project.dataset'
+blueprint.stackId // 'ST-abc123'
+
+const {stack, resourcesByName, values} = await readStack({token: process.env.SANITY_AUTH_TOKEN})
+
+stack.name // the Stack's name
+resourcesByName['my-function']?.externalId // a function's external ID
+values['production-dataset']?.name // the deployed dataset's name
+```
+
+See the [reference docs](https://reference.sanity.io/_sanity/blueprints) for options.

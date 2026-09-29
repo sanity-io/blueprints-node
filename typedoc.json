@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["src/index.ts"],
+  "entryPoints": ["src/index.ts", "src/resolve/index.ts"],
   "includeVersion": true,
   "entryPointStrategy": "expand",
   "json": "./docs/typedoc-output.json",
@@ -15,7 +15,8 @@
     "Resource Types", // src/types/
     "Functions Types", // function resource types
     "Validation", // src/validation/
-    "Blueprint Internals" // misc Blueprint types
+    "Blueprint Internals", // misc Blueprint types
+    "Resolve" // src/resolve/, the @sanity/blueprints/resolve entry point
     // "Other" will be last
   ],
   "navigation": {
