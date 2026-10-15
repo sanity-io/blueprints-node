@@ -20,6 +20,8 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
+  type BlueprintPermissionConfig,
+  type BlueprintPermissionResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintPubSubFunctionResource,
@@ -40,6 +42,7 @@ import {
   defineMediaLibraryAssetFunction,
   defineMediaLibraryConfig,
   definePanelView,
+  definePermission,
   defineProjectRole,
   definePubSubFunction,
   defineQueueFunction,
@@ -59,6 +62,7 @@ import {
   validateFunction,
   validateMediaLibraryAssetFunction,
   validateMediaLibraryConfig,
+  validatePermission,
   validatePubSubFunction,
   validateQueueFunction,
   validateResource,
@@ -223,6 +227,16 @@ const mediaLibraryConfigConfig: BlueprintMediaLibraryConfigConfig = {
 }
 const mediaLibraryConfigResource: BlueprintMediaLibraryConfigResource = defineMediaLibraryConfig(mediaLibraryConfigConfig)
 
+const permissionConfig: BlueprintPermissionConfig = {
+  name: 'test-permission',
+  title: 'Test Permission',
+  description: 'Test Permission Description',
+  permissionType: 'sanity.document.filter',
+  filter: '_type == "article"',
+  project: 'projectId',
+}
+const permissionResource: BlueprintPermissionResource = definePermission(permissionConfig)
+
 const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
 const roleConfig: BlueprintRoleConfig = {
   name: 'test-role',
@@ -278,6 +292,7 @@ const blueprint: Blueprint = {
     documentWebhookResource,
     mediaLibraryAssetFunctionResource,
     mediaLibraryConfigResource,
+    permissionResource,
     projectRoleResource,
     blueprintResource,
   ],
@@ -299,6 +314,7 @@ validateDocumentFunction(documentFunctionResource)
 validateDocumentWebhook(documentWebhookResource)
 validateFunction({name: 'test-function'})
 validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
+validatePermission(permissionResource)
 validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)

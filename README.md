@@ -72,6 +72,7 @@ export default defineBlueprint({
 | `defineMediaLibraryAssetFunction` | Function triggered by media library events |
 | `defineCorsOrigin` β | CORS origin allowing browser requests to your project |
 | `defineDocumentWebhook` β | Webhook triggered by document changes |
+| `definePermission` β | Custom permission (GROQ filter) that roles can grant |
 | `defineRole` β | Custom role with permissions |
 | `defineRobotToken` β | Robot token for automated access |
 
