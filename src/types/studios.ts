@@ -41,10 +41,8 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /**
    * The project ID of the project that contains your Studio.
-   *
-   * The `project` attribute must be defined if your blueprint is scoped to an organization.
    */
-  project?: string
+  project: string
 
   /** The slug to be used in the studio hostname. Must match `^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`. */
   slug: string
