@@ -3,6 +3,12 @@ import * as permissions from '../../../src/definers/permissions.js'
 import * as index from '../../../src/index.js'
 import {defineBlueprintForResource} from '../../helpers/index.js'
 
+const articlesOnly = {
+  name: 'articles-only',
+  permissionType: 'sanity.document.filter.mode',
+  config: {filter: '_type == "article"'},
+} as const
+
 describe('definePermission', () => {
   afterEach(() => {
     vi.resetAllMocks()
@@ -10,23 +16,19 @@ describe('definePermission', () => {
 
   test('should throw an error if validatePermission returns an error', () => {
     const spy = vi.spyOn(index, 'validatePermission').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-    expect(() => defineBlueprintForResource(permissions.definePermission({name: 'articles-only', filter: '_type == "article"'}))).toThrow(
-      /this is a test/,
-    )
+    expect(() => defineBlueprintForResource(permissions.definePermission(articlesOnly))).toThrow(/this is a test/)
 
     expect(spy).toHaveBeenCalledOnce()
   })
 
   test('should accept a valid configuration and set the type', () => {
-    const permissionResource = permissions.definePermission({
-      name: 'articles-only',
-      filter: '_type == "article"',
-    })
+    const permissionResource = permissions.definePermission(articlesOnly)
 
     expect(permissionResource).toStrictEqual({
       name: 'articles-only',
       type: 'sanity.access.permission',
-      filter: '_type == "article"',
+      permissionType: 'sanity.document.filter.mode',
+      config: {filter: '_type == "article"'},
     })
   })
 
@@ -36,7 +38,7 @@ describe('definePermission', () => {
       title: 'Articles only',
       description: 'Access to article documents',
       permissionType: 'sanity.document.filter',
-      filter: '_type == "article"',
+      config: {filter: '_type == "article"'},
       project: '$.resources.my-project.id',
       lifecycle: {
         deletionPolicy: 'retain',
@@ -49,7 +51,7 @@ describe('definePermission', () => {
       title: 'Articles only',
       description: 'Access to article documents',
       permissionType: 'sanity.document.filter',
-      filter: '_type == "article"',
+      config: {filter: '_type == "article"'},
       project: '$.resources.my-project.id',
       lifecycle: {
         deletionPolicy: 'retain',
@@ -59,8 +61,7 @@ describe('definePermission', () => {
 
   test('should accept a valid configuration with an attach lifecycle', () => {
     const permissionResource = permissions.definePermission({
-      name: 'articles-only',
-      filter: '_type == "article"',
+      ...articlesOnly,
       lifecycle: {
         ownershipAction: {
           type: 'attach',

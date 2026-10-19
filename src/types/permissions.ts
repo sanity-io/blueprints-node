@@ -11,7 +11,7 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 export type BlueprintPermissionType = 'sanity.document.filter' | 'sanity.document.filter.mode'
 
 /**
- * A custom permission resource that roles can grant. The Manage UI calls it a "content resource".
+ * A custom permission resource that roles can grant.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
@@ -31,11 +31,13 @@ export interface BlueprintPermissionResource extends BlueprintResource<Blueprint
    * The type of the permission. It cannot change after the permission is created.
    *
    * Manage creates content resources as `sanity.document.filter.mode`, and lists only custom permissions of that type.
-   * @defaultValue `sanity.document.filter.mode`
    */
-  permissionType?: BlueprintPermissionType
-  /** A GROQ filter that selects the documents that the permission applies to, e.g. `_type == "article"`. */
-  filter: string
+  permissionType: BlueprintPermissionType
+  /** The configuration of the permission. */
+  config: {
+    /** A GROQ filter that selects the documents that the permission applies to, e.g. `_type == "article"`. */
+    filter: string
+  }
   /**
    * The project ID of the project that contains the permission.
    *

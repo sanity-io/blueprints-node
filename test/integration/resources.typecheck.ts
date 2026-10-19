@@ -232,7 +232,7 @@ const permissionConfig: BlueprintPermissionConfig = {
   title: 'Test Permission',
   description: 'Test Permission Description',
   permissionType: 'sanity.document.filter',
-  filter: '_type == "article"',
+  config: {filter: '_type == "article"'},
   project: 'projectId',
 }
 const permissionResource: BlueprintPermissionResource = definePermission(permissionConfig)

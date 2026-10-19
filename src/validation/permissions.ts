@@ -45,17 +45,19 @@ export function validatePermission(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_type', message: 'Permission description must be a string'})
   }
 
-  if (
-    'permissionType' in resource &&
-    resource.permissionType !== undefined &&
-    (typeof resource.permissionType !== 'string' || !PERMISSION_TYPES.includes(resource.permissionType))
-  ) {
+  if (!('permissionType' in resource) || !resource.permissionType) {
+    errors.push({type: 'missing_parameter', message: 'Permission permissionType is required'})
+  } else if (typeof resource.permissionType !== 'string' || !PERMISSION_TYPES.includes(resource.permissionType)) {
     errors.push({type: 'invalid_value', message: `Permission permissionType must be one of ${PERMISSION_TYPES.join(', ')}`})
   }
 
-  if (!('filter' in resource) || !resource.filter) {
+  if (!('config' in resource) || !resource.config) {
+    errors.push({type: 'missing_parameter', message: 'Permission `config` is required'})
+  } else if (typeof resource.config !== 'object') {
+    errors.push({type: 'invalid_type', message: 'Permission `config` must be an object'})
+  } else if (!('filter' in resource.config) || !resource.config.filter) {
     errors.push({type: 'missing_parameter', message: 'Permission filter is required'})
-  } else if (typeof resource.filter !== 'string') {
+  } else if (typeof resource.config.filter !== 'string') {
     errors.push({type: 'invalid_type', message: 'Permission filter must be a string'})
   }
 

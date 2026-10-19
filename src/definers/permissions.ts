@@ -2,12 +2,13 @@ import {type BlueprintPermissionConfig, type BlueprintPermissionResource, valida
 import {runValidation} from '../utils/validation.js'
 
 /**
- * Defines a custom permission that roles can grant. The Manage UI calls it a "content resource".
+ * Defines a custom permission that roles can grant, in the shape of the Access API.
  *
  * ```ts
  * definePermission({
  *   name: 'articles-only',
- *   filter: '_type == "article"',
+ *   permissionType: 'sanity.document.filter.mode',
+ *   config: {filter: '_type == "article"'},
  * })
  * ```
  *
@@ -17,7 +18,8 @@ import {runValidation} from '../utils/validation.js'
  *   name: 'articles-only',
  *   title: 'Articles only',
  *   description: 'Access to article documents',
- *   filter: '_type == "article"',
+ *   permissionType: 'sanity.document.filter',
+ *   config: {filter: '_type == "article"'},
  * })
  *
  * defineRole({
@@ -27,7 +29,8 @@ import {runValidation} from '../utils/validation.js'
  *   appliesToRobots: false,
  *   permissions: [
  *     {name: 'sanity-project', action: 'read'},
- *     {name: '$.resources.articles-only', action: 'mode', params: {mode: 'publish'}},
+ *     {name: '$.resources.articles-only', action: 'read'},
+ *     {name: '$.resources.articles-only', action: 'update'},
  *   ],
  * })
  * ```

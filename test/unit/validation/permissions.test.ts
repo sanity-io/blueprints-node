@@ -5,7 +5,8 @@ import * as permissions from '../../../src/validation/permissions.js'
 const valid = {
   name: 'articles-only',
   type: 'sanity.access.permission',
-  filter: '_type == "article"',
+  permissionType: 'sanity.document.filter.mode',
+  config: {filter: '_type == "article"'},
 }
 
 describe('validatePermission', () => {
@@ -85,6 +86,11 @@ describe('validatePermission', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Permission description must be a string'})
   })
 
+  test('should return an error if permissionType is not provided', () => {
+    const errors = permissions.validatePermission({...valid, permissionType: undefined})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Permission permissionType is required'})
+  })
+
   test('should return an error if permissionType is unknown', () => {
     const errors = permissions.validatePermission({...valid, permissionType: 'sanity.project.cors'})
     expect(errors).toContainEqual({
@@ -93,13 +99,23 @@ describe('validatePermission', () => {
     })
   })
 
+  test('should return an error if config is not provided', () => {
+    const errors = permissions.validatePermission({...valid, config: undefined})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Permission `config` is required'})
+  })
+
+  test('should return an error if config is not an object', () => {
+    const errors = permissions.validatePermission({...valid, config: '_type == "article"'})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Permission `config` must be an object'})
+  })
+
   test('should return an error if filter is not provided', () => {
-    const errors = permissions.validatePermission({...valid, filter: ''})
+    const errors = permissions.validatePermission({...valid, config: {filter: ''}})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Permission filter is required'})
   })
 
   test('should return an error if filter is not a string', () => {
-    const errors = permissions.validatePermission({...valid, filter: 1})
+    const errors = permissions.validatePermission({...valid, config: {filter: 1}})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Permission filter must be a string'})
   })
 
