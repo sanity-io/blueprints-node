@@ -53,3 +53,15 @@ export interface BlueprintPermissionResource extends BlueprintResource<Blueprint
  * @interface
  */
 export type BlueprintPermissionConfig = Omit<BlueprintPermissionResource, 'type'>
+
+/**
+ * Configuration for a content resource: a custom permission of type `sanity.document.filter.mode`, as the Manage UI makes it.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
+export interface BlueprintContentResourceConfig extends Omit<BlueprintPermissionConfig, 'permissionType' | 'config'> {
+  /** The document types that the content resource applies to. Omit to apply to documents of any type. */
+  documentTypes?: string[]
+  /** A GROQ filter that selects documents, e.g. `branch == "london"`. It is joined to `documentTypes` with `&&`. */
+  filter?: string
+}

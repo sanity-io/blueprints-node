@@ -3,6 +3,7 @@ import {
   type Blueprint,
   type BlueprintApplicationConfig,
   type BlueprintApplicationResource,
+  type BlueprintContentResourceConfig,
   // type BlueprintBaseFunctionResource,
   type BlueprintCorsOriginConfig,
   type BlueprintCorsOriginResource,
@@ -35,6 +36,7 @@ import {
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   defineApplication,
   defineAssetSourceView,
+  defineContentResource,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -55,6 +57,7 @@ import {
   type RolePermission,
   validateApplication,
   validateBlueprint,
+  validateContentResource,
   validateCorsOrigin,
   validateDataset,
   validateDocumentFunction,
@@ -237,6 +240,16 @@ const permissionConfig: BlueprintPermissionConfig = {
 }
 const permissionResource: BlueprintPermissionResource = definePermission(permissionConfig)
 
+const contentResourceConfig: BlueprintContentResourceConfig = {
+  name: 'test-content-resource',
+  title: 'Test Content Resource',
+  description: 'Test Content Resource Description',
+  documentTypes: ['article'],
+  filter: 'defined(slug)',
+  project: 'projectId',
+}
+const contentResource: BlueprintPermissionResource = defineContentResource(contentResourceConfig)
+
 const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
 const roleConfig: BlueprintRoleConfig = {
   name: 'test-role',
@@ -293,6 +306,7 @@ const blueprint: Blueprint = {
     mediaLibraryAssetFunctionResource,
     mediaLibraryConfigResource,
     permissionResource,
+    contentResource,
     projectRoleResource,
     blueprintResource,
   ],
@@ -315,6 +329,7 @@ validateDocumentWebhook(documentWebhookResource)
 validateFunction({name: 'test-function'})
 validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
 validatePermission(permissionResource)
+validateContentResource(contentResourceConfig)
 validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)

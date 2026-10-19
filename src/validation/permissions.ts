@@ -71,3 +71,30 @@ export function validatePermission(resource: unknown): BlueprintError[] {
 
   return errors
 }
+
+/**
+ * Validates the fields of a content resource that make its filter.
+ * @param resource The content resource configuration
+ * @category Validation
+ * @returns A list of validation errors
+ */
+export function validateContentResource(resource: unknown): BlueprintError[] {
+  if (!resource) return [{type: 'invalid_value', message: 'Content resource config must be provided'}]
+  if (typeof resource !== 'object') return [{type: 'invalid_type', message: 'Content resource config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  if (
+    'documentTypes' in resource &&
+    resource.documentTypes !== undefined &&
+    (!Array.isArray(resource.documentTypes) || !resource.documentTypes.every((type) => typeof type === 'string' && type.length > 0))
+  ) {
+    errors.push({type: 'invalid_type', message: 'Content resource documentTypes must be an array of non-empty strings'})
+  }
+
+  if ('filter' in resource && resource.filter !== undefined && typeof resource.filter !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Content resource filter must be a string'})
+  }
+
+  return errors
+}

@@ -136,3 +136,32 @@ describe('validatePermission', () => {
     expect(spy).toHaveBeenCalledOnce()
   })
 })
+
+describe('validateContentResource', () => {
+  test('should return an error if config is falsey', () => {
+    const errors = permissions.validateContentResource(undefined)
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'Content resource config must be provided'})
+  })
+
+  test('should return an error if config is not an object', () => {
+    const errors = permissions.validateContentResource(1)
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Content resource config must be an object'})
+  })
+
+  test('should return no errors for valid fields', () => {
+    const errors = permissions.validateContentResource({name: 'movies', documentTypes: ['movie'], filter: 'year > 2000'})
+    expect(errors).toStrictEqual([])
+  })
+
+  for (const documentTypes of ['movie', [''], [1]]) {
+    test(`should return an error for the documentTypes ${JSON.stringify(documentTypes)}`, () => {
+      const errors = permissions.validateContentResource({name: 'movies', documentTypes})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Content resource documentTypes must be an array of non-empty strings'})
+    })
+  }
+
+  test('should return an error if filter is not a string', () => {
+    const errors = permissions.validateContentResource({name: 'movies', filter: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Content resource filter must be a string'})
+  })
+})

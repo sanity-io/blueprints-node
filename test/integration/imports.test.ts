@@ -2,6 +2,7 @@ import {
   defineApplication,
   defineAssetSourceView,
   defineBlueprint,
+  defineContentResource,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -23,6 +24,7 @@ import {
   defineWindowView,
   validateApplication,
   validateBlueprint,
+  validateContentResource,
   validateCorsOrigin,
   validateDataset,
   validateDocumentFunction,
@@ -81,6 +83,10 @@ describe('package imports', () => {
     expect(validateMediaLibraryConfig).toBeInstanceOf(Function)
   })
 
+  it('should import validateContentResource', () => {
+    expect(validateContentResource).toBeInstanceOf(Function)
+  })
+
   it('should import validatePermission', () => {
     expect(validatePermission).toBeInstanceOf(Function)
   })
@@ -123,6 +129,10 @@ describe('package imports', () => {
 
   it('should import defineMediaLibraryAssetFunction', () => {
     expect(defineMediaLibraryAssetFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import defineContentResource', () => {
+    expect(defineContentResource).toBeInstanceOf(Function)
   })
 
   it('should import definePermission', () => {

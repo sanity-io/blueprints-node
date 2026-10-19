@@ -70,6 +70,7 @@ export default defineBlueprint({
 | `defineBlueprint` | Top-level blueprint module containing resources |
 | `defineDocumentFunction` | Function triggered by document events |
 | `defineMediaLibraryAssetFunction` | Function triggered by media library events |
+| `defineContentResource` β | Content resource as in the Manage UI, made from document types and a filter |
 | `defineCorsOrigin` β | CORS origin allowing browser requests to your project |
 | `defineDocumentWebhook` β | Webhook triggered by document changes |
 | `definePermission` β | Custom permission that roles can grant, in the Access API shape |

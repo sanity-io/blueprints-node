@@ -77,3 +77,72 @@ describe('definePermission', () => {
     expect(permissionResource.lifecycle?.ownershipAction?.projectId).toStrictEqual('test-project')
   })
 })
+
+describe('defineContentResource', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
+  test('should define a sanity.document.filter.mode permission', () => {
+    expect(permissions.defineContentResource({name: 'movies', documentTypes: ['movie']})).toStrictEqual({
+      name: 'movies',
+      type: 'sanity.access.permission',
+      permissionType: 'sanity.document.filter.mode',
+      config: {filter: '_type == "movie"'},
+    })
+  })
+
+  const filters: [string, Partial<index.BlueprintContentResourceConfig>, string][] = [
+    ['several document types', {documentTypes: ['movie', 'person']}, '_type in ["movie", "person"]'],
+    ['a filter', {filter: 'year > 2000'}, 'year > 2000'],
+    ['an empty documentTypes and a filter', {documentTypes: [], filter: 'year > 2000'}, 'year > 2000'],
+    ['document types and a filter', {documentTypes: ['movie'], filter: 'a || b'}, '_type == "movie" && (a || b)'],
+  ]
+
+  for (const [label, input, filter] of filters) {
+    test(`should build the filter from ${label}`, () => {
+      expect(permissions.defineContentResource({name: 'movies', ...input}).config.filter).toBe(filter)
+    })
+  }
+
+  test('should keep the permission options', () => {
+    const permissionResource = permissions.defineContentResource({
+      name: 'movies',
+      title: 'Movies',
+      description: 'Movie documents',
+      documentTypes: ['movie'],
+      project: '$.resources.my-project.id',
+      lifecycle: {
+        deletionPolicy: 'retain',
+      },
+    })
+
+    expect(permissionResource).toStrictEqual({
+      name: 'movies',
+      type: 'sanity.access.permission',
+      title: 'Movies',
+      description: 'Movie documents',
+      permissionType: 'sanity.document.filter.mode',
+      config: {filter: '_type == "movie"'},
+      project: '$.resources.my-project.id',
+      lifecycle: {
+        deletionPolicy: 'retain',
+      },
+    })
+  })
+
+  test('should validate the content resource and the permission', () => {
+    const contentSpy = vi.spyOn(index, 'validateContentResource').mockImplementation(() => [{type: 'test', message: 'content error'}])
+    const permissionSpy = vi.spyOn(index, 'validatePermission')
+
+    expect(() => defineBlueprintForResource(permissions.defineContentResource({name: 'movies', documentTypes: ['movie']}))).toThrow(
+      /content error/,
+    )
+    expect(contentSpy).toHaveBeenCalledOnce()
+    expect(permissionSpy).toHaveBeenCalledOnce()
+  })
+
+  test('should require document types or a filter', () => {
+    expect(() => defineBlueprintForResource(permissions.defineContentResource({name: 'movies'}))).toThrow(/Permission filter is required/)
+  })
+})

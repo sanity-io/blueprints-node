@@ -1,4 +1,10 @@
-import {type BlueprintPermissionConfig, type BlueprintPermissionResource, validatePermission} from '../index.js'
+import {
+  type BlueprintContentResourceConfig,
+  type BlueprintPermissionConfig,
+  type BlueprintPermissionResource,
+  validateContentResource,
+  validatePermission,
+} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 /**
@@ -50,4 +56,52 @@ export function definePermission(parameters: BlueprintPermissionConfig): Bluepri
   runValidation(() => validatePermission(permissionResource))
 
   return permissionResource
+}
+
+/**
+ * Defines a content resource as the Manage UI makes it: a custom permission of type `sanity.document.filter.mode`.
+ *
+ * ```ts
+ * defineContentResource({
+ *   name: 'movies',
+ *   documentTypes: ['movie'],
+ * })
+ * // config.filter: '_type == "movie"'
+ * ```
+ *
+ * @example Document types and a filter
+ * ```ts
+ * defineContentResource({
+ *   name: 'london-posts',
+ *   title: 'London posts',
+ *   documentTypes: ['post', 'event'],
+ *   filter: 'branch == "london"',
+ * })
+ * // config.filter: '_type in ["post", "event"] && (branch == "london")'
+ * ```
+ * @param parameters The configuration of the content resource
+ * @public
+ * @beta Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @category Definers
+ * @expandType BlueprintContentResourceConfig
+ * @returns The permission resource
+ */
+export function defineContentResource(parameters: BlueprintContentResourceConfig): BlueprintPermissionResource {
+  const {documentTypes, filter, ...permission} = parameters
+
+  runValidation(() => validateContentResource(parameters))
+
+  return definePermission({
+    ...permission,
+    permissionType: 'sanity.document.filter.mode',
+    config: {filter: contentResourceFilter(documentTypes, filter)},
+  })
+}
+
+function contentResourceFilter(documentTypes: unknown, filter?: string): string {
+  const types = Array.isArray(documentTypes) ? documentTypes.map((type) => JSON.stringify(type)) : []
+  const typeClause = types.length > 1 ? `_type in [${types.join(', ')}]` : types.length === 1 ? `_type == ${types[0]}` : ''
+
+  if (!typeClause) return filter ?? ''
+  return filter ? `${typeClause} && (${filter})` : typeClause
 }
