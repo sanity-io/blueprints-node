@@ -45,9 +45,11 @@ export function validatePermission(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_type', message: 'Permission description must be a string'})
   }
 
-  if (!('permissionType' in resource) || !resource.permissionType) {
-    errors.push({type: 'missing_parameter', message: 'Permission permissionType is required'})
-  } else if (typeof resource.permissionType !== 'string' || !PERMISSION_TYPES.includes(resource.permissionType)) {
+  if (
+    'permissionType' in resource &&
+    resource.permissionType !== undefined &&
+    (typeof resource.permissionType !== 'string' || !PERMISSION_TYPES.includes(resource.permissionType))
+  ) {
     errors.push({type: 'invalid_value', message: `Permission permissionType must be one of ${PERMISSION_TYPES.join(', ')}`})
   }
 

@@ -5,7 +5,6 @@ import * as permissions from '../../../src/validation/permissions.js'
 const valid = {
   name: 'articles-only',
   type: 'sanity.access.permission',
-  permissionType: 'sanity.document.filter',
   filter: '_type == "article"',
 }
 
@@ -33,7 +32,7 @@ describe('validatePermission', () => {
       ...valid,
       title: 'Articles only',
       description: 'Access to article documents',
-      permissionType: 'sanity.document.filter.mode',
+      permissionType: 'sanity.document.filter',
       project: '$.resources.my-project.id',
     })
     expect(errors).toStrictEqual([])
@@ -84,11 +83,6 @@ describe('validatePermission', () => {
   test('should return an error if description is not a string', () => {
     const errors = permissions.validatePermission({...valid, description: 1})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Permission description must be a string'})
-  })
-
-  test('should return an error if permissionType is not provided', () => {
-    const errors = permissions.validatePermission({...valid, permissionType: undefined})
-    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Permission permissionType is required'})
   })
 
   test('should return an error if permissionType is unknown', () => {

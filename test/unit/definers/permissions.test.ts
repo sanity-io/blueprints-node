@@ -10,11 +10,9 @@ describe('definePermission', () => {
 
   test('should throw an error if validatePermission returns an error', () => {
     const spy = vi.spyOn(index, 'validatePermission').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
-    expect(() =>
-      defineBlueprintForResource(
-        permissions.definePermission({name: 'articles-only', permissionType: 'sanity.document.filter', filter: '_type == "article"'}),
-      ),
-    ).toThrow(/this is a test/)
+    expect(() => defineBlueprintForResource(permissions.definePermission({name: 'articles-only', filter: '_type == "article"'}))).toThrow(
+      /this is a test/,
+    )
 
     expect(spy).toHaveBeenCalledOnce()
   })
@@ -22,14 +20,12 @@ describe('definePermission', () => {
   test('should accept a valid configuration and set the type', () => {
     const permissionResource = permissions.definePermission({
       name: 'articles-only',
-      permissionType: 'sanity.document.filter',
       filter: '_type == "article"',
     })
 
     expect(permissionResource).toStrictEqual({
       name: 'articles-only',
       type: 'sanity.access.permission',
-      permissionType: 'sanity.document.filter',
       filter: '_type == "article"',
     })
   })
@@ -39,7 +35,7 @@ describe('definePermission', () => {
       name: 'articles-only',
       title: 'Articles only',
       description: 'Access to article documents',
-      permissionType: 'sanity.document.filter.mode',
+      permissionType: 'sanity.document.filter',
       filter: '_type == "article"',
       project: '$.resources.my-project.id',
       lifecycle: {
@@ -52,7 +48,7 @@ describe('definePermission', () => {
       type: 'sanity.access.permission',
       title: 'Articles only',
       description: 'Access to article documents',
-      permissionType: 'sanity.document.filter.mode',
+      permissionType: 'sanity.document.filter',
       filter: '_type == "article"',
       project: '$.resources.my-project.id',
       lifecycle: {
@@ -64,7 +60,6 @@ describe('definePermission', () => {
   test('should accept a valid configuration with an attach lifecycle', () => {
     const permissionResource = permissions.definePermission({
       name: 'articles-only',
-      permissionType: 'sanity.document.filter',
       filter: '_type == "article"',
       lifecycle: {
         ownershipAction: {
