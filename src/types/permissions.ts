@@ -65,3 +65,14 @@ export interface BlueprintContentResourceConfig extends Omit<BlueprintPermission
   /** A GROQ filter that selects documents, e.g. `branch == "london"`. It is joined to `documentTypes` with `&&`. */
   filter?: string
 }
+
+/**
+ * The access level that a role grants on a content resource.
+ *
+ *  - **read** "Read" in the Manage UI
+ *  - **create** "Update and create" in the Manage UI
+ *  - **publish** "Publish" in the Manage UI
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
+export type BlueprintContentResourceMode = 'read' | 'create' | 'publish'

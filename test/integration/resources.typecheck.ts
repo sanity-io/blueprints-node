@@ -4,6 +4,7 @@ import {
   type BlueprintApplicationConfig,
   type BlueprintApplicationResource,
   type BlueprintContentResourceConfig,
+  type BlueprintContentResourceMode,
   // type BlueprintBaseFunctionResource,
   type BlueprintCorsOriginConfig,
   type BlueprintCorsOriginResource,
@@ -54,6 +55,7 @@ import {
   defineTileView,
   defineWebWorker,
   defineWindowView,
+  grantContentResource,
   type RolePermission,
   validateApplication,
   validateBlueprint,
@@ -249,6 +251,8 @@ const contentResourceConfig: BlueprintContentResourceConfig = {
   project: 'projectId',
 }
 const contentResource: BlueprintPermissionResource = defineContentResource(contentResourceConfig)
+const contentResourceMode: BlueprintContentResourceMode = 'publish'
+const contentResourceGrant: RolePermission = grantContentResource(contentResource, contentResourceMode, {dataset: 'production'})
 
 const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
 const roleConfig: BlueprintRoleConfig = {
@@ -257,7 +261,7 @@ const roleConfig: BlueprintRoleConfig = {
   description: 'Test Role Description',
   appliesToRobots: true,
   appliesToUsers: true,
-  permissions: [rolePermission],
+  permissions: [rolePermission, contentResourceGrant],
 }
 const roleResource: BlueprintRoleResource = defineRole(roleConfig)
 const projectRoleResource: BlueprintProjectRoleResource = defineProjectRole('projectId', roleConfig)

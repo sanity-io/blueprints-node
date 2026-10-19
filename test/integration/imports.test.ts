@@ -22,6 +22,7 @@ import {
   defineTileView,
   defineWebWorker,
   defineWindowView,
+  grantContentResource,
   validateApplication,
   validateBlueprint,
   validateContentResource,
@@ -137,6 +138,10 @@ describe('package imports', () => {
 
   it('should import definePermission', () => {
     expect(definePermission).toBeInstanceOf(Function)
+  })
+
+  it('should import grantContentResource', () => {
+    expect(grantContentResource).toBeInstanceOf(Function)
   })
 
   it('should import defineProjectRole', () => {
