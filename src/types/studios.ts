@@ -82,7 +82,10 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
   /** Whether or not to generate source maps. Defaults to false. */
   sourceMap?: boolean
 
-  /** Custom Vite configuration for the Studio so it can be changed and extended. */
+  /**
+   * Custom Vite configuration for the Studio so it can be changed and extended.
+   * Install vite to dev dependencies to get detailed type information.
+   */
   vite?: UserViteConfig
 
   /** Schema inputs extracted from the studio's schema definition. */

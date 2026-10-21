@@ -272,7 +272,7 @@ describe('validateWindowView', () => {
   test('should return an error if dock.group is not an allowed value', () => {
     expect(validateWindowView({...validWindowView, dock: {group: 'nope'}})).toContainEqual({
       type: 'invalid_value',
-      message: 'Window view dock.group must be one of system, applications, user',
+      message: 'Window view dock.group must be one of system, applications',
     })
   })
 

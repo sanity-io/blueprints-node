@@ -29,6 +29,8 @@ import {
   type BlueprintRoleResource,
   type BlueprintScheduledFunctionResource,
   type BlueprintScheduledFunctionResourceEvent,
+  type BlueprintStudioConfig,
+  type BlueprintStudioResource,
   type BlueprintSyncTagInvalidateFunctionResource,
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   defineApplication,
@@ -234,6 +236,68 @@ const roleConfig: BlueprintRoleConfig = {
 }
 const roleResource: BlueprintRoleResource = defineRole(roleConfig)
 const projectRoleResource: BlueprintProjectRoleResource = defineProjectRole('projectId', roleConfig)
+
+const _studioConfig: BlueprintStudioConfig = {
+  name: 'test-studio',
+  root: './studio',
+  autoUpdates: {
+    enabled: true,
+    version: '1',
+  },
+  basePath: '/',
+  icon: 'favicon.svg',
+  lifecycle: {
+    deletionPolicy: 'allow',
+    dependsOn: '$.resources.test',
+  },
+  minify: true,
+  project: 'project1234',
+  reactCompiler: true,
+  slug: 'test-studio',
+  sourceMap: true,
+  title: 'Test Studio',
+  visibility: 'default',
+  vite: () => ({}),
+}
+
+const _studioResource: BlueprintStudioResource = {
+  name: 'test-studio',
+  type: 'sanity.studio',
+  root: './studio',
+  autoUpdates: {
+    enabled: true,
+    version: '1',
+  },
+  basePath: '/',
+  icon: 'favicon.svg',
+  lifecycle: {
+    deletionPolicy: 'allow',
+    dependsOn: '$.resources.test',
+  },
+  minify: true,
+  project: 'project1234',
+  reactCompiler: true,
+  slug: 'test-studio',
+  sourceMap: true,
+  title: 'Test Studio',
+  visibility: 'default',
+  vite: () => ({}),
+  mfManifest: {},
+  schemaInputs: [
+    {
+      dataset: 'staging',
+      manifestSchema: [
+        {
+          name: 'schema-name',
+          type: 'type',
+        },
+      ],
+      name: 'test-schema',
+      projectId: 'project1234',
+      title: 'title',
+    },
+  ],
+}
 
 const blueprintResource: BlueprintResource = {name: 'test-resource', type: 'test'}
 

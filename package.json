@@ -55,12 +55,13 @@
     "typecheck": "tsc --noEmit --project tsconfig.test.json"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.14",
+    "@biomejs/biome": "2.6.2",
     "@sanity/cli-build": "^6.5.0",
     "@types/node": "^22",
-    "@vitest/coverage-v8": "^5.0.1",
+    "@vitest/coverage-v8": "^5.0.5",
     "typescript": "^7.0.2",
-    "vitest": "5.0.1"
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   },
   "peerDependencies": {
     "@sanity/cli-build": ">= 6",
