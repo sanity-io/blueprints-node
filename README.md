@@ -53,11 +53,13 @@ export default defineBlueprint({
 
     defineRobotToken({
       name: 'ci-robot',
-      memberships: [{
-        resourceType: 'project',
-        resourceId: 'your-project-id',
-        roleNames: ['developer'],
-      }],
+      memberships: [
+        {
+          resourceType: 'project',
+          resourceId: 'your-project-id',
+          roleNames: ['developer'],
+        },
+      ],
     }),
   ],
 })
@@ -65,15 +67,15 @@ export default defineBlueprint({
 
 ## Available resources
 
-| Definer | Description |
-|---|---|
-| `defineBlueprint` | Top-level blueprint module containing resources |
-| `defineDocumentFunction` | Function triggered by document events |
-| `defineMediaLibraryAssetFunction` | Function triggered by media library events |
-| `defineCorsOrigin` β | CORS origin allowing browser requests to your project |
-| `defineDocumentWebhook` β | Webhook triggered by document changes |
-| `defineRole` β | Custom role with permissions |
-| `defineRobotToken` β | Robot token for automated access |
+| Definer                           | Description                                           |
+| --------------------------------- | ----------------------------------------------------- |
+| `defineBlueprint`                 | Top-level blueprint module containing resources       |
+| `defineDocumentFunction`          | Function triggered by document events                 |
+| `defineMediaLibraryAssetFunction` | Function triggered by media library events            |
+| `defineCorsOrigin` β              | CORS origin allowing browser requests to your project |
+| `defineDocumentWebhook` β         | Webhook triggered by document changes                 |
+| `defineRole` β                    | Custom role with permissions                          |
+| `defineRobotToken` β              | Robot token for automated access                      |
 
 Each definer validates its input at call time and returns a typed resource object. See the [reference docs](https://reference.sanity.io/_sanity/blueprints) for full configuration details and additional resource types.
 

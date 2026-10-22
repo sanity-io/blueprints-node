@@ -145,7 +145,7 @@ describe('validateResource', () => {
     expect(errors).toHaveLength(0)
   })
 
-  test('should return an error if lifecycle.dependsOn does not start with $.resources.', () => {
+  test('should return an error if lifecycle.dependsOn element does not start with $.resources.', () => {
     const errors = validateResource({name: 'test', type: 'test', lifecycle: {dependsOn: ['some-resource']}})
     expect(errors).toContainEqual({
       type: 'invalid_value',

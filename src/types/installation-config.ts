@@ -65,6 +65,9 @@ export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallati
 
   /** The local version of `sanity` at deployment. Populated during deployment. */
   version?: string
+
+  /** Module federation manifest */
+  mfManifest?: Record<string, unknown>
 }
 
 /**
