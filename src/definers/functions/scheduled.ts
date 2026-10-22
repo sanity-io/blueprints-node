@@ -47,12 +47,10 @@ const SCHEDULED_EVENT_KEYS = new Set<ScheduledFunctionEventKey>(['minute', 'hour
  *   event: {expression: 'every day at 9am'},
  * })
  * ```
+ * @param functionConfig The configuration for the scheduled function
  * @public
- * @alpha Deploying Scheduled Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
  * @category Definers
  * @expandType BlueprintScheduledFunctionConfig
- * @param functionConfig The configuration for the scheduled function
  * @returns The validated scheduled function resource
  */
 export function defineScheduledFunction(functionConfig: BlueprintScheduledFunctionConfig): BlueprintScheduledFunctionResource {
