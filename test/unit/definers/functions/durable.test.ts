@@ -74,14 +74,14 @@ describe('defineDurableFunction', () => {
     test('should throw if the debounce duration cannot be parsed', () => {
       expect(() => defineDurableFunction({name: 'test', debounce: 'invalid'})).toThrow('Invalid duration: invalid')
     })
-    test('should parse durableTimeout in seconds', () => {
+    test('should parse durableTimeout readable time in seconds', () => {
       const fn = defineDurableFunction({
         name: 'test',
         durableTimeout: '1 hour',
       })
       expect(fn.durableTimeout).toBe(3_600)
     })
-    test('should parse durableTimeout in seconds', () => {
+    test('should parse durableTimeout number in seconds', () => {
       const fn = defineDurableFunction({
         name: 'test',
         durableTimeout: 60,

@@ -170,12 +170,12 @@ describe('validateRobotToken', () => {
     })
   })
 
-  test('should return an error if memberships is not an array', () => {
+  test('should return an error if membership roile names is not an array', () => {
     const errors = robotTokens.validateRobotToken({memberships: [{roleNames: 1}]})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Membership role names must be an array'})
   })
 
-  test('should return an error if memberships is an empty array', () => {
+  test('should return an error if membership role names is an empty array', () => {
     const errors = robotTokens.validateRobotToken({memberships: [{roleNames: []}]})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Membership must have at least one role name'})
   })
@@ -209,7 +209,7 @@ describe('validateRobotToken', () => {
     })
   })
 
-  test('should return an error if membership resource ID is not a string', () => {
+  test('should return an error if resource ID is not a string', () => {
     const errors = robotTokens.validateRobotToken({resourceId: 1})
     expect(errors).toContainEqual({
       type: 'invalid_type',

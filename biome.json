@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!package.json", "!!**/dist"]
+    "includes": ["**", "!package.json", "!CHANGELOG.md", "!!**/dist"]
   },
   "formatter": {
     "enabled": true,
