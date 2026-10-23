@@ -99,22 +99,22 @@ describe('validatePermission', () => {
     })
   })
 
-  test('should return an error if config is not provided', () => {
+  test('should return an error if the `config` property is not provided', () => {
     const errors = permissions.validatePermission({...valid, config: undefined})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Permission `config` is required'})
   })
 
-  test('should return an error if config is not an object', () => {
+  test('should return an error if the `config` property is not an object', () => {
     const errors = permissions.validatePermission({...valid, config: '_type == "article"'})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Permission `config` must be an object'})
   })
 
-  test('should return an error if filter is not provided', () => {
+  test('should return an error if `config.filter` is empty', () => {
     const errors = permissions.validatePermission({...valid, config: {filter: ''}})
     expect(errors).toContainEqual({type: 'missing_parameter', message: 'Permission filter is required'})
   })
 
-  test('should return an error if filter is not a string', () => {
+  test('should return an error if `config.filter` is not a string', () => {
     const errors = permissions.validatePermission({...valid, config: {filter: 1}})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Permission filter must be a string'})
   })
