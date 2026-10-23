@@ -8,18 +8,21 @@ ESM-only package. Node.js >=22 required.
 ## Commands
 
 ### Build
+
 ```bash
 npm run build        # Clean dist/ and compile TypeScript
 npm run typecheck    # Type check without emitting
 ```
 
 ### Lint & Format
+
 ```bash
 npm run lint         # Check with Biome (linting + formatting)
 npm run lint:write   # Auto-fix lint/format issues
 ```
 
 ### Test
+
 ```bash
 npm test                        # Full suite: typecheck + unit + integration + lint
 npm run test:unit               # Unit tests only (with typecheck)
@@ -53,6 +56,7 @@ test/
 ## Code Style
 
 ### Formatting (Biome)
+
 - **Indentation**: 2 spaces
 - **Quotes**: Single quotes
 - **Semicolons**: None (omit)
@@ -61,11 +65,13 @@ test/
 - **Line width**: 140 chars
 
 ### Imports
+
 - Use `.js` extension for local imports: `from '../index.js'`
 - Use `type` keyword for type-only imports: `import type {Foo} from './foo.js'`
 - Biome auto-organizes imports on save
 
 ### TypeScript
+
 - **Very strict mode**: `strict` (default-on since TS 6) plus `noImplicit*`, `noUnused*`
 - No `@ts-ignore` or `as any` without exhausting proper type solutions
 - Prefer `satisfies` over type assertions for shape validation
@@ -73,6 +79,7 @@ test/
 - Target: ES2024
 
 ### Naming Conventions
+
 - **Functions/variables**: camelCase (`validateResource`, `corsResource`)
 - **Types/interfaces**: PascalCase with `Blueprint` prefix (`BlueprintResource`, `BlueprintError`)
 - **Type aliases**: PascalCase (`WebhookTrigger`, `BlueprintResourceDeletionPolicy`)
@@ -81,6 +88,7 @@ test/
 ### Functions
 
 #### Validation Functions
+
 Return `BlueprintError[]` (never throw). Collect all errors:
 ```typescript
 export function validateFoo(config: unknown): BlueprintError[] {
@@ -96,6 +104,7 @@ export function validateFoo(config: unknown): BlueprintError[] {
 Error types: `invalid_value`, `invalid_type`, `missing_parameter`, `invalid_format`
 
 #### Definer Functions
+
 Use `defineX` pattern. Always validate:
 ```typescript
 export function defineX(config: XConfig): XResource {
@@ -113,7 +122,7 @@ This project generates documentation with TypeDoc. All public exports must have 
 
 #### Definer functions
 
-```typescript
+````typescript
 /**
  * Brief one-line summary
  *
@@ -141,7 +150,7 @@ This project generates documentation with TypeDoc. All public exports must have 
  * @expandType BlueprintXConfig
  * @returns Description
  */
-```
+````
 
 Rules:
 - The first `@example` must be **untitled**. It should show minimal required fields including `name`.
@@ -175,6 +184,7 @@ Rules:
 - Match visibility tags (`@public`, `@beta`, `@alpha`, `@hidden`, `@internal`) between the Config type and its definer.
 
 ### Error Handling
+
 - Validation functions return error arrays, never throw
 - `runValidation()` converts errors to thrown Error with joined messages
 - Definers call `runValidation()` to fail fast on invalid config
@@ -182,6 +192,7 @@ Rules:
 ## Tests
 
 ### Structure
+
 Use Vitest with `describe`/`test` (not `it`):
 ```typescript
 import {describe, expect, test} from 'vitest'
@@ -199,6 +210,7 @@ describe('validateFoo', () => {
 ```
 
 ### Mocking
+
 ```typescript
 import {afterEach, vi} from 'vitest'
 
@@ -211,6 +223,7 @@ afterEach(() => vi.resetAllMocks())
 ```
 
 ### Assertions
+
 - `expect(x).toStrictEqual(y)` for exact equality
 - `expect(errors).toContainEqual({...})` for error checking
 - `expect(() => fn()).toThrow(/pattern/)` for thrown errors

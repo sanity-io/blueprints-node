@@ -42,7 +42,7 @@ export type ApplicationViewSurface = (typeof APPLICATION_VIEW_SURFACES)[number]
  * @category Resource Types
  * @hidden
  */
-export const APPLICATION_DOCK_GROUPS = ['system', 'applications', 'user'] as const
+export const APPLICATION_DOCK_GROUPS = ['system', 'applications'] as const
 
 /**
  * The dock group a window or panel view is placed into.
@@ -216,6 +216,9 @@ export interface BlueprintApplicationResource extends BlueprintResource {
 
   /** The background web workers the application runs. */
   webWorkers?: BlueprintWebWorker[]
+
+  /** Module federation manifest */
+  mfManifest?: Record<string, unknown>
 }
 
 export interface BlueprintViewConfigBase {
