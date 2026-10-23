@@ -1,9 +1,7 @@
 import {
   type BlueprintContentResourceConfig,
-  type BlueprintContentResourceMode,
   type BlueprintPermissionConfig,
   type BlueprintPermissionResource,
-  type RolePermission,
   validateContentResource,
   validatePermission,
 } from '../index.js'
@@ -98,53 +96,6 @@ export function defineContentResource(parameters: BlueprintContentResourceConfig
     permissionType: 'sanity.document.filter.mode',
     config: {filter: contentResourceFilter(documentTypes, filter)},
   })
-}
-
-/**
- * Grants a content resource to a role with an access level, on all datasets, one dataset, or one dataset tag.
- *
- * ```ts
- * const movies = defineContentResource({
- *   name: 'movies',
- *   documentTypes: ['movie'],
- * })
- *
- * defineRole({
- *   name: 'movie-editor',
- *   title: 'Movie editor',
- *   appliesToUsers: true,
- *   appliesToRobots: false,
- *   permissions: [
- *     grantContentResource(movies, 'publish', {dataset: 'staging'}),
- *     grantContentResource(movies, 'read'),
- *   ],
- * })
- * ```
- * @param resource A permission of type `sanity.document.filter.mode` in the same blueprint
- * @param mode The access level
- * @param scope One dataset or one dataset tag. Omit it to grant on all datasets.
- * @public
- * @beta Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
- * @category Definers
- * @returns The role permission
- */
-export function grantContentResource(
-  resource: BlueprintPermissionResource,
-  mode: BlueprintContentResourceMode,
-  scope?: {dataset: string; tagName?: never} | {tagName: string; dataset?: never},
-): RolePermission {
-  runValidation(() =>
-    resource.permissionType === 'sanity.document.filter.mode'
-      ? []
-      : [
-          {
-            type: 'invalid_value',
-            message: `Permission "${resource.name}" must have the permissionType \`sanity.document.filter.mode\` to be granted with a mode`,
-          },
-        ],
-  )
-
-  return {name: `$.resources.${resource.name}`, action: 'mode', params: {mode, ...scope}}
 }
 
 function contentResourceFilter(documentTypes: unknown, filter?: string): string {

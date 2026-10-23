@@ -146,38 +146,3 @@ describe('defineContentResource', () => {
     expect(() => defineBlueprintForResource(permissions.defineContentResource({name: 'movies'}))).toThrow(/Permission filter is required/)
   })
 })
-
-describe('grantContentResource', () => {
-  const movies = permissions.defineContentResource({name: 'movies', documentTypes: ['movie']})
-
-  test('should grant a mode on all datasets', () => {
-    expect(permissions.grantContentResource(movies, 'publish')).toStrictEqual({
-      name: '$.resources.movies',
-      action: 'mode',
-      params: {mode: 'publish'},
-    })
-  })
-
-  test('should grant a mode on one dataset', () => {
-    expect(permissions.grantContentResource(movies, 'read', {dataset: 'staging'})).toStrictEqual({
-      name: '$.resources.movies',
-      action: 'mode',
-      params: {mode: 'read', dataset: 'staging'},
-    })
-  })
-
-  test('should grant a mode on one dataset tag', () => {
-    expect(permissions.grantContentResource(movies, 'create', {tagName: 'drafts'})).toStrictEqual({
-      name: '$.resources.movies',
-      action: 'mode',
-      params: {mode: 'create', tagName: 'drafts'},
-    })
-  })
-
-  test('should require a sanity.document.filter.mode permission', () => {
-    const articles = permissions.definePermission({...articlesOnly, permissionType: 'sanity.document.filter'})
-    permissions.grantContentResource(articles, 'read')
-
-    expect(() => defineBlueprintForResource(articles)).toThrow(/must have the permissionType `sanity.document.filter.mode`/)
-  })
-})
