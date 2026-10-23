@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.29.0](https://github.com/sanity-io/blueprints-node/compare/v0.28.0...v0.29.0) (2026-10-22)
+
+
+### Features
+
+* Update application/studio types to include mfManifest and schemaInputs ([#182](https://github.com/sanity-io/blueprints-node/issues/182)) ([d32006b](https://github.com/sanity-io/blueprints-node/commit/d32006b7c278525db905ef3a9917dd549f75cd1c))
+
+
+### Bug Fixes
+
+* align dependsOn validation with modified type ([#180](https://github.com/sanity-io/blueprints-node/issues/180)) ([5292573](https://github.com/sanity-io/blueprints-node/commit/5292573c9347af1a1a722b67492cbadad6478377))
+* align dependsOn validation with modified type ([#180](https://github.com/sanity-io/blueprints-node/issues/180)) ([8fdfe21](https://github.com/sanity-io/blueprints-node/commit/8fdfe2120d8069c6de8d9033e8c4f9e3ca17b473))
+
 ## [0.28.0](https://github.com/sanity-io/blueprints-node/compare/v0.27.0...v0.28.0) (2026-09-29)
 
 
