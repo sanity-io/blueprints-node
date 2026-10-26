@@ -9,6 +9,7 @@
  */
 export * from './definers/applications.js'
 export * from './definers/blueprints.js'
+export * from './definers/context.js'
 export * from './definers/cors.js'
 export * from './definers/datasets.js'
 export * from './definers/functions/document.js'
@@ -39,6 +40,7 @@ export * from './definers/webhooks.js'
  */
 export * from './types/applications.js'
 export * from './types/blueprints.js'
+export * from './types/context.js'
 export * from './types/cors.js'
 export * from './types/datasets.js'
 export * from './types/errors.js'
@@ -59,6 +61,7 @@ export * from './types/webhooks.js'
  */
 export * from './validation/applications.js'
 export * from './validation/blueprints.js'
+export * from './validation/context.js'
 export * from './validation/cors.js'
 export * from './validation/datasets.js'
 export * from './validation/functions.js'

@@ -4,6 +4,10 @@ import {
   type BlueprintApplicationConfig,
   type BlueprintApplicationResource,
   // type BlueprintBaseFunctionResource,
+  type BlueprintContextKnowledgeBaseConfig,
+  type BlueprintContextKnowledgeBaseResource,
+  type BlueprintContextMcpEndpointConfig,
+  type BlueprintContextMcpEndpointResource,
   type BlueprintCorsOriginConfig,
   type BlueprintCorsOriginResource,
   type BlueprintDatasetConfig,
@@ -35,6 +39,8 @@ import {
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   defineApplication,
   defineAssetSourceView,
+  defineContextKnowledgeBase,
+  defineContextMcpEndpoint,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -54,6 +60,8 @@ import {
   type RolePermission,
   validateApplication,
   validateBlueprint,
+  validateContextKnowledgeBase,
+  validateContextMcpEndpoint,
   validateCorsOrigin,
   validateDataset,
   validateDocumentFunction,
@@ -78,6 +86,21 @@ import {
 const _aclModePublic: AclMode = 'public'
 const _aclModePrivate: AclMode = 'private'
 const _aclModeCustom: AclMode = 'custom'
+
+const contextKnowledgeBaseConfig: BlueprintContextKnowledgeBaseConfig = {
+  name: 'product-docs',
+  title: 'Product docs',
+  description: 'Everything about the product',
+}
+const contextKnowledgeBaseResource: BlueprintContextKnowledgeBaseResource = defineContextKnowledgeBase(contextKnowledgeBaseConfig)
+
+const contextMcpEndpointConfig: BlueprintContextMcpEndpointConfig = {
+  name: 'support-agent',
+  title: 'Support agent',
+  sources: [contextKnowledgeBaseResource, {type: 'dataset', id: 'abc123.production'}],
+  groqFilter: '_type == "article"',
+}
+const contextMcpEndpointResource: BlueprintContextMcpEndpointResource = defineContextMcpEndpoint(contextMcpEndpointConfig)
 
 const corsOriginConfig: BlueprintCorsOriginConfig = {
   name: 'cors-name',
@@ -357,6 +380,8 @@ blueprintModule.stackId = 'stackId'
 validateBlueprint(blueprintModule)
 validateApplication(applicationResource)
 validateMediaLibraryConfig(mediaLibraryConfigResource)
+validateContextKnowledgeBase(contextKnowledgeBaseResource)
+validateContextMcpEndpoint(contextMcpEndpointResource)
 validateCorsOrigin(corsOriginResource)
 validateDataset(datasetResource)
 validateDocumentFunction(documentFunctionResource)
