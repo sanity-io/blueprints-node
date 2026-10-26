@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.30.0](https://github.com/sanity-io/blueprints-node/compare/v0.29.0...v0.30.0) (2026-10-26)
+
+
+### Features
+
+* definePermission and defineContentResource ([#179](https://github.com/sanity-io/blueprints-node/issues/179)) ([830e407](https://github.com/sanity-io/blueprints-node/commit/830e4076899b9d6650bd43291ddade321972eb07))
+
 ## [0.29.0](https://github.com/sanity-io/blueprints-node/compare/v0.28.0...v0.29.0) (2026-10-22)
 
 
