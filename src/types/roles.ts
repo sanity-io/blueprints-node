@@ -7,7 +7,7 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
  * @expand
  */
 export interface RolePermission {
-  /** Predefined permission name (e.g., 'sanity-all-documents') */
+  /** Predefined permission name (e.g., 'sanity-all-documents'), or a reference to a permission in the blueprint (e.g., '$.resources.articles-only') */
   name: string
   /** Permission action (e.g., 'read', 'mode') */
   action: string
