@@ -6,6 +6,7 @@ import type {BlueprintResource} from '../index.js'
  * `id` is a reference to a knowledge base in the same blueprint (`$.resources.<name>`) or the ID
  * (`kb…`) of an existing knowledge base.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  */
 export interface ContextKnowledgeBaseSource {
@@ -16,6 +17,7 @@ export interface ContextKnowledgeBaseSource {
 /**
  * A Sanity dataset served by a Context MCP endpoint, as `<projectId>.<datasetName>`.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  */
 export interface ContextDatasetSource {
@@ -26,6 +28,7 @@ export interface ContextDatasetSource {
 /**
  * Content a Context MCP endpoint serves.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  */
 export type ContextMcpEndpointSource = ContextKnowledgeBaseSource | ContextDatasetSource
@@ -33,6 +36,7 @@ export type ContextMcpEndpointSource = ContextKnowledgeBaseSource | ContextDatas
 /**
  * A Context knowledge base resource.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  */
 export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource {
@@ -46,6 +50,7 @@ export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource
 /**
  * Configuration for a Context knowledge base.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  * @interface
  */
@@ -54,6 +59,7 @@ export type BlueprintContextKnowledgeBaseConfig = Omit<BlueprintContextKnowledge
 /**
  * A Context MCP endpoint resource.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  */
 export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
@@ -77,6 +83,7 @@ export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
  * Configuration for a Context MCP endpoint. A knowledge base source can also be the resource
  * returned by {@link defineContextKnowledgeBase}, which becomes a reference to it.
  * @beta This feature is subject to breaking changes.
+ * @hidden
  * @category Resource Types
  * @interface
  */
