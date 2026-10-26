@@ -72,9 +72,12 @@ export function defineContextMcpEndpoint(parameters: BlueprintContextMcpEndpoint
   const mcpEndpointResource: BlueprintContextMcpEndpointResource = {
     ...parameters,
     type: 'sanity.context.mcp',
-    sources: parameters.sources.map((source) =>
-      source.type === 'sanity.context.knowledge-base' ? {type: 'knowledge-base', id: `$.resources.${source.name}`} : source,
-    ),
+    // Malformed sources pass through untouched, so validation reports them instead of throwing here.
+    sources: Array.isArray(parameters.sources)
+      ? parameters.sources.map((source) =>
+          source?.type === 'sanity.context.knowledge-base' ? {type: 'knowledge-base', id: `$.resources.${source.name}`} : source,
+        )
+      : parameters.sources,
   }
 
   runValidation(() => validateContextMcpEndpoint(mcpEndpointResource))

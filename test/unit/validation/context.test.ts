@@ -98,3 +98,48 @@ describe('validateContextMcpEndpoint', () => {
     })
   })
 })
+
+describe('malformed Context configs', () => {
+  test('should reject a missing or non-object config', () => {
+    expect(validateContextKnowledgeBase(undefined)).toStrictEqual([
+      {type: 'invalid_value', message: 'Knowledge base config must be provided'},
+    ])
+    expect(validateContextKnowledgeBase('docs')).toStrictEqual([{type: 'invalid_type', message: 'Knowledge base config must be an object'}])
+    expect(validateContextMcpEndpoint(undefined)).toStrictEqual([{type: 'invalid_value', message: 'MCP endpoint config must be provided'}])
+    expect(validateContextMcpEndpoint('agent')).toStrictEqual([{type: 'invalid_type', message: 'MCP endpoint config must be an object'}])
+  })
+
+  test('should reject text fields that are not strings or are empty', () => {
+    expect(validateContextKnowledgeBase({...knowledgeBase, title: 1})).toContainEqual({
+      type: 'invalid_type',
+      message: 'Knowledge base title must be a string',
+    })
+    expect(validateContextMcpEndpoint({...endpoint, instructions: ''})).toContainEqual({
+      type: 'invalid_value',
+      message: 'MCP endpoint instructions must not be empty',
+    })
+  })
+
+  test('should reject the wrong type, missing sources, and too many sources', () => {
+    expect(validateContextMcpEndpoint({...endpoint, type: 'sanity.context.knowledge-base'})).toContainEqual({
+      type: 'invalid_value',
+      message: 'MCP endpoint type must be `sanity.context.mcp`',
+    })
+    const {sources: _sources, ...withoutSources} = endpoint
+    expect(validateContextMcpEndpoint(withoutSources)).toContainEqual({
+      type: 'missing_parameter',
+      message: 'MCP endpoint sources are required',
+    })
+    const tooMany = Array.from({length: 101}, (_, i) => ({type: 'knowledge-base', id: `kb${i}`}))
+    expect(validateContextMcpEndpoint({...endpoint, sources: tooMany})).toContainEqual({
+      type: 'invalid_value',
+      message: 'MCP endpoint can have at most 100 sources',
+    })
+  })
+
+  test('should reject sources without a type and id, or with a non-string id', () => {
+    const errors = validateContextMcpEndpoint({...endpoint, sources: [null, {type: 'dataset'}, {type: 'knowledge-base', id: 1}]})
+    expect(errors).toContainEqual({type: 'invalid_value', message: 'Each MCP endpoint source needs a `type` and an `id`'})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'MCP endpoint source `id` must be a non-empty string'})
+  })
+})

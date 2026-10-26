@@ -87,6 +87,20 @@ describe('defineContextMcpEndpoint', () => {
     ])
   })
 
+  test('should report malformed sources through validation instead of throwing', () => {
+    for (const sources of [undefined, 'not-a-list', [null]]) {
+      expect(() =>
+        defineBlueprintForResource(
+          context.defineContextMcpEndpoint({
+            name: 'support-agent',
+            title: 'Support agent',
+            sources,
+          } as unknown as index.BlueprintContextMcpEndpointConfig),
+        ),
+      ).toThrow(/MCP endpoint (sources are required|must have at least one source|source needs)/)
+    }
+  })
+
   test('should define a blueprint with knowledge bases and endpoints that reference them', () => {
     const productDocs = context.defineContextKnowledgeBase({name: 'product-docs', title: 'Product docs', description: 'Docs'})
     const blueprint = index.defineBlueprint({
