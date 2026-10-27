@@ -2,6 +2,7 @@ import {
   defineApplication,
   defineAssetSourceView,
   defineBlueprint,
+  defineContentResource,
   defineContextKnowledgeBase,
   defineContextMcpEndpoint,
   defineCorsOrigin,
@@ -12,6 +13,7 @@ import {
   defineMediaLibraryAssetFunction,
   defineMediaLibraryConfig,
   definePanelView,
+  definePermission,
   defineProjectRole,
   definePubSubFunction,
   defineQueueFunction,
@@ -24,6 +26,7 @@ import {
   defineWindowView,
   validateApplication,
   validateBlueprint,
+  validateContentResource,
   validateContextKnowledgeBase,
   validateContextMcpEndpoint,
   validateCorsOrigin,
@@ -33,6 +36,7 @@ import {
   validateFunction,
   validateMediaLibraryAssetFunction,
   validateMediaLibraryConfig,
+  validatePermission,
   validatePubSubFunction,
   validateQueueFunction,
   validateResource,
@@ -83,6 +87,14 @@ describe('package imports', () => {
     expect(validateMediaLibraryConfig).toBeInstanceOf(Function)
   })
 
+  it('should import validateContentResource', () => {
+    expect(validateContentResource).toBeInstanceOf(Function)
+  })
+
+  it('should import validatePermission', () => {
+    expect(validatePermission).toBeInstanceOf(Function)
+  })
+
   it('should import defineContextKnowledgeBase', () => {
     expect(defineContextKnowledgeBase).toBeInstanceOf(Function)
   })
@@ -129,6 +141,14 @@ describe('package imports', () => {
 
   it('should import defineMediaLibraryAssetFunction', () => {
     expect(defineMediaLibraryAssetFunction).toBeInstanceOf(Function)
+  })
+
+  it('should import defineContentResource', () => {
+    expect(defineContentResource).toBeInstanceOf(Function)
+  })
+
+  it('should import definePermission', () => {
+    expect(definePermission).toBeInstanceOf(Function)
   })
 
   it('should import defineProjectRole', () => {

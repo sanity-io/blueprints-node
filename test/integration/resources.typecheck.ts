@@ -3,6 +3,7 @@ import {
   type Blueprint,
   type BlueprintApplicationConfig,
   type BlueprintApplicationResource,
+  type BlueprintContentResourceConfig,
   // type BlueprintBaseFunctionResource,
   type BlueprintContextKnowledgeBaseConfig,
   type BlueprintContextKnowledgeBaseResource,
@@ -24,6 +25,8 @@ import {
   type BlueprintMediaLibraryFunctionResourceEvent,
   type BlueprintModule,
   type BlueprintOutput,
+  type BlueprintPermissionConfig,
+  type BlueprintPermissionResource,
   type BlueprintProjectResourceLifecycle,
   type BlueprintProjectRoleResource,
   type BlueprintPubSubFunctionResource,
@@ -39,6 +42,7 @@ import {
   type BlueprintSyncTagInvalidateFunctionResourceEvent,
   defineApplication,
   defineAssetSourceView,
+  defineContentResource,
   defineContextKnowledgeBase,
   defineContextMcpEndpoint,
   defineCorsOrigin,
@@ -48,6 +52,7 @@ import {
   defineMediaLibraryAssetFunction,
   defineMediaLibraryConfig,
   definePanelView,
+  definePermission,
   defineProjectRole,
   definePubSubFunction,
   defineQueueFunction,
@@ -60,6 +65,7 @@ import {
   type RolePermission,
   validateApplication,
   validateBlueprint,
+  validateContentResource,
   validateContextKnowledgeBase,
   validateContextMcpEndpoint,
   validateCorsOrigin,
@@ -69,6 +75,7 @@ import {
   validateFunction,
   validateMediaLibraryAssetFunction,
   validateMediaLibraryConfig,
+  validatePermission,
   validatePubSubFunction,
   validateQueueFunction,
   validateResource,
@@ -248,6 +255,26 @@ const mediaLibraryConfigConfig: BlueprintMediaLibraryConfigConfig = {
 }
 const mediaLibraryConfigResource: BlueprintMediaLibraryConfigResource = defineMediaLibraryConfig(mediaLibraryConfigConfig)
 
+const permissionConfig: BlueprintPermissionConfig = {
+  name: 'test-permission',
+  title: 'Test Permission',
+  description: 'Test Permission Description',
+  permissionType: 'sanity.document.filter',
+  config: {filter: '_type == "article"'},
+  project: 'projectId',
+}
+const permissionResource: BlueprintPermissionResource = definePermission(permissionConfig)
+
+const contentResourceConfig: BlueprintContentResourceConfig = {
+  name: 'test-content-resource',
+  title: 'Test Content Resource',
+  description: 'Test Content Resource Description',
+  documentTypes: ['article'],
+  filter: 'defined(slug)',
+  project: 'projectId',
+}
+const contentResource: BlueprintPermissionResource = defineContentResource(contentResourceConfig)
+
 const rolePermission: RolePermission = {action: 'read', name: 'sanity-test-read'}
 const roleConfig: BlueprintRoleConfig = {
   name: 'test-role',
@@ -365,6 +392,8 @@ const blueprint: Blueprint = {
     documentWebhookResource,
     mediaLibraryAssetFunctionResource,
     mediaLibraryConfigResource,
+    permissionResource,
+    contentResource,
     projectRoleResource,
     blueprintResource,
   ],
@@ -388,6 +417,8 @@ validateDocumentFunction(documentFunctionResource)
 validateDocumentWebhook(documentWebhookResource)
 validateFunction({name: 'test-function'})
 validateMediaLibraryAssetFunction(mediaLibraryAssetFunctionResource)
+validatePermission(permissionResource)
+validateContentResource(contentResourceConfig)
 validateResource(blueprintResource)
 validateRole(roleResource)
 validateScheduledFunction(scheduledFunctionResource)
