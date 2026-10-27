@@ -117,8 +117,9 @@ const _durableFunction: BlueprintDurableFunctionResource = {
   name: 'my-durable',
   src: 'functions/my-durable',
   event: _durableDocumentEvent,
-  concurrency: 5,
-  debounce: {window: 10},
+  // TODO: eventually support queue properties once backend supports it
+  // concurrency: 5,
+  // debounce: {window: 10},
 }
 
 const _documentFunctionResourceEvent: BlueprintDocumentFunctionResourceEvent = {
