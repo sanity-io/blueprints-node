@@ -205,11 +205,10 @@ export interface BlueprintPubSubFunctionResource extends BlueprintBaseFunctionRe
 
 /**
  * A durable, step-based function.
- * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
+ * @beta Deploying Durable Functions via Blueprints is experimental.
  * @category Functions Types
  */
-export interface BlueprintDurableFunctionResource extends BlueprintBaseFunctionResource, QueueConfig {
+export interface BlueprintDurableFunctionResource extends BlueprintBaseFunctionResource {
   type: 'sanity.function.durable'
   event?: BlueprintFunctionResourceContentLakeEvent
   /**
@@ -338,12 +337,11 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
 /**
  * Configuration for defining a durable function.
  * @public
- * @alpha Deploying Durable Functions via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
+ * @beta Deploying Durable Functions via Blueprints is experimental.
  * @category Functions Types
  * @interface
  */
-export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event' | 'durableTimeout' | 'debounce'> & {
+export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'type' | 'src' | 'event' | 'durableTimeout'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`
@@ -358,8 +356,4 @@ export type BlueprintDurableConfig = Omit<BlueprintDurableFunctionResource, 'typ
    * @defaultValue 86_400 (24 hours)
    */
   durableTimeout?: string | number
-  /**
-   * Optional debounce configuration, as a duration or a full config
-   */
-  debounce?: DebounceInput
 }
