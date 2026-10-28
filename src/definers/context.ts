@@ -11,14 +11,32 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a Context knowledge base.
  *
- * A declared knowledge base starts empty: add its sources through the Context API or dashboard.
- * Removing it from the blueprint keeps the knowledge base, because deleting it would discard its built content.
+ * @remarks
+ * The blueprint must be scoped to an organization. A new knowledge base has no sources. Add sources in the Context API
+ * or the dashboard.
  *
+ * The default deletion policy is `retain`. If the stack is destroyed, the knowledge base is detached and not deleted. If
+ * the resource is removed from the blueprint, the deploy fails. To remove the resource, first deploy it with one of these
+ * `lifecycle` values:
+ * - `{ownershipAction: {type: 'detach'}}` keeps the knowledge base.
+ * - `{deletionPolicy: 'allow'}` deletes the knowledge base.
+ *
+ * @example
  * ```ts
  * defineContextKnowledgeBase({
  *   name: 'product-docs',
  *   title: 'Product docs',
  *   description: 'Everything about the product',
+ * })
+ * ```
+ *
+ * @example Detach before removal
+ * ```ts
+ * defineContextKnowledgeBase({
+ *   name: 'product-docs',
+ *   title: 'Product docs',
+ *   description: 'Everything about the product',
+ *   lifecycle: {ownershipAction: {type: 'detach'}},
  * })
  * ```
  * @param parameters The knowledge base configuration
@@ -43,9 +61,19 @@ export function defineContextKnowledgeBase(parameters: BlueprintContextKnowledge
 /**
  * Defines a Context MCP endpoint that agents connect to.
  *
- * A knowledge base source can reference a knowledge base in the same blueprint, either as
- * `$.resources.<name>` or by passing the resource returned by {@link defineContextKnowledgeBase}.
+ * @remarks
+ * The blueprint must be scoped to an organization.
  *
+ * @example
+ * ```ts
+ * defineContextMcpEndpoint({
+ *   name: 'support-agent',
+ *   title: 'Support agent',
+ *   sources: [{type: 'dataset', id: 'abc123.production'}],
+ * })
+ * ```
+ *
+ * @example Knowledge base and dataset sources
  * ```ts
  * const productDocs = defineContextKnowledgeBase({
  *   name: 'product-docs',
@@ -57,6 +85,7 @@ export function defineContextKnowledgeBase(parameters: BlueprintContextKnowledge
  *   name: 'support-agent',
  *   title: 'Support agent',
  *   sources: [productDocs, {type: 'dataset', id: 'abc123.production'}],
+ *   instructions: 'Answer questions about the product.',
  *   groqFilter: '_type in ["article", "faq"]',
  * })
  * ```

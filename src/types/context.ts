@@ -1,32 +1,31 @@
 import type {BlueprintResource} from '../index.js'
 
 /**
- * A knowledge base served by a Context MCP endpoint.
- *
- * `id` is a reference to a knowledge base in the same blueprint (`$.resources.<name>`) or the ID
- * (`kb…`) of an existing knowledge base.
+ * A knowledge base that a Context MCP endpoint serves.
  * @beta This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types
  */
 export interface ContextKnowledgeBaseSource {
   type: 'knowledge-base'
+  /** A knowledge base in the blueprint as `$.resources.<name>`, or the ID (`kb…`) of a knowledge base. */
   id: string
 }
 
 /**
- * A Sanity dataset served by a Context MCP endpoint, as `<projectId>.<datasetName>`.
+ * A Sanity dataset that a Context MCP endpoint serves.
  * @beta This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types
  */
 export interface ContextDatasetSource {
   type: 'dataset'
+  /** The dataset as `<projectId>.<datasetName>`, for example `abc123.production`. It can't be a `$.resources.<name>` reference. */
   id: string
 }
 
 /**
- * Content a Context MCP endpoint serves.
+ * Content that a Context MCP endpoint serves.
  * @beta This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types
@@ -41,9 +40,14 @@ export type ContextMcpEndpointSource = ContextKnowledgeBaseSource | ContextDatas
  */
 export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource {
   type: 'sanity.context.knowledge-base'
-  /** The knowledge base's title, up to 100 characters. */
+  /**
+   * The resource name in the blueprint. The knowledge base has no name, only a `title`. With the default deletion
+   * policy (`retain`), a deploy fails if this name changes.
+   */
+  name: string
+  /** The knowledge base title, up to 100 characters. */
   title: string
-  /** A short description of what the knowledge base covers, up to 2,000 characters. */
+  /** What the knowledge base covers, up to 2,000 characters. */
   description: string
 }
 
@@ -65,28 +69,32 @@ export type BlueprintContextKnowledgeBaseConfig = Omit<BlueprintContextKnowledge
 export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
   type: 'sanity.context.mcp'
   /**
-   * The endpoint's name, used in the URL agents connect to. Lowercase letters, digits and single
-   * hyphens, up to 64 characters. Changing it creates a new endpoint with a new URL.
+   * The endpoint name in the URL that agents connect to: lowercase letters, digits and single hyphens, up to 64
+   * characters. The names `by-name` and `mcp` followed by 8 letters or digits are reserved. With the default deletion
+   * policy (`allow`), a change deletes the endpoint and creates a new endpoint with a new URL.
    */
   name: string
-  /** The endpoint's title, up to 100 characters. */
+  /** The endpoint title, up to 100 characters. */
   title: string
   /** What the endpoint serves: any number of knowledge bases and at most one dataset. */
   sources: ContextMcpEndpointSource[]
-  /** Instructions for connecting agents, up to 10,000 characters. */
+  /** Instructions for agents that connect to the endpoint, up to 10,000 characters. */
   instructions?: string
-  /** A GROQ filter that limits which documents the dataset source serves. Requires a dataset source. */
+  /** A GROQ filter for the documents that the dataset source serves. It requires a dataset source. */
   groqFilter?: string
 }
 
 /**
- * Configuration for a Context MCP endpoint. A knowledge base source can also be the resource
- * returned by {@link defineContextKnowledgeBase}, which becomes a reference to it.
+ * Configuration for a Context MCP endpoint.
  * @beta This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types
  * @interface
  */
 export type BlueprintContextMcpEndpointConfig = Omit<BlueprintContextMcpEndpointResource, 'type' | 'sources'> & {
+  /**
+   * What the endpoint serves: any number of knowledge bases and at most one dataset. A knowledge base source can also
+   * be the resource that {@link defineContextKnowledgeBase} returns.
+   */
   sources: Array<ContextMcpEndpointSource | BlueprintContextKnowledgeBaseResource>
 }
