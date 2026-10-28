@@ -26,6 +26,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  # Allow action to remove old artifacts
   actions: write
   contents: read
   pull-requests: write
