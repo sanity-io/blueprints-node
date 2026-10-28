@@ -104,7 +104,7 @@ const contextKnowledgeBaseResource: BlueprintContextKnowledgeBaseResource = defi
 const contextMcpEndpointConfig: BlueprintContextMcpEndpointConfig = {
   name: 'support-agent',
   title: 'Support agent',
-  sources: [contextKnowledgeBaseResource, {type: 'dataset', id: 'abc123.production'}],
+  sources: [contextKnowledgeBaseResource, {type: 'dataset', id: 'abc123.production', perspective: 'drafts', semanticSearch: false}],
   groqFilter: '_type == "article"',
 }
 const contextMcpEndpointResource: BlueprintContextMcpEndpointResource = defineContextMcpEndpoint(contextMcpEndpointConfig)

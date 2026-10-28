@@ -145,6 +145,27 @@ describe('malformed Context configs', () => {
     })
   })
 
+  test('should validate the dataset source settings', () => {
+    const dataset = {type: 'dataset', id: 'abc123.production'}
+    for (const settings of [
+      {workspace: 'marketing', perspective: 'drafts', semanticSearch: false},
+      {workspace: null, perspective: null, semanticSearch: null},
+      {perspective: '$.values.perspective'},
+    ]) {
+      expect(validateContextMcpEndpoint({...endpoint, sources: [{...dataset, ...settings}]})).toStrictEqual([])
+    }
+
+    const errors = validateContextMcpEndpoint({
+      ...endpoint,
+      sources: [{...dataset, workspace: '', perspective: 'previewDrafts', semanticSearch: 'auto'}],
+    })
+    expect(errors).toStrictEqual([
+      {type: 'invalid_type', message: 'Dataset source `workspace` must be a non-empty string or null'},
+      {type: 'invalid_value', message: 'Dataset source `perspective` must be `published`, `drafts`, `raw` or null'},
+      {type: 'invalid_type', message: 'Dataset source `semanticSearch` must be a boolean or null'},
+    ])
+  })
+
   test('should reject sources without a type and id, or with a non-string id', () => {
     const errors = validateContextMcpEndpoint({...endpoint, sources: [null, {type: 'dataset'}, {type: 'knowledge-base', id: 1}]})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Each MCP endpoint source needs a `type` and an `id`'})

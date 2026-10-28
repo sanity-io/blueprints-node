@@ -22,6 +22,15 @@ export interface ContextDatasetSource {
   type: 'dataset'
   /** The dataset as `<projectId>.<datasetName>`, for example `abc123.production`. It can't be a `$.resources.<name>` reference. */
   id: string
+  /** The studio workspace whose schema agents use, by name. `null` uses the studio's first workspace. */
+  workspace?: string | null
+  /** The perspective agents query the dataset with. `null` uses `published`. */
+  perspective?: 'published' | 'drafts' | 'raw' | null
+  /**
+   * Whether agents can use semantic search on the dataset. `false` turns it off. `true` or `null` use it while the
+   * dataset has embeddings enabled.
+   */
+  semanticSearch?: boolean | null
 }
 
 /**

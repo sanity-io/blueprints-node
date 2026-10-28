@@ -89,6 +89,15 @@ export function defineContextKnowledgeBase(parameters: BlueprintContextKnowledge
  *   groqFilter: '_type in ["article", "faq"]',
  * })
  * ```
+ *
+ * @example Dataset settings
+ * ```ts
+ * defineContextMcpEndpoint({
+ *   name: 'editor-agent',
+ *   title: 'Editor agent',
+ *   sources: [{type: 'dataset', id: 'abc123.production', workspace: 'marketing', perspective: 'drafts', semanticSearch: false}],
+ * })
+ * ```
  * @param parameters The MCP endpoint configuration
  * @public
  * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
