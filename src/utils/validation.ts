@@ -47,3 +47,24 @@ const REFERENCE_PREFIXES = ['$.resources.', '$.values.', '$.parameters.', '$.par
 export function isReference(value: unknown): boolean {
   return typeof value === 'string' && REFERENCE_PREFIXES.some((prefix) => value.startsWith(prefix))
 }
+
+/**
+ * Validates a string field on an object, optionally requiring it to be present and non-empty.
+ * @param obj The object containing the field
+ * @param field The field name
+ * @param label The label used as the prefix of error messages
+ * @param options Whether the field is required
+ * @returns A list of validation errors
+ * @internal
+ */
+export function validateStringField(obj: object, field: string, label: string, options: {required: boolean}): BlueprintError[] {
+  const value: unknown = Reflect.get(obj, field)
+
+  if (typeof value === 'undefined' || (options.required && !value)) {
+    return options.required ? [{type: 'missing_parameter', message: `${label}.${field} is required`}] : []
+  }
+  if (typeof value !== 'string') {
+    return [{type: 'invalid_type', message: `${label}.${field} must be a string`}]
+  }
+  return []
+}

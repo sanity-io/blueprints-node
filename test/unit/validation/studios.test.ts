@@ -113,6 +113,109 @@ describe('validateStudio', () => {
     expect(errors, JSON.stringify(errors)).toHaveLength(0)
   })
 
+  describe('mfManifest', () => {
+    test.each([null, 'manifest', 1, []])('should return an error if mfManifest is not an object: %j', (mfManifest) => {
+      const errors = validateStudio({...validStudio, mfManifest})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio mfManifest must be an object'})
+    })
+
+    test('should accept an undefined mfManifest', () => {
+      const errors = validateStudio({...validStudio, mfManifest: undefined})
+      expect(errors, JSON.stringify(errors)).toHaveLength(0)
+    })
+  })
+
+  describe('workspaces', () => {
+    const validWorkspace = {
+      projectId: 'abcdefg',
+      dataset: 'production',
+      schemaDescriptorId: 'descriptor-id',
+      name: 'default',
+      title: 'Default',
+      subtitle: undefined,
+      basePath: '/',
+      icon: undefined,
+    }
+
+    test('should return an error if workspaces is not an array', () => {
+      const errors = validateStudio({...validStudio, workspaces: {}})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio workspaces must be an array'})
+    })
+
+    test('should return an error if a workspace is not provided', () => {
+      const errors = validateStudio({...validStudio, workspaces: [null]})
+      expect(errors).toContainEqual({type: 'invalid_value', message: 'Studio workspaces[0] must be provided'})
+    })
+
+    test('should return an error if a workspace is not an object', () => {
+      const errors = validateStudio({...validStudio, workspaces: [validWorkspace, 'workspace']})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio workspaces[1] must be an object'})
+    })
+
+    test.each(['projectId', 'dataset', 'schemaDescriptorId', 'name'])('should return an error if workspace %s is missing', (field) => {
+      const errors = validateStudio({...validStudio, workspaces: [{...validWorkspace, [field]: undefined}]})
+      expect(errors).toContainEqual({type: 'missing_parameter', message: `Studio workspaces[0].${field} is required`})
+    })
+
+    test.each(['projectId', 'dataset', 'schemaDescriptorId', 'name', 'title', 'subtitle', 'basePath', 'icon'])(
+      'should return an error if workspace %s is not a string',
+      (field) => {
+        const errors = validateStudio({...validStudio, workspaces: [{...validWorkspace, [field]: 1}]})
+        expect(errors).toContainEqual({type: 'invalid_type', message: `Studio workspaces[0].${field} must be a string`})
+      },
+    )
+
+    test('should accept valid workspaces', () => {
+      const errors = validateStudio({...validStudio, workspaces: [validWorkspace]})
+      expect(errors, JSON.stringify(errors)).toHaveLength(0)
+    })
+  })
+
+  describe('schemaInputs', () => {
+    const validSchemaInput = {
+      projectId: 'abcdefg',
+      dataset: 'production',
+      name: 'default',
+      title: 'Default',
+      manifestSchema: [],
+    }
+
+    test('should return an error if schemaInputs is not an array', () => {
+      const errors = validateStudio({...validStudio, schemaInputs: 'inputs'})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio schemaInputs must be an array'})
+    })
+
+    test('should return an error if a schema input is not provided', () => {
+      const errors = validateStudio({...validStudio, schemaInputs: [undefined]})
+      expect(errors).toContainEqual({type: 'invalid_value', message: 'Studio schemaInputs[0] must be provided'})
+    })
+
+    test('should return an error if a schema input is not an object', () => {
+      const errors = validateStudio({...validStudio, schemaInputs: [1]})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio schemaInputs[0] must be an object'})
+    })
+
+    test.each(['projectId', 'dataset', 'name', 'manifestSchema'])('should return an error if schema input %s is missing', (field) => {
+      const errors = validateStudio({...validStudio, schemaInputs: [{...validSchemaInput, [field]: undefined}]})
+      expect(errors).toContainEqual({type: 'missing_parameter', message: `Studio schemaInputs[0].${field} is required`})
+    })
+
+    test.each(['projectId', 'dataset', 'name', 'title'])('should return an error if schema input %s is not a string', (field) => {
+      const errors = validateStudio({...validStudio, schemaInputs: [{...validSchemaInput, [field]: 1}]})
+      expect(errors).toContainEqual({type: 'invalid_type', message: `Studio schemaInputs[0].${field} must be a string`})
+    })
+
+    test('should return an error if schema input manifestSchema is not an array', () => {
+      const errors = validateStudio({...validStudio, schemaInputs: [{...validSchemaInput, manifestSchema: {}}]})
+      expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio schemaInputs[0].manifestSchema must be an array'})
+    })
+
+    test('should accept valid schema inputs', () => {
+      const errors = validateStudio({...validStudio, schemaInputs: [validSchemaInput]})
+      expect(errors, JSON.stringify(errors)).toHaveLength(0)
+    })
+  })
+
   test('should accept a valid configuration', () => {
     const errors = validateStudio({
       ...validStudio,

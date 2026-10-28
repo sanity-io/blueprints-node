@@ -28,6 +28,23 @@ export const APPLICATION_VISIBILITIES = ['default', 'unlisted', 'disabled'] as c
 export type ApplicationVisibility = (typeof APPLICATION_VISIBILITIES)[number]
 
 /**
+ * A workspace definition extracted from a studio's configuration during the build.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ * @hidden
+ */
+export type StudioWorkspace = {
+  projectId: string
+  dataset: string
+  schemaDescriptorId: string
+  name: string
+  title: string | undefined
+  subtitle: string | undefined
+  basePath: string | undefined
+  icon: string | undefined
+}
+
+/**
  * Represents a Studio resource.
  * @see https://www.sanity.io/docs/studio
  * @beta This feature is subject to breaking changes.
@@ -90,6 +107,9 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /** Schema inputs extracted from the studio's schema definition. */
   schemaInputs?: WorkspaceSchemaInput[]
+
+  /** Workspaces extracted from the studio's configuration. */
+  workspaces?: StudioWorkspace[]
 
   /** Module federation manifest */
   mfManifest?: Record<string, unknown>
