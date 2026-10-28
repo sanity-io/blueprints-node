@@ -150,14 +150,13 @@ describe('malformed Context configs', () => {
     for (const settings of [
       {workspace: 'marketing', perspective: 'drafts', semanticSearch: false},
       {workspace: null, perspective: null, semanticSearch: null},
-      {perspective: '$.values.perspective'},
     ]) {
       expect(validateContextMcpEndpoint({...endpoint, sources: [{...dataset, ...settings}]})).toStrictEqual([])
     }
 
     const errors = validateContextMcpEndpoint({
       ...endpoint,
-      sources: [{...dataset, workspace: '', perspective: 'previewDrafts', semanticSearch: 'auto'}],
+      sources: [{...dataset, workspace: '', perspective: '$.values.perspective', semanticSearch: 'auto'}],
     })
     expect(errors).toStrictEqual([
       {type: 'invalid_type', message: 'Dataset source `workspace` must be a non-empty string or null'},

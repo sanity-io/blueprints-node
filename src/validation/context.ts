@@ -27,7 +27,7 @@ function validateDatasetSettings(source: object): BlueprintError[] {
   if (workspace != null && (typeof workspace !== 'string' || workspace.length === 0)) {
     errors.push({type: 'invalid_type', message: 'Dataset source `workspace` must be a non-empty string or null'})
   }
-  if (perspective != null && !isReference(perspective) && !DATASET_PERSPECTIVES.includes(perspective)) {
+  if (perspective != null && !DATASET_PERSPECTIVES.includes(perspective)) {
     errors.push({type: 'invalid_value', message: 'Dataset source `perspective` must be `published`, `drafts`, `raw` or null'})
   }
   if (semanticSearch != null && typeof semanticSearch !== 'boolean') {
