@@ -2,7 +2,7 @@ import type {BlueprintResource} from '../index.js'
 
 /**
  * A knowledge base that a Context MCP endpoint serves.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  */
@@ -14,7 +14,7 @@ export interface ContextKnowledgeBaseSource {
 
 /**
  * A Sanity dataset that a Context MCP endpoint serves.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  */
@@ -26,7 +26,7 @@ export interface ContextDatasetSource {
 
 /**
  * Content that a Context MCP endpoint serves.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  */
@@ -34,7 +34,7 @@ export type ContextMcpEndpointSource = ContextKnowledgeBaseSource | ContextDatas
 
 /**
  * A Context knowledge base resource.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  */
@@ -53,7 +53,7 @@ export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource
 
 /**
  * Configuration for a Context knowledge base.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  * @interface
@@ -62,7 +62,7 @@ export type BlueprintContextKnowledgeBaseConfig = Omit<BlueprintContextKnowledge
 
 /**
  * A Context MCP endpoint resource.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  */
@@ -86,7 +86,7 @@ export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
 
 /**
  * Configuration for a Context MCP endpoint.
- * @beta This feature is subject to breaking changes.
+ * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
  * @hidden
  * @category Resource Types
  * @interface

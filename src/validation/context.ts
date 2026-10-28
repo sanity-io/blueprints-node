@@ -21,7 +21,7 @@ function validateText(resource: object, field: string, label: string, options: {
 /**
  * Validates that the given resource is a valid Context knowledge base.
  * @param resource The Context knowledge base resource
- * @beta This feature is subject to breaking changes.
+ * @alpha
  * @hidden
  * @category Validation
  * @returns A list of validation errors
@@ -45,7 +45,7 @@ export function validateContextKnowledgeBase(resource: unknown): BlueprintError[
 /**
  * Validates that the given resource is a valid Context MCP endpoint.
  * @param resource The Context MCP endpoint resource
- * @beta This feature is subject to breaking changes.
+ * @alpha
  * @hidden
  * @category Validation
  * @returns A list of validation errors
