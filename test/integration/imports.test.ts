@@ -3,6 +3,8 @@ import {
   defineAssetSourceView,
   defineBlueprint,
   defineContentResource,
+  defineContextKnowledgeBase,
+  defineContextMcpEndpoint,
   defineCorsOrigin,
   defineDataset,
   defineDocumentFunction,
@@ -25,6 +27,8 @@ import {
   validateApplication,
   validateBlueprint,
   validateContentResource,
+  validateContextKnowledgeBase,
+  validateContextMcpEndpoint,
   validateCorsOrigin,
   validateDataset,
   validateDocumentFunction,
@@ -91,6 +95,14 @@ describe('package imports', () => {
     expect(validatePermission).toBeInstanceOf(Function)
   })
 
+  it('should import defineContextKnowledgeBase', () => {
+    expect(defineContextKnowledgeBase).toBeInstanceOf(Function)
+  })
+
+  it('should import defineContextMcpEndpoint', () => {
+    expect(defineContextMcpEndpoint).toBeInstanceOf(Function)
+  })
+
   it('should import defineCorsOrigin', () => {
     expect(defineCorsOrigin).toBeInstanceOf(Function)
   })
@@ -153,6 +165,14 @@ describe('package imports', () => {
 
   it('should import validateBlueprint', () => {
     expect(validateBlueprint).toBeInstanceOf(Function)
+  })
+
+  it('should import validateContextKnowledgeBase', () => {
+    expect(validateContextKnowledgeBase).toBeInstanceOf(Function)
+  })
+
+  it('should import validateContextMcpEndpoint', () => {
+    expect(validateContextMcpEndpoint).toBeInstanceOf(Function)
   })
 
   it('should import validateCorsOrigin', () => {
