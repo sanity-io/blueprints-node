@@ -26,6 +26,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  actions: write
   contents: read
   pull-requests: write
 
@@ -88,21 +89,66 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## 📚 TypeDoc Generation Result
+            // Hidden marker to find and update this comment on later runs
+            const marker = '<!-- typedoc-generation-result -->'
+            const body = `${marker}
+            ## 📚 TypeDoc Generation Result
 
             ✅ **TypeDoc generated successfully!**
 
+            - **Commit:** ${{ github.event.pull_request.head.sha }}
             - **File size:** ${{ steps.generate.outputs.file_size }}
             - **Total exports:** ${{ steps.generate.outputs.export_count }}
             - **Artifact:** \`typedoc-${{ github.sha }}\`
             - **HTML docs preview:** [Download artifact](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.html-artifact.outputs.artifact-id }})
 
             The TypeDoc JSON file has been generated and validated. All documentation scripts completed successfully.`
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
             })
+            const existing = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker))
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                comment_id: existing.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body,
+              })
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body,
+              })
+            }
+
+      - name: Delete HTML docs artifacts from earlier runs
+        if: github.event_name == 'pull_request' && steps.generate.outputs.success == 'true'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: `typedoc-html-pr-${context.issue.number}`,
+              per_page: 100,
+            })
+
+            for (const artifact of artifacts) {
+              if (artifact.workflow_run?.id === context.runId) continue
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              })
+              core.info(`Deleted artifact ${artifact.id} from run ${artifact.workflow_run?.id}`)
+            }
 
       - name: Extract version from tag
         if: (startsWith(github.ref, 'refs/tags/v') || github.event.inputs.upload == 'true') && steps.generate.outputs.success == 'true'
