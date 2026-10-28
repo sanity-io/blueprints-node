@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.0](https://github.com/sanity-io/blueprints-node/compare/v0.30.0...v0.31.0) (2026-10-28)
+
+
+### Features
+
+* add defineContextKnowledgeBase and defineContextMcpEndpoint ([#184](https://github.com/sanity-io/blueprints-node/issues/184)) ([24ceb5c](https://github.com/sanity-io/blueprints-node/commit/24ceb5cfac7f92d519818a10d30015b61c35e7f9))
+
 ## [0.30.0](https://github.com/sanity-io/blueprints-node/compare/v0.29.0...v0.30.0) (2026-10-26)
 
 
