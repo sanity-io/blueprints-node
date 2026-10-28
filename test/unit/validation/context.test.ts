@@ -84,6 +84,14 @@ describe('validateContextMcpEndpoint', () => {
     })
   })
 
+  test('should reject a dataset source that references a resource', () => {
+    expect(validateContextMcpEndpoint({...endpoint, sources: [{type: 'dataset', id: '$.resources.production'}]})).toContainEqual({
+      type: 'invalid_value',
+      message: 'Dataset source "$.resources.production" must be "<projectId>.<datasetName>", not a resource reference',
+    })
+    expect(validateContextMcpEndpoint({...endpoint, sources: [{type: 'dataset', id: '$.values.dataset'}]})).toStrictEqual([])
+  })
+
   test('should reject an unknown source type', () => {
     expect(validateContextMcpEndpoint({...endpoint, sources: [{type: 'website', id: 'https://example.com'}]})).toContainEqual({
       type: 'invalid_value',

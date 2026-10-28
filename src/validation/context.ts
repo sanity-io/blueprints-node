@@ -99,7 +99,13 @@ export function validateContextMcpEndpoint(resource: unknown): BlueprintError[] 
     }
     if (source.type === 'dataset') {
       datasets++
-      if (!isReference(source.id) && !DATASET_SOURCE_PATTERN.test(source.id)) {
+      // The provider checks the format before references resolve, and no resource exposes `<projectId>.<datasetName>`
+      if (source.id.startsWith('$.resources.')) {
+        errors.push({
+          type: 'invalid_value',
+          message: `Dataset source "${source.id}" must be "<projectId>.<datasetName>", not a resource reference`,
+        })
+      } else if (!isReference(source.id) && !DATASET_SOURCE_PATTERN.test(source.id)) {
         errors.push({type: 'invalid_format', message: `Dataset source "${source.id}" must be "<projectId>.<datasetName>"`})
       }
     } else if (source.type !== 'knowledge-base') {
