@@ -7,6 +7,7 @@
  * @categoryDescription Referencers
  * These functions are used to reference resources in another Blueprint.
  */
+export * from './definers/agents.js'
 export * from './definers/applications.js'
 export * from './definers/blueprints.js'
 export * from './definers/context.js'
@@ -39,6 +40,7 @@ export * from './definers/webhooks.js'
  * @categoryDescription Functions Types
  * Resource types for functions in a Blueprint.
  */
+export * from './types/agents.js'
 export * from './types/applications.js'
 export * from './types/blueprints.js'
 export * from './types/context.js'
@@ -61,6 +63,7 @@ export * from './types/webhooks.js'
  * @categoryDescription Validation
  * These functions are used to validate resources in a Blueprint.
  */
+export * from './utils/validate-agent.js'
 export * from './validation/applications.js'
 export * from './validation/blueprints.js'
 export * from './validation/context.js'
