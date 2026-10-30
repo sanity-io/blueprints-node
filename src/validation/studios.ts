@@ -1,6 +1,6 @@
 import type {BlueprintError} from '../types/errors.js'
 import {APPLICATION_VISIBILITIES} from '../types/studios.js'
-import {isReference} from '../utils/validation.js'
+import {isReference, validateStringField} from '../utils/validation.js'
 import {validateResource} from './resources.js'
 
 /** hostname validity pattern */
@@ -103,6 +103,82 @@ export function validateStudio(resource: unknown): BlueprintError[] {
     if (typeof resource.sourceMap !== 'boolean') {
       errors.push({type: 'invalid_type', message: 'Studio sourceMap must be a boolean'})
     }
+  }
+
+  if ('mfManifest' in resource && typeof resource.mfManifest !== 'undefined') {
+    if (!resource.mfManifest || typeof resource.mfManifest !== 'object' || Array.isArray(resource.mfManifest)) {
+      errors.push({type: 'invalid_type', message: 'Studio mfManifest must be an object'})
+    }
+  }
+
+  if ('workspaces' in resource && typeof resource.workspaces !== 'undefined') {
+    if (!Array.isArray(resource.workspaces)) {
+      errors.push({type: 'invalid_type', message: 'Studio workspaces must be an array'})
+    } else {
+      resource.workspaces.forEach((workspace, index) => {
+        errors.push(...validateStudioWorkspace(workspace, `Studio workspaces[${index}]`))
+      })
+    }
+  }
+
+  if ('schemaInputs' in resource && typeof resource.schemaInputs !== 'undefined') {
+    if (!Array.isArray(resource.schemaInputs)) {
+      errors.push({type: 'invalid_type', message: 'Studio schemaInputs must be an array'})
+    } else {
+      resource.schemaInputs.forEach((schemaInput, index) => {
+        errors.push(...validateStudioSchemaInput(schemaInput, `Studio schemaInputs[${index}]`))
+      })
+    }
+  }
+
+  return errors
+}
+
+/**
+ * Validates a single workspace extracted from the studio configuration.
+ * @param workspace The workspace to validate
+ * @param label The label used as the prefix of error messages
+ * @returns A list of validation errors
+ */
+function validateStudioWorkspace(workspace: unknown, label: string): BlueprintError[] {
+  if (!workspace) return [{type: 'invalid_value', message: `${label} must be provided`}]
+  if (typeof workspace !== 'object' || Array.isArray(workspace)) return [{type: 'invalid_type', message: `${label} must be an object`}]
+
+  const errors: BlueprintError[] = []
+
+  for (const field of ['projectId', 'dataset', 'schemaDescriptorId', 'name']) {
+    errors.push(...validateStringField(workspace, field, label, {required: true}))
+  }
+
+  for (const field of ['title', 'subtitle', 'basePath', 'icon']) {
+    errors.push(...validateStringField(workspace, field, label, {required: false}))
+  }
+
+  return errors
+}
+
+/**
+ * Validates a single schema input extracted from the studio's schema definition.
+ * @param schemaInput The schema input to validate
+ * @param label The label used as the prefix of error messages
+ * @returns A list of validation errors
+ */
+function validateStudioSchemaInput(schemaInput: unknown, label: string): BlueprintError[] {
+  if (!schemaInput) return [{type: 'invalid_value', message: `${label} must be provided`}]
+  if (typeof schemaInput !== 'object' || Array.isArray(schemaInput)) return [{type: 'invalid_type', message: `${label} must be an object`}]
+
+  const errors: BlueprintError[] = []
+
+  for (const field of ['projectId', 'dataset', 'name']) {
+    errors.push(...validateStringField(schemaInput, field, label, {required: true}))
+  }
+
+  errors.push(...validateStringField(schemaInput, 'title', label, {required: false}))
+
+  if (!('manifestSchema' in schemaInput) || typeof schemaInput.manifestSchema === 'undefined') {
+    errors.push({type: 'missing_parameter', message: `${label}.manifestSchema is required`})
+  } else if (!Array.isArray(schemaInput.manifestSchema)) {
+    errors.push({type: 'invalid_type', message: `${label}.manifestSchema must be an array`})
   }
 
   return errors
