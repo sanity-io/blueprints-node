@@ -41,8 +41,7 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The knowledge base configuration
  * @public
- * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
+ * @beta Deploying Context via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
  * @expandType BlueprintContextKnowledgeBaseConfig
  * @returns The knowledge base resource
@@ -100,8 +99,7 @@ export function defineContextKnowledgeBase(parameters: BlueprintContextKnowledge
  * ```
  * @param parameters The MCP endpoint configuration
  * @public
- * @alpha Deploying Context via Blueprints is experimental. This feature is not available publicly yet.
- * @hidden
+ * @beta Deploying Context via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
  * @expandType BlueprintContextMcpEndpointConfig
  * @returns The MCP endpoint resource
