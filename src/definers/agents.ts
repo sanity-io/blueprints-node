@@ -5,11 +5,7 @@ import {runValidation} from '../utils/validation.js'
  * Defines an Agent to be managed in a Blueprint.
  *
  * @remarks
- * `model` is REQUIRED: a functioning agent needs a model to serve a turn. The
- * non-secret `model.provider`, `model.id`, and `model.baseURL` ride on the
- * resource; `model.apiKey` is a SECRET supplied by reference
- * (`process.env.OPEN_ROUTER_KEY`) at blueprint-eval time, so the committed
- * blueprint carries the reference expression, not a literal secret.
+ * `model` is required; its `apiKey` is passed by reference and resolved at blueprint-eval time.
  *
  * @example
  * ```ts
@@ -50,11 +46,9 @@ export function defineAgent(config: BlueprintAgentConfig): BlueprintAgentResourc
   const {name, src, ...rest} = config
 
   const agentResource: BlueprintAgentResource = {
-    ...rest, // carries `model` through unchanged
+    ...rest,
     name,
     type: 'sanity.agent',
-    // Default the source path the same way defineFunction defaults it. Prep
-    // rewrites this to an AS-... id before deploy.
     src: src ?? `agents/${name}`,
   }
 
