@@ -73,6 +73,8 @@ export default defineBlueprint({
 | `defineDocumentFunction`          | Function triggered by document events                                       |
 | `defineMediaLibraryAssetFunction` | Function triggered by media library events                                  |
 | `defineContentResource` β         | Content resource as in the Manage UI, made from document types and a filter |
+| `defineContextKnowledgeBase` β    | Context knowledge base that agents draw on                                  |
+| `defineContextMcpEndpoint` β      | Context MCP endpoint that serves knowledge bases and a dataset to agents    |
 | `defineCorsOrigin` β              | CORS origin allowing browser requests to your project                       |
 | `defineDocumentWebhook` β         | Webhook triggered by document changes                                       |
 | `definePermission` β              | Custom permission that roles can grant, in the Access API shape             |
