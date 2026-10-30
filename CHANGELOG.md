@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.32.0](https://github.com/sanity-io/blueprints-node/compare/v0.31.0...v0.32.0) (2026-10-30)
+
+
+### Features
+
+* add workspaces to studio resource ([#190](https://github.com/sanity-io/blueprints-node/issues/190)) ([2e32417](https://github.com/sanity-io/blueprints-node/commit/2e3241794c47324f1b8719889e144d5615a3391d))
+* the Context helpers are public ([#192](https://github.com/sanity-io/blueprints-node/issues/192)) ([2d12842](https://github.com/sanity-io/blueprints-node/commit/2d128422cd6a3844a8c2c8b616e8081e47e11f23))
+
 ## [0.31.0](https://github.com/sanity-io/blueprints-node/compare/v0.30.0...v0.31.0) (2026-10-28)
 
 
