@@ -217,6 +217,12 @@ export interface BlueprintApplicationResource extends BlueprintResource {
   /** The background web workers the application runs. */
   webWorkers?: BlueprintWebWorker[]
 
+  /** Auto update settings for the application. Off when omitted. */
+  autoUpdates?: {
+    /** Whether auto updates are enabled for the application */
+    enabled: boolean
+  }
+
   /** Module federation manifest */
   mfManifest?: Record<string, unknown>
 }

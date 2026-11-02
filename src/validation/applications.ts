@@ -296,6 +296,16 @@ export function validateApplication(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'visibility must be one of `default`, `unlisted`, or `disabled`'})
   }
 
+  if ('autoUpdates' in resource && typeof resource.autoUpdates !== 'undefined') {
+    if (!resource.autoUpdates || typeof resource.autoUpdates !== 'object') {
+      errors.push({type: 'invalid_type', message: 'Application autoUpdates must be an object'})
+    } else if (!('enabled' in resource.autoUpdates)) {
+      errors.push({type: 'missing_parameter', message: 'Application autoUpdates.enabled is required'})
+    } else if (typeof resource.autoUpdates.enabled !== 'boolean') {
+      errors.push({type: 'invalid_type', message: 'Application autoUpdates.enabled must be a boolean'})
+    }
+  }
+
   if (!('views' in resource) || typeof resource.views === 'undefined') {
     errors.push({type: 'missing_parameter', message: 'Application must declare at least one view'})
   } else if (!Array.isArray(resource.views)) {
