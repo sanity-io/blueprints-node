@@ -144,6 +144,25 @@ describe('validateApplication', () => {
     })
   })
 
+  test('should accept autoUpdates', () => {
+    expect(validateApplication({...validApplication, autoUpdates: {enabled: false}})).toStrictEqual([])
+  })
+
+  test('should return an error if autoUpdates is not an object', () => {
+    const errors = validateApplication({...validApplication, autoUpdates: 'yes'})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Application autoUpdates must be an object'})
+  })
+
+  test('should return an error if autoUpdates.enabled is not provided', () => {
+    const errors = validateApplication({...validApplication, autoUpdates: {}})
+    expect(errors).toContainEqual({type: 'missing_parameter', message: 'Application autoUpdates.enabled is required'})
+  })
+
+  test('should return an error if autoUpdates.enabled is not a boolean', () => {
+    const errors = validateApplication({...validApplication, autoUpdates: {enabled: 'yes'}})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Application autoUpdates.enabled must be a boolean'})
+  })
+
   test('should return an error if visibility is invalid', () => {
     expect(validateApplication({...validApplication, visibility: 'nope'})).toContainEqual({
       type: 'invalid_value',
