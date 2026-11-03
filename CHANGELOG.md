@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.33.0](https://github.com/sanity-io/blueprints-node/compare/v0.32.1...v0.33.0) (2026-11-03)
+
+
+### Features
+
+* add defineAgent definer for sanity.agent resources ([#191](https://github.com/sanity-io/blueprints-node/issues/191)) ([71a256d](https://github.com/sanity-io/blueprints-node/commit/71a256d35a42a427d8caa78497faa45a3d1424f4))
+
 ## [0.32.1](https://github.com/sanity-io/blueprints-node/compare/v0.32.0...v0.32.1) (2026-11-02)
 
 
