@@ -22,7 +22,6 @@ export interface BlueprintAgentModel {
 
 /**
  * Represents an Agent resource.
- * @see https://www.sanity.io/docs/content-lake/agents
  * @alpha This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types
@@ -43,7 +42,6 @@ export interface BlueprintAgentResource extends BlueprintResource<BlueprintProje
 
 /**
  * Configuration for an Agent resource.
- * @see https://www.sanity.io/docs/content-lake/agents
  * @alpha This feature is subject to breaking changes.
  * @hidden
  * @category Resource Types

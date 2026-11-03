@@ -63,7 +63,7 @@ export * from './types/webhooks.js'
  * @categoryDescription Validation
  * These functions are used to validate resources in a Blueprint.
  */
-export * from './utils/validate-agent.js'
+export * from './validation/agents.js'
 export * from './validation/applications.js'
 export * from './validation/blueprints.js'
 export * from './validation/context.js'
