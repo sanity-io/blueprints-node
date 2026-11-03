@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.32.1](https://github.com/sanity-io/blueprints-node/compare/v0.32.0...v0.32.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* accept autoUpdates on application resources ([#195](https://github.com/sanity-io/blueprints-node/issues/195)) ([36cb8ab](https://github.com/sanity-io/blueprints-node/commit/36cb8ab2c9cbea81162026984c7a4be5043e0c85))
+
 ## [0.32.0](https://github.com/sanity-io/blueprints-node/compare/v0.31.0...v0.32.0) (2026-10-30)
 
 
