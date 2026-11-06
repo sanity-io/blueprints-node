@@ -90,6 +90,7 @@ test/
 #### Validation Functions
 
 Return `BlueprintError[]` (never throw). Collect all errors:
+
 ```typescript
 export function validateFoo(config: unknown): BlueprintError[] {
   if (!config) return [{type: 'invalid_value', message: 'config must be provided'}]
@@ -106,6 +107,7 @@ Error types: `invalid_value`, `invalid_type`, `missing_parameter`, `invalid_form
 #### Definer Functions
 
 Use `defineX` pattern. Always validate:
+
 ```typescript
 export function defineX(config: XConfig): XResource {
   const resource: XResource = {...config, type: 'sanity.project.x'}
@@ -153,6 +155,7 @@ This project generates documentation with TypeDoc. All public exports must have 
 ````
 
 Rules:
+
 - The first `@example` must be **untitled**. It should show minimal required fields including `name`.
 - Additional `@example` blocks must have a **title**. Use these for advanced usage, cross-resource references (`$.resources.*`), or kitchen-sink all-options examples.
 - Use `@expandType TypeName` to inline the parameter type in the docs (requires a named Config type).
@@ -178,6 +181,7 @@ export type BlueprintXConfig = Omit<BlueprintXResource, 'type'> & {
 ```
 
 Rules:
+
 - Use `@interface` on type aliases that use `Omit` or intersections so TypeDoc flattens them into a readable property list.
 - Use `@expand` on small types/interfaces (e.g. `RobotTokenMembership`) so they are inlined where referenced.
 - Use `@defaultValue` (not `@default`) on optional properties that have defaults set by the definer. This renders distinctly in the TypeDoc HTML output.
@@ -194,6 +198,7 @@ Rules:
 ### Structure
 
 Use Vitest with `describe`/`test` (not `it`):
+
 ```typescript
 import {describe, expect, test} from 'vitest'
 import {validateFoo} from '../../../src/index.js'
