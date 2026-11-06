@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.0](https://github.com/sanity-io/blueprints-node/compare/v0.33.0...v0.34.0) (2026-11-06)
+
+
+### Features
+
+* add version property to hold current sanity version ([#199](https://github.com/sanity-io/blueprints-node/issues/199)) ([8db752c](https://github.com/sanity-io/blueprints-node/commit/8db752c0e56da45f406b79439cd64620c17dcf73))
+
 ## [0.33.0](https://github.com/sanity-io/blueprints-node/compare/v0.32.1...v0.33.0) (2026-11-03)
 
 
