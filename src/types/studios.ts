@@ -113,6 +113,9 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
   /** Module federation manifest */
   mfManifest?: Record<string, unknown>
+
+  /** The local version of `sanity` at deployment. Populated during deployment. */
+  version?: string
 }
 
 /**
