@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.1](https://github.com/sanity-io/blueprints-node/compare/v0.34.0...v0.34.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* remove basePath from studio resource ([#201](https://github.com/sanity-io/blueprints-node/issues/201)) ([ae20e1a](https://github.com/sanity-io/blueprints-node/commit/ae20e1a5e8da7f1c2568fa7c4508c90a1d1cdc5e))
+
 ## [0.34.0](https://github.com/sanity-io/blueprints-node/compare/v0.33.0...v0.34.0) (2026-11-06)
 
 
