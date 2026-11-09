@@ -87,9 +87,6 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
     version?: string // 'next', 'stable', 'latest' or a semantic version (e.g., "1.2.3", "2.0.0-beta.1")
   }
 
-  /** The base path of the studio URL. Defaults to '/' */
-  basePath?: string
-
   /** Whether or not to minify the source code. Defaults to true. */
   minify?: boolean
 

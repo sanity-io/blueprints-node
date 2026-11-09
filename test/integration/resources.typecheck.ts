@@ -295,7 +295,6 @@ const _studioConfig: BlueprintStudioConfig = {
     enabled: true,
     version: '1',
   },
-  basePath: '/',
   icon: 'favicon.svg',
   lifecycle: {
     deletionPolicy: 'allow',
@@ -319,7 +318,6 @@ const _studioResource: BlueprintStudioResource = {
     enabled: true,
     version: '1',
   },
-  basePath: '/',
   icon: 'favicon.svg',
   lifecycle: {
     deletionPolicy: 'allow',
