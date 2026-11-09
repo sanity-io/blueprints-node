@@ -64,11 +64,6 @@ describe('validateStudio', () => {
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio autoUpdates.version must be a string'})
   })
 
-  test('should return an error if basePath is not a string', () => {
-    const errors = validateStudio({...validStudio, basePath: 1})
-    expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio basePath must be a string'})
-  })
-
   test('should return an error if minify is not a boolean', () => {
     const errors = validateStudio({...validStudio, minify: 'yes'})
     expect(errors).toContainEqual({type: 'invalid_type', message: 'Studio minify must be a boolean'})
@@ -222,7 +217,6 @@ describe('validateStudio', () => {
       icon: 'icon1234',
       visibility: 'default',
       autoUpdates: {enabled: true, version: '^3.0.0'},
-      basePath: '/studio',
       minify: true,
       reactCompiler: false,
       sourceMap: true,

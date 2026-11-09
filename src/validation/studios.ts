@@ -81,12 +81,6 @@ export function validateStudio(resource: unknown): BlueprintError[] {
     }
   }
 
-  if ('basePath' in resource) {
-    if (typeof resource.basePath !== 'string') {
-      errors.push({type: 'invalid_type', message: 'Studio basePath must be a string'})
-    }
-  }
-
   if ('minify' in resource) {
     if (typeof resource.minify !== 'boolean') {
       errors.push({type: 'invalid_type', message: 'Studio minify must be a boolean'})
