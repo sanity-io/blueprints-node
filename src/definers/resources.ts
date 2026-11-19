@@ -1,16 +1,5 @@
 import {assertResource, type BlueprintCrossStackReferenceResourceConfig, type BlueprintResource} from '../index.js'
 
-/*
- * FUTURE example (move below @example when ready)
- * @example With lifecycle
- * ```ts
- * defineResource({
- *   name: 'my-resource',
- *   type: 'sanity.new.resource',
- *   lifecycle: {deletionPolicy: 'retain'},
- * })
- * ```
- */
 /**
  * Defines a generic resource to be managed in Blueprints.
  *

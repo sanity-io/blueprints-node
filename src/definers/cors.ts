@@ -1,8 +1,18 @@
 import {type BlueprintCorsOriginConfig, type BlueprintCorsOriginResource, validateCorsOrigin} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a CORS Origin to be managed in a Blueprint.
+ *
+ * @example
+ * ```ts
+ * defineCorsOrigin({
+ *   name: 'my-cors-origin',
+ *   origin: 'https://mydomain.com',
+ *   allowCredentials: true,
+ * })
+ * ```
+ *
  * @example All options
  * ```ts
  * defineCorsOrigin({
@@ -10,17 +20,6 @@ import {runValidation} from '../utils/validation.js'
  *   origin: 'https://my-studio.sanity.studio',
  *   allowCredentials: true,
  *   project: 'my-project-id',
- * })
- * ```
- */
-/**
- * Defines a CORS Origin to be managed in a Blueprint.
- *
- * ```ts
- * defineCorsOrigin({
- *   name: 'my-cors-origin',
- *   origin: 'https://mydomain.com',
- *   allowCredentials: true,
  * })
  * ```
  * @param parameters The CORS Origin configuration

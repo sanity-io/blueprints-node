@@ -8,14 +8,28 @@ import {
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
+ *
+ * @example
+ * ```ts
+ * defineRobotToken({
+ *   name: 'my-robot',
+ *   memberships: [{
+ *     resourceType: 'project',
+ *     resourceId: projectId,
+ *     roleNames: ['editor'],
+ *   }],
+ * })
+ * ```
+ *
  * @example Cross-resource references
  * ```ts
  * defineRole({
  *   name: 'ci-deploy-role',
  *   title: 'CI Deploy Role',
  *   appliesToRobots: true,
+ *   appliesToUsers: false,
  *   permissions: [{name: 'sanity-project-cors', action: 'create'}],
  * })
  *
@@ -24,20 +38,6 @@ import {runValidation} from '../utils/validation.js'
  *   label: 'CI Deploy Robot',
  *   memberships: [{
  *     roleNames: ['$.resources.ci-deploy-role'],
- *   }],
- * })
- * ```
- */
-/**
- * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
- *
- * ```ts
- * defineRobotToken({
- *   name: 'my-robot',
- *   memberships: [{
- *     resourceType: 'project',
- *     resourceId: projectId,
- *     roleNames: ['editor'],
  *   }],
  * })
  * ```

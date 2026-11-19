@@ -1,31 +1,6 @@
 import {type Blueprint, type BlueprintModule, type BlueprintsApiConfig, validateBlueprint} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
- * @example With deployment API config
- * ```ts
- * defineBlueprint({
- *   resources: [
- *     defineCorsOrigin({
- *       name: 'cors-localhost',
- *       origin: 'http://localhost:3333'
- *     }),
- *     defineRole({
- *       name: 'role-ci',
- *       title: 'CI Role',
- *       appliesToRobots: true,
- *       permissions: []
- *     }),
- *     defineRobotToken({
- *       name: 'ci-robot',
- *       memberships: [{
- *        roleNames: ['$.resources.ci-role']}],
- *     }),
- *   ],
- * })
- * ```
- */
 /**
  * Define a Blueprint to manage Sanity resources
  *

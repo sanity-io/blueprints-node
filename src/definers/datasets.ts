@@ -1,19 +1,6 @@
 import {type BlueprintDatasetConfig, type BlueprintDatasetResource, validateDataset} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
- * @example All options
- * ```ts
- * defineDataset({
- *   name: 'staging',
- *   datasetName: 'staging-v2',
- *   visibility: 'private',
- *   project: 'my-project-id',
- *   lifecycle: {deletionPolicy: 'protect'},
- * })
- * ```
- */
 /**
  * Defines a Dataset to be managed in a Blueprint.
  *
@@ -22,6 +9,17 @@ import {runValidation} from '../utils/validation.js'
  * defineDataset({
  *   name: 'staging-dataset',
  *   datasetName: 'staging',
+ * })
+ * ```
+ *
+ * @example All options
+ * ```ts
+ * defineDataset({
+ *   name: 'staging',
+ *   datasetName: 'staging-v2',
+ *   visibility: 'private',
+ *   project: 'my-project-id',
+ *   lifecycle: {deletionPolicy: 'protect'},
  * })
  * ```
  * @param parameters The dataset configuration

@@ -1,8 +1,21 @@
 import {type BlueprintDocumentWebhookConfig, type BlueprintDocumentWebhookResource, validateDocumentWebhook} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a webhook that is called when document changes occur.
+ *
+ * @example
+ * ```ts
+ * defineDocumentWebhook({
+ *   name: 'my-webhook',
+ *   on: ['create'],
+ *   url: 'https://example.com/webhook',
+ *   projection: '{_id}',
+ *   dataset: 'production',
+ *   apiVersion: 'v2026-01-01',
+ * })
+ * ```
+ *
  * @example All options
  * ```ts
  * defineDocumentWebhook({
@@ -18,20 +31,6 @@ import {runValidation} from '../utils/validation.js'
  *   secret: 'my-webhook-secret',
  *   includeDrafts: false,
  *   status: 'enabled',
- * })
- * ```
- */
-/**
- * Defines a webhook that is called when document changes occur.
- *
- * ```ts
- * defineDocumentWebhook({
- *   name: 'my-webhook',
- *   on: ['create'],
- *   url: 'https://example.com/webhook',
- *   projection: '{_id}',
- *   dataset: 'production',
- *   apiVersion: 'v2026-01-01',
  * })
  * ```
  * @param parameters The webhook configuration
