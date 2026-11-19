@@ -122,6 +122,11 @@ This project generates documentation with TypeDoc. All public exports must have 
 
 > **Temporary workaround**: TypeDoc is deliberately not in `devDependencies`. TypeDoc 0.28.x does not support TypeScript 7 (the native compiler ships no JS API, and npm cannot nest the conflicting `typescript` peer next to our v7), so the `docs:typedoc` script runs it via `npx` with a TypeScript 6 sidecar. Once TypeDoc releases support for TypeScript 7 (tracked in [TypeStrong/typedoc#3098](https://github.com/TypeStrong/typedoc/issues/3098)), move `typedoc` back into `devDependencies` and restore the script to `typedoc --options typedoc.json`.
 
+#### Categories
+
+- Give every public export a `@category`. Add a new category to `categoryOrder` in `typedoc.json`.
+- Put `@categoryDescription` in the entry point's module comment: `@packageDocumentation` in `src/index.ts`, `@module` in `src/resolve/index.ts`. TypeDoc ignores it in any other comment.
+
 #### Release stages and visibility
 
 | Stage              | Tags               | Stage message                  |

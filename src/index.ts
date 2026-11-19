@@ -20,7 +20,7 @@
  * These functions are used to validate resources in a Blueprint.
  *
  * @categoryDescription Blueprint Internals
- * Miscellaneous Blueprint types that make up the public API but are not exported directly.
+ * Shared types that Blueprints and resources are built on. Definers and resource types use them, so most code does not need to import them.
  */
 
 // DEFINERS - helper functions to create resources
