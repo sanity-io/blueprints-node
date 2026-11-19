@@ -122,11 +122,30 @@ This project generates documentation with TypeDoc. All public exports must have 
 
 > **Temporary workaround**: TypeDoc is deliberately not in `devDependencies`. TypeDoc 0.28.x does not support TypeScript 7 (the native compiler ships no JS API, and npm cannot nest the conflicting `typescript` peer next to our v7), so the `docs:typedoc` script runs it via `npx` with a TypeScript 6 sidecar. Once TypeDoc releases support for TypeScript 7 (tracked in [TypeStrong/typedoc#3098](https://github.com/TypeStrong/typedoc/issues/3098)), move `typedoc` back into `devDependencies` and restore the script to `typedoc --options typedoc.json`.
 
+#### Release stages and visibility
+
+| Stage | Tags | Stage message |
+|---|---|---|
+| Stable | `@public` | none |
+| Beta | `@public` `@beta` | on definers and resource types |
+| Alpha (not public) | `@alpha` `@hidden` | on definers and resource types |
+
+Rules:
+
+- `@public`, `@beta`, `@alpha`, `@hidden`, `@interface` and `@expand` are TypeDoc modifier tags. Never write text after them. TypeDoc appends that text to the block tag before it (for example `@param`, `@see` or `@category`).
+- Write the stage message as its own paragraph directly after the summary. Example: "Deploying Studios via Blueprints is experimental. This may be subject to breaking changes."
+- Config types get the stage tag but no stage message. `@expandType` inlines the Config type into the definer page, so a message there shows twice.
+- Stage tags do not cascade to properties (`cascadedModifierTags: []` in `typedoc.json`). Tag each exported type.
+- To hide or unhide a definer, change its Config, Resource and supporting types too. A visible type must not reference a hidden type.
+- Export every type that a public type references from `src/index.ts`. Otherwise TypeDoc warns that the type "is referenced by ... but not included in the documentation".
+
 #### Definer functions
 
 ````typescript
 /**
  * Brief one-line summary
+ *
+ * Deploying Xs via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  *
  * @remarks
  * Extended details (only when the summary needs elaboration).
@@ -148,6 +167,7 @@ This project generates documentation with TypeDoc. All public exports must have 
  * ```
  * @param parameters Description
  * @public
+ * @beta
  * @category Definers
  * @expandType BlueprintXConfig
  * @returns Description
@@ -159,7 +179,9 @@ Rules:
 - The first `@example` must be **untitled**. It should show minimal required fields including `name`.
 - Additional `@example` blocks must have a **title**. Use these for advanced usage, cross-resource references (`$.resources.*`), or kitchen-sink all-options examples.
 - Use `@expandType TypeName` to inline the parameter type in the docs (requires a named Config type).
-- Use `@remarks` only when the summary needs a longer explanation (e.g. `defineScheduledFunction`).
+- Use `@remarks` only when the summary needs a longer explanation (e.g. `defineScheduledFunction`). Put code in `@example` blocks, not in the summary or `@remarks`.
+- Every example must typecheck and run against the definer: include all required fields, declare no free variables (use literals such as `'my-project-id'`), and use only real permission and role names.
+- A `$.resources.<name>` reference resolves to the referenced provider's primary identifier: a role gives its `name`, a robot token gives its `token`.
 
 #### Config types (definer parameter types)
 
@@ -167,7 +189,7 @@ Rules:
 /**
  * Brief description
  * @see https://link-to-docs
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  * @interface
  */
@@ -258,7 +280,7 @@ afterEach(() => vi.resetAllMocks())
 
 5. **Tests**: Mirror structure in `test/unit/`
 
-6. **Verify docs**: Run `npm run docs:typedoc` and check the generated HTML for correct rendering
+6. **Verify docs**: Run `npm run docs:typedoc` and check the generated HTML for correct rendering. The build must finish with 0 warnings. An "Other" category in the navigation means an export has no `@category`.
 
 ## CI/CD
 
