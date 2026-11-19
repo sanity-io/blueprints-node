@@ -64,6 +64,7 @@ export function defineRobotToken(parameters: BlueprintRobotTokenConfig): Bluepri
 /**
  * Creates a reference to a robot token in another stack.
  *
+ * @example
  * ```ts
  * referenceRobotToken({
  *   name: 'editor-token',

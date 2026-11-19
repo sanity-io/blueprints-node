@@ -46,8 +46,6 @@ export interface BlueprintAgentResource extends BlueprintResource<BlueprintProje
 
 /**
  * Configuration for an Agent resource.
- *
- * This feature is subject to breaking changes.
  * @alpha
  * @hidden
  * @category Resource Types

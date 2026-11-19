@@ -10,6 +10,7 @@ import type {
 import type {IanaTimezone} from './timezone.js'
 
 export * from './event.js'
+export * from './timezone.js'
 
 /**
  * Supported Function runtimes
@@ -302,8 +303,6 @@ export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInva
 
 /**
  * Configuration for defining a queue function.
- *
- * Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @public
  * @alpha
  * @hidden
@@ -340,8 +339,6 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
 
 /**
  * Configuration for defining a durable function.
- *
- * Deploying Durable Functions via Blueprints is experimental.
  * @public
  * @beta
  * @category Functions Types

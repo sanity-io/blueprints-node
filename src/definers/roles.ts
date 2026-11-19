@@ -139,6 +139,7 @@ export function defineProjectRole(projectId: string, parameters: BlueprintRoleCo
 /**
  * Creates a reference to a role in another stack.
  *
+ * @example
  * ```ts
  * referenceRole({
  *   name: 'editor-role',

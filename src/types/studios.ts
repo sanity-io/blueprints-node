@@ -130,8 +130,6 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 
 /**
  * Configuration for a Studio resource.
- *
- * This feature is subject to breaking changes.
  * @see https://www.sanity.io/docs/studio
  * @beta
  * @category Resource Types

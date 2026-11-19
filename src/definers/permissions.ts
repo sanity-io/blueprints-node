@@ -12,6 +12,7 @@ import {runValidation} from '../utils/validation.js'
  *
  * Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  *
+ * @example
  * ```ts
  * definePermission({
  *   name: 'articles-only',
@@ -65,6 +66,7 @@ export function definePermission(parameters: BlueprintPermissionConfig): Bluepri
  *
  * Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  *
+ * @example
  * ```ts
  * defineContentResource({
  *   name: 'movies',

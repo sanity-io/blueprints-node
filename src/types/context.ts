@@ -66,8 +66,6 @@ export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource
 
 /**
  * Configuration for a Context knowledge base.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @interface
@@ -101,8 +99,6 @@ export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
 
 /**
  * Configuration for a Context MCP endpoint.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @interface

@@ -9,14 +9,17 @@ import {defineFunction} from './index.js'
  * Defines a function that is triggered on a sync tag invalidate event.
  *
  * @remarks
- * Using implicit event scoping to all datasets in the function project:
+ * By default, the event covers all datasets in the function project.
+ * Set `event.resource` to scope the event to one dataset.
+ *
+ * @example
  * ```ts
  * defineSyncTagInvalidateFunction({
  *   name: 'bustin-caches',
  * })
  * ```
  *
- * Using explicit event scoping to a particular dataset in the function project:
+ * @example Scoped to one dataset
  * ```ts
  * defineSyncTagInvalidateFunction({
  *   name: 'bustin-caches',

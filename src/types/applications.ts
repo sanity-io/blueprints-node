@@ -245,8 +245,6 @@ export interface BlueprintApplicationResource extends BlueprintResource {
 
 /**
  * Base shape shared by all view configs.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  */
@@ -257,8 +255,6 @@ export interface BlueprintViewConfigBase {
 
 /**
  * Configuration for a window view.
- *
- * This feature is subject to breaking changes.
  *
  * @remarks
  * Discriminated by `surface`. The definer transforms `surface: 'window'` to the
@@ -276,8 +272,6 @@ export type BlueprintWindowViewConfig = Omit<BlueprintWindowView, 'type'> &
 /**
  * Configuration for a panel view.
  *
- * This feature is subject to breaking changes.
- *
  * @remarks
  * Discriminated by `surface`. The definer transforms `surface: 'panel'` to the
  * emitted view `type: 'panel'`.
@@ -293,8 +287,6 @@ export type BlueprintPanelViewConfig = Omit<BlueprintPanelView, 'type'> &
 
 /**
  * Configuration for an asset source view.
- *
- * This feature is subject to breaking changes.
  *
  * @remarks
  * Discriminated by `surface`. The definer transforms `surface: 'asset-source'`
@@ -312,8 +304,6 @@ export type BlueprintAssetSourceViewConfig = Omit<BlueprintAssetSourceView, 'typ
 /**
  * Configuration for a tile view.
  *
- * This feature is subject to breaking changes.
- *
  * @remarks
  * Discriminated by `surface`. The definer transforms `surface: 'tile'` to the
  * emitted view `type: 'tile'`.
@@ -329,8 +319,6 @@ export type BlueprintTileViewConfig = Omit<BlueprintTileView, 'type'> &
 
 /**
  * Configuration for a web worker.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @interface
@@ -339,8 +327,6 @@ export type BlueprintWebWorkerConfig = Omit<BlueprintWebWorker, 'type'>
 
 /**
  * A union of all view configs an application can declare, discriminated by `surface`.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @expand
@@ -353,8 +339,6 @@ export type BlueprintApplicationViewConfig =
 
 /**
  * Configuration for an Application resource.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @interface

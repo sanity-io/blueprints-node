@@ -52,8 +52,6 @@ export interface BlueprintPermissionResource extends BlueprintResource<Blueprint
 
 /**
  * Configuration for a custom permission resource.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @interface
@@ -62,8 +60,6 @@ export type BlueprintPermissionConfig = Omit<BlueprintPermissionResource, 'type'
 
 /**
  * Configuration for a content resource: a custom permission of type `sanity.document.filter.mode`, as the Manage UI makes it.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  */

@@ -5,8 +5,7 @@ import {defineFunction} from './index.js'
 /**
  * Defines a function that provide pubsub behaviour.
  *
- * @remarks
- * A barebones pubsub function
+ * @example
  * ```ts
  * definePubSubFunction({
  *   name: 'send-email',

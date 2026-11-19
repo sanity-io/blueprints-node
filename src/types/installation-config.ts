@@ -88,8 +88,6 @@ export type BlueprintInstallationConfigResource = BlueprintMediaLibraryConfigRes
 
 /**
  * Configuration for a singleton Media Library configuration resource.
- *
- * This feature is subject to breaking changes.
  * @beta
  * @category Resource Types
  * @interface

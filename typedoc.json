@@ -9,6 +9,7 @@
   "excludeProtected": true,
   "excludeInternal": true,
   "excludeExternals": true,
+  "cascadedModifierTags": [],
   "categoryOrder": [
     "Definers", // src/definers/
     "Referencers", // src/definers/
