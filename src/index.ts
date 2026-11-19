@@ -7,6 +7,10 @@
  * @categoryDescription Referencers
  * These functions are used to reference resources in another Blueprint.
  */
+/**
+ * @categoryDescription Application Children
+ * These functions define the views and web workers of an application. Pass them to `defineApplication`.
+ */
 export * from './definers/agents.js'
 export * from './definers/applications.js'
 export * from './definers/blueprints.js'

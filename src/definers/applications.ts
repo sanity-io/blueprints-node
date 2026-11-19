@@ -64,7 +64,7 @@ function viewConfigToResource(view: BlueprintApplicationViewConfig): BlueprintAp
  * @param config The window view configuration
  * @public
  * @beta
- * @category Definers
+ * @category Application Children
  * @expandType BlueprintWindowViewConfig
  * @returns The window view declaration
  */
@@ -90,7 +90,7 @@ export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surfac
  * @param config The panel view configuration
  * @public
  * @beta
- * @category Definers
+ * @category Application Children
  * @expandType BlueprintPanelViewConfig
  * @returns The panel view declaration
  */
@@ -116,7 +116,7 @@ export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface'
  * @param config The asset source view configuration
  * @public
  * @beta
- * @category Definers
+ * @category Application Children
  * @expandType BlueprintAssetSourceViewConfig
  * @returns The asset source view declaration
  */
@@ -143,7 +143,7 @@ export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfi
  * @param config The tile view configuration
  * @public
  * @beta
- * @category Definers
+ * @category Application Children
  * @expandType BlueprintTileViewConfig
  * @returns The tile view declaration
  */
@@ -169,7 +169,7 @@ export function defineTileView(config: Omit<BlueprintTileViewConfig, 'surface' |
  * @param config The web worker configuration
  * @public
  * @beta
- * @category Definers
+ * @category Application Children
  * @expandType BlueprintWebWorkerConfig
  * @returns The web worker declaration
  */
