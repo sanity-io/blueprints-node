@@ -6,6 +6,8 @@ import {defineFunction} from './index.js'
 /**
  * Defines a durable function resource.
  *
+ * Deploying Durable Functions via Blueprints is experimental.
+ *
  * @example
  * ```ts
  * defineDurableFunction({
@@ -16,7 +18,7 @@ import {defineFunction} from './index.js'
  *
  * @param functionConfig The configuration for the function
  * @public
- * @beta Deploying Durable Functions via Blueprints is experimental.
+ * @beta
  * @category Definers
  * @expandType BlueprintDurableConfig
  * @returns The validated durable function resource

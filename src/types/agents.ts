@@ -3,9 +3,11 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 /**
  * The model value carried on a {@link BlueprintAgentResource}.
  *
+ * This feature is subject to breaking changes.
+ *
  * @remarks
  * `provider`, `id`, and `baseURL` are non-secret and ride on the resource literally; `apiKey` is passed by reference and resolved at blueprint-eval time.
- * @alpha This feature is subject to breaking changes.
+ * @alpha
  * @hidden
  * @category Resource Types
  */
@@ -22,7 +24,9 @@ export interface BlueprintAgentModel {
 
 /**
  * Represents an Agent resource.
- * @alpha This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @alpha
  * @hidden
  * @category Resource Types
  */
@@ -42,7 +46,9 @@ export interface BlueprintAgentResource extends BlueprintResource<BlueprintProje
 
 /**
  * Configuration for an Agent resource.
- * @alpha This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @alpha
  * @hidden
  * @category Resource Types
  * @interface

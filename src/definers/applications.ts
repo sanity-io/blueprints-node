@@ -41,6 +41,9 @@ function viewConfigToResource(view: BlueprintApplicationViewConfig): BlueprintAp
  * Defines a window view — the navigable, full-page view of an application.
  * An application may declare at most one window view.
  *
+ * Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ *
+ * @example
  * ```ts
  * defineWindowView({
  *   name: 'main',
@@ -60,7 +63,7 @@ function viewConfigToResource(view: BlueprintApplicationViewConfig): BlueprintAp
  * ```
  * @param config The window view configuration
  * @public
- * @beta Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintWindowViewConfig
  * @returns The window view declaration
@@ -74,6 +77,9 @@ export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surfac
 /**
  * Defines a panel view — renders in the dock.
  *
+ * Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ *
+ * @example
  * ```ts
  * definePanelView({
  *   name: 'side',
@@ -83,7 +89,7 @@ export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surfac
  * ```
  * @param config The panel view configuration
  * @public
- * @beta Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintPanelViewConfig
  * @returns The panel view declaration
@@ -97,6 +103,9 @@ export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface'
 /**
  * Defines an asset source view — contributes an asset source.
  *
+ * Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ *
+ * @example
  * ```ts
  * defineAssetSourceView({
  *   name: 'image-picker',
@@ -106,7 +115,7 @@ export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface'
  * ```
  * @param config The asset source view configuration
  * @public
- * @beta Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintAssetSourceViewConfig
  * @returns The asset source view declaration
@@ -120,6 +129,9 @@ export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfi
 /**
  * Defines a tile view — docks on the dashboard with a footprint `size`.
  *
+ * Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ *
+ * @example
  * ```ts
  * defineTileView({
  *   name: 'jump-back-in',
@@ -130,7 +142,7 @@ export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfi
  * ```
  * @param config The tile view configuration
  * @public
- * @beta Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintTileViewConfig
  * @returns The tile view declaration
@@ -144,6 +156,9 @@ export function defineTileView(config: Omit<BlueprintTileViewConfig, 'surface' |
 /**
  * Defines a background web worker an application runs.
  *
+ * Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ *
+ * @example
  * ```ts
  * defineWebWorker({
  *   name: 'background-refresh',
@@ -153,7 +168,7 @@ export function defineTileView(config: Omit<BlueprintTileViewConfig, 'surface' |
  * ```
  * @param config The web worker configuration
  * @public
- * @beta Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintWebWorkerConfig
  * @returns The web worker declaration
@@ -167,6 +182,8 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
 /**
  * Defines an application.
  *
+ * Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ *
  * @remarks
  * Views are authored in `views` and web workers in `webWorkers`, mirroring the
  * emitted resource. Views are discriminated by `surface` (`window`, `panel`,
@@ -175,6 +192,7 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * surface, and at most one `window` view. Every view and web worker `src` is
  * resolved relative to `root`. The `slug` defaults to the resource `name`.
  *
+ * @example
  * ```ts
  * defineApplication({
  *   name: 'design-retro',
@@ -213,7 +231,7 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * ```
  * @param config The application configuration
  * @public
- * @beta Deploying Applications via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintApplicationConfig
  * @returns The application resource

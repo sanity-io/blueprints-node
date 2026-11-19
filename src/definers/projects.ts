@@ -11,6 +11,7 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a project.
  *
+ * @example
  * ```ts
  * defineProject({
  *   name: 'my-project',
@@ -41,6 +42,7 @@ export function defineProject(parameters: BlueprintProjectConfig): BlueprintProj
 /**
  * Creates a reference to a project in another stack.
  *
+ * @example
  * ```ts
  * referenceProject({
  *   name: 'editorial-project',

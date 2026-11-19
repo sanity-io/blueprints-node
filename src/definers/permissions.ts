@@ -10,6 +10,8 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a custom permission that roles can grant, in the shape of the Access API.
  *
+ * Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ *
  * ```ts
  * definePermission({
  *   name: 'articles-only',
@@ -42,7 +44,7 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The configuration of the permission
  * @public
- * @beta Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintPermissionConfig
  * @returns The permission resource
@@ -60,6 +62,8 @@ export function definePermission(parameters: BlueprintPermissionConfig): Bluepri
 
 /**
  * Defines a content resource as the Manage UI makes it: a custom permission of type `sanity.document.filter.mode`.
+ *
+ * Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  *
  * ```ts
  * defineContentResource({
@@ -81,7 +85,7 @@ export function definePermission(parameters: BlueprintPermissionConfig): Bluepri
  * ```
  * @param parameters The configuration of the content resource
  * @public
- * @beta Deploying Permissions via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintContentResourceConfig
  * @returns The permission resource

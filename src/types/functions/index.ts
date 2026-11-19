@@ -205,7 +205,9 @@ export interface BlueprintPubSubFunctionResource extends BlueprintBaseFunctionRe
 
 /**
  * A durable, step-based function.
- * @beta Deploying Durable Functions via Blueprints is experimental.
+ *
+ * Deploying Durable Functions via Blueprints is experimental.
+ * @beta
  * @category Functions Types
  */
 export interface BlueprintDurableFunctionResource extends BlueprintBaseFunctionResource {
@@ -300,8 +302,10 @@ export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInva
 
 /**
  * Configuration for defining a queue function.
+ *
+ * Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
  * @public
- * @alpha Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha
  * @hidden
  * @category Functions Types
  * @interface
@@ -336,8 +340,10 @@ export type BlueprintPubSubFunctionConfig = Omit<BlueprintPubSubFunctionResource
 
 /**
  * Configuration for defining a durable function.
+ *
+ * Deploying Durable Functions via Blueprints is experimental.
  * @public
- * @beta Deploying Durable Functions via Blueprints is experimental.
+ * @beta
  * @category Functions Types
  * @interface
  */

@@ -5,6 +5,8 @@ import {defineFunction} from './index.js'
 /**
  * Defines a function that provide queueing behaviour.
  *
+ * Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
+ *
  * @remarks
  * Using the reasonable defaults of concurrency: 1, fifo: true, and dlq: true
  * ```ts
@@ -23,7 +25,7 @@ import {defineFunction} from './index.js'
  * })
  * ```
  * @public
- * @alpha Deploying Queue Functions via Blueprints is experimental. This feature is not available publicly yet.
+ * @alpha
  * @hidden
  * @category Definers
  * @expandType BlueprintQueueFunctionConfig

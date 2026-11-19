@@ -103,6 +103,7 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
 /**
  * Defines a role that is scoped to the specified project.
  *
+ * @example
  * ```ts
  * defineProjectRole(projectId, {
  *   name: 'viewer-role',

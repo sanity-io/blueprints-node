@@ -5,6 +5,9 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a studio.
  *
+ * Deploying Studios via Blueprints is experimental. This may be subject to breaking changes.
+ *
+ * @example
  * ```ts
  * defineStudio({
  *   name: 'my-studio',
@@ -17,7 +20,7 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param config The studio configuration
  * @public
- * @beta Deploying Studios via Blueprints is experimental. This may be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintStudioConfig
  * @returns The studio resource
