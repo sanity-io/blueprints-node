@@ -716,6 +716,18 @@ describe('validateQueueFunction', () => {
       expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', debounce: 30})).toStrictEqual([])
       expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', debounce: '30s'})).toStrictEqual([])
     })
+    test('should accept a queue function with maxAttempts', () => {
+      expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', maxAttempts: 1})).toStrictEqual([])
+      expect(functions.validateQueueFunction({name: 'test', type: 'sanity.function.queue', maxAttempts: 3})).toStrictEqual([])
+    })
+    test('should accept a queue function with a throttle config', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        throttle: {limit: 100, period: 60, burst: 10, key: 'event.data.tenantId'},
+      })
+      expect(errors).toStrictEqual([])
+    })
   })
   describe('sad paths', () => {
     test('should validate the debounce config of a queue function', () => {
@@ -874,6 +886,30 @@ describe('validateQueueFunction', () => {
       expect(errors).toContainEqual({
         type: 'invalid_type',
         message: '`dlq` must be a boolean',
+      })
+    })
+    test('should return an error if maxAttempts is not a whole number of at least 1', () => {
+      const base = {name: 'test', type: 'sanity.function.queue'}
+      expect(functions.validateQueueFunction({...base, maxAttempts: '3'})).toContainEqual({
+        type: 'invalid_type',
+        message: '`maxAttempts` must be a number',
+      })
+      for (const maxAttempts of [0, -1, 2.5]) {
+        expect(functions.validateQueueFunction({...base, maxAttempts})).toContainEqual({
+          type: 'invalid_value',
+          message: '`maxAttempts` must be a whole number of at least 1',
+        })
+      }
+    })
+    test('should validate the throttle config of a queue function', () => {
+      const errors = functions.validateQueueFunction({
+        name: 'test',
+        type: 'sanity.function.queue',
+        throttle: {limit: 10, period: 60, burst: 11},
+      })
+      expect(errors).toContainEqual({
+        type: 'invalid_value',
+        message: '`burst` must be less than or equal to `limit`',
       })
     })
   })
@@ -1190,14 +1226,20 @@ describe('validateDebounceConfig', () => {
       expect(functions.validateDebounceConfig({window: 1, maxWindow: 0})).toContainEqual(expected)
     })
 
-    test('should return an error if maxWindow is not greater than window', () => {
-      const expected = {type: 'invalid_value', message: '`maxWindow` must be greater than `window`'}
-      expect(functions.validateDebounceConfig({window: 30, maxWindow: 29})).toContainEqual(expected)
-      expect(functions.validateDebounceConfig({window: 30, maxWindow: 30})).toContainEqual(expected)
+    test('should return an error if maxWindow is less than window', () => {
+      expect(functions.validateDebounceConfig({window: 30, maxWindow: 29})).toContainEqual({
+        type: 'invalid_value',
+        message: '`maxWindow` must be greater than or equal to `window`',
+      })
+    })
+
+    test('should accept a maxWindow equal to window', () => {
+      expect(functions.validateDebounceConfig({window: 30, maxWindow: 30})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({window: '1 minute', maxWindow: 60})).toStrictEqual([])
     })
 
     test('should compare window and maxWindow after parsing durations, not as written', () => {
-      const expected = {type: 'invalid_value', message: '`maxWindow` must be greater than `window`'}
+      const expected = {type: 'invalid_value', message: '`maxWindow` must be greater than or equal to `window`'}
       // '2 minutes' is longer than '30s' despite sorting before it as a string
       expect(functions.validateDebounceConfig({window: '2 minutes', maxWindow: '30s'})).toContainEqual(expected)
       expect(functions.validateDebounceConfig({window: '10 minutes', maxWindow: 60})).toContainEqual(expected)
@@ -1222,12 +1264,151 @@ describe('validateDebounceConfig', () => {
       })
     })
 
+    test('should return an error if key is not an event or context dotted path', () => {
+      for (const key of ['', 'document._id', 'event', 'event.', 'event.data.1id', 'event..data', 'context-data.id']) {
+        expect(functions.validateDebounceConfig({window: 1, key}), `key ${JSON.stringify(key)}`).toStrictEqual([
+          {
+            type: 'invalid_format',
+            message: '`key` must be a dotted path starting with `event.` or `context.`, e.g. `event.data.documentId`',
+          },
+        ])
+      }
+    })
+
+    test('should return an error if key is longer than 256 characters', () => {
+      expect(functions.validateDebounceConfig({window: 1, key: `event.${'a'.repeat(251)}`})).toStrictEqual([
+        {type: 'invalid_value', message: '`key` must be at most 256 characters'},
+      ])
+      expect(functions.validateDebounceConfig({window: 1, key: `event.${'a'.repeat(250)}`})).toStrictEqual([])
+    })
+
     test('should report every problem in a config at once', () => {
       expect(functions.validateDebounceConfig({window: 0, maxWindow: 'nope', key: 123})).toStrictEqual([
         {type: 'invalid_value', message: '`window` must be greater than 1 second'},
         {type: 'invalid_value', message: '`maxWindow` must be a valid duration'},
         {type: 'invalid_type', message: '`key` must be a string'},
       ])
+    })
+  })
+})
+
+describe('validateThrottleConfig', () => {
+  describe('happy paths', () => {
+    test('should accept a config with only limit and period', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60})).toStrictEqual([])
+    })
+
+    test('should accept a fully specified config', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, burst: 10, key: 'event.data.tenantId'})).toStrictEqual([])
+    })
+
+    test('should accept a duration string for period', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: '1 minute'})).toStrictEqual([])
+      expect(functions.validateThrottleConfig({limit: 10, period: '30s'})).toStrictEqual([])
+    })
+
+    test('should leave rate and period ceilings to the functions service', () => {
+      expect(functions.validateThrottleConfig({limit: 10_000, period: 1})).toStrictEqual([])
+      expect(functions.validateThrottleConfig({limit: 1, period: '1 day'})).toStrictEqual([])
+    })
+  })
+
+  describe('sad paths', () => {
+    test('should return an error if the config is undefined or null', () => {
+      const expected = {type: 'invalid_value', message: 'Throttle config must be provided'}
+      expect(functions.validateThrottleConfig(undefined)).toContainEqual(expected)
+      expect(functions.validateThrottleConfig(null)).toContainEqual(expected)
+    })
+
+    test('should return an error if the config is not an object', () => {
+      const expected = {type: 'invalid_type', message: 'Throttle config must be an object'}
+      expect(functions.validateThrottleConfig(10)).toContainEqual(expected)
+      expect(functions.validateThrottleConfig('1 minute')).toContainEqual(expected)
+    })
+
+    test('should return errors if limit and period are not provided', () => {
+      expect(functions.validateThrottleConfig({})).toStrictEqual([
+        {type: 'missing_parameter', message: '`limit` must be provided'},
+        {type: 'missing_parameter', message: '`period` must be provided'},
+      ])
+    })
+
+    test('should return an error if limit is not a number', () => {
+      expect(functions.validateThrottleConfig({limit: '10', period: 60})).toContainEqual({
+        type: 'invalid_type',
+        message: '`limit` must be a number',
+      })
+    })
+
+    test('should return an error if limit is not a whole number of at least 1', () => {
+      const expected = {type: 'invalid_value', message: '`limit` must be a whole number of at least 1'}
+      expect(functions.validateThrottleConfig({limit: 0, period: 60})).toContainEqual(expected)
+      expect(functions.validateThrottleConfig({limit: 1.5, period: 60})).toContainEqual(expected)
+    })
+
+    test('should return an error if period is neither a number nor a string', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: true})).toContainEqual({
+        type: 'invalid_type',
+        message: '`period` must be a number of seconds or a duration string',
+      })
+    })
+
+    test('should return an error if the period duration cannot be parsed', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 'invalid'})).toContainEqual({
+        type: 'invalid_value',
+        message: '`period` must be a valid duration',
+      })
+    })
+
+    test('should return an error if period is not a whole number of seconds of at least 1', () => {
+      const expected = {type: 'invalid_value', message: '`period` must be a whole number of seconds, at least 1'}
+      expect(functions.validateThrottleConfig({limit: 10, period: 0})).toContainEqual(expected)
+      expect(functions.validateThrottleConfig({limit: 10, period: 1.5})).toContainEqual(expected)
+      expect(functions.validateThrottleConfig({limit: 10, period: '500ms'})).toContainEqual(expected)
+    })
+
+    test('should return an error if burst is not a whole number of at least 1', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, burst: '5'})).toContainEqual({
+        type: 'invalid_type',
+        message: '`burst` must be a number',
+      })
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, burst: 0})).toContainEqual({
+        type: 'invalid_value',
+        message: '`burst` must be a whole number of at least 1',
+      })
+    })
+
+    test('should return an error if burst is greater than limit', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, burst: 11})).toContainEqual({
+        type: 'invalid_value',
+        message: '`burst` must be less than or equal to `limit`',
+      })
+    })
+
+    test('should not compare burst to limit when limit is already invalid', () => {
+      expect(functions.validateThrottleConfig({limit: 0, period: 60, burst: 5})).toStrictEqual([
+        {type: 'invalid_value', message: '`limit` must be a whole number of at least 1'},
+      ])
+    })
+
+    test('should return an error if key is not a string', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, key: 123})).toContainEqual({
+        type: 'invalid_type',
+        message: '`key` must be a string',
+      })
+    })
+
+    test('should return an error if key is not an event or context dotted path', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, key: 'data.tenantId'})).toStrictEqual([
+        {
+          type: 'invalid_format',
+          message: '`key` must be a dotted path starting with `event.` or `context.`, e.g. `event.data.documentId`',
+        },
+      ])
+    })
+
+    test('should accept a context key path', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, key: 'context.projectId'})).toStrictEqual([])
     })
   })
 })
