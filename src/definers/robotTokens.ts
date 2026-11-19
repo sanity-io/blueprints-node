@@ -43,7 +43,6 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The robot token configuration
  * @public
- * @beta Deploying Robot Tokens via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
  * @expandType BlueprintRobotTokenConfig
  * @returns The robot token resource
@@ -73,7 +72,6 @@ export function defineRobotToken(parameters: BlueprintRobotTokenConfig): Bluepri
  * ```
  *
  * @public
- * @beta Referencing Robot Tokens via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Referencers
  * @expandType BlueprintCrossStackReferenceConfig
  * @param params The parameters for referencing the robot token

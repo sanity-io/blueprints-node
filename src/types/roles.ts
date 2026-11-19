@@ -2,7 +2,6 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 
 /**
  * A permission definition for a role.
- * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
  */
@@ -17,7 +16,6 @@ export interface RolePermission {
 
 /**
  * Configuration for a custom role.
- * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
 export interface BlueprintRoleConfig extends Omit<BlueprintResource<BlueprintProjectResourceLifecycle>, 'type'> {
@@ -30,7 +28,6 @@ export interface BlueprintRoleConfig extends Omit<BlueprintResource<BlueprintPro
 
 /**
  * A custom role resource
- * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
 export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintResource<BlueprintProjectResourceLifecycle> {
@@ -39,7 +36,6 @@ export interface BlueprintRoleResource extends BlueprintRoleConfig, BlueprintRes
 
 /**
  * A custom role resource that is tied to a specific project
- * @beta This feature is subject to breaking changes.
  * @category Resource Types
  */
 export interface BlueprintProjectRoleResource extends BlueprintRoleResource {

@@ -9,7 +9,6 @@ import type {BlueprintResource} from '../index.js'
  * type and is discriminated by `appType`.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintInstallationConfigResourceBase extends BlueprintResource {
   type: 'sanity.installation.config'
@@ -28,7 +27,6 @@ export interface BlueprintInstallationConfigResourceBase extends BlueprintResour
  * One custom field a Media Library configuration exposes.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintMediaLibraryField {
   /** Unique within the Media Library config. */
@@ -54,7 +52,6 @@ export interface BlueprintMediaLibraryField {
  * media library installation id at deploy time.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallationConfigResourceBase {
   /** The target installation this config applies to. Set by the definer. */
@@ -78,7 +75,6 @@ export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallati
  * added to this union.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export type BlueprintInstallationConfigResource = BlueprintMediaLibraryConfigResource
 
@@ -87,6 +83,5 @@ export type BlueprintInstallationConfigResource = BlueprintMediaLibraryConfigRes
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintMediaLibraryConfigConfig = Omit<BlueprintMediaLibraryConfigResource, 'type' | 'appType'>

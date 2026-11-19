@@ -23,7 +23,6 @@ import {runValidation} from '../utils/validation.js'
  * @category Definers
  * @expandType BlueprintMediaLibraryConfigConfig
  * @returns The Media Library configuration resource
- * @hidden
  */
 export function defineMediaLibraryConfig(config: BlueprintMediaLibraryConfigConfig): BlueprintMediaLibraryConfigResource {
   const resource = {

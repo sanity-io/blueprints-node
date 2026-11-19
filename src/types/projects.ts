@@ -3,9 +3,7 @@ import type {BlueprintResource, BlueprintResourceLifecycle} from './resources.js
 /**
  * Reporesents a Sanity Project.
  * @see https://www.sanity.io/docs/http-reference/projects-api
- * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintProjectResource extends BlueprintResource<BlueprintResourceLifecycle> {
   type: 'sanity.project'
@@ -17,9 +15,7 @@ export interface BlueprintProjectResource extends BlueprintResource<BlueprintRes
 /**
  * Configuration for a Sanity Project.
  * @see https://www.sanity.io/docs/http-reference/projects-api
- * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintProjectConfig = Omit<BlueprintProjectResource, 'type'>

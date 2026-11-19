@@ -15,13 +15,12 @@ import {runValidation} from '../utils/validation.js'
  *   }
  * })
  * ```
- * @param parameters The studio configuration
+ * @param config The studio configuration
  * @public
  * @beta Deploying Studios via Blueprints is experimental. This may be subject to breaking changes.
  * @category Definers
  * @expandType BlueprintStudioConfig
  * @returns The studio resource
- * @hidden
  */
 export function defineStudio(config: BlueprintStudioConfig): BlueprintStudioResource {
   const autoUpdates: BlueprintStudioResource['autoUpdates'] = {enabled: config.autoUpdates?.enabled ?? true}

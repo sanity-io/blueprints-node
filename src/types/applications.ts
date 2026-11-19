@@ -7,7 +7,6 @@ import type {ApplicationVisibility, BlueprintResource} from '../index.js'
  * full-width and shallow, which a `small` → `large` magnitude can't express.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export const APPLICATION_TILE_SIZES = ['small', 'large', 'banner'] as const
 
@@ -15,7 +14,6 @@ export const APPLICATION_TILE_SIZES = ['small', 'large', 'banner'] as const
  * The footprint family a tile view occupies on the dashboard.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export type ApplicationTileSize = (typeof APPLICATION_TILE_SIZES)[number]
 
@@ -23,7 +21,6 @@ export type ApplicationTileSize = (typeof APPLICATION_TILE_SIZES)[number]
  * The set of surfaces a view can target within the Dashboard/Workbench.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export const APPLICATION_VIEW_SURFACES = ['window', 'panel', 'asset-source', 'tile'] as const
 
@@ -32,7 +29,6 @@ export const APPLICATION_VIEW_SURFACES = ['window', 'panel', 'asset-source', 'ti
  * definers transform it to the emitted view `type` the backend expects.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export type ApplicationViewSurface = (typeof APPLICATION_VIEW_SURFACES)[number]
 
@@ -40,7 +36,6 @@ export type ApplicationViewSurface = (typeof APPLICATION_VIEW_SURFACES)[number]
  * The set of dock groups a window or panel view can be placed into.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export const APPLICATION_DOCK_GROUPS = ['system', 'applications'] as const
 
@@ -48,7 +43,6 @@ export const APPLICATION_DOCK_GROUPS = ['system', 'applications'] as const
  * The dock group a window or panel view is placed into.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export type ApplicationDockGroup = (typeof APPLICATION_DOCK_GROUPS)[number]
 
@@ -57,7 +51,6 @@ export type ApplicationDockGroup = (typeof APPLICATION_DOCK_GROUPS)[number]
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
- * @hidden
  */
 export interface BlueprintApplicationDock {
   /**
@@ -79,7 +72,6 @@ export interface BlueprintApplicationDock {
  * Fields shared by every view and web worker an application exposes.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintApplicationChildBase {
   /** Unique within the application. Must match `^[a-zA-Z0-9_-]+$`. */
@@ -96,7 +88,6 @@ export interface BlueprintApplicationChildBase {
  * A window view — the navigable, full-page view of an application.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintWindowView extends BlueprintApplicationChildBase {
   type: 'app'
@@ -113,7 +104,6 @@ export interface BlueprintWindowView extends BlueprintApplicationChildBase {
  * A panel view — renders in the dock.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintPanelView extends BlueprintApplicationChildBase {
   type: 'panel'
@@ -130,7 +120,6 @@ export interface BlueprintPanelView extends BlueprintApplicationChildBase {
  * An asset source view — contributes an asset source.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintAssetSourceView extends BlueprintApplicationChildBase {
   type: 'asset_source'
@@ -140,7 +129,6 @@ export interface BlueprintAssetSourceView extends BlueprintApplicationChildBase 
  * A tile view — docks on the dashboard with a footprint `size`.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintTileView extends BlueprintApplicationChildBase {
   type: 'tile'
@@ -160,7 +148,6 @@ export interface BlueprintTileView extends BlueprintApplicationChildBase {
  * A background web worker an application runs.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintWebWorker extends BlueprintApplicationChildBase {
   type: 'worker'
@@ -171,7 +158,6 @@ export interface BlueprintWebWorker extends BlueprintApplicationChildBase {
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
- * @hidden
  */
 export type BlueprintApplicationView = BlueprintWindowView | BlueprintPanelView | BlueprintAssetSourceView | BlueprintTileView
 
@@ -179,7 +165,6 @@ export type BlueprintApplicationView = BlueprintWindowView | BlueprintPanelView 
  * A union of everything an application declares — its views and web workers.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export type BlueprintApplicationChild = BlueprintApplicationView | BlueprintWebWorker
 
@@ -187,7 +172,6 @@ export type BlueprintApplicationChild = BlueprintApplicationView | BlueprintWebW
  * Represents an Application resource.
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintApplicationResource extends BlueprintResource {
   type: 'sanity.application'
@@ -227,7 +211,13 @@ export interface BlueprintApplicationResource extends BlueprintResource {
   mfManifest?: Record<string, unknown>
 }
 
+/**
+ * Base shape shared by all view configs.
+ * @beta This feature is subject to breaking changes.
+ * @category Resource Types
+ */
 export interface BlueprintViewConfigBase {
+  /** Set by the view definers. */
   type: 'view'
 }
 
@@ -240,7 +230,6 @@ export interface BlueprintViewConfigBase {
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintWindowViewConfig = Omit<BlueprintWindowView, 'type'> &
   BlueprintViewConfigBase & {
@@ -257,7 +246,6 @@ export type BlueprintWindowViewConfig = Omit<BlueprintWindowView, 'type'> &
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintPanelViewConfig = Omit<BlueprintPanelView, 'type'> &
   BlueprintViewConfigBase & {
@@ -274,7 +262,6 @@ export type BlueprintPanelViewConfig = Omit<BlueprintPanelView, 'type'> &
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintAssetSourceViewConfig = Omit<BlueprintAssetSourceView, 'type'> &
   BlueprintViewConfigBase & {
@@ -291,7 +278,6 @@ export type BlueprintAssetSourceViewConfig = Omit<BlueprintAssetSourceView, 'typ
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintTileViewConfig = Omit<BlueprintTileView, 'type'> &
   BlueprintViewConfigBase & {
@@ -304,7 +290,6 @@ export type BlueprintTileViewConfig = Omit<BlueprintTileView, 'type'> &
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintWebWorkerConfig = Omit<BlueprintWebWorker, 'type'>
 
@@ -313,7 +298,6 @@ export type BlueprintWebWorkerConfig = Omit<BlueprintWebWorker, 'type'>
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @expand
- * @hidden
  */
 export type BlueprintApplicationViewConfig =
   | BlueprintWindowViewConfig
@@ -326,7 +310,6 @@ export type BlueprintApplicationViewConfig =
  * @beta This feature is subject to breaking changes.
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintApplicationConfig = Omit<BlueprintApplicationResource, 'type' | 'slug' | 'views'> & {
   /**

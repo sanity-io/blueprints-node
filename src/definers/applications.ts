@@ -64,7 +64,6 @@ function viewConfigToResource(view: BlueprintApplicationViewConfig): BlueprintAp
  * @category Definers
  * @expandType BlueprintWindowViewConfig
  * @returns The window view declaration
- * @hidden
  */
 export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surface' | 'type'>): BlueprintWindowViewConfig {
   const view: BlueprintWindowViewConfig = {...config, surface: 'window', type: 'view'}
@@ -88,7 +87,6 @@ export function defineWindowView(config: Omit<BlueprintWindowViewConfig, 'surfac
  * @category Definers
  * @expandType BlueprintPanelViewConfig
  * @returns The panel view declaration
- * @hidden
  */
 export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface' | 'type'>): BlueprintPanelViewConfig {
   const view: BlueprintPanelViewConfig = {...config, surface: 'panel', type: 'view'}
@@ -112,7 +110,6 @@ export function definePanelView(config: Omit<BlueprintPanelViewConfig, 'surface'
  * @category Definers
  * @expandType BlueprintAssetSourceViewConfig
  * @returns The asset source view declaration
- * @hidden
  */
 export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfig, 'surface' | 'type'>): BlueprintAssetSourceViewConfig {
   const view: BlueprintAssetSourceViewConfig = {...config, surface: 'asset-source', type: 'view'}
@@ -137,7 +134,6 @@ export function defineAssetSourceView(config: Omit<BlueprintAssetSourceViewConfi
  * @category Definers
  * @expandType BlueprintTileViewConfig
  * @returns The tile view declaration
- * @hidden
  */
 export function defineTileView(config: Omit<BlueprintTileViewConfig, 'surface' | 'type'>): BlueprintTileViewConfig {
   const view: BlueprintTileViewConfig = {...config, surface: 'tile', type: 'view'}
@@ -161,7 +157,6 @@ export function defineTileView(config: Omit<BlueprintTileViewConfig, 'surface' |
  * @category Definers
  * @expandType BlueprintWebWorkerConfig
  * @returns The web worker declaration
- * @hidden
  */
 export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebWorker {
   const worker: BlueprintWebWorker = {...config, type: 'worker'}
@@ -222,7 +217,6 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  * @category Definers
  * @expandType BlueprintApplicationConfig
  * @returns The application resource
- * @hidden
  */
 export function defineApplication(config: BlueprintApplicationConfig): BlueprintApplicationResource {
   const {views, webWorkers, slug, ...rest} = config

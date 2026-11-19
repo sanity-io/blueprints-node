@@ -19,11 +19,9 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The project configuration
  * @public
- * @beta Deploying Projects via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
  * @expandType BlueprintProjectConfig
  * @returns The project resource
- * @hidden
  */
 export function defineProject(parameters: BlueprintProjectConfig): BlueprintProjectResource {
   // default project name
@@ -52,10 +50,8 @@ export function defineProject(parameters: BlueprintProjectConfig): BlueprintProj
  *
  * @param params The parameters for referencing the project
  * @public
- * @beta Referencing Projects via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Referencers
  * @returns The project reference
- * @hidden
  */
 export function referenceProject({name, stack, localName}: BlueprintCrossStackReferenceConfig): BlueprintResource {
   return referenceResource({name, stack, localName, type: 'sanity.project'})
