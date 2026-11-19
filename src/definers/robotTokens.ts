@@ -17,7 +17,7 @@ import {runValidation} from '../utils/validation.js'
  *   name: 'my-robot',
  *   memberships: [{
  *     resourceType: 'project',
- *     resourceId: projectId,
+ *     resourceId: 'my-project-id',
  *     roleNames: ['editor'],
  *   }],
  * })

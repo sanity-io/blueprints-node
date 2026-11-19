@@ -10,6 +10,7 @@ on:
     paths:
       - "src/**"
       - "package.json"
+      - "typedoc.json"
       - "README.md"
       - ".github/workflows/upload-typedoc.yml"
   # Manual trigger

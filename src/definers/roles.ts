@@ -78,7 +78,7 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
  *
  * @example
  * ```ts
- * defineProjectRole(projectId, {
+ * defineProjectRole('my-project-id', {
  *   name: 'viewer-role',
  *   title: 'Viewer',
  *   appliesToUsers: true,
@@ -92,7 +92,7 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
  *
  * @example Cross-resource references
  * ```ts
- * const role = defineProjectRole(projectId, {
+ * defineProjectRole('my-project-id', {
  *   name: 'ci-deploy-role',
  *   title: 'CI Deploy Role',
  *   appliesToRobots: true,
@@ -110,7 +110,7 @@ export function defineRole(parameters: BlueprintRoleConfig, options?: {skipValid
  *   name: 'ci-robot',
  *   memberships: [{
  *     resourceType: 'project',
- *     resourceId: projectId,
+ *     resourceId: 'my-project-id',
  *     roleNames: ['$.resources.ci-deploy-role'],
  *   }],
  * })

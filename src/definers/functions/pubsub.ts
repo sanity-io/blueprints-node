@@ -3,7 +3,7 @@ import {runValidation} from '../../utils/validation.js'
 import {defineFunction} from './index.js'
 
 /**
- * Defines a function that provide pubsub behaviour.
+ * Defines a function that provides pubsub behaviour.
  *
  * @example
  * ```ts

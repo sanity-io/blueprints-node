@@ -6,6 +6,7 @@ import {assertResource, type BlueprintCrossStackReferenceResourceConfig, type Bl
  * @remarks
  * This is useful if the resource type does not yet have a `define*` function.
  *
+ * @example
  * ```ts
  * defineResource({
  *   name: 'my-resource',

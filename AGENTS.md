@@ -124,10 +124,10 @@ This project generates documentation with TypeDoc. All public exports must have 
 
 #### Release stages and visibility
 
-| Stage | Tags | Stage message |
-|---|---|---|
-| Stable | `@public` | none |
-| Beta | `@public` `@beta` | on definers and resource types |
+| Stage              | Tags               | Stage message                  |
+| ------------------ | ------------------ | ------------------------------ |
+| Stable             | `@public`          | none                           |
+| Beta               | `@public` `@beta`  | on definers and resource types |
 | Alpha (not public) | `@alpha` `@hidden` | on definers and resource types |
 
 Rules:
@@ -180,7 +180,7 @@ Rules:
 - Additional `@example` blocks must have a **title**. Use these for advanced usage, cross-resource references (`$.resources.*`), or kitchen-sink all-options examples.
 - Use `@expandType TypeName` to inline the parameter type in the docs (requires a named Config type).
 - Use `@remarks` only when the summary needs a longer explanation (e.g. `defineScheduledFunction`). Put code in `@example` blocks, not in the summary or `@remarks`.
-- Every example must typecheck and run against the definer: include all required fields, declare no free variables (use literals such as `'my-project-id'`), and use only real permission and role names.
+- Every example must typecheck and run against the definer without validation errors: include all required fields, declare no free variables (use literals such as `'my-project-id'`), and use only real permission and role names. `test/unit/definers/examples.test.ts` enforces this for every definer that is not `@hidden`.
 - A `$.resources.<name>` reference resolves to the referenced provider's primary identifier: a role gives its `name`, a robot token gives its `token`.
 
 #### Config types (definer parameter types)
@@ -212,8 +212,8 @@ Rules:
 ### Error Handling
 
 - Validation functions return error arrays, never throw
-- `runValidation()` converts errors to thrown Error with joined messages
-- Definers call `runValidation()` to fail fast on invalid config
+- Definers call `runValidation()`, which collects errors instead of throwing
+- `defineBlueprint` validates the blueprint and throws one Error with all collected errors (`runValidation(..., {throwError: true})`)
 
 ## Tests
 
