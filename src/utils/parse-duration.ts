@@ -1,4 +1,5 @@
 import parse from 'parse-duration'
+import type {BlueprintError} from '../types/errors.js'
 
 type DurationUnit = 'ms' | 's' | 'm' | 'h' | 'd' | 'w' | 'mo' | 'y'
 
@@ -35,4 +36,30 @@ export function parseDuration(duration: string | number, unit: DurationUnit = 's
   }
 
   return parsed
+}
+
+/**
+ * Resolves a duration field, given either as a number of seconds or as a duration string, to seconds.
+ * Unlike {@link parseDuration} this never throws, so validators can report the problem instead.
+ * @param field The name of the field being resolved, used in error messages
+ * @param value The value to resolve
+ * @internal
+ * @returns The value in seconds, or the errors that prevented it from being resolved
+ */
+export function resolveDuration(field: string, value: unknown): {seconds?: number; errors: BlueprintError[]} {
+  if (typeof value === 'number') {
+    return Number.isFinite(value)
+      ? {seconds: value, errors: []}
+      : {errors: [{type: 'invalid_value', message: `\`${field}\` must be a valid duration`}]}
+  }
+
+  if (typeof value === 'string') {
+    try {
+      return {seconds: parseDuration(value, 's'), errors: []}
+    } catch {
+      return {errors: [{type: 'invalid_value', message: `\`${field}\` must be a valid duration`}]}
+    }
+  }
+
+  return {errors: [{type: 'invalid_type', message: `\`${field}\` must be a number of seconds or a duration string`}]}
 }
