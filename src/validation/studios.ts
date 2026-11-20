@@ -1,6 +1,7 @@
 import type {BlueprintError} from '../types/errors.js'
 import {APPLICATION_VISIBILITIES} from '../types/studios.js'
 import {isReference, validateStringField} from '../utils/validation.js'
+import {isContainedRelativePath} from './applications.js'
 import {validateResource} from './resources.js'
 
 /** hostname validity pattern */
@@ -52,6 +53,8 @@ export function validateStudio(resource: unknown): BlueprintError[] {
   if ('icon' in resource) {
     if (typeof resource.icon !== 'string') {
       errors.push({type: 'invalid_type', message: 'Studio icon must be a string'})
+    } else if (!isReference(resource.icon) && !isContainedRelativePath(resource.icon)) {
+      errors.push({type: 'invalid_value', message: 'Studio icon must be a relative path within the studio root'})
     }
   }
 

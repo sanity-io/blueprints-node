@@ -211,7 +211,7 @@ export function defineWebWorker(config: BlueprintWebWorkerConfig): BlueprintWebW
  *   title: 'Design Retro',
  *   root: './apps/design-retro',
  *   slug: 'design-retro',
- *   icon: './src/icons/app-icon.svg',
+ *   icon: './src/icons/app-icon.png',
  *   visibility: 'unlisted',
  *   views: [
  *     defineWindowView({

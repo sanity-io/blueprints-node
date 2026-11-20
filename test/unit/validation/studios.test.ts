@@ -27,6 +27,24 @@ describe('validateStudio', () => {
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Studio type must be `sanity.studio`'})
   })
 
+  test('should return an error if icon is not a string', () => {
+    expect(validateStudio({...validStudio, icon: 1})).toContainEqual({type: 'invalid_type', message: 'Studio icon must be a string'})
+  })
+
+  test.each(['/abs/icon.png', 'C:\\studio\\icon.png', '../icon.png', 'a/../../icon.png'])(
+    'should return an error if icon is outside the studio root: %s',
+    (icon) => {
+      expect(validateStudio({...validStudio, icon})).toContainEqual({
+        type: 'invalid_value',
+        message: 'Studio icon must be a relative path within the studio root',
+      })
+    },
+  )
+
+  test.each(['icon.png', './static/icon.avif', '$.values.studioIcon'])('should accept an icon of %s', (icon) => {
+    expect(validateStudio({...validStudio, icon})).toStrictEqual([])
+  })
+
   test('should return an error if root is not provided', () => {
     const {root: _root, ...noRoot} = validStudio
     const errors = validateStudio(noRoot)
@@ -214,7 +232,7 @@ describe('validateStudio', () => {
   test('should accept a valid configuration', () => {
     const errors = validateStudio({
       ...validStudio,
-      icon: 'icon1234',
+      icon: './static/icon.png',
       visibility: 'default',
       autoUpdates: {enabled: true, version: '^3.0.0'},
       minify: true,
