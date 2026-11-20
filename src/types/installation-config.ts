@@ -3,13 +3,14 @@ import type {BlueprintResource} from '../index.js'
 /**
  * Fields shared by every singleton installation config resource.
  *
+ * This feature is subject to breaking changes.
+ *
  * @remarks
  * The backend selects a provider from the resource `type`
  * (`sanity.installation.config`), so every installation config shares that one
  * type and is discriminated by `appType`.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintInstallationConfigResourceBase extends BlueprintResource {
   type: 'sanity.installation.config'
@@ -26,9 +27,10 @@ export interface BlueprintInstallationConfigResourceBase extends BlueprintResour
 
 /**
  * One custom field a Media Library configuration exposes.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintMediaLibraryField {
   /** Unique within the Media Library config. */
@@ -47,14 +49,15 @@ export interface BlueprintMediaLibraryField {
 /**
  * Represents a singleton Media Library configuration resource.
  *
+ * This feature is subject to breaking changes.
+ *
  * @remarks
  * The Media Library is a Sanity-owned singleton, so this resource carries no
  * application identity of its own — it only names the target `appType`, the
  * config `root`, and its `fields`. The provider resolves the organization's
  * media library installation id at deploy time.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallationConfigResourceBase {
   /** The target installation this config applies to. Set by the definer. */
@@ -73,20 +76,20 @@ export interface BlueprintMediaLibraryConfigResource extends BlueprintInstallati
 /**
  * A union of every singleton installation config resource, discriminated by `appType`.
  *
+ * This feature is subject to breaking changes.
+ *
  * @remarks
  * Media Library is the only member today; additional installation configs are
  * added to this union.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export type BlueprintInstallationConfigResource = BlueprintMediaLibraryConfigResource
 
 /**
  * Configuration for a singleton Media Library configuration resource.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  * @interface
- * @hidden
  */
 export type BlueprintMediaLibraryConfigConfig = Omit<BlueprintMediaLibraryConfigResource, 'type' | 'appType'>

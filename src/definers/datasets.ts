@@ -1,8 +1,17 @@
 import {type BlueprintDatasetConfig, type BlueprintDatasetResource, validateDataset} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a Dataset to be managed in a Blueprint.
+ *
+ * @example
+ * ```ts
+ * defineDataset({
+ *   name: 'staging-dataset',
+ *   datasetName: 'staging',
+ * })
+ * ```
+ *
  * @example All options
  * ```ts
  * defineDataset({
@@ -13,20 +22,8 @@ import {runValidation} from '../utils/validation.js'
  *   lifecycle: {deletionPolicy: 'protect'},
  * })
  * ```
- */
-/**
- * Defines a Dataset to be managed in a Blueprint.
- *
- * ```ts
- * defineDataset({
- *   name: 'staging-dataset',
- *   datasetName: 'staging',
- * })
- * ```
  * @param parameters The dataset configuration
  * @public
- * @alpha Deploying Datasets via Blueprints is experimental. This feature is subject to breaking changes.
- * @hidden
  * @category Definers
  * @expandType BlueprintDatasetConfig
  * @returns The dataset resource

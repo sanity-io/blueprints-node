@@ -8,14 +8,28 @@ import {
 } from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
+ *
+ * @example
+ * ```ts
+ * defineRobotToken({
+ *   name: 'my-robot',
+ *   memberships: [{
+ *     resourceType: 'project',
+ *     resourceId: 'my-project-id',
+ *     roleNames: ['editor'],
+ *   }],
+ * })
+ * ```
+ *
  * @example Cross-resource references
  * ```ts
  * defineRole({
  *   name: 'ci-deploy-role',
  *   title: 'CI Deploy Role',
  *   appliesToRobots: true,
+ *   appliesToUsers: false,
  *   permissions: [{name: 'sanity-project-cors', action: 'create'}],
  * })
  *
@@ -27,23 +41,8 @@ import {runValidation} from '../utils/validation.js'
  *   }],
  * })
  * ```
- */
-/**
- * Defines a Robot Token for automated access. Has a token property provided during deployment that can be referenced by other resources.
- *
- * ```ts
- * defineRobotToken({
- *   name: 'my-robot',
- *   memberships: [{
- *     resourceType: 'project',
- *     resourceId: projectId,
- *     roleNames: ['editor'],
- *   }],
- * })
- * ```
  * @param parameters The robot token configuration
  * @public
- * @beta Deploying Robot Tokens via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Definers
  * @expandType BlueprintRobotTokenConfig
  * @returns The robot token resource
@@ -65,6 +64,7 @@ export function defineRobotToken(parameters: BlueprintRobotTokenConfig): Bluepri
 /**
  * Creates a reference to a robot token in another stack.
  *
+ * @example
  * ```ts
  * referenceRobotToken({
  *   name: 'editor-token',
@@ -73,7 +73,6 @@ export function defineRobotToken(parameters: BlueprintRobotTokenConfig): Bluepri
  * ```
  *
  * @public
- * @beta Referencing Robot Tokens via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  * @category Referencers
  * @expandType BlueprintCrossStackReferenceConfig
  * @param params The parameters for referencing the robot token

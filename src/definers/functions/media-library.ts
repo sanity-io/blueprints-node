@@ -10,15 +10,30 @@ import {defineFunction} from './index.js'
 
 type MediaLibraryFunctionEventKey = keyof BlueprintMediaLibraryFunctionResourceEvent
 const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resource', ...BASE_EVENT_KEYS.values()])
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a function that is triggered by media library events.
+ *
+ * @example
+ * ```ts
+ * defineMediaLibraryAssetFunction({
+ *   name: 'my-media-library-function',
+ *   event: {
+ *     on: ['create'],
+ *     resource: {
+ *       type: 'media-library',
+ *       id: 'my-media-library-id',
+ *     },
+ *   },
+ * })
+ * ```
+ *
  * @example With robot token reference
  * ```ts
  * defineRobotToken({
  *   name: 'media-robot',
  *   memberships: [{
  *     resourceType: 'project',
- *     resourceId: projectId,
+ *     resourceId: 'my-project-id',
  *     roleNames: ['editor'],
  *   }],
  * })
@@ -38,22 +53,6 @@ const MEDIA_LIBRARY_EVENT_KEYS = new Set<MediaLibraryFunctionEventKey>(['resourc
  *   },
  *   env: {
  *     CDN_BUCKET: 'my-cdn-bucket',
- *   },
- * })
- * ```
- */
-/**
- * Defines a function that is triggered by media library events.
- *
- * ```ts
- * defineMediaLibraryAssetFunction({
- *   name: 'my-media-library-function',
- *   event: {
- *     on: ['create'],
- *     resource: {
- *       type: 'media-library',
- *       id: 'my-media-library-id',
- *     },
  *   },
  * })
  * ```

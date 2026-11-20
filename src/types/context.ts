@@ -2,7 +2,9 @@ import type {BlueprintResource} from '../index.js'
 
 /**
  * A knowledge base that a Context MCP endpoint serves.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export interface ContextKnowledgeBaseSource {
@@ -13,7 +15,9 @@ export interface ContextKnowledgeBaseSource {
 
 /**
  * A Sanity dataset that a Context MCP endpoint serves.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export interface ContextDatasetSource {
@@ -33,14 +37,18 @@ export interface ContextDatasetSource {
 
 /**
  * Content that a Context MCP endpoint serves.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export type ContextMcpEndpointSource = ContextKnowledgeBaseSource | ContextDatasetSource
 
 /**
  * A Context knowledge base resource.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource {
@@ -58,7 +66,7 @@ export interface BlueprintContextKnowledgeBaseResource extends BlueprintResource
 
 /**
  * Configuration for a Context knowledge base.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  * @interface
  */
@@ -66,7 +74,9 @@ export type BlueprintContextKnowledgeBaseConfig = Omit<BlueprintContextKnowledge
 
 /**
  * A Context MCP endpoint resource.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
@@ -89,7 +99,7 @@ export interface BlueprintContextMcpEndpointResource extends BlueprintResource {
 
 /**
  * Configuration for a Context MCP endpoint.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  * @interface
  */

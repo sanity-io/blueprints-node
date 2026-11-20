@@ -6,12 +6,10 @@
  * {@link readStack} reads remote stack.
  *
  * This entry point imports Node built-ins, so it is separate from `@sanity/blueprints`.
- * @module
- */
-
-/**
+ *
  * @categoryDescription Resolve
  * These functions read a blueprint from disk, resolve the Stack it deploys to, and read that Stack from the Blueprints API.
+ * @module
  */
 export {
   BLUEPRINT_FILE_NAMES,

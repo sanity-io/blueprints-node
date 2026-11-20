@@ -5,51 +5,64 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 /**
  * Custom Vite configuration for the Studio so it can be changed and extended.
  * This type matches the type in @sanity/cli-core and must continue to remain compatible.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export type UserViteConfig = ((config: InlineConfig, env: ConfigEnv) => InlineConfig | Promise<InlineConfig>) | InlineConfig
 
 /**
  * The set of valid application visibilities.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export const APPLICATION_VISIBILITIES = ['default', 'unlisted', 'disabled'] as const
 
 /**
  * The visibility of the studio in the dashboard.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export type ApplicationVisibility = (typeof APPLICATION_VISIBILITIES)[number]
 
 /**
  * A workspace definition extracted from a studio's configuration during the build.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export type StudioWorkspace = {
+  /** The project ID of the workspace */
   projectId: string
+  /** The dataset of the workspace */
   dataset: string
+  /** The ID of the deployed schema descriptor for the workspace */
   schemaDescriptorId: string
+  /** The workspace name */
   name: string
+  /** The workspace title */
   title: string | undefined
+  /** The workspace subtitle */
   subtitle: string | undefined
+  /** The workspace base path */
   basePath: string | undefined
+  /** The workspace icon */
   icon: string | undefined
 }
 
 /**
  * Represents a Studio resource.
+ *
+ * This feature is subject to breaking changes.
  * @see https://www.sanity.io/docs/studio
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
- * @hidden
  */
 export interface BlueprintStudioResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
   type: 'sanity.studio'
@@ -118,10 +131,9 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
 /**
  * Configuration for a Studio resource.
  * @see https://www.sanity.io/docs/studio
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  * @interface
- * @hidden
  */
 export interface BlueprintStudioConfig extends Omit<BlueprintStudioResource, 'type' | 'slug' | 'title' | 'autoUpdates'> {
   /**

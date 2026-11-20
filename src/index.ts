@@ -1,12 +1,29 @@
-// DEFINERS - helper functions to create resources
 /**
+ * @packageDocumentation
+ *
  * @categoryDescription Definers
  * These functions are used to define resources in a Blueprint.
- */
-/**
+ *
+ * @categoryDescription Application Children
+ * These functions define the views and web workers of an application. Pass them to `defineApplication`.
+ *
  * @categoryDescription Referencers
  * These functions are used to reference resources in another Blueprint.
+ *
+ * @categoryDescription Resource Types
+ * These types are used to define the shape of resources in a Blueprint.
+ *
+ * @categoryDescription Functions Types
+ * Resource types for functions in a Blueprint.
+ *
+ * @categoryDescription Validation
+ * These functions are used to validate resources in a Blueprint.
+ *
+ * @categoryDescription Blueprint Internals
+ * Shared types that Blueprints and resources are built on. Definers and resource types use them, so most code does not need to import them.
  */
+
+// DEFINERS - helper functions to create resources
 export * from './definers/agents.js'
 export * from './definers/applications.js'
 export * from './definers/blueprints.js'
@@ -32,14 +49,6 @@ export * from './definers/studios.js'
 export * from './definers/webhooks.js'
 
 // TYPES - base types for all resources
-/**
- * @categoryDescription Resource Types
- * These types are used to define the shape of resources in a Blueprint.
- */
-/**
- * @categoryDescription Functions Types
- * Resource types for functions in a Blueprint.
- */
 export * from './types/agents.js'
 export * from './types/applications.js'
 export * from './types/blueprints.js'
@@ -59,10 +68,6 @@ export * from './types/studios.js'
 export * from './types/webhooks.js'
 
 // VALIDATION - validation for all resources
-/**
- * @categoryDescription Validation
- * These functions are used to validate resources in a Blueprint.
- */
 export * from './validation/agents.js'
 export * from './validation/applications.js'
 export * from './validation/blueprints.js'
@@ -79,9 +84,3 @@ export * from './validation/robotTokens.js'
 export * from './validation/roles.js'
 export * from './validation/studios.js'
 export * from './validation/webhooks.js'
-
-// Public BLUEPRINTS INTERNALS - published bucket of misc Blueprint types
-/**
- * @categoryDescription Blueprint Internals
- * Miscellaneous Blueprint types that make up the public API but are not exported directly.
- */

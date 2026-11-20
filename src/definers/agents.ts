@@ -4,6 +4,8 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines an Agent to be managed in a Blueprint.
  *
+ * Deploying Agents via Blueprints is experimental. This feature is subject to breaking changes.
+ *
  * @remarks
  * `model` is required; its `apiKey` is passed by reference and resolved at blueprint-eval time.
  *
@@ -36,7 +38,7 @@ import {runValidation} from '../utils/validation.js'
  * })
  * ```
  * @param config The agent configuration
- * @alpha Deploying Agents via Blueprints is experimental. This feature is subject to breaking changes.
+ * @alpha
  * @hidden
  * @category Definers
  * @expandType BlueprintAgentConfig

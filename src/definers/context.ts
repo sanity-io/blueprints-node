@@ -11,6 +11,8 @@ import {runValidation} from '../utils/validation.js'
 /**
  * Defines a Context knowledge base.
  *
+ * Deploying Context via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ *
  * @remarks
  * The blueprint must be scoped to an organization. A new knowledge base has no sources. Add sources in the Context API
  * or the dashboard.
@@ -41,7 +43,7 @@ import {runValidation} from '../utils/validation.js'
  * ```
  * @param parameters The knowledge base configuration
  * @public
- * @beta Deploying Context via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintContextKnowledgeBaseConfig
  * @returns The knowledge base resource
@@ -59,6 +61,8 @@ export function defineContextKnowledgeBase(parameters: BlueprintContextKnowledge
 
 /**
  * Defines a Context MCP endpoint that agents connect to.
+ *
+ * Deploying Context via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
  *
  * @remarks
  * The blueprint must be scoped to an organization.
@@ -99,7 +103,7 @@ export function defineContextKnowledgeBase(parameters: BlueprintContextKnowledge
  * ```
  * @param parameters The MCP endpoint configuration
  * @public
- * @beta Deploying Context via Blueprints is experimental. This feature is stabilizing but may still be subject to breaking changes.
+ * @beta
  * @category Definers
  * @expandType BlueprintContextMcpEndpointConfig
  * @returns The MCP endpoint resource

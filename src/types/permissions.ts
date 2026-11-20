@@ -3,16 +3,20 @@ import type {BlueprintProjectResourceLifecycle, BlueprintResource} from '../inde
 /**
  * The type of a custom permission.
  *
+ * This feature is subject to breaking changes.
+ *
  *  - **sanity.document.filter** A role grants document actions, such as `read` and `update`, on the documents that match the filter.
  *  - **sanity.document.filter.mode** A role grants the `mode` action, with a `mode` param such as `read` or `publish`, on the documents that match the filter.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export type BlueprintPermissionType = 'sanity.document.filter' | 'sanity.document.filter.mode'
 
 /**
  * A custom permission resource that roles can grant.
- * @beta This feature is subject to breaking changes.
+ *
+ * This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export interface BlueprintPermissionResource extends BlueprintResource<BlueprintProjectResourceLifecycle> {
@@ -48,7 +52,7 @@ export interface BlueprintPermissionResource extends BlueprintResource<Blueprint
 
 /**
  * Configuration for a custom permission resource.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  * @interface
  */
@@ -56,7 +60,7 @@ export type BlueprintPermissionConfig = Omit<BlueprintPermissionResource, 'type'
 
 /**
  * Configuration for a content resource: a custom permission of type `sanity.document.filter.mode`, as the Manage UI makes it.
- * @beta This feature is subject to breaking changes.
+ * @beta
  * @category Resource Types
  */
 export interface BlueprintContentResourceConfig extends Omit<BlueprintPermissionConfig, 'permissionType' | 'config'> {

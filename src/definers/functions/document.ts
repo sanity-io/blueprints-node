@@ -11,21 +11,29 @@ import {defineFunction} from './index.js'
 type DocumentFunctionEventKey = keyof BlueprintDocumentFunctionResourceEvent
 const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersions', 'resource', ...BASE_EVENT_KEYS.values()])
 
-/*
- * FUTURE example (move below @example when ready)
+/**
+ * Defines a function that is triggered by document events in Sanity datasets.
+ *
+ * @example
+ * ```ts
+ * defineDocumentFunction({
+ *   name: 'my-document-function',
+ *   event: {
+ *     on: ['create', 'update'],
+ *     filter: "_type == 'post'",
+ *     projection: "{_id, title, slug}",
+ *   },
+ * })
+ * ```
+ *
  * @example With robot token reference
  * ```ts
- * defineRole({
- *   name: 'fn-role',
- *   title: 'Function Role',
- *   appliesToRobots: true,
- *   permissions: [{name: 'sanity-project-dataset', action: 'read'}],
- * })
- *
  * defineRobotToken({
  *   name: 'fn-robot',
  *   memberships: [{
- *     roleNames: ['$.resources.fn-role'],
+ *     resourceType: 'project',
+ *     resourceId: 'my-project-id',
+ *     roleNames: ['editor'],
  *   }],
  * })
  *
@@ -43,21 +51,6 @@ const DOCUMENT_EVENT_KEYS = new Set<DocumentFunctionEventKey>(['includeAllVersio
  *   },
  *   env: {
  *     EXTERNAL_API_URL: 'https://api.example.com',
- *     SUPER_SECRET: process.env.SUPER_SECRET,
- *   },
- * })
- * ```
- */
-/**
- * Defines a function that is triggered by document events in Sanity datasets.
- *
- * ```ts
- * defineDocumentFunction({
- *   name: 'my-document-function',
- *   event: {
- *     on: ['create', 'update'],
- *     filter: "_type == 'post'",
- *     projection: "{_id, title, slug}",
  *   },
  * })
  * ```

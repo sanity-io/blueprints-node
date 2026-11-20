@@ -6,8 +6,9 @@ import {defineFunction} from './index.js'
 /**
  * Defines a durable function resource.
  *
- * @remarks
+ * Deploying Durable Functions via Blueprints is experimental.
  *
+ * @example
  * ```ts
  * defineDurableFunction({
  *   name: 'daily-cleanup',
@@ -16,9 +17,9 @@ import {defineFunction} from './index.js'
  * ```
  *
  * @param functionConfig The configuration for the function
- * @category Definers
- * @beta Deploying Durable Functions via Blueprints is experimental.
  * @public
+ * @beta
+ * @category Definers
  * @expandType BlueprintDurableConfig
  * @returns The validated durable function resource
  */
