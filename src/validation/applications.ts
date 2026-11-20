@@ -284,8 +284,12 @@ export function validateApplication(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'Application root must be a relative path within the blueprint directory'})
   }
 
-  if ('icon' in resource && typeof resource.icon !== 'string') {
-    errors.push({type: 'invalid_type', message: 'Application icon must be a string'})
+  if ('icon' in resource) {
+    if (typeof resource.icon !== 'string') {
+      errors.push({type: 'invalid_type', message: 'Application icon must be a string'})
+    } else if (!isReference(resource.icon) && !isContainedRelativePath(resource.icon)) {
+      errors.push({type: 'invalid_value', message: 'Application icon must be a relative path within the application root'})
+    }
   }
 
   if (

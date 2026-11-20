@@ -200,12 +200,15 @@ export interface BlueprintApplicationResource extends BlueprintResource {
 
   /**
    * The application root directory, relative to the blueprint file. Contains the
-   * application's `package.json`; every view and web worker `src` is resolved
-   * relative to it.
+   * application's `package.json`; `icon` and every view and web worker `src` are
+   * resolved relative to it.
    */
   root: string
 
-  /** Icon for the application (path to an SVG). */
+  /**
+   * Path to the icon image, relative to `root`. Uploaded on every deploy; omitting it removes the icon.
+   * PNG, JPEG, BMP, GIF, TIFF, SVG, WebP, HEIF or AVIF, up to 5 MB.
+   */
   icon?: string
 
   /** Dashboard visibility. */

@@ -144,6 +144,20 @@ describe('validateApplication', () => {
     })
   })
 
+  test.each(['/abs/icon.png', 'C:\\apps\\icon.png', '../icon.png', 'a/../../icon.png'])(
+    'should return an error if icon is outside the application root: %s',
+    (icon) => {
+      expect(validateApplication({...validApplication, icon})).toContainEqual({
+        type: 'invalid_value',
+        message: 'Application icon must be a relative path within the application root',
+      })
+    },
+  )
+
+  test.each(['icon.png', './src/icons/app-icon.webp', '$.values.appIcon'])('should accept an icon of %s', (icon) => {
+    expect(validateApplication({...validApplication, icon})).toStrictEqual([])
+  })
+
   test('should accept autoUpdates', () => {
     expect(validateApplication({...validApplication, autoUpdates: {enabled: false}})).toStrictEqual([])
   })

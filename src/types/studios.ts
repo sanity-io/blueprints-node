@@ -70,7 +70,10 @@ export interface BlueprintStudioResource extends BlueprintResource<BlueprintProj
   /** Title for the studio. */
   title: string
 
-  /** Icon for the studio in the browser. */
+  /**
+   * Path to the icon image, relative to `root`. Uploaded on every deploy; omitting it removes the icon.
+   * PNG, JPEG, BMP, GIF, TIFF, SVG, WebP, HEIF or AVIF, up to 5 MB.
+   */
   icon?: string
 
   /** Dashboard visibility */
