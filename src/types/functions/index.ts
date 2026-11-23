@@ -69,18 +69,54 @@ interface QueueConfig {
    */
   debounce?: DebounceConfig
   /**
-   * Whether to place messages that failed processing into a Dead Letter Queue.
-   * @todo: not implemented
-   * @default `false`
-   */
-  dlq?: boolean
-  /**
    * By default, queues employ at-least once delivery. When set to `true`, employs first-in-first-out ordering and exactly-once delivery.
    * FIFO queues have a lower transaction-per-second limit.
    * @todo: not implemented
    * @default `false`
    */
   fifo?: boolean
+}
+
+/**
+ * Configuration used when throttling Queue function types.
+ * Starts at most `limit` messages per `period`; messages over the rate stay queued and are delivered late, not dropped.
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface ThrottleConfig {
+  /**
+   * Maximum number of messages started per `period`
+   */
+  limit: number
+  /**
+   * Length of the throttle period in seconds
+   */
+  period: number
+  /**
+   * Number of messages an idle queue may release at once before pacing resumes.
+   * Must not be greater than `limit`.
+   */
+  burst?: number
+  /**
+   * Dotted path into `{event, context}`, e.g. `event.data.tenantId`; each distinct value is throttled in its own bucket.
+   * When omitted, the whole function is throttled as one bucket.
+   */
+  key?: string
+}
+
+/**
+ * Throttle configuration as accepted by a function definer, before durations are parsed.
+ * @category Functions Types
+ * @alpha
+ * @hidden
+ */
+export interface ThrottleConfigInput extends Omit<ThrottleConfig, 'period'> {
+  /**
+   * Length of the throttle period.
+   * A number is read as seconds, a string is parsed as a duration, e.g. `'1 minute'`.
+   */
+  period: string | number
 }
 
 /**
@@ -99,7 +135,7 @@ export interface DebounceConfig {
    */
   maxWindow?: number
   /**
-   * Dotted path into {event, context} used to debounce events
+   * Dotted path into `{event, context}` used to group debounced events, e.g. `event.data.documentId`
    */
   key?: string
 }
@@ -118,7 +154,7 @@ export interface DebounceConfigInput extends Omit<DebounceConfig, 'window' | 'ma
   window: string | number
   /**
    * Maximum time to extend a debounce window from the first event.
-   * Must be greater than `window`.
+   * Must be greater than or equal to `window`.
    * A number is read as seconds, a string is parsed as a duration, e.g. `'1 hour'`.
    */
   maxWindow?: string | number
@@ -194,6 +230,17 @@ export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionRes
   type: 'sanity.function.queue'
   /** Optional Content Lake event source that triggers the function */
   event?: BlueprintFunctionResourceContentLakeEvent
+  /**
+   * Total delivery attempts per message, at most 1000: `1` delivers once and never retries, `3` delivers once and retries twice.
+   * Messages that use up their attempts are moved to a Dead Letter Queue.
+   * When omitted, a message is redelivered until the queue's retention period expires.
+   */
+  maxAttempts?: number
+  /**
+   * Throttle configuration, with `period` already resolved to seconds.
+   * Definers accept the wider {@link ThrottleConfigInput} and parse it into this shape.
+   */
+  throttle?: ThrottleConfig
 }
 
 /**
@@ -309,7 +356,7 @@ export type BlueprintSyncTagInvalidateFunctionConfig = Omit<BlueprintSyncTagInva
  * @category Functions Types
  * @interface
  */
-export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event' | 'debounce'> & {
+export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 'type' | 'src' | 'event' | 'debounce' | 'throttle'> & {
   /**
    * Path to the function source code
    * @defaultValue `functions/${name}`
@@ -321,6 +368,9 @@ export type BlueprintQueueFunctionConfig = Omit<BlueprintQueueFunctionResource, 
 
   /** Optional debounce configuration, as a duration or a full config */
   debounce?: DebounceInput
+
+  /** Optional throttle configuration */
+  throttle?: ThrottleConfigInput
 }
 
 /**

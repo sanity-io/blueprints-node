@@ -195,6 +195,14 @@ const _bareDebounceQueueFunction: BlueprintQueueFunctionResource = defineQueueFu
   debounce: '69s',
 })
 
+const throttledQueueFunction: BlueprintQueueFunctionResource = defineQueueFunction({
+  name: 'throttled-stuff',
+  maxAttempts: 3,
+  throttle: {limit: 100, period: '1 minute', burst: 10, key: 'event.data.tenantId'},
+})
+const _throttlePeriodIsSeconds: number | undefined = throttledQueueFunction.throttle?.period
+const _maxAttempts: number | undefined = throttledQueueFunction.maxAttempts
+
 const pubSubFunction: BlueprintPubSubFunctionResource = definePubSubFunction({
   name: 'pubsub-stuff',
 })

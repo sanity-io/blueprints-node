@@ -7,7 +7,7 @@ import {
   VALID_RUNTIMES,
   validateResource,
 } from '../index.js'
-import {resolveDebounceDuration} from '../utils/debounce.js'
+import {resolveDuration} from '../utils/parse-duration.js'
 import {isReference} from '../utils/validation.js'
 
 type BaseFunctionEventKey = keyof BlueprintFunctionBaseResourceEvent
@@ -462,9 +462,6 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
   if ('fifo' in functionResource && typeof functionResource.fifo !== 'boolean') {
     errors.push({type: 'invalid_type', message: '`fifo` must be a boolean'})
   }
-  if ('dlq' in functionResource && typeof functionResource.dlq !== 'boolean') {
-    errors.push({type: 'invalid_type', message: '`dlq` must be a boolean'})
-  }
 
   if ('event' in functionResource && typeof functionResource.event !== 'undefined') {
     errors.push(...validateFunctionContentLakeEvent(functionResource.event))
@@ -472,6 +469,22 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
 
   if ('debounce' in functionResource) {
     errors.push(...validateDebounceConfig(functionResource.debounce))
+  }
+
+  if ('throttle' in functionResource) {
+    errors.push(...validateThrottleConfig(functionResource.throttle))
+  }
+
+  if ('maxAttempts' in functionResource) {
+    const maxAttemptsErrors = validatePositiveInteger('maxAttempts', functionResource.maxAttempts)
+    errors.push(...maxAttemptsErrors)
+    if (
+      maxAttemptsErrors.length === 0 &&
+      typeof functionResource.maxAttempts === 'number' &&
+      functionResource.maxAttempts > MAX_QUEUE_ATTEMPTS
+    ) {
+      errors.push({type: 'invalid_value', message: `\`maxAttempts\` must be at most ${MAX_QUEUE_ATTEMPTS}`})
+    }
   }
 
   errors.push(...validateFunction(functionResource))
@@ -601,7 +614,7 @@ export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
 
   // A bare duration is shorthand for `{window: <duration>}`
   if (typeof debounce === 'string' || typeof debounce === 'number') {
-    const resolved = resolveDebounceDuration('debounce', debounce)
+    const resolved = resolveDuration('debounce', debounce)
     return resolved.seconds === undefined ? resolved.errors : validateDebounceConfig({window: resolved.seconds})
   }
 
@@ -618,7 +631,7 @@ export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
   }
 
   if ('window' in debounce) {
-    const resolved = resolveDebounceDuration('window', debounce.window)
+    const resolved = resolveDuration('window', debounce.window)
     errors.push(...resolved.errors)
 
     if (resolved.seconds !== undefined) {
@@ -631,7 +644,7 @@ export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
   }
 
   if ('maxWindow' in debounce) {
-    const resolved = resolveDebounceDuration('maxWindow', debounce.maxWindow)
+    const resolved = resolveDuration('maxWindow', debounce.maxWindow)
     errors.push(...resolved.errors)
 
     if (resolved.seconds !== undefined) {
@@ -643,14 +656,112 @@ export function validateDebounceConfig(debounce: unknown): BlueprintError[] {
     }
   }
 
-  // `maxWindow` caps how far `window` can be extended from the first event, so it has to leave room to extend
-  if (window !== undefined && maxWindow !== undefined && maxWindow <= window) {
-    errors.push({type: 'invalid_value', message: '`maxWindow` must be greater than `window`'})
+  // `maxWindow` caps how far `window` can be extended from the first event, so it can't be shorter than `window`
+  if (window !== undefined && maxWindow !== undefined && maxWindow < window) {
+    errors.push({type: 'invalid_value', message: '`maxWindow` must be greater than or equal to `window`'})
   }
 
-  if ('key' in debounce && typeof debounce.key !== 'string') {
-    errors.push({type: 'invalid_type', message: '`key` must be a string'})
+  if ('key' in debounce) {
+    errors.push(...validateKeyPath(debounce.key))
   }
 
   return errors
+}
+
+/**
+ * Validates a throttle config.
+ * Only checks shape; rate and period ceilings are enforced by the functions service.
+ * @param throttle The config to validate
+ * @alpha
+ * @hidden
+ * @category Functions Types
+ * @returns Array of validation errors, empty if valid
+ */
+export function validateThrottleConfig(throttle: unknown): BlueprintError[] {
+  if (throttle === undefined || throttle === null) {
+    return [{type: 'invalid_value', message: 'Throttle config must be provided'}]
+  }
+
+  if (typeof throttle !== 'object') return [{type: 'invalid_type', message: 'Throttle config must be an object'}]
+
+  const errors: BlueprintError[] = []
+
+  // `limit` is only kept when it is valid, so the `burst` comparison below doesn't pile onto an existing error
+  let limit: number | undefined
+
+  if (!('limit' in throttle)) {
+    errors.push({type: 'missing_parameter', message: '`limit` must be provided'})
+  } else {
+    const limitErrors = validatePositiveInteger('limit', throttle.limit)
+    errors.push(...limitErrors)
+    if (limitErrors.length === 0 && typeof throttle.limit === 'number') limit = throttle.limit
+  }
+
+  if (!('period' in throttle)) {
+    errors.push({type: 'missing_parameter', message: '`period` must be provided'})
+  } else {
+    const resolved = resolveDuration('period', throttle.period)
+    errors.push(...resolved.errors)
+
+    if (resolved.seconds !== undefined && (!Number.isInteger(resolved.seconds) || resolved.seconds < 1)) {
+      errors.push({type: 'invalid_value', message: '`period` must be a whole number of seconds, at least 1'})
+    }
+  }
+
+  if ('burst' in throttle) {
+    const burstErrors = validatePositiveInteger('burst', throttle.burst)
+    errors.push(...burstErrors)
+    if (burstErrors.length === 0 && limit !== undefined && typeof throttle.burst === 'number' && throttle.burst > limit) {
+      errors.push({type: 'invalid_value', message: '`burst` must be less than or equal to `limit`'})
+    }
+  }
+
+  if ('key' in throttle) {
+    errors.push(...validateKeyPath(throttle.key))
+  }
+
+  return errors
+}
+
+/**
+ * Validates a whole number of at least 1, e.g. a count or a number of attempts.
+ * @param field The name of the field being validated, used in error messages
+ * @param value The value to validate
+ * @returns Array of validation errors, empty if valid
+ */
+function validatePositiveInteger(field: string, value: unknown): BlueprintError[] {
+  if (typeof value !== 'number') return [{type: 'invalid_type', message: `\`${field}\` must be a number`}]
+  if (!Number.isInteger(value) || value < 1) return [{type: 'invalid_value', message: `\`${field}\` must be a whole number of at least 1`}]
+  return []
+}
+
+/**
+ * SQS's hard limit on how many times a message can be received before it is moved to a Dead Letter Queue.
+ * The functions service may set a lower limit.
+ */
+const MAX_QUEUE_ATTEMPTS = 1000
+
+/**
+ * Dotted path into the `{event, context}` envelope a queue feature reads its grouping key from, e.g. `event.data.documentId`.
+ * Each segment after the root is a JavaScript identifier, so non-ASCII property names such as `event.data.vær` are allowed.
+ */
+const KEY_PATH_PATTERN = /^(context|event)(\.[\p{ID_Start}$_][\p{ID_Continue}$\u200C\u200D]*)+$/u
+const MAX_KEY_PATH_LENGTH = 256
+
+/**
+ * Validates the `key` of a debounce or throttle config.
+ * @param key The key to validate
+ * @returns Array of validation errors, empty if valid
+ */
+function validateKeyPath(key: unknown): BlueprintError[] {
+  if (typeof key !== 'string') return [{type: 'invalid_type', message: '`key` must be a string'}]
+  if (key.length > MAX_KEY_PATH_LENGTH) {
+    return [{type: 'invalid_value', message: `\`key\` must be at most ${MAX_KEY_PATH_LENGTH} characters`}]
+  }
+  if (!KEY_PATH_PATTERN.test(key)) {
+    return [
+      {type: 'invalid_format', message: '`key` must be a dotted path starting with `event.` or `context.`, e.g. `event.data.documentId`'},
+    ]
+  }
+  return []
 }
