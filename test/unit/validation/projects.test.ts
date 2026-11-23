@@ -57,4 +57,14 @@ describe('defineProject', () => {
     const errors = projects.validateProject({type: 'invalid'})
     expect(errors).toContainEqual({type: 'invalid_value', message: 'Project type must be `sanity.project`'})
   })
+
+  test('should accept a logo path', () => {
+    const errors = projects.validateProject({name: 'project-name', type: 'sanity.project', logo: './logo.png'})
+    expect(errors).toStrictEqual([])
+  })
+
+  test('should return an error if logo is not a string', () => {
+    const errors = projects.validateProject({name: 'project-name', type: 'sanity.project', logo: 1})
+    expect(errors).toContainEqual({type: 'invalid_type', message: 'Project logo must be a string'})
+  })
 })

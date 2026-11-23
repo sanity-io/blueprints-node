@@ -16,6 +16,7 @@ import {runValidation} from '../utils/validation.js'
  * defineProject({
  *   name: 'my-project',
  *   displayName: 'My Project',
+ *   logo: './logo.png',
  * })
  * ```
  * @param parameters The project configuration

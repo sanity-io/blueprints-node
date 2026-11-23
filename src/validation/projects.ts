@@ -17,5 +17,9 @@ export function validateProject(resource: unknown): BlueprintError[] {
     errors.push({type: 'invalid_value', message: 'Project type must be `sanity.project`'})
   }
 
+  if ('logo' in resource && typeof resource.logo !== 'string') {
+    errors.push({type: 'invalid_type', message: 'Project logo must be a string'})
+  }
+
   return errors
 }

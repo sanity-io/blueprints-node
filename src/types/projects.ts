@@ -10,6 +10,12 @@ export interface BlueprintProjectResource extends BlueprintResource<BlueprintRes
 
   /** The name of the project, defaults to the resource name if not provided */
   displayName?: string
+
+  /**
+   * Path to the logo image, relative to the blueprint file. Uploaded on every deploy; omitting it removes the logo.
+   * PNG, JPEG, BMP, GIF, TIFF, SVG, WebP, HEIF or AVIF, up to 5 MB.
+   */
+  logo?: string
 }
 
 /**
