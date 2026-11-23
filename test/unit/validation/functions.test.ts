@@ -658,7 +658,6 @@ describe('validateQueueFunction', () => {
         type: 'sanity.function.queue',
         concurrency: 1,
         fifo: true,
-        dlq: true,
       })
       expect(errors).toStrictEqual([])
     })
@@ -668,7 +667,6 @@ describe('validateQueueFunction', () => {
         type: 'sanity.function.queue',
         concurrency: 5,
         fifo: false,
-        dlq: false,
       })
       expect(errors).toStrictEqual([])
     })
@@ -811,7 +809,6 @@ describe('validateQueueFunction', () => {
         type: 'sanity.function.queue',
         concurrency: {},
         fifo: true,
-        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
@@ -822,7 +819,6 @@ describe('validateQueueFunction', () => {
         type: 'sanity.function.queue',
         concurrency: 'five',
         fifo: true,
-        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
@@ -833,7 +829,6 @@ describe('validateQueueFunction', () => {
         type: 'sanity.function.queue',
         concurrency: 0,
         fifo: true,
-        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
@@ -845,7 +840,6 @@ describe('validateQueueFunction', () => {
         name: 'test',
         type: 'sanity.function.queue',
         concurrency: 1,
-        dlq: true,
         fifo: 'true',
       })
       expect(errors).toContainEqual({
@@ -857,35 +851,10 @@ describe('validateQueueFunction', () => {
         type: 'sanity.function.queue',
         concurrency: 1,
         fifo: 'yes',
-        dlq: true,
       })
       expect(errors).toContainEqual({
         type: 'invalid_type',
         message: '`fifo` must be a boolean',
-      })
-    })
-    test('should return an error if dlq is invalid', () => {
-      let errors = functions.validateQueueFunction({
-        name: 'test',
-        type: 'sanity.function.queue',
-        concurrency: 1,
-        dlq: 'true',
-        fifo: true,
-      })
-      expect(errors).toContainEqual({
-        type: 'invalid_type',
-        message: '`dlq` must be a boolean',
-      })
-      errors = functions.validateQueueFunction({
-        name: 'test',
-        type: 'sanity.function.queue',
-        concurrency: 1,
-        fifo: true,
-        dlq: 'yes',
-      })
-      expect(errors).toContainEqual({
-        type: 'invalid_type',
-        message: '`dlq` must be a boolean',
       })
     })
     test('should return an error if maxAttempts is not a whole number of at least 1', () => {
@@ -900,6 +869,14 @@ describe('validateQueueFunction', () => {
           message: '`maxAttempts` must be a whole number of at least 1',
         })
       }
+    })
+    test('should return an error if maxAttempts is more than 1000', () => {
+      const base = {name: 'test', type: 'sanity.function.queue'}
+      expect(functions.validateQueueFunction({...base, maxAttempts: 1000})).toStrictEqual([])
+      expect(functions.validateQueueFunction({...base, maxAttempts: 1001})).toContainEqual({
+        type: 'invalid_value',
+        message: '`maxAttempts` must be at most 1000',
+      })
     })
     test('should validate the throttle config of a queue function', () => {
       const errors = functions.validateQueueFunction({
@@ -1405,6 +1382,12 @@ describe('validateThrottleConfig', () => {
           message: '`key` must be a dotted path starting with `event.` or `context.`, e.g. `event.data.documentId`',
         },
       ])
+    })
+
+    test('should accept a key path with non-ASCII property names', () => {
+      expect(functions.validateThrottleConfig({limit: 10, period: 60, key: 'event.data.vær'})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({window: 1, key: 'event.data.名前'})).toStrictEqual([])
+      expect(functions.validateDebounceConfig({window: 1, key: 'event.données.ключ'})).toStrictEqual([])
     })
 
     test('should accept a context key path', () => {

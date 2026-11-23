@@ -462,9 +462,6 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
   if ('fifo' in functionResource && typeof functionResource.fifo !== 'boolean') {
     errors.push({type: 'invalid_type', message: '`fifo` must be a boolean'})
   }
-  if ('dlq' in functionResource && typeof functionResource.dlq !== 'boolean') {
-    errors.push({type: 'invalid_type', message: '`dlq` must be a boolean'})
-  }
 
   if ('event' in functionResource && typeof functionResource.event !== 'undefined') {
     errors.push(...validateFunctionContentLakeEvent(functionResource.event))
@@ -479,7 +476,15 @@ export function validateQueueFunction(functionResource: unknown): BlueprintError
   }
 
   if ('maxAttempts' in functionResource) {
-    errors.push(...validatePositiveInteger('maxAttempts', functionResource.maxAttempts))
+    const maxAttemptsErrors = validatePositiveInteger('maxAttempts', functionResource.maxAttempts)
+    errors.push(...maxAttemptsErrors)
+    if (
+      maxAttemptsErrors.length === 0 &&
+      typeof functionResource.maxAttempts === 'number' &&
+      functionResource.maxAttempts > MAX_QUEUE_ATTEMPTS
+    ) {
+      errors.push({type: 'invalid_value', message: `\`maxAttempts\` must be at most ${MAX_QUEUE_ATTEMPTS}`})
+    }
   }
 
   errors.push(...validateFunction(functionResource))
@@ -731,10 +736,16 @@ function validatePositiveInteger(field: string, value: unknown): BlueprintError[
 }
 
 /**
- * Dotted path into the `{event, context}` envelope a queue feature reads its grouping key from, e.g. `event.data.documentId`.
- * Mirrors the functions service's key path rule.
+ * SQS's hard limit on how many times a message can be received before it is moved to a Dead Letter Queue.
+ * The functions service may set a lower limit.
  */
-const KEY_PATH_PATTERN = /^(context|event)(\.[A-Za-z_$][\w$]*)+$/
+const MAX_QUEUE_ATTEMPTS = 1000
+
+/**
+ * Dotted path into the `{event, context}` envelope a queue feature reads its grouping key from, e.g. `event.data.documentId`.
+ * Each segment after the root is a JavaScript identifier, so non-ASCII property names such as `event.data.vær` are allowed.
+ */
+const KEY_PATH_PATTERN = /^(context|event)(\.[\p{ID_Start}$_][\p{ID_Continue}$\u200C\u200D]*)+$/u
 const MAX_KEY_PATH_LENGTH = 256
 
 /**

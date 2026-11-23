@@ -68,12 +68,6 @@ interface QueueConfig {
    */
   debounce?: DebounceConfig
   /**
-   * Whether to place messages that failed processing into a Dead Letter Queue.
-   * @deprecated Ignored by the functions service, which creates a Dead Letter Queue only when
-   * `maxAttempts` is set on a queue function. Definers no longer include this on the resource.
-   */
-  dlq?: boolean
-  /**
    * By default, queues employ at-least once delivery. When set to `true`, employs first-in-first-out ordering and exactly-once delivery.
    * FIFO queues have a lower transaction-per-second limit.
    * @todo: not implemented
@@ -236,7 +230,7 @@ export interface BlueprintQueueFunctionResource extends BlueprintBaseFunctionRes
   /** Optional Content Lake event source that triggers the function */
   event?: BlueprintFunctionResourceContentLakeEvent
   /**
-   * Total delivery attempts per message: `1` delivers once and never retries, `3` delivers once and retries twice.
+   * Total delivery attempts per message, at most 1000: `1` delivers once and never retries, `3` delivers once and retries twice.
    * Messages that use up their attempts are moved to a Dead Letter Queue.
    * When omitted, a message is redelivered until the queue's retention period expires.
    */

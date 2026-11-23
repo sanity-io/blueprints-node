@@ -92,11 +92,6 @@ describe('defineQueueFunction', () => {
     test('should omit maxAttempts when not provided', () => {
       expect(defineQueueFunction({name: 'test'})).not.toHaveProperty('maxAttempts')
     })
-
-    test('should not include dlq on the resource, even when provided', () => {
-      expect(defineQueueFunction({name: 'test'})).not.toHaveProperty('dlq')
-      expect(defineQueueFunction({name: 'test', dlq: true})).not.toHaveProperty('dlq')
-    })
   })
 
   describe('debounce validation', () => {
