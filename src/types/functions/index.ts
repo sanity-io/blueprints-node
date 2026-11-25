@@ -16,7 +16,7 @@ export * from './timezone.js'
  * Supported Function runtimes
  * @category Functions Types
  */
-export const VALID_RUNTIMES = ['node', 'nodejs22.x', 'nodejs24.x'] as const
+export const VALID_RUNTIMES = ['node', 'nodejs22.x', 'nodejs24.x', 'nodejs26.x'] as const
 /**
  * Supported function runtimes
  * @category Functions Types
@@ -45,7 +45,7 @@ interface BlueprintCommonFunctionResource extends BlueprintResource {
 
   /**
    * The runtime environment for the function (currently only Node.js is supported)
-   * @defaultValue 'nodejs24.x'
+   * @defaultValue 'nodejs26.x'
    */
   runtime?: FunctionRuntimes
 }
