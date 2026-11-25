@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.35.0](https://github.com/sanity-io/blueprints-node/compare/v0.34.1...v0.35.0) (2026-11-25)
+
+
+### Features
+
+* accept any image as an application or studio icon ([#205](https://github.com/sanity-io/blueprints-node/issues/205)) ([a99cd2c](https://github.com/sanity-io/blueprints-node/commit/a99cd2c7057be1556f8e52330c60dfb538ade114))
+* add a logo to defineProject ([#207](https://github.com/sanity-io/blueprints-node/issues/207)) ([b41113b](https://github.com/sanity-io/blueprints-node/commit/b41113ba0f8fa35d3867afd0c680e021b34f6f7e))
+* update definer stages and docs ([#203](https://github.com/sanity-io/blueprints-node/issues/203)) ([feafc40](https://github.com/sanity-io/blueprints-node/commit/feafc40479b91cc64714166a25a8228f2d96687d))
+
+
+### Bug Fixes
+
+* add node 26 ([#208](https://github.com/sanity-io/blueprints-node/issues/208)) ([5239b2a](https://github.com/sanity-io/blueprints-node/commit/5239b2a122e50da2c3429b8f43532a9a8c719945))
+
 ## [0.34.1](https://github.com/sanity-io/blueprints-node/compare/v0.34.0...v0.34.1) (2026-11-09)
 
 
