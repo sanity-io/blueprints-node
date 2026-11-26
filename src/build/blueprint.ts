@@ -11,7 +11,12 @@ import {defineRole} from '../definers/roles.js'
 import {defineStudio} from '../definers/studios.js'
 import type {BlueprintApplicationConfig} from '../types/applications.js'
 import type {Blueprint, BlueprintModule} from '../types/blueprints.js'
-import type {BlueprintContextKnowledgeBaseConfig, BlueprintContextMcpEndpointConfig} from '../types/context.js'
+import type {
+  BlueprintContextKnowledgeBaseConfig,
+  BlueprintContextKnowledgeBaseResource,
+  BlueprintContextMcpEndpointConfig,
+  ContextMcpEndpointSource,
+} from '../types/context.js'
 import type {BlueprintCorsOriginConfig} from '../types/cors.js'
 import type {BlueprintDatasetConfig} from '../types/datasets.js'
 import type {BlueprintMediaLibraryConfigConfig} from '../types/installation-config.js'
@@ -51,8 +56,16 @@ class BlueprintHandle {
     return new ContextKnowledgeBaseHandle(config.name)
   }
 
-  contextMcpEndpoint(config: BlueprintContextMcpEndpointConfig): ContextMcpEndpointHandle {
-    this.#resources.push(defineContextMcpEndpoint(config))
+  contextMcpEndpoint(
+    config: Omit<BlueprintContextMcpEndpointConfig, 'sources'> & {
+      sources: Array<ContextMcpEndpointSource | BlueprintContextKnowledgeBaseResource | ContextKnowledgeBaseHandle>
+    },
+  ): ContextMcpEndpointHandle {
+    // map sources to types the definer accepts
+    const sources = config.sources.map<ContextMcpEndpointSource | BlueprintContextKnowledgeBaseResource>((source) =>
+      source instanceof ContextKnowledgeBaseHandle ? {type: 'knowledge-base', id: source.reference()} : source,
+    )
+    this.#resources.push(defineContextMcpEndpoint({...config, sources}))
     return new ContextMcpEndpointHandle(config.name)
   }
 

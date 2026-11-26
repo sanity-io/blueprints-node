@@ -109,5 +109,5 @@ export type BlueprintContextMcpEndpointConfig = Omit<BlueprintContextMcpEndpoint
    * What the endpoint serves: any number of knowledge bases and at most one dataset. A knowledge base source can also
    * be the resource that {@link defineContextKnowledgeBase} returns.
    */
-  sources: Array<ContextMcpEndpointSource | BlueprintContextKnowledgeBaseResource | ContextKnowledgeBaseHandle>
+  sources: Array<ContextMcpEndpointSource | BlueprintContextKnowledgeBaseResource>
 }
