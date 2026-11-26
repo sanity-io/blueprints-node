@@ -70,7 +70,7 @@ describe('defineProject', () => {
 })
 
 describe('referenceProject', () => {
-  test('should create a reference to a robot token', () => {
+  test('should create a reference to a project', () => {
     const ref = projects.referenceProject({
       name: 'ref-resource',
       stack: 'test-stack',
