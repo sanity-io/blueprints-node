@@ -119,7 +119,7 @@ export function defineContextMcpEndpoint(parameters: BlueprintContextMcpEndpoint
           if (source instanceof ContextKnowledgeBaseHandle) {
             return {type: 'knowledge-base', id: source.reference()}
           }
-          if (source.type === 'sanity.context.knowledge-base') {
+          if (source?.type === 'sanity.context.knowledge-base') {
             return {type: 'knowledge-base', id: `$.resources.${source.name}`}
           }
 
