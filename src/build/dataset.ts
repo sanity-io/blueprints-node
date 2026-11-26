@@ -1,4 +1,4 @@
-import {AbstractHandle} from './abstractHandle.js'
+import {AbstractHandle} from './abstract-handle.js'
 
 export class DatasetHandle extends AbstractHandle {
   constructor(name: string) {
