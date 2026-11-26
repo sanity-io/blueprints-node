@@ -67,6 +67,23 @@ describe('defineAgent', () => {
     expect(agentResource.model).toStrictEqual(validModel)
   })
 
+  test('should carry robotToken and dataset through unchanged', () => {
+    const agentResource = agents.defineAgent({
+      name: 'demo-agent',
+      region: 'virginia',
+      model: validModel,
+      robotToken: '$.resources.demo-agent-robot.token',
+      dataset: 'staging',
+    })
+    expect(agentResource.robotToken).toStrictEqual('$.resources.demo-agent-robot.token')
+    expect(agentResource.dataset).toStrictEqual('staging')
+  })
+
+  test('should leave dataset unset when omitted', () => {
+    const agentResource = agents.defineAgent({name: 'demo-agent', region: 'virginia', model: validModel})
+    expect('dataset' in agentResource).toBe(false)
+  })
+
   test('should throw if validateAgent returns an error', () => {
     const spy = vi.spyOn(index, 'validateAgent').mockImplementation(() => [{type: 'test', message: 'this is a test'}])
     expect(() =>

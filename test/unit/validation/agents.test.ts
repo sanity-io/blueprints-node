@@ -43,6 +43,37 @@ describe('validateAgent', () => {
     })
   })
 
+  describe('robotToken and dataset', () => {
+    test('should accept a robot token reference and a dataset', () => {
+      const errors = validateAgent({...validAgent, robotToken: '$.resources.demo-robot.token', dataset: 'production'})
+      expect(errors).toHaveLength(0)
+    })
+
+    test('should return an error if robotToken is not a string', () => {
+      const errors = validateAgent({...validAgent, robotToken: 42})
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`robotToken` must be a string'})
+    })
+
+    test('should return an error if robotToken is empty', () => {
+      const errors = validateAgent({...validAgent, robotToken: ''})
+      expect(errors).toContainEqual({type: 'invalid_value', message: '`robotToken` must be a non-empty string'})
+    })
+
+    test('should return an error if dataset is not a string', () => {
+      const errors = validateAgent({...validAgent, dataset: true})
+      expect(errors).toContainEqual({type: 'invalid_type', message: '`dataset` must be a string'})
+    })
+
+    test.each(['Production', '-staging', 'has space', 'a'.repeat(65)])('should reject the dataset name %s', (dataset) => {
+      const errors = validateAgent({...validAgent, dataset})
+      expect(errors.some((e) => e.type === 'invalid_format' && e.message.startsWith('`dataset`'))).toBe(true)
+    })
+
+    test.each(['production', 'staging_2', 'a-b'])('should accept the dataset name %s', (dataset) => {
+      expect(validateAgent({...validAgent, dataset})).toHaveLength(0)
+    })
+  })
+
   describe('sad paths', () => {
     test('should return an error if config is falsey', () => {
       const errors = validateAgent(undefined)

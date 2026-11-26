@@ -9,6 +9,9 @@ const AGENT_NAME_MAX_LENGTH = 63
 /** Maximum length of an agent `description`. */
 const AGENT_DESCRIPTION_MAX_LENGTH = 255
 
+/** Sanity dataset names: lowercase alphanumerics, `_` and `-`, starting with a letter or digit, at most 64 characters. */
+const DATASET_NAME = /^[a-z0-9][a-z0-9_-]{0,63}$/
+
 /** Allowlisted deploy regions (cities). */
 const AGENT_REGIONS = [
   'virginia',
@@ -31,7 +34,7 @@ const AGENT_REGIONS = [
  * Validates that the given resource is a valid Agent.
  *
  * @remarks
- * Validates the `name` slug, optional `description`, the `region` allowlist, and the `model` shape; `model.apiKey` is presence-checked only.
+ * Validates the `name` slug, optional `description`, the `region` allowlist, the `model` shape, and the optional `robotToken` and `dataset`; secrets are presence-checked only.
  * @param resource The Agent resource
  * @hidden
  * @category Validation
@@ -77,6 +80,25 @@ export function validateAgent(resource: unknown): BlueprintError[] {
   }
 
   errors.push(...validateAgentModel(resource))
+
+  if ('robotToken' in resource && typeof resource.robotToken !== 'undefined') {
+    if (typeof resource.robotToken !== 'string') {
+      errors.push({type: 'invalid_type', message: '`robotToken` must be a string'})
+    } else if (resource.robotToken.length === 0) {
+      errors.push({type: 'invalid_value', message: '`robotToken` must be a non-empty string'})
+    }
+  }
+
+  if ('dataset' in resource && typeof resource.dataset !== 'undefined') {
+    if (typeof resource.dataset !== 'string') {
+      errors.push({type: 'invalid_type', message: '`dataset` must be a string'})
+    } else if (!DATASET_NAME.test(resource.dataset)) {
+      errors.push({
+        type: 'invalid_format',
+        message: '`dataset` must be lowercase letters, digits, `_` or `-`, start with a letter or digit, and be at most 64 characters',
+      })
+    }
+  }
 
   return errors
 }

@@ -42,6 +42,16 @@ export interface BlueprintAgentResource extends BlueprintResource<BlueprintProje
   model: BlueprintAgentModel
   /** Author-time source path; rewritten to an `AS-...` asset id before deploy. */
   src: string
+  /**
+   * Robot token for the agent's Sanity tools, usually a reference such as `'$.resources.agent-robot.token'`.
+   * Delivered to the agent's runtime and sandbox as `SANITY_AUTH_TOKEN`.
+   */
+  robotToken?: string
+  /**
+   * Dataset the agent's Sanity tools use.
+   * @defaultValue 'production'
+   */
+  dataset?: string
 }
 
 /**
