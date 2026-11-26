@@ -1,4 +1,11 @@
-import {type BlueprintDatasetConfig, type BlueprintDatasetResource, validateDataset} from '../index.js'
+import {
+  type BlueprintCrossStackReferenceConfig,
+  type BlueprintDatasetConfig,
+  type BlueprintDatasetResource,
+  type BlueprintResource,
+  referenceResource,
+  validateDataset,
+} from '../index.js'
 import {runValidation} from '../utils/validation.js'
 
 /**
@@ -43,4 +50,24 @@ export function defineDataset(parameters: BlueprintDatasetConfig): BlueprintData
   runValidation(() => validateDataset(datasetResource))
 
   return datasetResource
+}
+
+/**
+ * Creates a reference to a dataset in another stack.
+ *
+ * @example
+ * ```ts
+ * referenceDataset({
+ *   name: 'prod-dataset',
+ *   stack: 'editorial',
+ * })
+ * ```
+ *
+ * @param params The parameters for referencing the dataset
+ * @public
+ * @category Referencers
+ * @returns The datset reference
+ */
+export function referenceDataset({name, stack, localName}: BlueprintCrossStackReferenceConfig): BlueprintResource {
+  return referenceResource({name, stack, localName, type: 'sanity.project.dataset'})
 }
