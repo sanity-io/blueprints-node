@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.36.0](https://github.com/sanity-io/blueprints-node/compare/v0.35.0...v0.36.0) (2026-11-26)
+
+
+### Features
+
+* add referenceDataset helper function ([#209](https://github.com/sanity-io/blueprints-node/issues/209)) ([48229b9](https://github.com/sanity-io/blueprints-node/commit/48229b98118ce1b7c337563e4a2ceaf99d2648ca))
+
 ## [0.35.0](https://github.com/sanity-io/blueprints-node/compare/v0.34.1...v0.35.0) (2026-11-25)
 
 
