@@ -1,3 +1,4 @@
+import {ContextKnowledgeBaseHandle} from '../build/context.js'
 import {
   type BlueprintContextKnowledgeBaseConfig,
   type BlueprintContextKnowledgeBaseResource,
@@ -114,9 +115,16 @@ export function defineContextMcpEndpoint(parameters: BlueprintContextMcpEndpoint
     type: 'sanity.context.mcp',
     // Malformed sources pass through untouched, so validation reports them instead of throwing here.
     sources: Array.isArray(parameters.sources)
-      ? parameters.sources.map((source) =>
-          source?.type === 'sanity.context.knowledge-base' ? {type: 'knowledge-base', id: `$.resources.${source.name}`} : source,
-        )
+      ? parameters.sources.map((source) => {
+          if (source instanceof ContextKnowledgeBaseHandle) {
+            return {type: 'knowledge-base', id: source.reference()}
+          }
+          if (source.type === 'sanity.context.knowledge-base') {
+            return {type: 'knowledge-base', id: `$.resources.${source.name}`}
+          }
+
+          return source
+        })
       : parameters.sources,
   }
 
