@@ -35,6 +35,8 @@ import {runValidation} from '../utils/validation.js'
  *     baseURL: 'https://openrouter.ai/api/v1',
  *     apiKey: process.env.OPEN_ROUTER_KEY,
  *   },
+ *   robotToken: '$.resources.demo-agent-robot.token',
+ *   dataset: 'production',
  * })
  * ```
  * @param config The agent configuration
