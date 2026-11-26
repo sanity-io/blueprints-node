@@ -1,4 +1,3 @@
-import type {ContextKnowledgeBaseHandle} from '../build/context.js'
 import type {BlueprintResource} from '../index.js'
 
 /**
