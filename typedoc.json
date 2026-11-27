@@ -15,6 +15,7 @@
     "Definers", // src/definers/
     "Application Children", // views and web workers for defineApplication
     "Referencers", // src/definers/
+    "Builder", // src/build/
     "Resource Types", // src/types/
     "Functions Types", // function resource types
     "Validation", // src/validation/

@@ -18,7 +18,7 @@ import {assertResource, type BlueprintCrossStackReferenceResourceConfig, type Bl
  * @expandType BlueprintResource
  * @internal
  */
-export function defineResource(resourceConfig: Partial<BlueprintResource>): BlueprintResource {
+export function defineResource<R extends BlueprintResource>(resourceConfig: Partial<R>): BlueprintResource {
   const resource = {
     ...resourceConfig,
   }

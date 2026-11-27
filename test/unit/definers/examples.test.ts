@@ -16,13 +16,17 @@ interface Example {
 }
 
 const repoRoot = fileURLToPath(new URL('../../../', import.meta.url))
-const definersDir = join(repoRoot, 'src', 'definers')
+const exampleDirs = ['definers', 'build']
 
 function collectExamples(): Example[] {
   const examples: Example[] = []
-  const files = readdirSync(definersDir, {recursive: true, encoding: 'utf8'}).filter((f) => f.endsWith('.ts'))
+  const files = exampleDirs.flatMap((dir) =>
+    readdirSync(join(repoRoot, 'src', dir), {recursive: true, encoding: 'utf8'})
+      .filter((f) => f.endsWith('.ts'))
+      .map((f) => join(dir, f)),
+  )
   for (const file of files) {
-    const source = readFileSync(join(definersDir, file), 'utf8')
+    const source = readFileSync(join(repoRoot, 'src', file), 'utf8')
     for (const block of source.matchAll(/\/\*\*\n([\s\S]*?)\n \*\/\nexport function (\w+)/g)) {
       const [, body, fn] = block
       if (/^ \* @hidden$/m.test(body)) continue
@@ -89,7 +93,7 @@ afterAll(() => {
   if (workDir) rmSync(workDir, {recursive: true, force: true})
 })
 
-describe('definer JSDoc examples', () => {
+describe('definer and builder JSDoc examples', () => {
   test('are found', () => {
     expect(examples.length).toBeGreaterThan(0)
   })

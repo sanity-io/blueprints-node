@@ -1,6 +1,6 @@
 import {describe, expect, test} from 'vitest'
+import {defineRobotToken} from '../../../src/definers/robot-tokens.js'
 import {defineRobot} from '../../../src/definers/robots.js'
-import {defineRobotToken} from '../../../src/definers/robotTokens.js'
 
 describe('defineRobot', () => {
   test('should be a reference to defineRobotToken', () => {
