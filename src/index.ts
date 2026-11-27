@@ -23,6 +23,9 @@
  * Shared types that Blueprints and resources are built on. Definers and resource types use them, so most code does not need to import them.
  */
 
+// BUILDER - build a blueprint
+export {buildBlueprint} from './build/blueprint.js'
+
 // DEFINERS - helper functions to create resources
 export * from './definers/agents.js'
 export * from './definers/applications.js'
@@ -42,8 +45,8 @@ export * from './definers/installation-config.js'
 export * from './definers/permissions.js'
 export * from './definers/projects.js'
 export * from './definers/resources.js'
-export * from './definers/robots.js'
 export * from './definers/robot-tokens.js'
+export * from './definers/robots.js'
 export * from './definers/roles.js'
 export * from './definers/studios.js'
 export * from './definers/webhooks.js'
