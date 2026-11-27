@@ -1,118 +1,13 @@
-import {describe, expect, expectTypeOf, test} from 'vitest'
+import {afterEach, describe, expect, expectTypeOf, test} from 'vitest'
 
-import {buildBlueprint} from '../../../src/build/blueprint.js'
-import {defineWindowView} from '../../../src/index.js'
+import {BlueprintHandle, buildBlueprint} from '../../../src/build/blueprint.js'
+import {ProjectHandle} from '../../../src/build/project.js'
+import type {BlueprintResource} from '../../../src/index.js'
+import {getCollectedErrors, resetCollectedErrors} from '../../../src/utils/validation.js'
 
-const EXISTING_PROJECT = 'proj1234'
-const EXISTING_DATASET = 'existing'
+afterEach(() => resetCollectedErrors())
 
 describe('buildBlueprint', () => {
-  test('creates a blueprint manifest', () => {
-    const bpModule = buildBlueprint({}, (blueprint) => {
-      const project = blueprint.project({name: 'test-project'})
-      const dataset = project.dataset({name: 'production'})
-      project.documentWebhook({
-        name: 'test-webhook',
-        apiVersion: 'v2026-01-01',
-        dataset: dataset.datasetName,
-        on: ['update'],
-        url: 'https://example.com',
-      })
-      const projectPermission = project.permission({
-        name: 'project-articles-only',
-        permissionType: 'sanity.document.filter.mode',
-        config: {filter: '_type == "article"'},
-      })
-      const projectRole = project.role({
-        appliesToRobots: true,
-        appliesToUsers: false,
-        name: 'test-project-role',
-        permissions: [
-          {
-            name: 'sanity-project-cors',
-            action: 'create',
-          },
-          {
-            name: projectPermission.name,
-            action: 'create',
-          },
-        ],
-        title: 'Test Role',
-      })
-      project.robotToken({
-        label: 'test-project-robot',
-        memberships: [{roleNames: [projectRole.name]}],
-        name: 'test-project-robot',
-      })
-      project.studio({
-        name: 'test-project-studio',
-        root: './projectstudio',
-      })
-
-      const attachedProject = blueprint.project({
-        name: 'attached-project',
-        lifecycle: {ownershipAction: {type: 'attach', id: EXISTING_PROJECT}},
-      })
-      attachedProject.dataset({
-        name: 'attached-dataset',
-        lifecycle: {ownershipAction: {type: 'attach', id: EXISTING_DATASET, projectId: EXISTING_PROJECT}},
-      })
-
-      blueprint.application({
-        name: 'design-retro',
-        title: 'Design Retro',
-        root: './apps/design-retro',
-        views: [defineWindowView({name: 'main', title: 'Design Retro', src: './src/windows/main.tsx'})],
-      })
-      const kb = blueprint.contextKnowledgeBase({
-        name: 'product-docs',
-        title: 'Product docs',
-        description: 'Everything about the product',
-      })
-      blueprint.contextMcpEndpoint({
-        name: 'support-agent',
-        title: 'Support agent',
-        sources: [kb, {type: 'dataset', id: 'abc123.production'}],
-        instructions: 'Answer questions about the product.',
-        groqFilter: '_type in ["article", "faq"]',
-      })
-      const permission = blueprint.permission({
-        name: 'articles-only',
-        permissionType: 'sanity.document.filter.mode',
-        config: {filter: '_type == "article"'},
-      })
-      const role = blueprint.role({
-        appliesToRobots: true,
-        appliesToUsers: false,
-        name: 'test-role',
-        permissions: [
-          {
-            name: 'sanity-project-cors',
-            action: 'create',
-          },
-          {
-            name: permission.name,
-            action: 'create',
-          },
-        ],
-        title: 'Test Role',
-      })
-      blueprint.robotToken({
-        label: 'test-robot',
-        memberships: [{roleNames: [role.name]}],
-        name: 'test-robot',
-      })
-      blueprint.studio({
-        name: 'test-studio',
-        root: './studio',
-      })
-      const testResource = blueprint.resource({name: 'test-resource-1', type: 'test', behavior: 'noop'})
-      blueprint.resource({name: 'test-resource-2', type: 'test', behavior: testResource.reference('behavior')})
-    })
-
-    console.log('output', JSON.stringify(bpModule(), null, 2))
-  })
-
   test('accepts a callback without config', () => {
     const bpModule = buildBlueprint((blueprint) => {
       blueprint.project({name: 'test-project'})
@@ -155,5 +50,81 @@ describe('buildBlueprint', () => {
     })
 
     expect(bpModule().resources).toHaveLength(1)
+  })
+
+  test('passes top-level settings to the blueprint', () => {
+    const bpModule = buildBlueprint({blueprintVersion: '2025-01-01', values: {environment: 'production'}}, (blueprint) => {
+      blueprint.corsOrigin({name: 'localhost', origin: 'http://localhost:3333'})
+    })
+
+    expect(bpModule()).toMatchObject({blueprintVersion: '2025-01-01', values: {environment: 'production'}})
+  })
+
+  test('throws if no callback is given', () => {
+    // @ts-expect-error -- the callback is required, which is what we are asserting on
+    expect(() => buildBlueprint({values: {}})).toThrow('buildBlueprint requires a callback')
+  })
+
+  test('throws the validation errors of the resources it adds', () => {
+    expect(() =>
+      buildBlueprint((blueprint) => {
+        blueprint.corsOrigin({name: 'localhost', origin: ''})
+      }),
+    ).toThrow('CORS Origin URL is required')
+  })
+
+  test('throws if resources share a name', () => {
+    expect(() =>
+      buildBlueprint((blueprint) => {
+        const project = blueprint.project({name: 'my-project'})
+        project.dataset({name: 'production'})
+        project.corsOrigin({name: 'production', origin: 'http://localhost:3333'})
+      }),
+    ).toThrow("duplicate name 'production' in resources")
+  })
+
+  test('rethrows errors from the callback and resets collected errors', () => {
+    expect(() =>
+      buildBlueprint((blueprint) => {
+        blueprint.corsOrigin({name: 'localhost', origin: ''})
+        throw new Error('callback failed')
+      }),
+    ).toThrow('callback failed')
+
+    expect(getCollectedErrors()).toStrictEqual([])
+  })
+})
+
+describe('BlueprintHandle', () => {
+  function setup() {
+    const resources: BlueprintResource[] = []
+    return {resources, blueprint: new BlueprintHandle(resources)}
+  }
+
+  test('project returns a handle that adds resources to the same blueprint', () => {
+    const {resources, blueprint} = setup()
+
+    const project = blueprint.project({name: 'my-project'})
+    project.dataset({name: 'production'})
+
+    expect(project).toBeInstanceOf(ProjectHandle)
+    expect(resources.map((r) => r.type)).toStrictEqual(['sanity.project', 'sanity.project.dataset'])
+  })
+
+  test('contextMcpEndpoint converts knowledge base handles to sources', () => {
+    const {resources, blueprint} = setup()
+
+    const kb = blueprint.contextKnowledgeBase({name: 'product-docs', title: 'Product docs', description: 'Product docs'})
+    blueprint.contextMcpEndpoint({
+      name: 'support-agent',
+      title: 'Support agent',
+      sources: [kb, {type: 'dataset', id: 'abc123.production'}],
+    })
+
+    expect(resources[1]).toHaveProperty('sources', [
+      {type: 'knowledge-base', id: '$.resources.product-docs'},
+      {type: 'dataset', id: 'abc123.production'},
+    ])
+    expect(getCollectedErrors()).toStrictEqual([])
   })
 })
