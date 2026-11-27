@@ -1,5 +1,10 @@
 import {defineCorsOrigin} from '../definers/cors.js'
 import {defineDataset} from '../definers/datasets.js'
+import {defineDocumentFunction} from '../definers/functions/document.js'
+import {defineDurableFunction} from '../definers/functions/durable.js'
+import {defineMediaLibraryAssetFunction} from '../definers/functions/media-library.js'
+import {definePubSubFunction} from '../definers/functions/pubsub.js'
+import {defineSyncTagInvalidateFunction} from '../definers/functions/sync-tag-invalidate.js'
 import {definePermission} from '../definers/permissions.js'
 import {defineRobotToken} from '../definers/robot-tokens.js'
 import {defineProjectRole} from '../definers/roles.js'
@@ -7,6 +12,13 @@ import {defineStudio} from '../definers/studios.js'
 import {defineDocumentWebhook} from '../definers/webhooks.js'
 import type {BlueprintCorsOriginConfig} from '../types/cors.js'
 import type {BlueprintDatasetConfig} from '../types/datasets.js'
+import type {
+  BlueprintDocumentFunctionConfig,
+  BlueprintDurableConfig,
+  BlueprintMediaLibraryAssetFunctionConfig,
+  BlueprintPubSubFunctionConfig,
+  BlueprintSyncTagInvalidateFunctionConfig,
+} from '../types/functions/index.js'
 import type {BlueprintPermissionConfig} from '../types/permissions.js'
 import type {BlueprintResource} from '../types/resources.js'
 import type {BlueprintRobotTokenConfig} from '../types/robotTokens.js'
@@ -51,16 +63,36 @@ export class ProjectHandle extends AbstractHandle {
     return new DatasetHandle(config.name)
   }
 
+  /** Adds a Document Function to the project. See {@link defineDocumentFunction}. */
+  documentFunction(config: Omit<BlueprintDocumentFunctionConfig, 'project'>): void {
+    this.#resources.push(defineDocumentFunction({...config, project: this.reference()}))
+  }
+
   /** Adds a document webhook to the project. See {@link defineDocumentWebhook}. */
   documentWebhook(config: Omit<BlueprintDocumentWebhookConfig, 'project'>): DocumentWebhookHandle {
     this.#resources.push(defineDocumentWebhook({...config, project: this.reference()}))
     return new DocumentWebhookHandle(config.name)
   }
 
+  /** Adds a Durable Function to the project. See {@link defineDurableFunction}. */
+  durableFunction(config: Omit<BlueprintDurableConfig, 'project'>): void {
+    this.#resources.push(defineDurableFunction({...config, project: this.reference()}))
+  }
+
+  /** Adds a Media Library Asset Function to the project. See {@link defineMediaLibraryAssetFunction}. */
+  mediaLibraryAssetFunction(config: Omit<BlueprintMediaLibraryAssetFunctionConfig, 'project'>): void {
+    this.#resources.push(defineMediaLibraryAssetFunction({...config, project: this.reference()}))
+  }
+
   /** Adds a permission to the project. See {@link definePermission}. */
   permission(config: Omit<BlueprintPermissionConfig, 'project'>): PermissionHandle {
     this.#resources.push(definePermission({...config, project: this.reference()}))
     return new PermissionHandle(config.name)
+  }
+
+  /** Adds a Pub Sub Function to the project. See {@link definePubSubFunction}. */
+  pubSubFunction(config: Omit<BlueprintPubSubFunctionConfig, 'project'>): void {
+    this.#resources.push(definePubSubFunction({...config, project: this.reference()}))
   }
 
   /** Adds a robot token to the project. See {@link defineRobotToken}. The project sets `resourceType` and `resourceId`. */
@@ -79,5 +111,10 @@ export class ProjectHandle extends AbstractHandle {
   studio(config: Omit<BlueprintStudioConfig, 'project'>): StudioHandle {
     this.#resources.push(defineStudio({...config, project: this.reference()}))
     return new StudioHandle(config.name)
+  }
+
+  /** Adds a Sync Tag Invalidate Function to the project. See {@link defineSyncTagInvalidateFunction} */
+  syncTagInvalidateFunction(config: Omit<BlueprintSyncTagInvalidateFunctionConfig, 'project'>): void {
+    this.#resources.push(defineSyncTagInvalidateFunction({...config, project: this.reference()}))
   }
 }
