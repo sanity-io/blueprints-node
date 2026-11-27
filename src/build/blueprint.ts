@@ -118,7 +118,18 @@ class BlueprintHandle {
   }
 }
 
-export function buildBlueprint(config: BlueprintConfig, callback: (blueprint: BlueprintHandle) => void): BlueprintModule {
+type BlueprintBuildCallback = (blueprint: BlueprintHandle) => void
+
+export function buildBlueprint(callback: BlueprintBuildCallback): BlueprintModule
+export function buildBlueprint(config: BlueprintConfig | undefined, callback: BlueprintBuildCallback): BlueprintModule
+export function buildBlueprint(
+  configOrCallback: BlueprintConfig | BlueprintBuildCallback | undefined,
+  maybeCallback?: BlueprintBuildCallback,
+): BlueprintModule {
+  const config = typeof configOrCallback === 'function' ? undefined : configOrCallback
+  const callback = typeof configOrCallback === 'function' ? configOrCallback : maybeCallback
+  if (!callback) throw new Error('buildBlueprint requires a callback')
+
   const output: Partial<Blueprint> = {
     ...config,
   }
