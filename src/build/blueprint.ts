@@ -40,24 +40,42 @@ import {RobotTokenHandle} from './robot-token.js'
 import {RoleHandle} from './role.js'
 import {StudioHandle} from './studio.js'
 
-type BlueprintConfig = Partial<Pick<Blueprint, '$schema' | 'blueprintVersion' | 'values'>>
+/**
+ * Top-level settings for {@link buildBlueprint}.
+ * @public
+ * @beta
+ * @category Builder
+ * @interface
+ */
+export type BuildBlueprintConfig = Partial<Pick<Blueprint, '$schema' | 'blueprintVersion' | 'values'>>
 
-class BlueprintHandle {
+/**
+ * Adds resources in a {@link buildBlueprint} callback. Each method takes the same options as the definer it links to.
+ * @public
+ * @beta
+ * @category Builder
+ */
+export class BlueprintHandle {
   #resources: BlueprintResource[]
+
+  /** @internal */
   constructor(resources: BlueprintResource[]) {
     this.#resources = resources
   }
 
+  /** Adds an application. See {@link defineApplication}. */
   application(config: BlueprintApplicationConfig): ApplicationHandle {
     this.#resources.push(defineApplication(config))
     return new ApplicationHandle(config.name)
   }
 
+  /** Adds a Context knowledge base. See {@link defineContextKnowledgeBase}. */
   contextKnowledgeBase(config: BlueprintContextKnowledgeBaseConfig): ContextKnowledgeBaseHandle {
     this.#resources.push(defineContextKnowledgeBase(config))
     return new ContextKnowledgeBaseHandle(config.name)
   }
 
+  /** Adds a Context MCP endpoint. See {@link defineContextMcpEndpoint}. `sources` also accepts a {@link ContextKnowledgeBaseHandle}. */
   contextMcpEndpoint(
     config: Omit<BlueprintContextMcpEndpointConfig, 'sources'> & {
       sources: Array<ContextMcpEndpointSource | BlueprintContextKnowledgeBaseResource | ContextKnowledgeBaseHandle>
@@ -71,47 +89,56 @@ class BlueprintHandle {
     return new ContextMcpEndpointHandle(config.name)
   }
 
+  /** Adds a CORS origin. See {@link defineCorsOrigin}. */
   corsOrigin(config: BlueprintCorsOriginConfig): CorsOriginHandle {
     this.#resources.push(defineCorsOrigin(config))
     return new CorsOriginHandle(config.name)
   }
 
+  /** Adds a dataset. See {@link defineDataset}. */
   dataset(config: BlueprintDatasetConfig): DatasetHandle {
     this.#resources.push(defineDataset(config))
     return new DatasetHandle(config.name)
   }
 
+  /** Adds a Media Library configuration. See {@link defineMediaLibraryConfig}. */
   mediaLibraryConfig(config: BlueprintMediaLibraryConfigConfig): MediaLibraryConfigHandle {
     this.#resources.push(defineMediaLibraryConfig(config))
     return new MediaLibraryConfigHandle(config.name)
   }
 
+  /** Adds a permission. See {@link definePermission}. */
   permission(config: BlueprintPermissionConfig): PermissionHandle {
     this.#resources.push(definePermission(config))
     return new PermissionHandle(config.name)
   }
 
+  /** Adds a project. See {@link defineProject}. Add resources to the project with the returned {@link ProjectHandle}. */
   project(config: BlueprintProjectConfig): ProjectHandle {
     this.#resources.push(defineProject(config))
 
     return new ProjectHandle(config.name, this.#resources)
   }
 
+  /** Adds a resource that has no method of its own, such as the function that {@link defineDocumentFunction} returns. */
   resource<R extends BlueprintResource>(r: R): ResourceHandle<R['type']> {
     this.#resources.push(defineResource(r))
     return new ResourceHandle(r.name, r.type)
   }
 
+  /** Adds a robot token. See {@link defineRobotToken}. */
   robotToken(config: BlueprintRobotTokenConfig): RobotTokenHandle {
     this.#resources.push(defineRobotToken(config))
     return new RobotTokenHandle(config.name)
   }
 
+  /** Adds a role. See {@link defineRole}. */
   role(config: BlueprintRoleConfig): RoleHandle {
     this.#resources.push(defineRole(config))
     return new RoleHandle(config.name)
   }
 
+  /** Adds a Studio. See {@link defineStudio}. */
   studio(config: BlueprintStudioConfig): StudioHandle {
     this.#resources.push(defineStudio(config))
 
@@ -119,13 +146,85 @@ class BlueprintHandle {
   }
 }
 
-type BlueprintBuildCallback = (blueprint: BlueprintHandle) => void
+/**
+ * The function that {@link buildBlueprint} calls to add resources. It must add every resource before it returns.
+ * @public
+ * @beta
+ * @category Builder
+ */
+export type BuildBlueprintCallback = (blueprint: BlueprintHandle) => void
 
-export function buildBlueprint(callback: BlueprintBuildCallback): BlueprintModule
-export function buildBlueprint(config: BlueprintConfig | undefined, callback: BlueprintBuildCallback): BlueprintModule
+/**
+ * Builds a Blueprint by adding resources in a callback.
+ *
+ * Building Blueprints with `buildBlueprint` is experimental. This may be subject to breaking changes.
+ *
+ * @remarks
+ * An alternative to {@link defineBlueprint}. Each method on {@link BlueprintHandle} calls a definer and returns a handle
+ * that creates `$.resources.*` references to the new resource. Resources added through a {@link ProjectHandle} are scoped
+ * to that project. For the options of each resource, see its definer.
+ *
+ * @example
+ * ```ts
+ * buildBlueprint((blueprint) => {
+ *   const project = blueprint.project({name: 'my-project'})
+ *   project.dataset({name: 'production'})
+ * })
+ * ```
+ *
+ * @example References between resources
+ * ```ts
+ * buildBlueprint((blueprint) => {
+ *   const project = blueprint.project({name: 'my-project'})
+ *   const dataset = project.dataset({name: 'production'})
+ *   project.documentWebhook({
+ *     name: 'article-sync',
+ *     dataset: dataset.datasetName,
+ *     apiVersion: 'v2025-01-01',
+ *     on: ['create', 'update'],
+ *     url: 'https://example.com/webhook',
+ *   })
+ *
+ *   const role = project.role({
+ *     name: 'ci-deploy-role',
+ *     title: 'CI Deploy Role',
+ *     appliesToRobots: true,
+ *     appliesToUsers: false,
+ *     permissions: [{name: 'sanity-project-cors', action: 'create'}],
+ *   })
+ *   project.robotToken({
+ *     name: 'ci-robot',
+ *     memberships: [{roleNames: [role.name]}],
+ *   })
+ * })
+ * ```
+ * @param callback Adds resources to the Blueprint
+ * @public
+ * @beta
+ * @category Builder
+ * @returns A blueprint module
+ */
+export function buildBlueprint(callback: BuildBlueprintCallback): BlueprintModule
+/**
+ * Builds a Blueprint with top-level settings, such as `values`, by adding resources in a callback.
+ *
+ * @example With values
+ * ```ts
+ * buildBlueprint({values: {environment: 'production'}}, (blueprint) => {
+ *   blueprint.corsOrigin({name: 'localhost', origin: 'http://localhost:3333'})
+ * })
+ * ```
+ * @param config Top-level settings for the Blueprint
+ * @param callback Adds resources to the Blueprint
+ * @public
+ * @beta
+ * @category Builder
+ * @returns A blueprint module
+ */
+export function buildBlueprint(config: BuildBlueprintConfig | undefined, callback: BuildBlueprintCallback): BlueprintModule
 export function buildBlueprint(
-  configOrCallback: BlueprintConfig | BlueprintBuildCallback | undefined,
-  maybeCallback?: BlueprintBuildCallback,
+  configOrCallback: BuildBlueprintConfig | BuildBlueprintCallback | undefined,
+  maybeCallback?: BuildBlueprintCallback,
 ): BlueprintModule {
   const config = typeof configOrCallback === 'function' ? undefined : configOrCallback
   const callback = typeof configOrCallback === 'function' ? configOrCallback : maybeCallback

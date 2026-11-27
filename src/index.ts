@@ -10,6 +10,9 @@
  * @categoryDescription Referencers
  * These functions are used to reference resources in another Blueprint.
  *
+ * @categoryDescription Builder
+ * An alternative to {@link defineBlueprint}. `buildBlueprint` adds resources in a callback and returns handles that reference them.
+ *
  * @categoryDescription Resource Types
  * These types are used to define the shape of resources in a Blueprint.
  *
@@ -24,7 +27,20 @@
  */
 
 // BUILDER - build a blueprint
-export {buildBlueprint} from './build/blueprint.js'
+export type {AbstractHandle} from './build/abstract-handle.js'
+export type {ApplicationHandle} from './build/application.js'
+export {type BlueprintHandle, type BuildBlueprintCallback, type BuildBlueprintConfig, buildBlueprint} from './build/blueprint.js'
+export type {ContextKnowledgeBaseHandle, ContextMcpEndpointHandle} from './build/context.js'
+export type {CorsOriginHandle} from './build/cors.js'
+export type {DatasetHandle} from './build/dataset.js'
+export type {MediaLibraryConfigHandle} from './build/installation-config.js'
+export type {PermissionHandle} from './build/permission.js'
+export type {ProjectHandle} from './build/project.js'
+export type {ResourceHandle} from './build/resource.js'
+export type {RobotTokenHandle} from './build/robot-token.js'
+export type {RoleHandle} from './build/role.js'
+export type {StudioHandle} from './build/studio.js'
+export type {DocumentWebhookHandle} from './build/webhook.js'
 
 // DEFINERS - helper functions to create resources
 export * from './definers/agents.js'
