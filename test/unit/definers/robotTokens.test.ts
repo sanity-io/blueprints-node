@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, test, vi} from 'vitest'
-import * as robotTokens from '../../../src/definers/robotTokens.js'
+import * as robotTokens from '../../../src/definers/robot-tokens.js'
 import * as index from '../../../src/index.js'
 import {defineBlueprintForResource} from '../../helpers/index.js'
 

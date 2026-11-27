@@ -23,6 +23,7 @@ import {StudioHandle} from './studio.js'
 import {DocumentWebhookHandle} from './webhook.js'
 
 export class ProjectHandle extends AbstractHandle {
+  readonly kind = 'sanity.project'
   #resources: BlueprintResource[]
 
   constructor(projectName: string, resources: BlueprintResource[]) {

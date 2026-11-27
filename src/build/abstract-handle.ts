@@ -1,4 +1,5 @@
-export class AbstractHandle {
+export abstract class AbstractHandle {
+  abstract readonly kind: string
   #name: string
 
   constructor(name: string) {

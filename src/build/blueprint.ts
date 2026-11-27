@@ -96,9 +96,9 @@ class BlueprintHandle {
     return new ProjectHandle(config.name, this.#resources)
   }
 
-  resource<R extends BlueprintResource>(r: R): ResourceHandle {
+  resource<R extends BlueprintResource>(r: R): ResourceHandle<R['type']> {
     this.#resources.push(r)
-    return new ResourceHandle(r.name)
+    return new ResourceHandle(r.name, r.type)
   }
 
   robotToken(config: BlueprintRobotTokenConfig): RobotTokenHandle {
