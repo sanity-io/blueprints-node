@@ -6,6 +6,7 @@ import {defineDataset} from '../definers/datasets.js'
 import {defineMediaLibraryConfig} from '../definers/installation-config.js'
 import {definePermission} from '../definers/permissions.js'
 import {defineProject} from '../definers/projects.js'
+import {defineResource} from '../definers/resources.js'
 import {defineRobotToken} from '../definers/robot-tokens.js'
 import {defineRole} from '../definers/roles.js'
 import {defineStudio} from '../definers/studios.js'
@@ -97,7 +98,7 @@ class BlueprintHandle {
   }
 
   resource<R extends BlueprintResource>(r: R): ResourceHandle<R['type']> {
-    this.#resources.push(r)
+    this.#resources.push(defineResource(r))
     return new ResourceHandle(r.name, r.type)
   }
 
