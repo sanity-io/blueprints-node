@@ -16,7 +16,23 @@ export function validateBlueprint(blueprintConfig: unknown): BlueprintError[] {
   if ('resources' in blueprintConfig) {
     const {resources} = blueprintConfig
 
-    if (resources && !Array.isArray(resources)) errors.push({type: 'invalid_format', message: '`resources` must be an array'})
+    if (resources) {
+      if (!Array.isArray(resources)) errors.push({type: 'invalid_format', message: '`resources` must be an array'})
+      else {
+        const names = new Set<string>()
+        const duplicates = new Set<string>()
+        resources.forEach((r) => {
+          if (names.has(r.name)) {
+            duplicates.add(r.name)
+          } else {
+            names.add(r.name)
+          }
+        })
+        duplicates.forEach((name) => {
+          errors.push({type: 'invalid_value', message: `duplicate name '${name}' in resources`})
+        })
+      }
+    }
   }
 
   // add any errors that were collected when definers were called
