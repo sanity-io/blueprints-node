@@ -26,6 +26,7 @@ import type {BlueprintResource} from '../types/resources.js'
 import type {BlueprintRobotTokenConfig} from '../types/robotTokens.js'
 import type {BlueprintRoleConfig} from '../types/roles.js'
 import type {BlueprintStudioConfig} from '../types/studios.js'
+import {resetCollectedErrors} from '../utils/validation.js'
 import {ApplicationHandle} from './application.js'
 import {ContextKnowledgeBaseHandle, ContextMcpEndpointHandle} from './context.js'
 import {CorsOriginHandle} from './cors.js'
@@ -123,7 +124,12 @@ export function buildBlueprint(config: BlueprintConfig, callback: (blueprint: Bl
   }
   const resources: BlueprintResource[] = []
 
-  callback(new BlueprintHandle(resources))
+  try {
+    callback(new BlueprintHandle(resources))
+  } catch (err) {
+    resetCollectedErrors()
+    throw err
+  }
 
   return defineBlueprint({...output, resources})
 }
